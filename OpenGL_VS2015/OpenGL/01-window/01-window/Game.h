@@ -4,7 +4,7 @@
 
 #include <GLFW/glfw3.h>
 
-// [Ex1] Canviar dimensió viewport
+// [Nil] Canviar dimensió viewport
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 
