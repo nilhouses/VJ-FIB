@@ -22,6 +22,14 @@ void Game::keyPressed(int key)
 {
 	if(key == GLFW_KEY_ESCAPE) // Escape code
 		bPlay = false;
+	// [Ex1] Canviar el color de fons amb les tecles numèriques('1', '2', '3', ...)
+	if (key == GLFW_KEY_1)
+		glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+	if (key == GLFW_KEY_2)
+		glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+	if (key == GLFW_KEY_3)
+		glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+
 	keys[key] = true;
 }
 
