@@ -8,7 +8,6 @@
 #include "TexturedQuad.h"
 #include "Text.h"
 
-
 #define CAMERA_WIDTH 640
 #define CAMERA_HEIGHT 480
 
@@ -27,6 +26,7 @@ public:
 	void init();
 	void update(int deltaTime);
 	void render();
+	void toggleText();
 
 private:
 	void initShaders();
@@ -39,7 +39,8 @@ private:
 	float currentTime;
 	glm::mat4 projection;
 	Text text;
-
+	int nRebots; // Comptador de rebots
+	bool boletText;
 };
 
 
