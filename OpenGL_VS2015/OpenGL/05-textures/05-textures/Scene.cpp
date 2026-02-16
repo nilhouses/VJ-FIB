@@ -89,10 +89,15 @@ void Scene::render()
 	texQuad[2]->render(texs[1]);
 
 	// 3) Bolet
+	// Alçada (Y)
 	float yBase = yTerra - 128.f;
 	float yAjustada = yBase + 33.f; // Error de la textura
-	// El bolet es mou d'esquerra a dreta
-	modelview = glm::translate(glm::mat4(1.0f), glm::vec3(128.0f + 128*sin(float(currentTime/500.f)), yAjustada, 0.f));
+	// Moviment horitzontal (X)
+	float middleViewport = float(CAMERA_WIDTH) / 2.0f;
+	float a = (float(CAMERA_WIDTH) - 64.f) / 2.0f;
+	float xPos = middleViewport + a * sin(float(currentTime / 750.f));
+	modelview = glm::translate(glm::mat4(1.0f), glm::vec3(xPos, yAjustada, 0.f));
+	modelview = glm::translate(modelview, glm::vec3(-64.f, 0.f, 0.f));
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texQuad[1]->render(texs[0]);
 
