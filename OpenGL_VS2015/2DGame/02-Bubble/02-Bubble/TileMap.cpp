@@ -77,7 +77,7 @@ bool TileMap::loadLevel(const string &levelFile)
 	getline(fin, line);
 	sstream.str(line);
 	sstream >> tilesheetSize.x >> tilesheetSize.y;
-	tileTexSize = glm::vec2(1.f / tilesheetSize.x, 1.f / tilesheetSize.y);
+	tileTexSize = glm::vec2(1.f / tilesheetSize.x, 1.f / tilesheetSize.y); // potències de 2 per evitar problemes de rounding i leaking
 	
 	map = new int[mapSize.x * mapSize.y];
 	for(int j=0; j<mapSize.y; j++)
@@ -88,7 +88,9 @@ bool TileMap::loadLevel(const string &levelFile)
 			if(tile == ' ')
 				map[j*mapSize.x+i] = 0;
 			else
-				map[j*mapSize.x+i] = tile - int('0');
+				map[j*mapSize.x+i] = tile - int('0'); // passar caràcter a int (problema, màxim 9 tiles).
+													  // Millor posar enters separats per comes, podem usar més de 9 tiles,
+													  // però és menys visual el .txt
 		}
 		fin.get(tile);
 #ifndef _WIN32
