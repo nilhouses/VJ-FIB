@@ -23,28 +23,38 @@ void Scene::init()
 {
 	glm::vec2 geom[2] = {glm::vec2(0.f, 0.f), glm::vec2(128.f, 128.f)};
 	glm::vec2 texCoords[2] = {glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f)};
+	//Les texCoords van de la part superior esquerra a la part inferior dreta de la textura, per tant (0,0) es la part superior esquerra i (1,1) la part inferior dreta que es vol pintar
+	/*
+	(0,0)
 
+
+					(1,1)
+	
+	*/
 	initShaders();
 	quad = Quad::createQuad(0.f, 0.f, 128.f, 128.f, simpleProgram);
+	// Mario
 	texCoords[0] = glm::vec2(0.f, 0.f); texCoords[1] = glm::vec2(0.5f, 0.5f);
-	texQuad[0] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
-	texCoords[0] = glm::vec2(0.5f, 0.5f); texCoords[1] = glm::vec2(1.f, 1.f);
-	texQuad[1] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
-	texCoords[0] = glm::vec2(0.f, 0.f); texCoords[1] = glm::vec2(2.f, 2.f);
-	texQuad[2] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
+	texQuad[0] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram); 
+	//texCoords[0] = glm::vec2(0.5f, 0.5f); texCoords[1] = glm::vec2(1.f, 1.f); // Estrella
+	// Bolet
+	texCoords[0] = glm::vec2(0.0f, 0.5f); texCoords[1] = glm::vec2(0.5f, 1.f);  
+	texQuad[1] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram); 
+	// Terra
+	texCoords[0] = glm::vec2(0.f, 0.f); texCoords[1] = glm::vec2(2*float(CAMERA_WIDTH/128.0f), 2.f);
+	texQuad[2] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram); 
 	// Load textures
 	texs[0].loadFromFile("images/varied.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	texs[0].setMagFilter(GL_NEAREST);
-	texs[1].loadFromFile("images/rocks.jpg", TEXTURE_PIXEL_FORMAT_RGB);
-	texs[1].setMagFilter(GL_NEAREST);
+	texs[1].loadFromFile("images/brick.png", TEXTURE_PIXEL_FORMAT_RGB);
 	projection = glm::ortho(0.f, float(CAMERA_WIDTH), float(CAMERA_HEIGHT), 0.f);
 	currentTime = 0.0f;
-	
+
 	// Select which font you want to use
-	if(!text.init("fonts/OpenSans-Regular.ttf"))
-	//if(!text.init("fonts/OpenSans-Bold.ttf"))
-	//if(!text.init("fonts/DroidSerif.ttf"))
+	if (!text.init("fonts/OpenSans-Regular.ttf"))
+		//if(!text.init("fonts/OpenSans-Bold.ttf"))
+		//if(!text.init("fonts/DroidSerif.ttf"))
 		cout << "Could not load font!!!" << endl;
+	boletText = true;
 }
 
 void Scene::update(int deltaTime)
@@ -58,41 +68,65 @@ void Scene::render()
 
 	simpleProgram.use();
 	simpleProgram.setUniformMatrix4f("projection", projection);
-	simpleProgram.setUniform4f("color", 0.2f, 0.2f, 0.8f, 1.0f);
+	//simpleProgram.setUniform4f("color", 0.2f, 0.2f, 0.8f, 1.0f); // Blau original
+	simpleProgram.setUniform4f("color", 0.5f, 0.7f, 1.0f, 1.0f); // Blau cel
 
-	modelview = glm::translate(glm::mat4(1.0f), glm::vec3(128.f, 48.f, 0.f));
-	modelview = glm::translate(modelview, glm::vec3(64.f, 64.f, 0.f));
-	modelview = glm::rotate(modelview, -currentTime / 1000.f, glm::vec3(0.0f, 0.0f, 1.0f));
-	modelview = glm::translate(modelview, glm::vec3(-64.f, -64.f, 0.f));
+	// 1) Cel
+	glClearColor(0.5f, 0.7f, 1.0f, 1.0f);
+	// Alternativa més complexa
+	/* float escalaX = float(CAMERA_WIDTH) / 128.f;
+	float escalaY = float(CAMERA_HEIGHT) / 128.f;
+	modelview = glm::mat4(1.0f); // (0,0)
+	modelview = glm::scale(modelview, glm::vec3(escalaX, escalaY, 1.0f));
 	simpleProgram.setUniformMatrix4f("modelview", modelview);
-	quad->render();
+	quad->render();*/
 
 	texProgram.use();
 	texProgram.setUniformMatrix4f("projection", projection);
 	texProgram.setUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
+	
 
-	modelview = glm::translate(glm::mat4(1.0f), glm::vec3(384.f, 48.f, 0.f));
-	modelview = glm::translate(modelview, glm::vec3(64.f, 64.f, 0.f));
-	modelview = glm::rotate(modelview, currentTime / 1000.f, glm::vec3(0.0f, 0.0f, 1.0f));
-	modelview = glm::translate(modelview, glm::vec3(-64.f, -64.f, 0.f));
+	// 2) Terra
+	texProgram.use();
+	float yTerra = float(CAMERA_HEIGHT) - 128.f; 
+	modelview = glm::translate(modelview, glm::vec3(0.f, yTerra, 0.f));
+	float escalaTilesX = float(CAMERA_WIDTH) / 128.f;
+	modelview = glm::scale(modelview, glm::vec3(escalaTilesX, 1.0f, 1.0f));
 	texProgram.setUniformMatrix4f("modelview", modelview);
-	texQuad[0]->render(texs[0]);
+	texQuad[2]->render(texs[1]);
 
-	modelview = glm::translate(glm::mat4(1.0f), glm::vec3(128.f, 304.f, 0.f));
-	modelview = glm::translate(modelview, glm::vec3(64.f, 64.f, 0.f));
-	modelview = glm::rotate(modelview, currentTime / 1000.f, glm::vec3(0.0f, 0.0f, 1.0f));
-	modelview = glm::translate(modelview, glm::vec3(-64.f, -64.f, 0.f));
+	// 3) Bolet
+	// Alçada (Y)
+	float yBase = yTerra - 128.f;
+	float yAjustada = yBase + 33.f; // Error de la textura
+	// Moviment horitzontal (X)
+	float middleViewport = float(CAMERA_WIDTH) / 2.0f;
+	float a = (float(CAMERA_WIDTH) - 64.f) / 2.0f;
+	float angle = float(currentTime / 750.f);
+	float xPos = middleViewport + a * sin(angle);
+	modelview = glm::translate(glm::mat4(1.0f), glm::vec3(xPos, yAjustada, 0.f));
+	modelview = glm::translate(modelview, glm::vec3(-64.f, 0.f, 0.f));
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texQuad[1]->render(texs[0]);
 
-	modelview = glm::translate(glm::mat4(1.0f), glm::vec3(384.f, 304.f, 0.f));
-	modelview = glm::translate(modelview, glm::vec3(64.f, 64.f, 0.f));
-	modelview = glm::rotate(modelview, -currentTime / 1000.f, glm::vec3(0.0f, 0.0f, 1.0f));
-	modelview = glm::translate(modelview, glm::vec3(-64.f, -64.f, 0.f));
-	texProgram.setUniformMatrix4f("modelview", modelview);
-	texQuad[2]->render(texs[1]);
+	// 4) Text
+	// Exemple: text.render("Videogames!!!", glm::vec2(10, CAMERA_HEIGHT - 20), 32, glm::vec4(1, 1, 1, 1));
 	
-	text.render("Videogames!!!", glm::vec2(10, CAMERA_HEIGHT-20), 32, glm::vec4(1, 1, 1, 1));
+	// a) Text Rebots bolet
+	float PI = 3.14159f;
+	nRebots = int((angle + PI / 2.0f) / PI);
+	string strRebots = "Rebots: " + to_string(nRebots);
+	text.render(strRebots, glm::vec2(10, 35.f), 32, glm::vec4(1, 1, 1, 1));
+	// b) Text ubicació bolet (seguint el bolet)
+	if (boletText) {
+		float textX = xPos - 30.f;
+		float textY = yAjustada;
+		text.render("Bolet", glm::vec2(textX, textY), 25, glm::vec4(1, 0.3f, 0.3f, 1));
+	}
+}
+
+void Scene::toggleText() {
+	boletText = !boletText;
 }
 
 void Scene::initShaders()

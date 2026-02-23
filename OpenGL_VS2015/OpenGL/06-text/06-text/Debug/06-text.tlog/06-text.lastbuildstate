@@ -1,2 +1,2 @@
-#TargetFrameworkVersion=v4.0:PlatformToolSet=v140:EnableManagedIncrementalBuild=false:VCToolArchitecture=Native32Bit:WindowsTargetPlatformVersion=8.1
-Debug|Win32|C:\GENERAL\teaching\Videojocs\baseCode\OpenGL_VS2015\OpenGL\06-text\|
+PlatformToolSet=v143:VCToolArchitecture=Native32Bit:VCToolsVersion=14.44.35207:TargetPlatformVersion=10.0.26100.0:
+Debug|Win32|C:\Users\Nil Casas Duatis\Documents\Q8\VJ-FIB\OpenGL_VS2015\OpenGL\06-text\|

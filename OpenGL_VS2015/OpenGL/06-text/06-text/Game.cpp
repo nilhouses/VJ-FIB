@@ -2,7 +2,6 @@
 #include <GLFW/glfw3.h>
 #include "Game.h"
 
-
 void Game::init()
 {
 	bPlay = true;
@@ -27,6 +26,9 @@ void Game::keyPressed(int key)
 {
 	if(key == GLFW_KEY_ESCAPE) // Escape code
 		bPlay = false;
+	if (key == GLFW_KEY_T) {
+		scene.toggleText(); // Toggle "Bolet" text on/off
+	}
 	keys[key] = true;
 }
 
