@@ -1,38 +1,23 @@
 #ifndef _SCENE_INCLUDE
 #define _SCENE_INCLUDE
 
-
-#include <glm/glm.hpp>
-#include "ShaderProgram.h"
-#include "TileMap.h"
-#include "Player.h"
-
-
 // Scene contains all the entities of our game.
 // It is responsible for updating and render them.
 
 // Esta clase contiene todas las entidades de un nivel y es responsable de actualizarlas y renderizarlas.
+
+// Scene es ahora una clase abstracta (interface).
+// Cualquier pantalla nueva (Menú, Juego, Créditos) hereda de Scene.
 class Scene
 {
 
 public:
-	Scene();
-	~Scene();
-
-	void init();					// Muestra el mapa y el jugador en la posición inicial
-	void update(int deltaTime);		// Actualiza el mapa y el jugador (en este caso solo al jugador, mapa estático)	
-	void render();					// Pinta el mapa y el jugador
+	virtual ~Scene() {} // El destructor es virtual porque vamos a usar punteros a Scene para manejar las diferentes pantallas del juego (menú, juego, créditos...)
 	
-private:
-	void initShaders();	// Carga el VS y FS y los linkea al texProgram
-
-private:
-	TileMap* map;				// El mapa de tiles del nivel
-	Player* player;				// El jugador
-	ShaderProgram texProgram;	// El programa de shaders para renderizar el mapa y el jugador
-	float currentTime;			// El tiempo actual del juego
-	glm::mat4 projection;		// La matriz de proyección para renderizar el mapa y el jugador
-
+	// Estas funciones son virtuales puras, lo que obliga a que cualquier clase que herede de Scene tenga que implementarlas. De esta forma, cada pantalla del juego (menú, juego, créditos...) implementa su propia versión de estas funciones.
+	virtual void init() = 0; // Muestra el mapa y el jugador en la posición inicial
+	virtual void update(int deltaTime) = 0; // Actualiza el mapa y el jugador (en este caso solo al jugador, mapa estático)	
+	virtual void render() = 0; // Pinta el mapa y el jugador
 };
 
 

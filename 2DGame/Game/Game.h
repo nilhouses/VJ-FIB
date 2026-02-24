@@ -12,6 +12,13 @@
 
 // Game is a singleton (a class with a single instance) that represents our whole application
 
+enum GameState {
+	MAIN_MENU,
+	PLAYING,
+	INSTRUCTIONS,
+	CREDITS
+};
+
 // Hay que entender la clase Game como el controlador global del juego. Es el encargado de cambiar entre escenas, actualizar el estado del juego...
 class Game
 {
@@ -23,7 +30,6 @@ public:
 	static Game &instance()
 	{
 		static Game G;
-	
 		return G;
 	}
 	
@@ -40,10 +46,14 @@ public:
 
 	bool getKey(int key) const;
 
+	// Cambia el estado del juego a newState. Si el nuevo estado es PLAYING, se carga el nivel indicado por levelNumber (por defecto el 1)
+	void changeState(GameState newState, int levelNumber = 1);
 private:
 	bool bPlay;					// Guarda si el juego debe seguir ejecutandose o no
 	bool keys[GLFW_KEY_LAST+1]; // Guarda por cada tecla si está pulsada o no
-	Scene scene;				// Escena del juego (solo hay una por lo que tenemos un nivel)
+	GameState currentState;      // Estado actual del juego (MAIN_MENU, PLAYING, INSTRUCTIONS o CREDITS)
+	Scene* currentScene;         // Puntero a la pantalla a la que estamos
+	int currentLevel;            // Nivel actual
 
 };
 
