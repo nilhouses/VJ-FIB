@@ -40,7 +40,10 @@ public:
 	int getSize() const;
 	void render(char c, const glm::vec2 &pixel, int size, const glm::vec4 &color);
 	void render(const string &str, const glm::vec2 &pixel, int size, const glm::vec4 &color);
-	
+	// New resize-caused functions with projection matrix as parameter
+	void render(char c, const glm::vec2& pixel, int size, const glm::vec4& color, const glm::mat4& proj);
+	void render(const string& str, const glm::vec2& pixel, int size, const glm::vec4& color, const glm::mat4& proj);
+
 private:
 	void initShaders();
 	bool extractCharSizes(int *maxCharWidth, int *maxCharHeight);

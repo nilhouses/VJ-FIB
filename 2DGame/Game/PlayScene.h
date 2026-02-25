@@ -1,13 +1,11 @@
 #ifndef _PLAYSCENE_INCLUDE
 #define _PLAYSCENE_INCLUDE
 
-#include <glm/glm.hpp>
 #include "ShaderProgram.h"
 #include "TileMap.h"
 #include "Player.h"
 #include "Scene.h"
 #include "Entity.h"
-#include "Camera.h"
 
 class PlayScene : public Scene
 {
@@ -26,8 +24,6 @@ private:
 private:
     ShaderProgram texProgram;	// El programa de shaders para renderizar el mapa y el jugador
     float currentTime;			// El tiempo actual del juego
-    glm::mat4 projection;		// La matriz de proyecci�n para renderizar el mapa y el jugador
-	Camera* camera;				// Cámara para seguir al jugador
 
     int level;
     TileMap* map;				// Mapa est�tico

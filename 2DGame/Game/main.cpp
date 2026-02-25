@@ -30,6 +30,11 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	else if (action == GLFW_RELEASE)
 		Game::instance().mouseRelease(button);
 }
+void window_resize_callback(GLFWwindow* window, int width, int height)
+{
+	glViewport(0, 0, width, height);
+	Game::instance().resize(width, height);
+}
 /* ------------------------------------------------------------------------------------------- */
 
 
@@ -63,6 +68,7 @@ int main(void)
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetCursorPosCallback(window, cursor_position_callback);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
+	glfwSetWindowSizeCallback(window, window_resize_callback);
 	/* ------------------------------------------------------------------------------------------- */
 
 	/* Init glew to have access to GL extensions */

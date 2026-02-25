@@ -45,15 +45,15 @@ void Instructions::render() {
     background->render(texBackground);
 
     // 2. Dibujar Textos de Instrucciones
-    text.render("HOW TO PLAY", glm::vec2(100, 80), 40, glm::vec4(0, 0, 0, 1));
+    text.render("HOW TO PLAY", glm::vec2(100, 80), 40, glm::vec4(0, 0, 0, 1), projection);
 
-    text.render("ARROWS: Move player", glm::vec2(100, 180), 20, glm::vec4(0, 0, 0, 1));
+    text.render("ARROWS: Move player", glm::vec2(100, 180), 20, glm::vec4(0, 0, 0, 1), projection);
     // [TODO]...
     //
     //
     //
 
-    text.render("PRESS 'B' TO GO BACK", glm::vec2(150, 475), 18, glm::vec4(1.f, 1.f, 1.f, 1));
+    text.render("PRESS 'B' TO GO BACK", glm::vec2(150, 475), 18, glm::vec4(1.f, 1.f, 1.f, 1), projection);
 }
 
 void Instructions::initShaders() {

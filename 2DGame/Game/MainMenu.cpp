@@ -81,9 +81,9 @@ void MainMenu::render() {
 
     // 2. Textos
     glUseProgram(0);
-    text.render("START", glm::vec2(250, 200), 32, glm::vec4(0, 0, 0, 1));
-    text.render("INSTRUCTIONS", glm::vec2(250, 245), 32, glm::vec4(0, 0, 0, 1));
-    text.render("CREDITS", glm::vec2(250, 290), 32, glm::vec4(0, 0, 0, 1));
+    text.render("START", glm::vec2(250, 200), 32, glm::vec4(0, 0, 0, 1), projection);
+    text.render("INSTRUCTIONS", glm::vec2(250, 245), 32, glm::vec4(0, 0, 0, 1), projection);
+    text.render("CREDITS", glm::vec2(250, 290), 32, glm::vec4(0, 0, 0, 1), projection);
 }
 
 void MainMenu::initShaders() {

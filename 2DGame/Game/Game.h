@@ -43,6 +43,7 @@ public:
 	void mouseMove(int x, int y);
 	void mousePress(int button);
 	void mouseRelease(int button);
+	void resize(int width, int height);
 
 	bool getKey(int key) const;
 

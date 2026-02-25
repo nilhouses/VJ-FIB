@@ -48,7 +48,11 @@ void Game::keyReleased(int key)
 void Game::mouseMove(int x, int y) {}
 void Game::mousePress(int button) {}
 void Game::mouseRelease(int button) {}
-
+void Game::resize(int width, int height) {
+    if (currentScene != nullptr) {
+        currentScene->resize(width, height, int(SCREEN_WIDTH), int(SCREEN_HEIGHT));
+    }
+}
 bool Game::getKey(int key) const
 {
 	return keys[key];
