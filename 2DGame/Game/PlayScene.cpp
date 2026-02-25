@@ -6,8 +6,8 @@
 #include "Game.h"
 
 // Tamaño de cámara
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
+#define CAMERA_WIDTH 640
+#define CAMERA_HEIGHT 480
 #define HUD_HEIGHT 0
 
 // Offset del mapa
@@ -38,7 +38,7 @@ PlayScene::~PlayScene()
 void PlayScene::init()
 {
     initShaders();
-    camera = new Camera(SCREEN_WIDTH, SCREEN_HEIGHT, HUD_HEIGHT);
+    camera = new Camera(CAMERA_WIDTH, CAMERA_HEIGHT, HUD_HEIGHT);
     // Asumimos que los niveles del 1 al 9 tienen un 0 delante
     string levelPath = "levels/level0" + std::to_string(level) + ".txt";
     string entityPath = "entity/level0" + std::to_string(level) + ".txt";
@@ -49,8 +49,8 @@ void PlayScene::init()
     player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, camera);
     player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
     player->setTileMap(map);
-    // La matriz de proyección es ortogonal con el tamaño de la pantalla
-    projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
+    // La matriz de proyección es ortogonal
+    projection = glm::ortho(0.f, float(CAMERA_WIDTH), float(CAMERA_HEIGHT), 0.f);
     currentTime = 0.0f;
     
 
