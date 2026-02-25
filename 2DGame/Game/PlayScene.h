@@ -6,6 +6,7 @@
 #include "TileMap.h"
 #include "Player.h"
 #include "Scene.h"
+#include "Entity.h"
 
 class PlayScene : public Scene
 {
@@ -22,13 +23,19 @@ private:
     void initShaders();	// Carga el VS y FS y los linkea al texProgram
 
 private:
-    TileMap* map;				// El mapa de tiles del nivel
-    Player* player;				// El jugador
     ShaderProgram texProgram;	// El programa de shaders para renderizar el mapa y el jugador
     float currentTime;			// El tiempo actual del juego
     glm::mat4 projection;		// La matriz de proyección para renderizar el mapa y el jugador
+    glm::vec2 cameraPos, cameraTarget;
 
     int level;
+    TileMap* map;				// Mapa estático
+    Player* player;				// Jugador
+	vector<Entity*> entities;   // Entidades interactivas del nivel (enemigos, objetos, etc.)
+	int collectedKeys;			// Número de llaves recogidas por el jugador
+	int allKeys;				// Número total de llaves en el nivel
+	bool levelCompleted;		// Indica si el nivel ha sido completado
+
 };
 
 #endif // _PLAYSCENE_INCLUDE

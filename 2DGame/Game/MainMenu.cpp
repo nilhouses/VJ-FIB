@@ -73,9 +73,9 @@ void MainMenu::render() {
     texProgram.setUniformMatrix4f("modelview", modelview);
     background->render(texBackground);
 
-    // Cursor
+    // Flecha
     float arrowY = 165.f + (selectedOption * 45.f);
-    modelview = glm::translate(glm::mat4(1.0f), glm::vec3(200.f, arrowY, 0.f));
+    modelview = glm::translate(glm::mat4(1.0f), glm::vec3(205.f + 5*sin(currentTime / 200.f), arrowY, 0.f));
     texProgram.setUniformMatrix4f("modelview", modelview);
     cursor->render(texSprite);
 

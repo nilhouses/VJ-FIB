@@ -52,21 +52,23 @@ bool TileMap::loadLevel(const string &levelFile)
 	ifstream fin;
 	string line, tilesheetFile;
 	stringstream sstream;
-	char tile;
-	
+	int tile;
+
 	fin.open(levelFile.c_str());
-	if(!fin.is_open())
+	if (!fin.is_open())
 		return false;
 	getline(fin, line);
-	if(line.compare(0, 7, "TILEMAP") != 0)
+	if (line.compare(0, 7, "TILEMAP") != 0)
 		return false;
 	getline(fin, line);
 	sstream.str(line);
 	sstream >> mapSize.x >> mapSize.y;
 	getline(fin, line);
+	sstream.clear();
 	sstream.str(line);
 	sstream >> tileSize >> blockSize;
 	getline(fin, line);
+	sstream.clear();
 	sstream.str(line);
 	sstream >> tilesheetFile;
 	tilesheet.loadFromFile(tilesheetFile, TEXTURE_PIXEL_FORMAT_RGBA);
@@ -75,28 +77,42 @@ bool TileMap::loadLevel(const string &levelFile)
 	tilesheet.setMinFilter(GL_NEAREST);
 	tilesheet.setMagFilter(GL_NEAREST);
 	getline(fin, line);
+	sstream.clear();
 	sstream.str(line);
 	sstream >> tilesheetSize.x >> tilesheetSize.y;
 	tileTexSize = glm::vec2(1.f / tilesheetSize.x, 1.f / tilesheetSize.y);
-	
+
+	cout << "mapSize: " << mapSize.x << " x " << mapSize.y << endl;
+	cout << "tileSize: " << tileSize << " blockSize: " << blockSize << endl;
+	cout << tilesheetFile << endl;
+	cout << "tilesheetSize: " << tilesheetSize.x << " x " << tilesheetSize.y << endl;
+
 	map = new int[mapSize.x * mapSize.y];
-	for(int j=0; j<mapSize.y; j++)
+	for (int j = 0; j < mapSize.y; j++)
 	{
-		for(int i=0; i<mapSize.x; i++)
+		getline(fin, line);
+		sstream.clear();
+		sstream.str(line);
+		for (int i = 0; i < mapSize.x; i++)
 		{
-			fin.get(tile);
-			if(tile == ' ')
-				map[j*mapSize.x+i] = 0;
-			else
-				map[j*mapSize.x+i] = tile - int('0');
+			sstream >> tile;
+			if (sstream.peek() == ',')
+				sstream.ignore();
+			map[j * mapSize.x + i] = tile + 1;
 		}
-		fin.get(tile);
-#ifndef _WIN32
-		fin.get(tile);
-#endif
 	}
+
 	fin.close();
-	
+
+	for (int j = 0; j < mapSize.y; j++)
+	{
+		for (int i = 0; i < mapSize.x; i++)
+		{
+			cout << map[j * mapSize.x + i] << " ";
+		}
+		cout << endl;
+	}
+
 	return true;
 }
 
@@ -162,7 +178,7 @@ bool TileMap::collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) c
 	y1 = (pos.y + size.y - 1) / tileSize;
 	for(int y=y0; y<=y1; y++)
 	{
-		if(map[y*mapSize.x+x] != 0)
+		if(map[y*mapSize.x+x] == 9)
 			return true;
 	}
 	
@@ -178,14 +194,22 @@ bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) 
 	y1 = (pos.y + size.y - 1) / tileSize;
 	for(int y=y0; y<=y1; y++)
 	{
-		if(map[y*mapSize.x+x] != 0)
+		if(map[y*mapSize.x+x] == 9)
 			return true;
 	}
 	
 	return false;
 }
 
-bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY) const
+bool TileMap::isOnGround(int x, int y)
+{
+	int tile = map[y * mapSize.x + x];
+	vector<int> suelo = vector<int>{ 12, 1, 9, 7 };
+	return !(std::find(suelo.begin(), suelo.end(), tile) == suelo.end());
+}
+
+
+bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY)
 {
 	int x0, x1, y;
 	
@@ -194,7 +218,7 @@ bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, i
 	y = (pos.y + size.y - 1) / tileSize;
 	for(int x=x0; x<=x1; x++)
 	{
-		if(map[y*mapSize.x+x] != 0)
+		if(isOnGround(x,y))
 		{
 			if(*posY - tileSize * y + size.y <= 4)
 			{
@@ -206,33 +230,3 @@ bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, i
 	
 	return false;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

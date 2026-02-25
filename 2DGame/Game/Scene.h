@@ -15,9 +15,9 @@ public:
 	virtual ~Scene() {} // El destructor es virtual porque vamos a usar punteros a Scene para manejar las diferentes pantallas del juego (menú, juego, créditos...)
 	
 	// Estas funciones son virtuales puras, lo que obliga a que cualquier clase que herede de Scene tenga que implementarlas. De esta forma, cada pantalla del juego (menú, juego, créditos...) implementa su propia versión de estas funciones.
-	virtual void init() = 0; // Muestra el mapa y el jugador en la posición inicial
-	virtual void update(int deltaTime) = 0; // Actualiza el mapa y el jugador (en este caso solo al jugador, mapa estático)	
-	virtual void render() = 0; // Pinta el mapa y el jugador
+	virtual void init() = 0;
+	virtual void update(int deltaTime) = 0;
+	virtual void render() = 0;
 };
 
 

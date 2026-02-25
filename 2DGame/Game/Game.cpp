@@ -11,6 +11,7 @@ void Game::init()
 	bPlay = true;
 	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 	// Estado inicial del juego
+    currentLevel = 1;
 	currentScene = nullptr;
 	changeState(MAIN_MENU);
 }

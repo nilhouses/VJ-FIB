@@ -1,0 +1,36 @@
+#include <GL/glew.h>
+#include "Entity.h"
+#include "Game.h"
+#include <iostream>
+
+
+Entity::Entity()
+{
+	sprite = NULL;
+}
+
+Entity::~Entity()
+{
+	if (sprite != NULL)
+		delete sprite;
+}
+
+void Entity::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, const string& spritesheetDir, const glm::vec2& quadSize, const glm::vec2& sizeInSpritesheet)
+{
+	active = true;
+	spritesheet.loadFromFile(spritesheetDir, TEXTURE_PIXEL_FORMAT_RGBA);
+	sprite = Sprite::createSprite(quadSize, sizeInSpritesheet, &spritesheet, &shaderProgram);
+	tileMapDispl = tileMapPos;
+	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
+}
+
+void Entity::render()
+{
+	if (active) sprite->render();
+}
+
+void Entity::setPosition(const glm::vec2& pos)
+{
+	this->pos = pos;
+	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
+}
