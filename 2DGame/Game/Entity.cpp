@@ -15,11 +15,11 @@ Entity::~Entity()
 		delete sprite;
 }
 
-void Entity::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, const string& spritesheetDir, const glm::vec2& quadSize, const glm::vec2& sizeInSpritesheet)
+void Entity::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, const string& spritesheetDir, const glm::vec2& quadSize, const glm::vec2& sizeInSpritesheet, Camera* c)
 {
 	active = true;
 	spritesheet.loadFromFile(spritesheetDir, TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(quadSize, sizeInSpritesheet, &spritesheet, &shaderProgram);
+	sprite = Sprite::createSprite(quadSize, sizeInSpritesheet, &spritesheet, &shaderProgram, c);
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
 }

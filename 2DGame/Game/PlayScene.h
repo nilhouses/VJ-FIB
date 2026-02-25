@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "Scene.h"
 #include "Entity.h"
+#include "Camera.h"
 
 class PlayScene : public Scene
 {
@@ -25,15 +26,15 @@ private:
 private:
     ShaderProgram texProgram;	// El programa de shaders para renderizar el mapa y el jugador
     float currentTime;			// El tiempo actual del juego
-    glm::mat4 projection;		// La matriz de proyección para renderizar el mapa y el jugador
-    glm::vec2 cameraPos, cameraTarget;
+    glm::mat4 projection;		// La matriz de proyecciï¿½n para renderizar el mapa y el jugador
+	Camera* camera;				// CÃ¡mara para seguir al jugador
 
     int level;
-    TileMap* map;				// Mapa estático
+    TileMap* map;				// Mapa estï¿½tico
     Player* player;				// Jugador
 	vector<Entity*> entities;   // Entidades interactivas del nivel (enemigos, objetos, etc.)
-	int collectedKeys;			// Número de llaves recogidas por el jugador
-	int allKeys;				// Número total de llaves en el nivel
+	int collectedKeys;			// Nï¿½mero de llaves recogidas por el jugador
+	int allKeys;				// Nï¿½mero total de llaves en el nivel
 	bool levelCompleted;		// Indica si el nivel ha sido completado
 
 };

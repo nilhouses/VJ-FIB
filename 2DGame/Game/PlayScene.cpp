@@ -5,11 +5,18 @@
 #include "PlayScene.h"
 #include "Game.h"
 
-#define SCREEN_X 32
-#define SCREEN_Y 16
+// Tamaño de cámara
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
+#define HUD_HEIGHT 0
+
+// Offset del mapa
+#define SCREEN_X 0
+#define SCREEN_Y 0
+
+// Posición inicial del jugador independiente al mapa
 #define INIT_PLAYER_X_TILES 5
 #define INIT_PLAYER_Y_TILES 6
-const int HUD_HEIGHT = 96;
 
 // Constructor: guardamos el nivel actual
 PlayScene::PlayScene(int levelNumber)
@@ -30,11 +37,8 @@ PlayScene::~PlayScene()
 
 void PlayScene::init()
 {
-    cameraTarget.x = SCREEN_WIDTH / 2;
-    cameraTarget.y = (SCREEN_HEIGHT - HUD_HEIGHT) / 2;
-    cameraPos = glm::vec2(0.f, 0.f);
-
     initShaders();
+    camera = new Camera(SCREEN_WIDTH, SCREEN_HEIGHT, HUD_HEIGHT);
     // Asumimos que los niveles del 1 al 9 tienen un 0 delante
     string levelPath = "levels/level0" + std::to_string(level) + ".txt";
     string entityPath = "entity/level0" + std::to_string(level) + ".txt";
@@ -42,20 +46,17 @@ void PlayScene::init()
     map = TileMap::createTileMap(levelPath, glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
     // Crea el jugador y lo sitúa en la posición inicial
     player = new Player();
-    player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+    player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, camera);
     player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
     player->setTileMap(map);
     // La matriz de proyección es ortogonal con el tamaño de la pantalla
     projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
     currentTime = 0.0f;
+    
 
     entities = vector<Entity*>();
     collectedKeys = 0;
     levelCompleted = false;
-    
-    // Fijar la cámara en el jugador
-    cameraPos.x = player->getPosition().x * map->getTileSize() - cameraTarget.x;
-    cameraPos.y = player->getPosition().y * map->getTileSize() - cameraTarget.y;
 }
 
 // En esta escena solo se mueve el jugador
@@ -71,14 +72,7 @@ void PlayScene::update(int deltaTime)
             entity->update(deltaTime);
 	}
 
-	// Actualizar la posición de la cámara para que siga al jugador, pero sin salirnos del mapa
-    cameraPos.x = player->getPosition().x * map->getTileSize() - cameraTarget.x;
-    cameraPos.y = player->getPosition().y * map->getTileSize() - cameraTarget.y;
-    float mapWidth = map->getMapSize().x * map->getTileSize();
-    float mapHeight = map->getMapSize().y * map->getTileSize();
-    cameraPos.x = glm::clamp(cameraPos.x, 0.f, mapWidth - SCREEN_WIDTH);
-    cameraPos.y = glm::clamp(cameraPos.y, 0.f, mapHeight - (SCREEN_HEIGHT - HUD_HEIGHT));
-    cameraPos = glm::floor(cameraPos);
+	camera->update(player->getPosition(), map->getMapSize() * map->getTileSize());
 }
 
 void PlayScene::render()
@@ -87,15 +81,10 @@ void PlayScene::render()
     texProgram.use();
     texProgram.setUniformMatrix4f("projection", projection);
     texProgram.setUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
-	modelview = glm::mat4(1.0f);
-    /*
-    glm::translate(
+	modelview = glm::translate(
         glm::mat4(1.0f),
-        glm::vec3(-cameraPos.x,
-            -cameraPos.y - HUD_HEIGHT,
-            0.f)
+		glm::vec3(camera->getOffset(), 0.0f)
     );
-    */
     texProgram.setUniformMatrix4f("modelview", modelview);
     texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 

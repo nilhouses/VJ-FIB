@@ -18,7 +18,7 @@ public:
 	~Player();
 
 public:
-	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram);
+	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c);
 	void update(int deltaTime) override;
 	
 	void setTileMap(TileMap *tileMap);

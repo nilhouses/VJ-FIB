@@ -27,10 +27,10 @@ Player::~Player()
 		delete sprite;
 }
 
-void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
+void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c)
 {
 	// Inicializar los atributos de la Entity
-	Entity::init(tileMapPos, shaderProgram, "images/bub.png", glm::ivec2(32, 32), glm::vec2(0.25f, 0.25f));
+	Entity::init(tileMapPos, shaderProgram, "images/bub.png", glm::ivec2(32, 32), glm::vec2(0.25f, 0.25f), c);
 
 	// Inicializar los atributos del Player
 	bJumping = false;

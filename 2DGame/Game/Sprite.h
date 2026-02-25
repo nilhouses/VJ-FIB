@@ -7,6 +7,8 @@
 #include "Texture.h"
 #include "ShaderProgram.h"
 #include "AnimKeyframes.h"
+#include "camera.h"
+#include <iostream>
 
 
 // This class is derived from code seen earlier in TexturedQuad but it is also
@@ -17,12 +19,12 @@ class Sprite
 {
 
 public:
-	Sprite(const glm::vec2 &quadSize, const glm::vec2 &sizeInSpritesheet, Texture *spritesheet, ShaderProgram *program);
+	Sprite(const glm::vec2 &quadSize, const glm::vec2 &sizeInSpritesheet, Texture *spritesheet, ShaderProgram *program, Camera* c);
 	~Sprite();
 
 public:
 	// Textured quads can only be created inside an OpenGL context
-	static Sprite *createSprite(const glm::vec2 &quadSize, const glm::vec2 &sizeInSpritesheet, Texture *spritesheet, ShaderProgram *program);
+	static Sprite *createSprite(const glm::vec2 &quadSize, const glm::vec2 &sizeInSpritesheet, Texture *spritesheet, ShaderProgram *program, Camera* c);
 
 	void update(int deltaTime);
 	void render() const;
@@ -47,6 +49,7 @@ private:
 	float timeAnimation;
 	glm::vec2 texCoordDispl;
 	vector<AnimKeyframes> animations;
+	Camera* camera;
 
 };
 

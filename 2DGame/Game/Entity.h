@@ -12,7 +12,7 @@ public:
 
 public:
 	// Todas las entidades se inicializan con la misma función init. En este punto la posición es fija respecto al mapa de tiles
-	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, const string& spritesheetDir, const glm::vec2& quadSize, const glm::vec2& sizeInSpritesheet);
+	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, const string& spritesheetDir, const glm::vec2& quadSize, const glm::vec2& sizeInSpritesheet, Camera* c);
 	
 	// La función de update es abstracta y cada entidad tiene su propia implementación
 	virtual void update(int deltaTime) = 0;

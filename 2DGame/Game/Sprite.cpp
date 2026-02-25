@@ -4,15 +4,15 @@
 #include "Sprite.h"
 
 
-Sprite *Sprite::createSprite(const glm::vec2 &quadSize, const glm::vec2 &sizeInSpritesheet, Texture *spritesheet, ShaderProgram *program)
+Sprite *Sprite::createSprite(const glm::vec2 &quadSize, const glm::vec2 &sizeInSpritesheet, Texture *spritesheet, ShaderProgram *program, Camera* c)
 {
-	Sprite *quad = new Sprite(quadSize, sizeInSpritesheet, spritesheet, program);
+	Sprite *quad = new Sprite(quadSize, sizeInSpritesheet, spritesheet, program, c);
 
 	return quad;
 }
 
 
-Sprite::Sprite(const glm::vec2 &quadSize, const glm::vec2 &sizeInSpritesheet, Texture *spritesheet, ShaderProgram *program)
+Sprite::Sprite(const glm::vec2 &quadSize, const glm::vec2 &sizeInSpritesheet, Texture *spritesheet, ShaderProgram *program, Camera* c)
 {
 	float vertices[24] = {0.f, 0.f, 0.f, 0.f, 
 												quadSize.x, 0.f, sizeInSpritesheet.x, 0.f, 
@@ -32,6 +32,7 @@ Sprite::Sprite(const glm::vec2 &quadSize, const glm::vec2 &sizeInSpritesheet, Te
 	shaderProgram = program;
 	currentAnimation = -1;
 	position = glm::vec2(0.f);
+	camera = c;
 }
 
 Sprite::~Sprite()
@@ -56,7 +57,8 @@ void Sprite::update(int deltaTime)
 
 void Sprite::render() const
 {
-	glm::mat4 modelview = glm::translate(glm::mat4(1.0f), glm::vec3(position.x, position.y, 0.f));
+	glm::vec2 offsetCam = camera->getOffset();
+	glm::mat4 modelview = glm::translate(glm::mat4(1.0f), glm::vec3(position.x + offsetCam.x, position.y + offsetCam.y, 0.f));
 	shaderProgram->setUniformMatrix4f("modelview", modelview);
 	shaderProgram->setUniform2f("texCoordDispl", texCoordDispl.x, texCoordDispl.y);
 	glEnable(GL_TEXTURE_2D);
