@@ -204,7 +204,7 @@ bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) 
 bool TileMap::isOnGround(int x, int y)
 {
 	int tile = map[y * mapSize.x + x];
-	vector<int> suelo = vector<int>{ 12, 1, 9, 7 };
+	vector<int> suelo = vector<int>{ 1, 8, 9, 12 };
 	return !(std::find(suelo.begin(), suelo.end(), tile) == suelo.end());
 }
 

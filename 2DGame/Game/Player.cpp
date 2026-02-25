@@ -125,6 +125,7 @@ void Player::update(int deltaTime)
 			}
 		}
 	}
+
 	// Actualizo la posición del sprite con la posición del jugador
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
 }
