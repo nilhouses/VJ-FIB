@@ -100,9 +100,9 @@ void Player::update(int deltaTime)
 		// Si la animación actual no es movershe a la izquierda, cambio la animación a mover a la izquierda y le sumo desplazamiento
 		if(sprite->animation() != MOVE_LEFT)
 			sprite->changeAnimation(MOVE_LEFT);
-			pos.x -= 2;
-			// Si al desplazar se detecta colisión vuelvo a la posición anterior y mantengo el sprite en la animación de quieto mirando a la izquierda
-		if(map->collisionMoveLeft(pos, glm::ivec2(32, 32)))
+		pos.x -= 2;
+		// Si detecto colisión o se sale del mapa
+		if(map->collisionMoveLeft(pos, glm::ivec2(32, 32)) || pos.x < 0.f)
 		{
 			pos.x += 2;
 			sprite->changeAnimation(STAND_LEFT);
@@ -114,7 +114,8 @@ void Player::update(int deltaTime)
 		if(sprite->animation() != MOVE_RIGHT)
 			sprite->changeAnimation(MOVE_RIGHT);
 		pos.x += 2;
-		if(map->collisionMoveRight(pos, glm::ivec2(32, 32)))
+		// Si detecto colisión o se sale del mapa
+		if(map->collisionMoveRight(pos, glm::ivec2(32, 32)) || pos.x > ((map->getMapSize().x-1) * map->getTileSize()))
 		{
 			pos.x -= 2;
 			sprite->changeAnimation(STAND_RIGHT);
