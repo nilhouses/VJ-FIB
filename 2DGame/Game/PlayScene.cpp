@@ -1,9 +1,11 @@
+
+#include "PlayScene.h"
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <cmath>
 #include <string>
 #include <glm/gtc/matrix_transform.hpp>
-#include "PlayScene.h"
-#include "Game.h"
 
 // Tamaño de cámara
 #define CAMERA_WIDTH 640
@@ -12,11 +14,7 @@
 
 // Offset del mapa
 #define SCREEN_X 0
-#define SCREEN_Y 0
-
-// Posición inicial del jugador independiente al mapa
-#define INIT_PLAYER_X_TILES 5
-#define INIT_PLAYER_Y_TILES 6
+#define SCREEN_Y 32
 
 // Constructor: guardamos el nivel actual
 PlayScene::PlayScene(int levelNumber)
@@ -35,37 +33,80 @@ PlayScene::~PlayScene()
         delete player;
 }
 
+void PlayScene::createEntity(const string& type, int tx, int ty, Camera* c)
+{
+    Entity* entity = nullptr;
+
+    /*
+        TODO: Por ahora llamo al init desde el hijo porque cada uno tiene una forma distinta y no sé si llamando desde entity.init() también se ejecuta desde el hijo
+    */
+    if (type == "PLAYER")
+    {
+        player = new Player();
+        player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, c);
+        player->setTileMap(map);
+		entity = player;
+    }
+    // Aquí se pueden añadir más tipos de entidades
+
+    if (entity != nullptr)
+    {
+		entity->setPosition(glm::vec2(float(tx * map->getTileSize()), float(ty * map->getTileSize())));
+        entities.push_back(entity);
+    }
+}
+
+void PlayScene::loadEntities(const string& entityPath, Camera* c)
+{
+    ifstream fin(entityPath);
+
+    string type;
+    int count;
+
+    while (fin >> type)
+    {
+        fin >> count;
+
+        for (int i = 0; i < count; ++i)
+        {
+            int tileX, tileY;
+            fin >> tileX >> tileY;
+
+            createEntity(type, tileX, tileY, c);
+        }
+    }
+}
+
 void PlayScene::init()
 {
     initShaders();
-    camera = new Camera(CAMERA_WIDTH, CAMERA_HEIGHT, HUD_HEIGHT);
-    // Asumimos que los niveles del 1 al 9 tienen un 0 delante
-    string levelPath = "levels/level0" + std::to_string(level) + ".txt";
-    string entityPath = "entity/level0" + std::to_string(level) + ".txt";
-    // Carga el mapa a través de un fichero de texto
-    map = TileMap::createTileMap(levelPath, glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
-    // Crea el jugador y lo sitúa en la posición inicial
-    player = new Player();
-    player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, camera);
-    player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
-    player->setTileMap(map);
-    // La matriz de proyección es ortogonal
-    projection = glm::ortho(0.f, float(CAMERA_WIDTH), float(CAMERA_HEIGHT), 0.f);
-    currentTime = 0.0f;
-    
-
+	// Atributos iniciales de la escena
     entities = vector<Entity*>();
     collectedKeys = 0;
     levelCompleted = false;
+
+    // Asumimos que los niveles del 1 al 9 tienen un 0 delante
+    string levelPath = "levels/level0" + std::to_string(level) + "/map.txt";
+    string entityPath = "levels/level0" + std::to_string(level) + "/entities.txt";
+
+    // Carga el mapa a través de un fichero de texto
+    map = TileMap::createTileMap(levelPath, glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+
+    // Carga las entidades
+    camera = new Camera(CAMERA_WIDTH, CAMERA_HEIGHT, HUD_HEIGHT);
+	loadEntities(entityPath, camera);
+
+    // La matriz de proyección es ortogonal
+    projection = glm::ortho(0.f, float(CAMERA_WIDTH), float(CAMERA_HEIGHT), 0.f);
+    currentTime = 0.0f;
 }
 
 // En esta escena solo se mueve el jugador
 void PlayScene::update(int deltaTime)
 {
     currentTime += deltaTime;
-    // Actualizar al jugador
-    player->update(deltaTime);
-    // Actualizar al resto de entidades
+
+    // Actualizar entidades
     for (Entity* entity : entities)
     {
         if (entity->isActive())
@@ -93,7 +134,7 @@ void PlayScene::render()
         1. Fondo
         2. Mapa
         3. Entidades
-        4. Jugador
+		4. Jugador (añadir siempre al final del fichero de entidades para que se renderice después que el resto)
 		5. Interfaz (vida, llaves, etc.)
     */
     map->render();
@@ -102,7 +143,6 @@ void PlayScene::render()
         if (entity->isActive())
             entity->render();
 	}
-    player->render();
 }
 
 void PlayScene::initShaders()

@@ -6,9 +6,6 @@
 #include "TileMap.h"
 
 
-// Player is basically a Sprite that represents the player. As such it has
-// all properties it needs to track its movement, jumping, and collisions.
-
 // El jugador contiene su propia información
 // Sprite, posición, usa tileMap para detectar colisiones, etc.
 class Player : public Entity
@@ -24,7 +21,7 @@ public:
 	void setTileMap(TileMap *tileMap);
 	
 private:
-	bool bJumping;						// Si el jugador está saltando
+	bool bJumping;						// Indica si el jugador está saltando o no
 	int jumpAngle, startY;				// Ángulo de salto y posición inicial en Y para el salto
 	TileMap* map;						// Mapa de tiles para detectar colisiones
 

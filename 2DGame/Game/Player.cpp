@@ -46,12 +46,12 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	sprite->setAnimationSpeed(STAND_RIGHT, 8);
 	sprite->addKeyframe(STAND_RIGHT, glm::vec2(0.25f, 0.f));
 
-	sprite->setAnimationSpeed(MOVE_LEFT, 8);
+	sprite->setAnimationSpeed(MOVE_LEFT, 20 );
 	sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.f, 0.f));
 	sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.f, 0.25f));
 	sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.f, 0.5f));
 
-	sprite->setAnimationSpeed(MOVE_RIGHT, 8);
+	sprite->setAnimationSpeed(MOVE_RIGHT, 20);
 	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25f, 0.f));
 	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25f, 0.25f));
 	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25f, 0.5f));
@@ -59,12 +59,43 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	sprite->changeAnimation(STAND_LEFT);
 }
 
+
 // Esta función solo calcula la posición actual y carga en el sprite la animación correspondiente en cada caso
 void Player::update(int deltaTime)
 {
 	sprite->update(deltaTime);
+	
+	// Con la flecha hacia arriba el personaje subirá si existe una escalera en esa posición
+	if (Game::instance().getKey(GLFW_KEY_UP)) {
+		if (map->collisionLadderUp(pos, glm::ivec2(32, 32))) {
+			// TODO: Aplicar la nueva animación de subir escaleras
+			pos.y -= 2;
+			bJumping = false;
+		}
+		// TEMPORAL: Si no hay escalera, el personaje se quedará quieto mirando hacia el lado que corresponda
+		else {
+			if (sprite->animation() == MOVE_LEFT)
+				sprite->changeAnimation(STAND_LEFT);
+			else if (sprite->animation() == MOVE_RIGHT)
+				sprite->changeAnimation(STAND_RIGHT);
+		}
+	}
+	// Con la flecha hacia abajo el personaje bajará si existe una escalera en esa posición
+	else if (Game::instance().getKey(GLFW_KEY_DOWN)) {
+		if (map->collisionLadderDown(pos, glm::ivec2(32, 32))) {
+			// TODO: Aplicar la nueva animación de bajar escaleras
+			pos.y += 2;
+			bJumping = false;
+		} 
+		else {
+			if (sprite->animation() == MOVE_LEFT)
+				sprite->changeAnimation(STAND_LEFT);
+			else if (sprite->animation() == MOVE_RIGHT)
+				sprite->changeAnimation(STAND_RIGHT);
+		}
+	}
 	// Si la flecha izquierda está pulsada
-	if(Game::instance().getKey(GLFW_KEY_LEFT))
+	else if(Game::instance().getKey(GLFW_KEY_LEFT))
 	{
 		// Si la animación actual no es movershe a la izquierda, cambio la animación a mover a la izquierda y le sumo desplazamiento
 		if(sprite->animation() != MOVE_LEFT)
@@ -112,12 +143,12 @@ void Player::update(int deltaTime)
 				bJumping = !map->collisionMoveDown(pos, glm::ivec2(32, 32), &pos.y);
 		}
 	}
-	else
+	else if (!map->collisionLadderUp(pos, glm::ivec2(32, 32)) && !map->collisionLadderDown(pos, glm::ivec2(32, 32)))
 	{
 		pos.y += FALL_STEP;
 		if(map->collisionMoveDown(pos, glm::ivec2(32, 32), &pos.y))
 		{
-			if(Game::instance().getKey(GLFW_KEY_UP))
+			if(Game::instance().getKey(GLFW_KEY_SPACE))
 			{
 				bJumping = true;
 				jumpAngle = 0;
@@ -126,6 +157,7 @@ void Player::update(int deltaTime)
 		}
 	}
 
+	// cout << "Player position: (" << pos.x << ", " << pos.y << ")" << endl;
 	// Actualizo la posición del sprite con la posición del jugador
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
 }

@@ -29,7 +29,6 @@ TileMap::~TileMap()
 	free();
 }
 
-
 void TileMap::render() const
 {
 	glEnable(GL_TEXTURE_2D);
@@ -165,11 +164,9 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program)
 	texCoordLocation = program.bindVertexAttribute("texCoord", 2, 4*sizeof(float), (void *)(2*sizeof(float)));
 }
 
-// Collision tests for axis aligned bounding boxes.
-// Method collisionMoveDown also corrects Y coordinate if the box is
-// already intersecting a tile below.
+// DETECTORES DE COLISIONES
 
-bool TileMap::collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) const
+bool TileMap::collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size)
 {
 	int x, y0, y1;
 	
@@ -178,14 +175,14 @@ bool TileMap::collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) c
 	y1 = (pos.y + size.y - 1) / tileSize;
 	for(int y=y0; y<=y1; y++)
 	{
-		if(map[y*mapSize.x+x] == 9)
+		if(isSolid(x,y))
 			return true;
 	}
 	
 	return false;
 }
 
-bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) const
+bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size)
 {
 	int x, y0, y1;
 	
@@ -194,18 +191,42 @@ bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) 
 	y1 = (pos.y + size.y - 1) / tileSize;
 	for(int y=y0; y<=y1; y++)
 	{
-		if(map[y*mapSize.x+x] == 9)
+		if(isSolid(x,y))
 			return true;
 	}
 	
 	return false;
 }
 
-bool TileMap::isOnGround(int x, int y)
+
+bool TileMap::collisionLadderUp(const glm::vec2& pos, const glm::ivec2& size)
 {
-	int tile = map[y * mapSize.x + x];
-	vector<int> suelo = vector<int>{ 1, 8, 9, 12 };
-	return !(std::find(suelo.begin(), suelo.end(), tile) == suelo.end());
+	int x, y0, y1;
+
+	x = (pos.x + size.x / 2) / tileSize;
+	y0 = pos.y / tileSize;
+	y1 = (pos.y + size.y - 1) / tileSize;
+	for (int y = y0; y <= y1; y++)
+	{
+		if (isLadder(x, y)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool TileMap::collisionLadderDown(const glm::vec2& pos, const glm::ivec2& size)
+{
+	int x, y;
+
+	x = (pos.x + size.x / 2) / tileSize;
+	y = (pos.y + size.y) / tileSize;
+	if (isLadder(x, y))
+	{
+		return true;
+	}
+
+	return false;
 }
 
 
@@ -218,7 +239,7 @@ bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, i
 	y = (pos.y + size.y - 1) / tileSize;
 	for(int x=x0; x<=x1; x++)
 	{
-		if(isOnGround(x,y))
+		if(isGround(x,y))
 		{
 			if(*posY - tileSize * y + size.y <= 4)
 			{
@@ -229,4 +250,36 @@ bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, i
 	}
 	
 	return false;
+}
+
+/* CONSULTORAS DE TIPOS DE TILES [PRIVATE] */
+
+// Devuelve el tipo de bloque del bloque dado
+TileType TileMap::getTileType(int tile) const
+{
+	auto it = tileTypes.find(tile);
+	if (it != tileTypes.end())
+		return it->second;
+	else
+		return TILE_EMPTY;
+}
+
+// Devuelve si el bloque del índice x,y es suelo
+bool TileMap::isGround(int x, int y)
+{
+	int tile = map[y * mapSize.x + x];
+	return getTileType(tile) != TILE_EMPTY;
+}
+
+// Devuelve si el bloque del índice x,y es sólido
+bool TileMap::isSolid(int x, int y)
+{
+	int tile = map[y * mapSize.x + x];
+	return getTileType(tile) == TILE_SOLID;
+}
+
+// Devuelve si el bloque del índice x,y es una escalera
+bool TileMap::isLadder(int x, int y) {
+	int tile = map[y * mapSize.x + x];
+	return getTileType(tile) == TILE_LADDER;
 }

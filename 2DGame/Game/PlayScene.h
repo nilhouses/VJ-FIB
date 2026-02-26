@@ -4,8 +4,10 @@
 #include "ShaderProgram.h"
 #include "TileMap.h"
 #include "Player.h"
+#include "Ladder.h"
 #include "Scene.h"
 #include "Entity.h"
+#include "Game.h"
 
 class PlayScene : public Scene
 {
@@ -20,6 +22,8 @@ public:
 
 private:
     void initShaders();	// Carga el VS y FS y los linkea al texProgram
+	void loadEntities(const string& entityPath, Camera* c); // Carga las entidades del nivel a través de un fichero de texto
+	void createEntity(const string& type, int tileX, int tileY, Camera* c); // Crea una entidad del tipo dado en la posición dada (en tiles)
 
 private:
     ShaderProgram texProgram;	// El programa de shaders para renderizar el mapa y el jugador
