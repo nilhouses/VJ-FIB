@@ -49,6 +49,10 @@ void PlayScene::createEntity(const string& type, int tx, int ty, Camera* c)
     }
     // Aquí se pueden añadir más tipos de entidades
 
+
+
+
+    // Común para todas las entidades
     if (entity != nullptr)
     {
 		entity->setPosition(glm::vec2(float(tx * map->getTileSize()), float(ty * map->getTileSize())));
