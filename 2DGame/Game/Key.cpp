@@ -6,13 +6,10 @@
 
 enum KeyAnims
 {
-	STAND, NUM_ANIMS
+	IDLE, NUM_ANIMS
 };
 
-Key::Key() : Entity(Type::KEY)
-{
-	map = NULL;
-}
+Key::Key() : Entity(Type::KEY){}
 
 Key::~Key()
 {
@@ -28,10 +25,10 @@ void Key::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camer
 	// Configuración de animaciones
 	sprite->setNumberAnimations(NUM_ANIMS);
 
-	sprite->setAnimationSpeed(STAND, 1);
-	sprite->addKeyframe(STAND, glm::vec2(0.25f, 0.5f));
+	sprite->setAnimationSpeed(IDLE, 1);
+	sprite->addKeyframe(IDLE, glm::vec2(0.25f, 0.5f));
 
-	sprite->changeAnimation(STAND);
+	sprite->changeAnimation(IDLE);
 }
 
 
@@ -40,9 +37,4 @@ void Key::update(int deltaTime)
 {
 	sprite->update(deltaTime);
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
-}
-
-void Key::setTileMap(TileMap* tileMap)
-{
-	map = tileMap;
 }

@@ -37,9 +37,6 @@ void PlayScene::createEntity(const string& type, int tx, int ty, Camera* c)
 {
     Entity* entity = nullptr;
 
-    /*
-        TODO: Por ahora llamo al init desde el hijo porque cada uno tiene una forma distinta y no sé si llamando desde entity.init() también se ejecuta desde el hijo
-    */
     if (type == "PLAYER")
     {
         player = new Player();
@@ -51,10 +48,15 @@ void PlayScene::createEntity(const string& type, int tx, int ty, Camera* c)
     {
         Key* key = new Key();
         key->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, c);
-        key->setTileMap(map);
         entity = key;
     }
-    // Aquí se pueden añadir más tipos de entidades
+    else if (type == "WEIGHT")
+    {
+        Weight* weight = new Weight();
+        weight->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, c);
+        weight->setTileMap(map);
+        entity = weight;
+    }
 
     if (entity != nullptr)
     {
@@ -140,6 +142,33 @@ void PlayScene::handlePlayerCollision(Entity* e)
             collectedKeys++;
             e->deactivate();
 			cout << "collectedKeys: " << collectedKeys << endl;
+            break;
+
+        case Type::WEIGHT:
+
+            Weight* w = static_cast<Weight*>(e);
+            
+            float playerBottom = player->getPosition().y + (player->getBoundingBox().w);
+            float weightTop = w->getPosition().y;
+            float weightBottom = w->getPosition().y + (w->getBoundingBox().w);
+
+            // Colisión vertical
+            if (weightTop <= playerBottom && weightBottom > playerBottom) {
+                player->incrUp(playerBottom - weightTop);
+            }
+            else {
+                // Colisión horizontal En función del player se empuja para un lado o otro
+                float xPlayer = player->getPosition().x;
+                float xWeight = e->getPosition().x;
+                // Castear a clase Weight, entity no tiene la función
+                Weight* w = static_cast<Weight*>(e);
+                if (xPlayer < xWeight) {
+                    if (!w->incrRight(player->getSpeed())) player->incrLeft();
+                }
+                else {
+                    if (!w->incrLeft(player->getSpeed())) player->incrRight();
+                }
+            }
             break;
     }
 }

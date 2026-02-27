@@ -1,7 +1,6 @@
 #ifndef _PLAYER_INCLUDE
 #define _PLAYER_INCLUDE
 
-
 #include "Entity.h"
 #include "TileMap.h"
 
@@ -19,12 +18,15 @@ public:
 	void update(int deltaTime) override;
 	
 	void setTileMap(TileMap *tileMap);
-	
+	int getSpeed();
+	void incrRight();
+	void incrLeft();
+	void incrUp(int px);
+
 private:
 	bool bJumping;						// Indica si el jugador está saltando o no
 	int jumpAngle, startY;				// Ángulo de salto y posición inicial en Y para el salto
 	TileMap* map;						// Mapa de tiles para detectar colisiones
-
 };
 
 

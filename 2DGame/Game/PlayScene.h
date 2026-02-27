@@ -8,6 +8,7 @@
 #include "Scene.h"
 #include "Entity.h"
 #include "Key.h"
+#include "Weight.h"
 #include "Game.h"
 
 class PlayScene : public Scene

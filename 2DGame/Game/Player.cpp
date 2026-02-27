@@ -8,6 +8,7 @@
 #define JUMP_ANGLE_STEP 4	// Velocidad del salto del jugador, cuanto más alto más lento será el salto
 #define JUMP_HEIGHT 96		// Altura máxima del salto del jugador
 #define FALL_STEP 4			// Velocidad de caída del jugador
+#define SPEED 2
 
 // Definimos 4 tipos de animaciones para el jugador
 enum PlayerAnims
@@ -69,7 +70,8 @@ void Player::update(int deltaTime)
 	if (Game::instance().getKey(GLFW_KEY_UP)) {
 		if (map->collisionLadderUp(pos, glm::ivec2(32, 32))) {
 			// TODO: Aplicar la nueva animación de subir escaleras
-			pos.y -= 2;
+			pos.y -= SPEED;
+
 			bJumping = false;
 		}
 		// TEMPORAL: Si no hay escalera, el personaje se quedará quieto mirando hacia el lado que corresponda
@@ -84,7 +86,7 @@ void Player::update(int deltaTime)
 	else if (Game::instance().getKey(GLFW_KEY_DOWN)) {
 		if (map->collisionLadderDown(pos, glm::ivec2(32, 32))) {
 			// TODO: Aplicar la nueva animación de bajar escaleras
-			pos.y += 2;
+			pos.y += SPEED;
 			bJumping = false;
 		} 
 		else {
@@ -97,27 +99,28 @@ void Player::update(int deltaTime)
 	// Si la flecha izquierda está pulsada
 	else if(Game::instance().getKey(GLFW_KEY_LEFT))
 	{
-		// Si la animación actual no es movershe a la izquierda, cambio la animación a mover a la izquierda y le sumo desplazamiento
-		if(sprite->animation() != MOVE_LEFT)
+		// Si la animación actual no es moverse a la izquierda, cambio la animación a mover a la izquierda y le sumo desplazamiento
+		if (sprite->animation() != MOVE_LEFT)
 			sprite->changeAnimation(MOVE_LEFT);
-		pos.x -= 2;
+		incrLeft();
 		// Si detecto colisión o se sale del mapa
-		if(map->collisionMoveLeft(pos, glm::ivec2(32, 32)) || pos.x < 0.f)
+		if (map->collisionMoveLeft(pos, glm::ivec2(32, 32)) || pos.x < 0.f)
 		{
-			pos.x += 2;
+			incrRight();
 			sprite->changeAnimation(STAND_LEFT);
 		}
 	}
 	// Con la flecha derecha hago exactamente lo mismo
 	else if(Game::instance().getKey(GLFW_KEY_RIGHT))
 	{
-		if(sprite->animation() != MOVE_RIGHT)
+		// Si la animación actual no es moverse a la derecha, cambio la animación a mover a la izquierda y le sumo desplazamiento
+		if (sprite->animation() != MOVE_RIGHT)
 			sprite->changeAnimation(MOVE_RIGHT);
-		pos.x += 2;
+		incrRight();
 		// Si detecto colisión o se sale del mapa
-		if(map->collisionMoveRight(pos, glm::ivec2(32, 32)) || pos.x > ((map->getMapSize().x-1) * map->getTileSize()))
+		if (map->collisionMoveRight(pos, glm::ivec2(32, 32)) || pos.x > ((map->getMapSize().x - 1) * map->getTileSize()))
 		{
-			pos.x -= 2;
+			incrLeft();
 			sprite->changeAnimation(STAND_RIGHT);
 		}
 	}
@@ -141,13 +144,13 @@ void Player::update(int deltaTime)
 		{
 			pos.y = int(startY - 96 * sin(3.14159f * jumpAngle / 180.f));
 			if(jumpAngle > 90)
-				bJumping = !map->collisionMoveDown(pos, glm::ivec2(32, 32), &pos.y);
+				bJumping = !map->collisionMoveDown(pos, glm::ivec2(32, 32), &pos.y, FALL_STEP);
 		}
 	}
 	else if (!map->collisionLadderUp(pos, glm::ivec2(32, 32)) && !map->collisionLadderDown(pos, glm::ivec2(32, 32)))
 	{
 		pos.y += FALL_STEP;
-		if(map->collisionMoveDown(pos, glm::ivec2(32, 32), &pos.y))
+		if(map->collisionMoveDown(pos, glm::ivec2(32, 32), &pos.y, FALL_STEP))
 		{
 			if(Game::instance().getKey(GLFW_KEY_SPACE))
 			{
@@ -158,12 +161,30 @@ void Player::update(int deltaTime)
 		}
 	}
 
-	// cout << "Player position: (" << pos.x << ", " << pos.y << ")" << endl;
-	// Actualizo la posición del sprite con la posición del jugador
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
 }
 
 void Player::setTileMap(TileMap *tileMap)
 {
 	map = tileMap;
+}
+
+int Player::getSpeed() {
+	return SPEED;
+}
+
+
+void Player::incrRight()
+{
+	pos.x += SPEED;
+}
+
+void Player::incrLeft()
+{
+	pos.x -= SPEED;
+}
+
+void Player::incrUp(int px)
+{
+	pos.y -= (px + FALL_STEP); // Evitar gravedad
 }

@@ -39,7 +39,7 @@ public:
 	bool collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size);
 	bool collisionLadderUp(const glm::vec2& pos, const glm::ivec2& size);
 	bool collisionLadderDown(const glm::vec2& pos, const glm::ivec2& size);
-	bool collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY);
+	bool collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY, int fallStep);
 	
 private:
 	bool loadLevel(const string &levelFile);

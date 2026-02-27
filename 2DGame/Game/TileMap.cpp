@@ -230,7 +230,7 @@ bool TileMap::collisionLadderDown(const glm::vec2& pos, const glm::ivec2& size)
 }
 
 
-bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY)
+bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY, int fallStep)
 {
 	int x0, x1, y;
 	
@@ -241,7 +241,7 @@ bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, i
 	{
 		if(isGround(x,y))
 		{
-			if(*posY - tileSize * y + size.y <= 4)
+			if(*posY - tileSize * y + size.y <= fallStep)
 			{
 				*posY = tileSize * y - size.y;
 				return true;
