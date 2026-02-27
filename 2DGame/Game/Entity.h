@@ -4,10 +4,16 @@
 #include <glm/glm.hpp>
 #include "Sprite.h"
 
+enum class Type {
+	PLAYER,
+	KEY,
+	ENEMY
+};
+
 class Entity
 {
 public:
-	Entity();
+	Entity(Type t);
 	~Entity();
 
 public:
@@ -27,12 +33,18 @@ public:
 	void deactivate() { active = false; }
 	// Devuelve si está activo o no
 	bool isActive() const { return active; }
+	// Devuelve el tipo de la entidad
+	Type getType() const { return type; }
+	// Devuelve el bounding box de la entidad para detectar colisiones. Por defecto, se asume que el bounding box es un cuadrado de 32x32 píxeles, pero cada entidad puede sobreescribir esta función para devolver un bounding box diferente.
+	virtual glm::vec4 getBoundingBox() const;
 
 protected:
 	glm::ivec2 tileMapDispl, pos;			// Posición de la entidad en el mapa de tiles
 	Texture spritesheet;
 	Sprite *sprite;
 	bool active;							// Indica si la entidad está activa (visible y actualizable) o no
+	Type type;								// Aquí guardamos qué es (Player, Key, etc.)
+	glm::ivec2 size = glm::ivec2(32, 32); // Tamaño del bounding box por defecto (se asume que es un cuadrado de 32x32 píxeles, pero cada entidad puede sobreescribir esta función para devolver un bounding box diferente)
 };
 
 #endif // _ENTITY_INCLUDE

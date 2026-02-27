@@ -4,7 +4,7 @@
 #include <iostream>
 
 
-Entity::Entity()
+Entity::Entity(Type t) : type(t)
 {
 	sprite = NULL;
 }
@@ -21,6 +21,7 @@ void Entity::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, co
 	spritesheet.loadFromFile(spritesheetDir, TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(quadSize, sizeInSpritesheet, &spritesheet, &shaderProgram, c);
 	tileMapDispl = tileMapPos;
+	size = quadSize;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
 }
 
@@ -33,4 +34,9 @@ void Entity::setPosition(const glm::vec2& pos)
 {
 	this->pos = pos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
+}
+
+glm::vec4 Entity::getBoundingBox() const
+{
+	return glm::vec4(pos.x, pos.y, size.x, size.y);
 }

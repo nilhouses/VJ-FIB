@@ -47,6 +47,13 @@ void PlayScene::createEntity(const string& type, int tx, int ty, Camera* c)
         player->setTileMap(map);
 		entity = player;
     }
+    else if (type == "KEY")
+    {
+        Key* key = new Key();
+        key->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, c);
+        key->setTileMap(map);
+        entity = key;
+    }
     // Aquí se pueden añadir más tipos de entidades
 
     if (entity != nullptr)
@@ -101,6 +108,42 @@ void PlayScene::init()
     currentTime = 0.0f;
 }
 
+// Funcion Auxiliar para checkCollisions()
+bool overlap(const glm::vec4& a, const glm::vec4& b)
+{
+    return !(a.x + a.z < b.x ||
+        b.x + b.z < a.x ||
+        a.y + a.w < b.y ||
+        b.y + b.w < a.y);
+}
+
+void PlayScene::checkCollisions()
+{
+    auto playerBox = player->getBoundingBox();
+
+    for (Entity* e : entities)
+    {
+        if (!e->isActive()) continue;
+
+        if ((e->getType() != player->getType()) &&  overlap(playerBox, e->getBoundingBox()))
+        {
+            handlePlayerCollision(e);
+        }
+    }
+}
+
+void PlayScene::handlePlayerCollision(Entity* e)
+{
+    switch (e->getType())
+    {
+        case Type::KEY:
+            collectedKeys++;
+            e->deactivate();
+			cout << "collectedKeys: " << collectedKeys << endl;
+            break;
+    }
+}
+
 // En esta escena solo se mueve el jugador
 void PlayScene::update(int deltaTime)
 {
@@ -113,8 +156,11 @@ void PlayScene::update(int deltaTime)
             entity->update(deltaTime);
 	}
 
+    checkCollisions();
+
 	camera->update(player->getPosition(), map->getMapSize() * map->getTileSize());
 }
+
 
 void PlayScene::render()
 {

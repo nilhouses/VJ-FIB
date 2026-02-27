@@ -7,6 +7,7 @@
 #include "Ladder.h"
 #include "Scene.h"
 #include "Entity.h"
+#include "Key.h"
 #include "Game.h"
 
 class PlayScene : public Scene
@@ -24,6 +25,8 @@ private:
     void initShaders();	// Carga el VS y FS y los linkea al texProgram
 	void loadEntities(const string& entityPath, Camera* c); // Carga las entidades del nivel a través de un fichero de texto
 	void createEntity(const string& type, int tileX, int tileY, Camera* c); // Crea una entidad del tipo dado en la posición dada (en tiles)
+	void checkCollisions(); // Comprueba las colisiones entre el jugador y las entidades del nivel y actualiza el estado del juego en consecuencia
+	void handlePlayerCollision(Entity* e); // Maneja la colisión entre el jugador y una entidad.
 
 private:
     ShaderProgram texProgram;	// El programa de shaders para renderizar el mapa y el jugador
