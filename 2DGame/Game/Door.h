@@ -1,25 +1,29 @@
-#ifndef _KEY_INCLUDE
-#define _KEY_INCLUDE
+#ifndef _DOOR_INCLUDE
+#define _DOOR_INCLUDE
 
 
 #include "Entity.h"
+#include "TileMap.h"
 #include "Camera.h"
 
 
-// La llave contiene
-// Sprite, posici�n
-class Key : public Entity
+class Door : public Entity
 {
 public:
-	Key();
-	~Key();
+	Door();
+	~Door();
 
 public:
 	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c);
 	void update(int deltaTime) override;
+
+	void setToVisited();
+	bool getVisited() { return visited; }
+
+private:
+	bool visited;
 };
 
 
 #endif // _KEY_INCLUDE
-
 

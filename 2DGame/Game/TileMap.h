@@ -20,46 +20,52 @@ class TileMap
 {
 
 private:
-	TileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program);
+	TileMap(const string& levelFile, const glm::vec2& minCoords, ShaderProgram& program);
 
 public:
 	// Tile maps can only be created inside an OpenGL context
-	static TileMap *createTileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program);
+	static TileMap* createTileMap(const string& levelFile, const glm::vec2& minCoords, ShaderProgram& program);
 
 	~TileMap();
 
 	void render() const;
 	void free();
-	
+
 	int getTileSize() const { return tileSize; }
 	glm::ivec2 getMapSize() const { return mapSize; }
 
 	// Devuelve si el bloque que se encuentra en la posición dada es sólido
 	bool collisionMoveLeft(const glm::ivec2& pos, const glm::ivec2& size);
-	bool collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size);
+	bool collisionMoveRight(const glm::ivec2& pos, const glm::ivec2& size);
 	bool collisionLadderUp(const glm::vec2& pos, const glm::ivec2& size);
 	bool collisionLadderDown(const glm::vec2& pos, const glm::ivec2& size);
 	bool collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY, int fallStep);
 	
 private:
-	bool loadLevel(const string &levelFile);
-	void prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program);
-	
+	bool loadLevel(const string& levelFile);
+	void prepareLayerArray(const glm::vec2& minCoords, ShaderProgram& program, int* layer, GLuint& vao, GLuint& vbo, int& nTiles, GLint& posLocation, GLint& texCoordLocation);
+	void prepareArrays(const glm::vec2& minCoords, ShaderProgram& program);
+
 	TileType getTileType(int tile) const;
 	bool isGround(int x, int y);
 	bool isSolid(int x, int y);
 	bool isLadder(int x, int y);
 
 private:
-	GLuint vao;										// VAO del mapa de bloques
-	GLuint vbo;
-	GLint posLocation, texCoordLocation;			
-	int nTiles;										// Número de bloques a dibujar
+	// Para crear una nueva capa añadir un elemento nuevo a esta lista y modificar loadLevel() + prepareArrays() + render()
+	GLuint vaoMap, vaoFront;
+	GLuint vboMap, vboFront;
+	GLint posLocationMap, posLocationFront;
+	GLint texCoordLocationMap, texCoordLocationFront;
+	int nTilesMap, nTilesFront;
+	int *map, *front;
+
+
 	glm::ivec2 position, mapSize, tilesheetSize;	// Posición del mapa, tamaño del mapa (en bloques) y tamaño del tilesheet (en bloques)
 	int tileSize, blockSize;						// Tamaño de los bloques del mapa (en píxels) y tamaño de los bloques del tilesheet (en píxels)
 	Texture tilesheet;								// Tilesheet (con todos los bloques)
 	glm::vec2 tileTexSize;							// Tamaño de los bloques del tilesheet (en coordenadas de textura)
-	int *map;
+	
 
 	// Lista de tipos de bloque, indexada por el número de bloque en el mapa
 	std::unordered_map<int, TileType> tileTypes = {
@@ -85,5 +91,3 @@ private:
 
 
 #endif // _TILE_MAP_INCLUDE
-
-

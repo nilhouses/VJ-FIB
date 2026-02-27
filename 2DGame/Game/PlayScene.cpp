@@ -57,7 +57,16 @@ void PlayScene::createEntity(const string& type, int tx, int ty, Camera* c)
         weight->setTileMap(map);
         entity = weight;
     }
+    else if (type == "DOOR")
+    {
+        Door* door = new Door();
+        door->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, c);
+        entity = door;
+	}
+    // Aquí se pueden añadir más tipos de entidades
 
+
+    // Común para todas las entidades
     if (entity != nullptr)
     {
 		entity->setPosition(glm::vec2(float(tx * map->getTileSize()), float(ty * map->getTileSize())));
@@ -75,6 +84,8 @@ void PlayScene::loadEntities(const string& entityPath, Camera* c)
     while (fin >> type)
     {
         fin >> count;
+
+		if (type == "KEY" || type == "DOOR") allKeys += count;
 
         for (int i = 0; i < count; ++i)
         {
@@ -143,6 +154,7 @@ void PlayScene::handlePlayerCollision(Entity* e)
             e->deactivate();
 			cout << "collectedKeys: " << collectedKeys << endl;
             break;
+<<<<<<< HEAD
 
         case Type::WEIGHT:
 
@@ -168,6 +180,12 @@ void PlayScene::handlePlayerCollision(Entity* e)
                 else {
                     if (!w->incrLeft(player->getSpeed())) player->incrRight();
                 }
+=======
+		case Type::DOOR:
+            // Si el jugador quiere interactuar con la puerta (flecha arriba)
+            if (Game::instance().getKey(GLFW_KEY_UP)) {
+				// Lógica de entrar puertas
+>>>>>>> a55f5966941b78f754c837dfeb2f8b27d5b48c61
             }
             break;
     }
