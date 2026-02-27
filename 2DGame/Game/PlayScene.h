@@ -4,10 +4,10 @@
 #include "ShaderProgram.h"
 #include "TileMap.h"
 #include "Player.h"
-#include "Ladder.h"
 #include "Scene.h"
 #include "Entity.h"
 #include "Key.h"
+#include "Door.h"
 #include "Game.h"
 
 class PlayScene : public Scene

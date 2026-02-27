@@ -9,10 +9,7 @@ enum KeyAnims
 	STAND, NUM_ANIMS
 };
 
-Key::Key() : Entity(Type::KEY)
-{
-	map = NULL;
-}
+Key::Key() : Entity(Type::KEY) {}
 
 Key::~Key()
 {
@@ -40,9 +37,4 @@ void Key::update(int deltaTime)
 {
 	sprite->update(deltaTime);
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
-}
-
-void Key::setTileMap(TileMap* tileMap)
-{
-	map = tileMap;
 }

@@ -7,7 +7,8 @@
 enum class Type {
 	PLAYER,
 	KEY,
-	ENEMY
+	ENEMY,
+	DOOR
 };
 
 class Entity

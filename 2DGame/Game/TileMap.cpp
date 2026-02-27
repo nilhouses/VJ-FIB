@@ -92,11 +92,6 @@ bool TileMap::loadLevel(const string& levelFile)
 	sstream >> tilesheetSize.x >> tilesheetSize.y;
 	tileTexSize = glm::vec2(1.f / tilesheetSize.x, 1.f / tilesheetSize.y);
 
-	cout << "mapSize: " << mapSize.x << " x " << mapSize.y << endl;
-	cout << "tileSize: " << tileSize << " blockSize: " << blockSize << endl;
-	cout << tilesheetFile << endl;
-	cout << "tilesheetSize: " << tilesheetSize.x << " x " << tilesheetSize.y << endl;
-
 	// Read base
 	getline(fin, line);
 	map = new int[mapSize.x * mapSize.y];
@@ -132,7 +127,6 @@ bool TileMap::loadLevel(const string& levelFile)
 	}
 
 	fin.close();
-
 
 	return true;
 }

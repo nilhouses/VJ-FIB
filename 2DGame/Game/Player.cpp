@@ -12,7 +12,7 @@
 // Definimos 4 tipos de animaciones para el jugador
 enum PlayerAnims
 {
-	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, NUM_ANIMS
+	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, ENTERING_ROOM, NUM_ANIMS
 };
 
 
