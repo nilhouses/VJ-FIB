@@ -72,6 +72,9 @@
     <ClInclude Include="Door.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="Weight.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -125,14 +128,10 @@
     <ClCompile Include="Key.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
-<<<<<<< HEAD
-    <ClCompile Include="Weight.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClCompile Include="Door.cpp">
+      <Filter>Archivos de código fuente</Filter>
     </ClCompile>
     <ClCompile Include="Weight.cpp">
-=======
-    <ClCompile Include="Door.cpp">
->>>>>>> a55f5966941b78f754c837dfeb2f8b27d5b48c61
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
   </ItemGroup>

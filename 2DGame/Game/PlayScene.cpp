@@ -152,18 +152,16 @@ void PlayScene::handlePlayerCollision(Entity* e)
         case Type::KEY:
             collectedKeys++;
             e->deactivate();
-			cout << "collectedKeys: " << collectedKeys << endl;
+            cout << "collectedKeys: " << collectedKeys << endl;
             break;
-<<<<<<< HEAD
 
         case Type::WEIGHT:
-
+        {
+            // Castear a clase Weight, entity no tiene la función
             Weight* w = static_cast<Weight*>(e);
-            
             float playerBottom = player->getPosition().y + (player->getBoundingBox().w);
             float weightTop = w->getPosition().y;
             float weightBottom = w->getPosition().y + (w->getBoundingBox().w);
-
             // Colisión vertical
             if (weightTop <= playerBottom && weightBottom > playerBottom) {
                 player->incrUp(playerBottom - weightTop);
@@ -172,20 +170,20 @@ void PlayScene::handlePlayerCollision(Entity* e)
                 // Colisión horizontal En función del player se empuja para un lado o otro
                 float xPlayer = player->getPosition().x;
                 float xWeight = e->getPosition().x;
-                // Castear a clase Weight, entity no tiene la función
-                Weight* w = static_cast<Weight*>(e);
                 if (xPlayer < xWeight) {
                     if (!w->incrRight(player->getSpeed())) player->incrLeft();
                 }
                 else {
                     if (!w->incrLeft(player->getSpeed())) player->incrRight();
                 }
-=======
+            }
+            break;
+        }
 		case Type::DOOR:
             // Si el jugador quiere interactuar con la puerta (flecha arriba)
             if (Game::instance().getKey(GLFW_KEY_UP)) {
 				// Lógica de entrar puertas
->>>>>>> a55f5966941b78f754c837dfeb2f8b27d5b48c61
+
             }
             break;
     }
