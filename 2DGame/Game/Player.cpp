@@ -16,7 +16,7 @@ enum PlayerAnims
 };
 
 
-Player::Player()
+Player::Player() : Entity(Type::PLAYER)
 {
 	map = NULL;
 }
