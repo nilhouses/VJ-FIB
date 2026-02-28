@@ -28,6 +28,7 @@ private:
 	void createEntity(const string& type, int tileX, int tileY, Camera* c); // Crea una entidad del tipo dado en la posición dada (en tiles)
 	void checkCollisions(); // Comprueba las colisiones entre el jugador y las entidades del nivel y actualiza el estado del juego en consecuencia
 	void handlePlayerCollision(Entity* e); // Maneja la colisión entre el jugador y una entidad.
+	bool overlap(const glm::vec4& a, const glm::vec4& b, const glm::vec2& offset); // Función auxiliar para detectar si dos bounding boxes se solapan (colisionan)
 
 private:
     ShaderProgram texProgram;	// El programa de shaders para renderizar el mapa y el jugador

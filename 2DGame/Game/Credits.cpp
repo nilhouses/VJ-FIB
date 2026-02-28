@@ -47,12 +47,12 @@ void Credits::render() {
     // 2. Texto
     text.render("CREDITS", glm::vec2(200, 80), 40, glm::vec4(0, 0, 0, 1), projection); // Verde claro
 
-    text.render("DEVELOPED BY:", glm::vec2(100, 180), 20, glm::vec4(0, 0, 0, 1), projection);
-    text.render("Alejandro Ruiz Pajin", glm::vec2(100, 230), 25, glm::vec4(0, 0, 0, 1), projection);
+    text.render("DEVELOPERS:", glm::vec2(100, 180), 20, glm::vec4(0, 0, 0, 1), projection);
+    text.render("Alejandro Ruiz Patón", glm::vec2(100, 230), 25, glm::vec4(0, 0, 0, 1), projection);
     text.render("Nil Casas Duatis", glm::vec2(100, 280), 25, glm::vec4(0, 0, 0, 1), projection);
     
-    text.render("DESIGN BY:", glm::vec2(100, 350), 20, glm::vec4(0, 0, 0, 1), projection);
-    text.render("Ardian ?????", glm::vec2(100, 390), 20, glm::vec4(0, 0, 0, 1), projection);
+    text.render("ART DESIGN:", glm::vec2(100, 350), 20, glm::vec4(0, 0, 0, 1), projection);
+    text.render("Adragong3", glm::vec2(100, 390), 20, glm::vec4(0, 0, 0, 1), projection);
 
     text.render("PRESS 'B' TO GO BACK", glm::vec2(150, 475), 18, glm::vec4(1.f, 1.f, 1.f, 1), projection);
 }

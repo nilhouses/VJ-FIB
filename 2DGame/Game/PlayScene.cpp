@@ -122,12 +122,12 @@ void PlayScene::init()
 }
 
 // Funcion Auxiliar para checkCollisions()
-bool overlap(const glm::vec4& a, const glm::vec4& b)
+bool PlayScene::overlap(const glm::vec4& a, const glm::vec4& b, const glm::vec2& offset)
 {
-    return !(a.x + a.z < b.x ||
-        b.x + b.z < a.x ||
-        a.y + a.w < b.y ||
-        b.y + b.w < a.y);
+    return !(a.x + a.z < b.x + offset.x ||
+        b.x + b.z < a.x + offset.x ||
+        a.y + a.w < b.y + offset.y ||
+        b.y + b.w < a.y + offset.y);
 }
 
 void PlayScene::checkCollisions()
@@ -138,7 +138,12 @@ void PlayScene::checkCollisions()
     {
         if (!e->isActive()) continue;
 
-        if ((e->getType() != player->getType()) &&  overlap(playerBox, e->getBoundingBox()))
+		glm::vec2 offset(0.f, 0.f);
+        if (e->getType() == Type::KEY) {
+            offset = glm::vec2(5.f, 5.f);
+		}
+
+        if ((e->getType() != player->getType()) &&  overlap(playerBox, e->getBoundingBox(), offset))
         {
             handlePlayerCollision(e);
         }

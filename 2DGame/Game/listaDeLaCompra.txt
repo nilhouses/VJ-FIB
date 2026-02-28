@@ -1,0 +1,49 @@
+Tileset [32x32]  {
+	- suelos x8 [x2 de cada]
+	- paredes x10
+	- escaleras x3
+	- tiles decorativos (piedras, hierbas...)
+	// Hacer bloques de diseño de interiores
+}
+
+Jugador [32x64] {
+	Animaciones:
+		- Caminar Left
+		- Caminar Right
+		- Caer
+		- Escalar
+		- Muerte
+		- Entrar a la puerta
+		- Agarrar objeto
+		- Empujar Left
+		- Empujar Right
+}
+
+Enemigo123 [32x64] {
+	Animaciones:
+		- Caminar Left
+		- Caminar Right
+		- Caer
+		- Escalar
+		- Muerte
+}
+
+
+Objetos (utilidad) [32x32] {
+	- Parte de nave (obligatorio)
+	- Lo de empujar (obligatorio)
+	- Puertas [abierta, cerrada, cerrada con candado] x2
+	- Salto
+	- Tubería
+	- Objeto1 (defensivo) Ej. un arma
+	- Objeto2 (utilidad) Ej. boost de velocidad
+	- Objeto3
+}
+
+// Esto es decoración
+Assets [variable] {
+	- postes
+	- casas
+	- barriles
+	- ...
+}

@@ -219,16 +219,23 @@ bool TileMap::collisionMoveRight(const glm::ivec2& pos, const glm::ivec2& size)
 }
 
 
+bool TileMap::isCentered(int x) {
+	return (x % tileSize > 10) && (x % tileSize < 21);
+}
+
+
 bool TileMap::collisionLadderUp(const glm::vec2& pos, const glm::ivec2& size)
 {
 	int x, y0, y1;
 
-	x = (pos.x + size.x / 2) / tileSize;
+	int centerX = pos.x + size.x / 2;
+	x = centerX / tileSize;
 	y0 = pos.y / tileSize;
 	y1 = (pos.y + size.y - 1) / tileSize;
+	
 	for (int y = y0; y <= y1; y++)
 	{
-		if (isLadder(x, y)) {
+		if (isLadder(x, y) && isCentered(centerX)) {
 			return true;
 		}
 	}
@@ -239,9 +246,10 @@ bool TileMap::collisionLadderDown(const glm::vec2& pos, const glm::ivec2& size)
 {
 	int x, y;
 
-	x = (pos.x + size.x / 2) / tileSize;
+	int centerX = pos.x + size.x / 2;
+	x = centerX / tileSize;
 	y = (pos.y + size.y) / tileSize;
-	if (isLadder(x, y))
+	if (isLadder(x, y) && isCentered(centerX))
 	{
 		return true;
 	}

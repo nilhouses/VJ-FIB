@@ -50,6 +50,7 @@ private:
 	bool isGround(int x, int y);
 	bool isSolid(int x, int y);
 	bool isLadder(int x, int y);
+	bool isCentered(int x);
 
 private:
 	// Para crear una nueva capa añadir un elemento nuevo a esta lista y modificar loadLevel() + prepareArrays() + render()
@@ -87,6 +88,18 @@ private:
 		{ 15, TILE_EMPTY },
 		{ 16, TILE_GROUND }
 	};
+
+	/*
+		{ 0, TILE_EMPTY },
+		{ 2, TILE_GROUND },
+		{ 3, TILE_GROUND },
+		{ 4, TILE_GROUND },
+		{ 5, TILE_GROUND },
+		{ 6, TILE_GROUND },
+		{ 13, TILE_LADDER },
+		{ 19, TILE_LADDER },
+		{ 25, TILE_LADDER },
+	*/
 };
 
 
