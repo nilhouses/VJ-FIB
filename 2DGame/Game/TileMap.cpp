@@ -220,7 +220,7 @@ bool TileMap::collisionMoveRight(const glm::ivec2& pos, const glm::ivec2& size)
 
 
 bool TileMap::isCentered(int x) {
-	return (x % tileSize > 10) && (x % tileSize < 21);
+	return (x % tileSize > 8) && (x % tileSize < 23);
 }
 
 

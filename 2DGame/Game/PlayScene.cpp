@@ -140,7 +140,7 @@ void PlayScene::checkCollisions()
 
 		glm::vec2 offset(0.f, 0.f);
         if (e->getType() == Type::KEY) {
-            offset = glm::vec2(5.f, 5.f);
+            offset = glm::vec2(8.f, 8.f);
 		}
 
         if ((e->getType() != player->getType()) &&  overlap(playerBox, e->getBoundingBox(), offset))
