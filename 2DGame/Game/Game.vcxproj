@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimKeyframes.h" />
+    <ClInclude Include="Asset.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Credits.h" />
     <ClInclude Include="Door.h" />
@@ -33,6 +34,7 @@
     <ClInclude Include="Weight.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Asset.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Credits.cpp" />
     <ClCompile Include="Door.cpp" />

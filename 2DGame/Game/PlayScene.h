@@ -10,6 +10,7 @@
 #include "Weight.h"
 #include "Door.h"
 #include "Game.h"
+#include "Asset.h"
 
 class PlayScene : public Scene
 {
@@ -25,7 +26,9 @@ public:
 private:
     void initShaders();	// Carga el VS y FS y los linkea al texProgram
 	void loadEntities(const string& entityPath, Camera* c); // Carga las entidades del nivel a través de un fichero de texto
+	void loadAssets(const string& assetPath, Camera* c); // Carga los elementos decorativos del nivel a través de un fichero de texto
 	void createEntity(const string& type, int tileX, int tileY, Camera* c); // Crea una entidad del tipo dado en la posición dada (en tiles)
+	void createAsset(const string& spriteDir, glm::vec2& pos, glm::vec2& size, Camera* c); // Crea un elemento decorativo en la posición dada (en tiles) y con el tamaño dado (en tiles)
 	void checkCollisions(); // Comprueba las colisiones entre el jugador y las entidades del nivel y actualiza el estado del juego en consecuencia
 	void handlePlayerCollision(Entity* e); // Maneja la colisión entre el jugador y una entidad.
 	bool overlap(const glm::vec4& a, const glm::vec4& b, const glm::vec2& offset); // Función auxiliar para detectar si dos bounding boxes se solapan (colisionan)
@@ -38,6 +41,7 @@ private:
     TileMap* map;				// Mapa est�tico
     Player* player;				// Jugador
 	vector<Entity*> entities;   // Entidades interactivas del nivel (enemigos, objetos, etc.)
+	vector<Asset*> assets;      // Elementos decorativos del nivel con tamaño variable
 	int collectedKeys;			// N�mero de llaves recogidas por el jugador
 	int allKeys;				// N�mero total de llaves en el nivel
 	bool levelCompleted;		// Indica si el nivel ha sido completado

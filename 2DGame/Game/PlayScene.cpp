@@ -14,7 +14,7 @@
 
 // Offset del mapa
 #define SCREEN_X 0
-#define SCREEN_Y 32
+#define SCREEN_Y 0
 
 // Constructor: guardamos el nivel actual
 PlayScene::PlayScene(int levelNumber)
@@ -97,6 +97,38 @@ void PlayScene::loadEntities(const string& entityPath, Camera* c)
     }
 }
 
+
+void PlayScene::createAsset(const string& spriteDir, glm::vec2& pos, glm::vec2& size, Camera* c)
+{
+    Asset* asset = new Asset();
+    asset->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, spriteDir, size, c);
+    asset->setPosition(glm::vec2(float(pos.x * map->getTileSize()), float(pos.y * map->getTileSize())));
+    assets.push_back(asset);
+}
+
+
+void PlayScene::loadAssets(const string& assetPath, Camera* c)
+{
+    ifstream fin(assetPath);
+
+    string path;
+    int count;
+
+    while (fin >> path)
+    {
+        fin >> count;
+
+        for (int i = 0; i < count; ++i)
+        {
+            int tileX, tileY, sizeX, sizeY;
+            fin >> tileX >> tileY >> sizeX >> sizeY;
+
+            createAsset(path, glm::vec2(tileX, tileY), glm::vec2(sizeX, sizeY), c);
+        }
+    }
+}
+
+
 void PlayScene::init()
 {
     initShaders();
@@ -108,6 +140,7 @@ void PlayScene::init()
     // Asumimos que los niveles del 1 al 9 tienen un 0 delante
     string levelPath = "levels/level0" + std::to_string(level) + "/map.txt";
     string entityPath = "levels/level0" + std::to_string(level) + "/entities.txt";
+	string assetPath = "levels/level0" + std::to_string(level) + "/assets.txt";
 
     // Carga el mapa a través de un fichero de texto
     map = TileMap::createTileMap(levelPath, glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
@@ -115,6 +148,7 @@ void PlayScene::init()
     // Carga las entidades
     camera = new Camera(CAMERA_WIDTH, CAMERA_HEIGHT, HUD_HEIGHT);
 	loadEntities(entityPath, camera);
+	loadAssets(assetPath, camera);
 
     // La matriz de proyección es ortogonal
     projection = glm::ortho(0.f, float(CAMERA_WIDTH), float(CAMERA_HEIGHT), 0.f);
@@ -227,13 +261,24 @@ void PlayScene::render()
 
     /*
         Orden de renderizado:
-        1. Fondo
-        2. Mapa
-        3. Entidades
-		4. Jugador (añadir siempre al final del fichero de entidades para que se renderice después que el resto)
-		5. Interfaz (vida, llaves, etc.)
+		1. Fondo
+        2. tileMapBase
+		3. Assets
+		4. tileMapFront
+		5. Entidades
+        6. HUD
     */
-    map->render();
+    map->renderBase();
+
+    for (Asset* asset : assets)
+    {
+        asset->render();
+    }
+
+    // Los assets actualizan la modelview así que devolvemos la modelview original para renderizar el tilemap front
+    texProgram.setUniformMatrix4f("modelview", modelview);
+    map->renderFront();
+
     for (Entity* entity : entities)
     {
         if (entity->isActive())

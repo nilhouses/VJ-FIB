@@ -28,7 +28,8 @@ public:
 
 	~TileMap();
 
-	void render() const;
+	void renderBase() const;
+	void renderFront() const;
 	void free();
 
 	int getTileSize() const { return tileSize; }

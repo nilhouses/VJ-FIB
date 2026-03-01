@@ -29,7 +29,7 @@ TileMap::~TileMap()
 	free();
 }
 
-void TileMap::render() const
+void TileMap::renderBase() const
 {
 	glEnable(GL_TEXTURE_2D);
 	tilesheet.use();
@@ -39,6 +39,14 @@ void TileMap::render() const
 	glEnableVertexAttribArray(posLocationMap);
 	glEnableVertexAttribArray(texCoordLocationMap);
 	glDrawArrays(GL_TRIANGLES, 0, 6 * nTilesMap);
+
+	glDisable(GL_TEXTURE_2D);
+}
+
+void TileMap::renderFront() const
+{
+	glEnable(GL_TEXTURE_2D);
+	tilesheet.use();
 
 	// Print front layer
 	glBindVertexArray(vaoFront);
