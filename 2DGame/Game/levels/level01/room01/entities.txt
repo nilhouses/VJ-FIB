@@ -3,7 +3,7 @@ KEY
 5 5
 DOOR
 1
-1 4 0
+1 4 0 11 1
 PLAYER
 1
 1 5

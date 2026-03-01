@@ -14,6 +14,11 @@
 #include "Room.h"
 #include "Utils.h"
 
+struct CollisionInfo {
+	bool colliding;
+	glm::vec2 rangeColision;
+};
+
 class Level : public Scene
 {
 public:
@@ -31,8 +36,8 @@ private:
 	void loadRooms(); // Carga las habitaciones del nivel
 
 	void checkCollisions(); // Comprueba las colisiones entre el jugador y las entidades del nivel actual y actualiza el estado del juego en consecuencia
-	void handlePlayerCollision(Player* player, Entity* e); // Maneja la colisión entre el jugador y una entidad.
-	bool overlap(const glm::vec4& a, const glm::vec4& b, const glm::vec2& offset); // Función auxiliar para detectar si dos bounding boxes se solapan (colisionan)
+	void handlePlayerCollision(Player* player, Entity* e, glm::vec2& rangeCollided); // Maneja la colisión entre el jugador y una entidad.
+	CollisionInfo overlap(const glm::vec4& a, const glm::vec4& b, const glm::vec2& offset); // Función auxiliar para detectar si dos bounding boxes se solapan (colisionan)
 
 private:
     ShaderProgram texProgram;	// El programa de shaders para renderizar el mapa y el jugador
@@ -48,6 +53,9 @@ private:
 	vector<Room*> rooms;			// Las diferentes habitaciones del nivel
 	int currentRoom;				// La habitación actual en la que se encuentra el jugador
 
+	int state;
+	int targetRoom;					// La habitación a la que se quiere entrar o salir (en caso de estar en estado ENTERING_DOOR o EXITING_DOOR)
+	glm::vec2 targetSpawnPosition;	// La posición a la que se quiere posicionar el jugador al entrar o salir por una puerta
 };
 
 #endif // _LEVEL_INCLUDE

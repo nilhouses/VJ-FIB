@@ -10,8 +10,10 @@
 #define SCREEN_X 0
 #define SCREEN_Y 0
 
+enum LevelState { NORMAL, ENTERING_DOOR, EXITING_DOOR };
+
 // Cooldowns entre interacciones
-float roomChangeCooldown = 0.f;
+float transitionTimer = 0.f;
 
 
 // ---------------------- CONSTRUCTORS ----------------------
@@ -91,7 +93,7 @@ void Level::loadRooms()
         string levelPath = "levels/level0" + std::to_string(level) + "/room0" + std::to_string(i) + "/map.txt";
         string entityPath = "levels/level0" + std::to_string(level) + "/room0" + std::to_string(i) + "/entities.txt";
         string assetPath = "levels/level0" + std::to_string(level) + "/room0" + std::to_string(i) + "/assets.txt";
-        room->init(glm::vec2(SCREEN_X, SCREEN_Y), levelPath, entityPath, assetPath);
+        room->init(glm::vec2(SCREEN_X, SCREEN_Y), levelPath, entityPath, assetPath, i);
         rooms.push_back(room);
     }
 }
@@ -108,6 +110,7 @@ void Level::init()
 	levelCompleted = false;
 	rooms = vector<Room*>();
 	currentRoom = 0;
+    state = NORMAL;
 
     loadRooms();
 
@@ -116,16 +119,38 @@ void Level::init()
 
 // ---------------------- UPDATE + COLLISIONS ----------------------
 
-bool Level::overlap(const glm::vec4& a, const glm::vec4& b, const glm::vec2& offset)
+CollisionInfo Level::overlap(const glm::vec4& a, const glm::vec4& b, const glm::vec2& offset)
 {
-    return !(a.x + a.z < b.x + offset.x ||
-        b.x + b.z < a.x + offset.x ||
-        a.y + a.w < b.y + offset.y ||
-        b.y + b.w < a.y + offset.y);
+    CollisionInfo info;
+    
+    bool colliding = !(a.x + a.z < b.x + offset.x ||
+                       b.x + b.z < a.x + offset.x ||
+                       a.y + a.w < b.y + offset.y ||
+                       b.y + b.w < a.y + offset.y);
+    
+    info.colliding = colliding;
+    
+    if (colliding) {
+        // Calcular rango horizontal de colisión
+        float leftMax = std::max(a.x + offset.x, b.x + offset.x);
+        float rightMin = std::min(a.x + a.z, b.x + b.z);
+        float horizontalOverlap = rightMin - leftMax;
+        
+        // Calcular rango vertical de colisión
+        float topMax = std::max(a.y + offset.y, b.y + offset.y);
+        float bottomMin = std::min(a.y + a.w, b.y + b.w);
+        float verticalOverlap = bottomMin - topMax;
+        
+        info.rangeColision = glm::vec2(horizontalOverlap, verticalOverlap);
+    } else {
+        info.rangeColision = glm::vec2(0.f, 0.f);
+    }
+    
+    return info;
 }
 
 
-void Level::handlePlayerCollision(Player* player, Entity* e)
+void Level::handlePlayerCollision(Player* player, Entity* e, glm::vec2& rangeCollided)
 {
     switch (e->getType())
     {
@@ -160,14 +185,22 @@ void Level::handlePlayerCollision(Player* player, Entity* e)
         break;
     }
     case Type::DOOR:
-		int centerX = player->getPosition().x + player->getBoundingBox().z / 2;
-        if (Game::instance().getKey(GLFW_KEY_UP) && roomChangeCooldown == 0 && Utils::isCentered(centerX)) {
+		int centerX = player->getPosition().x + 16.0f;
+        if (Game::instance().getKey(GLFW_KEY_UP) && state == NORMAL && rangeCollided.x > 20) {
+            
+            Door* door = static_cast<Door*>(e);
+			
+            // Configurar transición a la nueva habitación
+            state = ENTERING_DOOR;
+			transitionTimer = 1000.f;
+			targetRoom = door->getRoomTo();
+            targetSpawnPosition = door->getDoorTargetPosition();
+			rooms[currentRoom]->setTransitioning(true);
 
-			// Animación de entrar a la puerta
-			currentRoom = static_cast<Door*>(e)->getRoomTo();
-			// Animación de salir de la puerta
-
-			roomChangeCooldown = 1000.f;     // Cooldown de dos segundos
+            // Cambiar estado visual
+			door->setToVisited();
+			player->setAnimation("ENTERING_DOOR");
+			player->blockInput(); // Bloquear input del jugador durante la transición
         }
         break;
     }
@@ -191,23 +224,61 @@ void Level::checkCollisions()
             offset = glm::vec2(8.f, 8.f);
         }
 
-        if ((e->getType() != player->getType()) && overlap(playerBox, e->getBoundingBox(), offset))
+		CollisionInfo collision = overlap(playerBox, e->getBoundingBox(), offset);
+
+        if ((e->getType() != player->getType()) && collision.colliding)
         {
-            handlePlayerCollision(player, e);
+            handlePlayerCollision(player, e, collision.rangeColision);
         }
     }
 }
 
 
 void Level::update(int deltaTime)
-{    
+{
     currentTime += deltaTime;
-	roomChangeCooldown = std::max(0.f, roomChangeCooldown - deltaTime);
-    
-    // Actualizo la habitación actual, que a su vez actualiza el jugador y el resto de entidades.
-	rooms[currentRoom]->update(deltaTime);
-    // Analizamos si el jugador de la habitación actual ha interactuado con alguna entidad
-    checkCollisions();
+
+    rooms[currentRoom]->update(deltaTime);
+
+    switch(state)
+    {
+        case NORMAL:
+            checkCollisions();
+            break;
+
+        case ENTERING_DOOR:
+            transitionTimer = std::max(0.f, transitionTimer - deltaTime);
+
+            if (transitionTimer == 0.f) {
+                currentRoom = targetRoom;
+
+                Player* player = rooms[currentRoom]->getPlayer();
+				float tileSize = rooms[currentRoom]->getMap()->getTileSize();
+                player->setPosition(glm::vec2(targetSpawnPosition.x * tileSize, targetSpawnPosition.y * tileSize));
+				player->blockInput();
+                player->setAnimation("EXITING_DOOR");
+                rooms[currentRoom]->setTransitioning(true);
+
+                // Cambio de estado a ENTERING_DOOR
+                state = EXITING_DOOR;
+                transitionTimer = 1000.f;
+            }
+
+            break;
+
+        case EXITING_DOOR:
+            transitionTimer = std::max(0.f, transitionTimer - deltaTime);
+
+            if (transitionTimer == 0.f) {
+                Player* player = rooms[currentRoom]->getPlayer();
+                player->setAnimation("STAND_RIGHT");
+				player->unblockInput();
+                rooms[currentRoom]->setTransitioning(false);
+                state = NORMAL;
+            }
+
+            break;
+	}
 }
 
 
