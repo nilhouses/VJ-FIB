@@ -57,7 +57,7 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25f, 0.25f));
 	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25f, 0.5f));
 
-	sprite->changeAnimation(STAND_LEFT);
+	sprite->changeAnimation(STAND_RIGHT);
 }
 
 

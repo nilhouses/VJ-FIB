@@ -24,7 +24,8 @@ public:
 	virtual void init() = 0;
 	virtual void update(int deltaTime) = 0;
 	virtual void render() = 0;
-	// Resize se hará tanto en menús como en partidas para conservar la RA, por lo que se define aquí mismo.
+
+    // Resize se hará tanto en menús como en partidas para conservar la RA, por lo que se define aquí mismo.
     virtual void resize(int width, int height, int raW, int raH) {
         float scale = std::min(width / (float)raW, height / (float)raH);
         int viewWidth = (int)(raW * scale);
@@ -34,10 +35,8 @@ public:
         glViewport(viewX, viewY, viewWidth, viewHeight);
         projection = glm::ortho(0.f, float(raW), float(raH), 0.f);
     }
-
 protected:
-	Camera* camera = nullptr;				// Cámara para seguir al jugador
-	glm::mat4 projection;                   // La matriz de proyección
+    glm::mat4 projection;
 };
 
 

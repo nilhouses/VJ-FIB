@@ -1,4 +1,0 @@
-images/doors.png
-1
-10 3
-96 64

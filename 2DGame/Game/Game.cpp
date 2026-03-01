@@ -2,7 +2,7 @@
 #include <GLFW/glfw3.h>
 #include "Game.h"
 #include "MainMenu.h"
-#include "PlayScene.h"
+#include "Level.h"
 #include "Instructions.h"
 #include "Credits.h"
 
@@ -69,13 +69,13 @@ void Game::changeState(GameState newState, int levelNumber)
     currentState = newState;
     currentLevel = levelNumber;
 
-    // Instanciamos la nueva escena según el estado
+    // Instanciamos la nueva escena segï¿½n el estado
     switch (currentState) {
     case MAIN_MENU:
         currentScene = new MainMenu();
         break;
     case PLAYING:
-        currentScene = new PlayScene(currentLevel);
+        currentScene = new Level(currentLevel);
         break;
     case INSTRUCTIONS:
         currentScene = new Instructions();

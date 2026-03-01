@@ -1,0 +1,10 @@
+images/doors.png
+1
+96 64
+10 3
+images/varied.png
+2
+64 64
+0 0
+10 10
+

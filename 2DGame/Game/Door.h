@@ -19,9 +19,12 @@ public:
 
 	void setToVisited();
 	bool getVisited() { return visited; }
+	void setRoomTo(int room) { roomTo = room; }
+	int getRoomTo() { return roomTo; }
 
 private:
 	bool visited;
+	int roomTo;		// Número de habitación a la que lleva la puerta
 };
 
 

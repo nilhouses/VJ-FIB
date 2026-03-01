@@ -6,6 +6,7 @@
 #include "Texture.h"
 #include "ShaderProgram.h"
 #include <unordered_map>
+#include "Utils.h"
 
 // Tipos de bloque
 enum TileType {
@@ -51,7 +52,6 @@ private:
 	bool isGround(int x, int y);
 	bool isSolid(int x, int y);
 	bool isLadder(int x, int y);
-	bool isCentered(int x);
 
 private:
 	// Para crear una nueva capa añadir un elemento nuevo a esta lista y modificar loadLevel() + prepareArrays() + render()

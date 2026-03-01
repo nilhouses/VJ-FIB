@@ -31,6 +31,8 @@ TileMap::~TileMap()
 
 void TileMap::renderBase() const
 {
+	if (nTilesMap == 0) return;
+
 	glEnable(GL_TEXTURE_2D);
 	tilesheet.use();
 
@@ -45,6 +47,8 @@ void TileMap::renderBase() const
 
 void TileMap::renderFront() const
 {
+	if (nTilesFront == 0) return;
+	
 	glEnable(GL_TEXTURE_2D);
 	tilesheet.use();
 
@@ -175,6 +179,8 @@ void TileMap::prepareLayerArray(const glm::vec2& minCoords, ShaderProgram& progr
 			}
 		}
 	}
+	
+	if (nTiles == 0) return;
 
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
@@ -227,11 +233,6 @@ bool TileMap::collisionMoveRight(const glm::ivec2& pos, const glm::ivec2& size)
 }
 
 
-bool TileMap::isCentered(int x) {
-	return (x % tileSize > 8) && (x % tileSize < 23);
-}
-
-
 bool TileMap::collisionLadderUp(const glm::vec2& pos, const glm::ivec2& size)
 {
 	int x, y0, y1;
@@ -243,7 +244,7 @@ bool TileMap::collisionLadderUp(const glm::vec2& pos, const glm::ivec2& size)
 	
 	for (int y = y0; y <= y1; y++)
 	{
-		if (isLadder(x, y) && isCentered(centerX)) {
+		if (isLadder(x, y) && Utils::isCentered(centerX)) {
 			return true;
 		}
 	}
@@ -257,7 +258,7 @@ bool TileMap::collisionLadderDown(const glm::vec2& pos, const glm::ivec2& size)
 	int centerX = pos.x + size.x / 2;
 	x = centerX / tileSize;
 	y = (pos.y + size.y) / tileSize;
-	if (isLadder(x, y) && isCentered(centerX))
+	if (isLadder(x, y) && Utils::isCentered(centerX))
 	{
 		return true;
 	}

@@ -22,7 +22,8 @@
     <ClInclude Include="Key.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="PlayScene.h" />
+    <ClInclude Include="Level.h" />
+    <ClInclude Include="Room.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderProgram.h" />
@@ -31,6 +32,7 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TexturedQuad.h" />
     <ClInclude Include="TileMap.h" />
+    <ClInclude Include="Utils.h" />
     <ClInclude Include="Weight.h" />
   </ItemGroup>
   <ItemGroup>
@@ -45,7 +47,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PlayScene.cpp" />
+    <ClCompile Include="Level.cpp" />
+    <ClCompile Include="Room.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="Sprite.cpp" />
@@ -53,6 +56,7 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TexturedQuad.cpp" />
     <ClCompile Include="TileMap.cpp" />
+    <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Weight.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
