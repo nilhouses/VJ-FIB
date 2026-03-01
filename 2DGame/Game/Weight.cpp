@@ -5,10 +5,11 @@
 #include "Game.h"
 
 #define FALL_STEP 6	
+#define EXPLOSION_DURATION 1000.f // ms
 
 enum WeightAnims
 {
-	IDLE, NUM_ANIMS
+	IDLE, EXPLOSION, NUM_ANIMS
 };
 
 Weight::Weight() : Entity(Type::WEIGHT) {}
@@ -20,28 +21,53 @@ Weight::~Weight()
 		delete sprite;
 }
 
-void Weight::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c)
+void Weight::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, glm::vec2 prevPos)
 {
 	// Inicializar los atributos de la Entity
-	Entity::init(tileMapPos, shaderProgram, "images/tiles2.png", glm::ivec2(32, 32), glm::vec2(0.25f, 0.25f), c);
+	Entity::init(tileMapPos, shaderProgram, "images/weightTileset.png", glm::ivec2(32, 32), glm::vec2(0.25f, 0.25f), c);
 
-	// Configuraci髇 de animaciones
+	// Atributos del peso
+	this->prevPos = prevPos;
+	explosionTimer = 0.0f;
+	explode = false;
+
+	// Configuraci锟絥 de animaciones
 	sprite->setNumberAnimations(NUM_ANIMS);
 
 	sprite->setAnimationSpeed(IDLE, 1);
 	sprite->addKeyframe(IDLE, glm::vec2(0.f, 0.f));
+	
+	sprite->setAnimationSpeed(EXPLOSION, 8);
+	sprite->addKeyframe(EXPLOSION, glm::vec2(0.25f, 0.f));
+	sprite->addKeyframe(EXPLOSION, glm::vec2(0.50f, 0.f));
+	sprite->addKeyframe(EXPLOSION, glm::vec2(0.75f, 0.f));
+	sprite->addKeyframe(EXPLOSION, glm::vec2(0.0f, 0.25f));
 
 	sprite->changeAnimation(IDLE);
 }
 
 
-// Esta funci髇 solo calcula la posici髇 actual y carga en el sprite la animaci髇 correspondiente en cada caso
 void Weight::update(int deltaTime)
 {
 	sprite->update(deltaTime);
+	// Si esta haciendo la animaci贸n de explosi贸n, no hacer nada m谩s que actualizar la animaci贸n
+	if (explode) {
+		explosionTimer += deltaTime;
+		if (explosionTimer >= EXPLOSION_DURATION) this->deactivate();
+		return;
+	}
+
+	// Guardar posici贸n inicial para detectar ca铆das
+	glm::vec2 initialPos = pos;
+	// Caemos, si detectamos colisi贸n abajo, volvemos a subir
 	pos.y += FALL_STEP;
 	map->collisionMoveDown(pos, glm::ivec2(32, 32), &pos.y, FALL_STEP);
-	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
+	// Si tras caer tocamos el suelo explosi贸n
+	if (isFalling() && pos.y == initialPos.y) explodeWeight();
+
+	// Actualizaciones de variables
+	prevPos = initialPos;
+	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y))); // Actualizar posici贸n visual
 }
 
 void Weight::setTileMap(TileMap* tileMap)
@@ -52,7 +78,7 @@ void Weight::setTileMap(TileMap* tileMap)
 bool Weight::incrRight(int units)
 {
 	pos.x += units;
-	// Si detecto colisi髇 o se sale del mapa
+	// Si detecto colisi锟絥 o se sale del mapa
 	if (map->collisionMoveRight(pos, glm::ivec2(32, 32)) || pos.x > ((map->getMapSize().x - 1) * map->getTileSize())){ 
 		pos.x -= units;
 		return false;
@@ -63,10 +89,23 @@ bool Weight::incrRight(int units)
 bool Weight::incrLeft(int units)
 {
 	pos.x -= units;
-	// Si detecto colisi髇 o se sale del mapa
+	// Si detecto colisi锟絥 o se sale del mapa
 	if (map->collisionMoveLeft(pos, glm::ivec2(32, 32)) || pos.x < 0.f) {
 		pos.x += units;
 		return false;
 	}
 	return true;
+}
+
+bool Weight::isFalling() { return pos.y > prevPos.y; }
+
+bool Weight::isMoving() { return (pos.x != prevPos.x || pos.y != prevPos.y); }
+
+void Weight::explodeWeight() {
+	// No explotar varias veces
+	if (explode) return;
+	explode = true;
+	sprite->changeAnimation(EXPLOSION);
+	std::cout << "BOOM!" << std::endl;
+	// En el update se desactivar谩 la entidad cuando acabe la animaci贸n de explosi贸n
 }

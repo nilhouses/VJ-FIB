@@ -1,6 +1,9 @@
-PLAYER
+DOOR
 1
-1 5
+3 4 0
 KEY
 1
 5 5
+PLAYER
+1
+1 5

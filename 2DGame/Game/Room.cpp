@@ -65,7 +65,7 @@ void Room::createEntity(const glm::ivec2& tileMapPos, const string& type, int tx
     else if (type == "WEIGHT")
     {
         Weight* weight = new Weight();
-        weight->init(tileMapPos, texProgram, camera);
+        weight->init(tileMapPos, texProgram, camera, glm::vec2(float(tx * map->getTileSize()), float(ty * map->getTileSize())));
         weight->setTileMap(map);
         entity = weight;
     }
@@ -77,7 +77,6 @@ void Room::createEntity(const glm::ivec2& tileMapPos, const string& type, int tx
         entity = door;
     }
     // Aquí se pueden añadir más tipos de entidades
-
 
     // Común para todas las entidades
     if (entity != nullptr)
