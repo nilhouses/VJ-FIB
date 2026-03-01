@@ -71,36 +71,36 @@ private:
 
 	// Lista de tipos de bloque, indexada por el número de bloque en el mapa
 	std::unordered_map<int, TileType> tileTypes = {
-		{ 0, TILE_EMPTY },
-		{ 1, TILE_GROUND },
-		{ 2, TILE_EMPTY },
-		{ 3, TILE_GROUND },
-		{ 4, TILE_EMPTY },
-		{ 5, TILE_LADDER },
-		{ 6, TILE_LADDER },
-		{ 7, TILE_LADDER },
-		{ 8, TILE_GROUND },
-		{ 9, TILE_SOLID },
-		{ 10, TILE_EMPTY },
-		{ 11, TILE_EMPTY },
-		{ 12, TILE_GROUND },
-		{ 13, TILE_EMPTY },
-		{ 14, TILE_EMPTY },
-		{ 15, TILE_EMPTY },
-		{ 16, TILE_GROUND }
-	};
+		// Test sprites
+			{ 0, TILE_EMPTY },
+			{ 1, TILE_GROUND },
+			{ 2, TILE_EMPTY },
+			{ 3, TILE_GROUND },
+			{ 4, TILE_EMPTY },
+			{ 5, TILE_LADDER },
+			{ 6, TILE_LADDER },
+			{ 7, TILE_LADDER },
+			{ 8, TILE_GROUND },
+			{ 9, TILE_SOLID },
+			{ 10, TILE_EMPTY },
+			{ 11, TILE_EMPTY },
+			{ 12, TILE_GROUND },
+			{ 13, TILE_EMPTY },
+			{ 14, TILE_EMPTY },
+			{ 15, TILE_EMPTY },
+			{ 16, TILE_GROUND }
 
-	/*
-		{ 0, TILE_EMPTY },
-		{ 2, TILE_GROUND },
-		{ 3, TILE_GROUND },
-		{ 4, TILE_GROUND },
-		{ 5, TILE_GROUND },
-		{ 6, TILE_GROUND },
-		{ 13, TILE_LADDER },
-		{ 19, TILE_LADDER },
-		{ 25, TILE_LADDER },
-	*/
+		// Sprites ardián
+		//{ 0, TILE_EMPTY },
+		//{ 2, TILE_GROUND },
+		//{ 3, TILE_GROUND },
+		//{ 4, TILE_GROUND },
+		//{ 5, TILE_GROUND },
+		//{ 6, TILE_GROUND },
+		//{ 13, TILE_LADDER },
+		//{ 19, TILE_LADDER },
+		//{ 25, TILE_LADDER },
+	};
 };
 
 

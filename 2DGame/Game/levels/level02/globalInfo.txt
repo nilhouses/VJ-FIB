@@ -1,0 +1,4 @@
+ALL_KEYS
+0
+NUM_ROOMS
+1
