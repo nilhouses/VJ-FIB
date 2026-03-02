@@ -374,7 +374,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided)
         {
             Dummy* d = static_cast<Dummy*>(e);
             // Si el dummy se està muriendo no puede matar a nadie
-            if (!d->isDying()) {
+            if (!d->isDying() && !godMode) {
 
                 // Configurar transición a la nueva habitación
                 state = DYING;
@@ -480,69 +480,83 @@ void Level::update(int deltaTime)
     currentTime += deltaTime;
 
     rooms[currentRoom]->update(deltaTime);
-	player->update(deltaTime);
+    player->update(deltaTime);
 
-    switch(state)
+    switch (state)
     {
-        case NORMAL:
-            checkCollisions();
-            break;
+    case NORMAL:
+        checkCollisions();
+        break;
 
-        case ENTERING_DOOR:
-            transitionTimer = std::max(0.f, transitionTimer - deltaTime);
+    case ENTERING_DOOR:
+        transitionTimer = std::max(0.f, transitionTimer - deltaTime);
 
-            if (transitionTimer == 0.f) {
-				// Si se han recogido todas las llaves y la puerta interactuada es la puerta final, se completa el nivel
-                if (allKeys == collectedKeys && interactedDoor->getIsFinalDoor()) {
-					levelCompleted = true;
-                }
-				// Sino se entra a la habitación conectada a través de la puerta
-                else {
-                    Door* targetDoor = interactedDoor->getDoorTo();
-                    currentRoom = targetDoor->getRoom();
-                    glm::vec2 targetSpawnPosition = targetDoor->getPosition();
+        if (transitionTimer == 0.f) {
+            // Si se han recogido todas las llaves y la puerta interactuada es la puerta final, se completa el nivel
+            if (collectedKeys >= allKeys && interactedDoor->getIsFinalDoor()) {
+                levelCompleted = true;
+            }
+            // Sino se entra a la habitación conectada a través de la puerta
+            else {
+                Door* targetDoor = interactedDoor->getDoorTo();
+                currentRoom = targetDoor->getRoom();
+                glm::vec2 targetSpawnPosition = targetDoor->getPosition();
 
-                    player->setPosition(glm::vec2(targetSpawnPosition.x, targetSpawnPosition.y));
-                    player->setTileMap(rooms[currentRoom]->getMap());
-				    player->blockInput();
-                    player->setAnimation("EXITING_DOOR");
-                    rooms[currentRoom]->setTransitioning(true);
+                player->setPosition(glm::vec2(targetSpawnPosition.x, targetSpawnPosition.y));
+                player->setTileMap(rooms[currentRoom]->getMap());
+                player->blockInput();
+                player->setAnimation("EXITING_DOOR");
+                rooms[currentRoom]->setTransitioning(true);
 
-                    // Cambio de estado a EXITING_DOOR
-                    state = EXITING_DOOR;
-                    transitionTimer = 1000.f;
-                }
-                
+                // Cambio de estado a EXITING_DOOR
+                state = EXITING_DOOR;
+                transitionTimer = 1000.f;
             }
 
-            break;
+        }
 
-        case EXITING_DOOR:
-            transitionTimer = std::max(0.f, transitionTimer - deltaTime);
+        break;
 
-            if (transitionTimer == 0.f) {
-                player->setAnimation("STAND_RIGHT");
-				player->unblockInput();
-                rooms[currentRoom]->setTransitioning(false);
-                state = NORMAL;
+    case EXITING_DOOR:
+        transitionTimer = std::max(0.f, transitionTimer - deltaTime);
+
+        if (transitionTimer == 0.f) {
+            player->setAnimation("STAND_RIGHT");
+            player->unblockInput();
+            rooms[currentRoom]->setTransitioning(false);
+            state = NORMAL;
+        }
+
+        break;
+    case DYING:
+        transitionTimer = std::max(0.f, transitionTimer - deltaTime);
+        if (transitionTimer == 0.f) {
+            // Animación acabada
+            player->unblockInput();
+            if (numLives > 0) {
+                numLives--;
+                cout << "numLives: " << numLives << endl;
+                init(); // Temporal, el init vuelve a leer todos los ficheros. Necesitaremos un reset()
             }
+        }
+        break;
+    }
 
-            break;
-        case DYING:
-            transitionTimer = std::max(0.f, transitionTimer - deltaTime);
-            if (transitionTimer == 0.f) {
-                // Animación acabada
-                player->unblockInput();
-                if (numLives > 0) {
-                    numLives--;
-					cout << "numLives: " << numLives << endl;
-                    init(); // Temporal, el init vuelve a leer todos los ficheros. Necesitaremos un reset()
-                }
-            }
-			break;
-	}
+    camera->update(player->getPosition(), rooms[currentRoom]->getMap()->getMapSize() * rooms[currentRoom]->getMap()->getTileSize());
 
-	camera->update(player->getPosition(), rooms[currentRoom]->getMap()->getMapSize() * rooms[currentRoom]->getMap()->getTileSize());
+    // Skip content
+    if (Game::instance().getKey(GLFW_KEY_G) && releasedG) {
+        godMode = !godMode;
+        releasedG = false;
+        cout << "God mode: " << (godMode ? "ON" : "OFF") << endl;
+    }
+    else if (!Game::instance().getKey(GLFW_KEY_G)) {
+        releasedG = true;
+    }
+    if (Game::instance().getKey(GLFW_KEY_K)) {
+        collectedKeys = allKeys;
+	    cout << "collectedKeys: " << collectedKeys << "/" << allKeys << endl;
+    }
 }
 
 

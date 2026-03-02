@@ -68,6 +68,11 @@ private:
 
 	Camera* camera;
 	glm::mat4 projection;
+
+
+	// Para saltar contenido
+	bool godMode = false;
+	bool releasedG = true;
 };
 
 #endif // _LEVEL_INCLUDE

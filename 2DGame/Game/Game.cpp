@@ -51,6 +51,27 @@ void Game::keyPressed(int key)
 	if(key == GLFW_KEY_ESCAPE) // Escape code
 		bPlay = false;
 	keys[key] = true;
+    
+    if (key == GLFW_KEY_1) {
+        currentLevel = 1;
+		changeState(PLAYING, currentLevel);
+    }
+    else if (key == GLFW_KEY_2) {
+        currentLevel = 2;
+        changeState(PLAYING, currentLevel);
+    }
+    else if (key == GLFW_KEY_3) {
+        currentLevel = 3;
+        changeState(PLAYING, currentLevel);
+    }
+    else if (key == GLFW_KEY_4) {
+        currentLevel = 4;
+        changeState(PLAYING, currentLevel);
+    }
+    else if (key == GLFW_KEY_5) {
+        currentLevel = 5;
+        changeState(PLAYING, currentLevel);
+    }
 }
 
 void Game::keyReleased(int key)
