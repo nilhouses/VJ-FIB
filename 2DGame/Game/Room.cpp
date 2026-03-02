@@ -45,7 +45,7 @@ Room::~Room()
 
 // ---------------------- INIT ----------------------
 
-void Room::createEntity(const glm::ivec2& tileMapPos, const string& type, int tx, int ty, int roomTo)
+void Room::createEntity(const glm::ivec2& tileMapPos, const string& type, int tx, int ty, int roomTo, int prx, int pry)
 {
     Entity* entity = nullptr;
 
@@ -73,7 +73,11 @@ void Room::createEntity(const glm::ivec2& tileMapPos, const string& type, int tx
     {
         Door* door = new Door();
         door->init(tileMapPos, texProgram, camera);
-        door->setRoomTo(roomTo);
+		door->setRoomTo(roomTo);
+        if (numRoom != 0)
+            door->setToVisited();
+		door->setDoorTargetPosition(glm::vec2(float(prx), float(pry)));
+
         entity = door;
     }
     else if (type == "DUMMY")
@@ -110,10 +114,13 @@ void Room::loadEntities(const glm::ivec2& tileMapPos, const string& entityPath)
             fin >> tileX >> tileY;
 
             int roomTo = -1;
-			if (type == "DOOR") // Las puertas tienen un campo extra para indicar a qué habitación llevan
-                fin >> roomTo;
+            int posRelativeDoorX = -1;
+            int posRelativeDoorY = -1;
 
-            createEntity(tileMapPos, type, tileX, tileY, roomTo);
+			if (type == "DOOR") // Las puertas tienen info extra (número de room destino, posición relativa a la puerta a la que se teletransporta el jugador)
+                fin >> roomTo >> posRelativeDoorX >> posRelativeDoorY;
+
+            createEntity(tileMapPos, type, tileX, tileY, roomTo, posRelativeDoorX, posRelativeDoorY);
         }
     }
 }
@@ -154,11 +161,13 @@ void Room::loadAssets(const glm::ivec2& tileMapPos, const string& assetPath)
 }
 
 
-void Room::init(const glm::ivec2& tileMapPos, const string& levelPath, const string& entityPath, const string& assetPath)
+void Room::init(const glm::ivec2& tileMapPos, const string& levelPath, const string& entityPath, const string& assetPath, int numRoom)
 {
     // Creamos la cámara para que se añada a cada elemento del mapa
     camera = new Camera(CAMERA_WIDTH, CAMERA_HEIGHT, HUD_HEIGHT);
     projection = glm::ortho(0.f, float(CAMERA_WIDTH), float(CAMERA_HEIGHT), 0.f);
+	this->numRoom = numRoom;
+	transitioning = false;
 
     // Carga el mapa a través de un fichero de texto
     map = TileMap::createTileMap(levelPath, tileMapPos, texProgram);
@@ -174,12 +183,16 @@ void Room::init(const glm::ivec2& tileMapPos, const string& levelPath, const str
 
 void Room::update(int deltaTime)
 {
-
-    // Actualizar entidades
-    for (Entity* entity : entities)
-    {
-        if (entity->isActive())
-            entity->update(deltaTime);
+    // Solo actualizo la animación del jugador durante la transición y se mantiene bloqueada su entrada
+    if (transitioning)
+		player->update(deltaTime);
+    else {
+        // Actualizar entidades
+        for (Entity* entity : entities)
+        {
+            if (entity->isActive())
+                entity->update(deltaTime);
+        }
     }
 
     camera->update(player->getPosition(), map->getMapSize() * map->getTileSize());

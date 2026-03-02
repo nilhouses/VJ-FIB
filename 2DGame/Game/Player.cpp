@@ -13,7 +13,7 @@
 // Definimos 4 tipos de animaciones para el jugador
 enum PlayerAnims
 {
-	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, ENTERING_ROOM, NUM_ANIMS
+	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, ENTERING_DOOR, EXITING_DOOR, NUM_ANIMS
 };
 
 
@@ -37,6 +37,7 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	bJumping = false;
 	jumpAngle = 0;
 	startY = 0;
+	blockedInput = false;
 
 	// Configuración de animaciones
 	sprite->setNumberAnimations(NUM_ANIMS);
@@ -57,6 +58,17 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25f, 0.25f));
 	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25f, 0.5f));
 
+	sprite->setAnimationSpeed(ENTERING_DOOR, 20);
+	sprite->addKeyframe(ENTERING_DOOR, glm::vec2(0.5f, 0.f));
+	sprite->addKeyframe(ENTERING_DOOR, glm::vec2(0.5f, 0.5f));
+	sprite->addKeyframe(ENTERING_DOOR, glm::vec2(0.5f, 0.25f));
+	sprite->addKeyframe(ENTERING_DOOR, glm::vec2(0.f, 0.f));
+
+	sprite->setAnimationSpeed(EXITING_DOOR, 20);
+	sprite->addKeyframe(EXITING_DOOR, glm::vec2(0.75f, 0.f));
+	sprite->addKeyframe(EXITING_DOOR, glm::vec2(0.75f, 0.25f));
+	sprite->addKeyframe(EXITING_DOOR, glm::vec2(0.75f, 0.5f));
+
 	sprite->changeAnimation(STAND_RIGHT);
 }
 
@@ -66,102 +78,122 @@ void Player::update(int deltaTime)
 {
 	sprite->update(deltaTime);
 	
-	// Con la flecha hacia arriba el personaje subirá si existe una escalera en esa posición
-	if (Game::instance().getKey(GLFW_KEY_UP)) {
-		if (map->collisionLadderUp(pos, glm::ivec2(32, 32))) {
-			// TODO: Aplicar la nueva animación de subir escaleras
-			pos.y -= SPEED;
+	if (!blockedInput) {
 
-			bJumping = false;
+		// Con la flecha hacia arriba el personaje subirá si existe una escalera en esa posición
+		if (Game::instance().getKey(GLFW_KEY_UP)) {
+			if (map->collisionLadderUp(pos, glm::ivec2(32, 32))) {
+				// TODO: Aplicar la nueva animación de subir escaleras
+				pos.y -= SPEED;
+
+				bJumping = false;
+			}
+			// TEMPORAL: Si no hay escalera, el personaje se quedará quieto mirando hacia el lado que corresponda
+			else {
+				if (sprite->animation() == MOVE_LEFT)
+					sprite->changeAnimation(STAND_LEFT);
+				else if (sprite->animation() == MOVE_RIGHT)
+					sprite->changeAnimation(STAND_RIGHT);
+			}
 		}
-		// TEMPORAL: Si no hay escalera, el personaje se quedará quieto mirando hacia el lado que corresponda
-		else {
-			if (sprite->animation() == MOVE_LEFT)
-				sprite->changeAnimation(STAND_LEFT);
-			else if (sprite->animation() == MOVE_RIGHT)
-				sprite->changeAnimation(STAND_RIGHT);
+		// Con la flecha hacia abajo el personaje bajará si existe una escalera en esa posición
+		else if (Game::instance().getKey(GLFW_KEY_DOWN)) {
+			if (map->collisionLadderDown(pos, glm::ivec2(32, 32))) {
+				// TODO: Aplicar la nueva animación de bajar escaleras
+				pos.y += SPEED;
+				bJumping = false;
+			} 
+			else {
+				if (sprite->animation() == MOVE_LEFT)
+					sprite->changeAnimation(STAND_LEFT);
+				else if (sprite->animation() == MOVE_RIGHT)
+					sprite->changeAnimation(STAND_RIGHT);
+			}
 		}
-	}
-	// Con la flecha hacia abajo el personaje bajará si existe una escalera en esa posición
-	else if (Game::instance().getKey(GLFW_KEY_DOWN)) {
-		if (map->collisionLadderDown(pos, glm::ivec2(32, 32))) {
-			// TODO: Aplicar la nueva animación de bajar escaleras
-			pos.y += SPEED;
-			bJumping = false;
-		} 
-		else {
-			if (sprite->animation() == MOVE_LEFT)
-				sprite->changeAnimation(STAND_LEFT);
-			else if (sprite->animation() == MOVE_RIGHT)
-				sprite->changeAnimation(STAND_RIGHT);
-		}
-	}
-	// Si la flecha izquierda está pulsada
-	else if(Game::instance().getKey(GLFW_KEY_LEFT))
-	{
-		// Si la animación actual no es moverse a la izquierda, cambio la animación a mover a la izquierda y le sumo desplazamiento
-		if (sprite->animation() != MOVE_LEFT)
-			sprite->changeAnimation(MOVE_LEFT);
-		incrLeft();
-		// Si detecto colisión o se sale del mapa
-		if (map->collisionMoveLeft(pos, glm::ivec2(32, 32)) || pos.x < 0.f)
+		// Si la flecha izquierda está pulsada
+		else if(Game::instance().getKey(GLFW_KEY_LEFT))
 		{
-			incrRight();
-			sprite->changeAnimation(STAND_LEFT);
-		}
-	}
-	// Con la flecha derecha hago exactamente lo mismo
-	else if(Game::instance().getKey(GLFW_KEY_RIGHT))
-	{
-		// Si la animación actual no es moverse a la derecha, cambio la animación a mover a la izquierda y le sumo desplazamiento
-		if (sprite->animation() != MOVE_RIGHT)
-			sprite->changeAnimation(MOVE_RIGHT);
-		incrRight();
-		// Si detecto colisión o se sale del mapa
-		if (map->collisionMoveRight(pos, glm::ivec2(32, 32)) || pos.x > ((map->getMapSize().x - 1) * map->getTileSize()))
-		{
+			// Si la animación actual no es moverse a la izquierda, cambio la animación a mover a la izquierda y le sumo desplazamiento
+			if (sprite->animation() != MOVE_LEFT)
+				sprite->changeAnimation(MOVE_LEFT);
 			incrLeft();
-			sprite->changeAnimation(STAND_RIGHT);
+			// Si detecto colisión o se sale del mapa
+			if (map->collisionMoveLeft(pos, glm::ivec2(32, 32)) || pos.x < 0.f)
+			{
+				incrRight();
+				sprite->changeAnimation(STAND_LEFT);
+			}
 		}
-	}
-	// Si ninguna de las flechas está pulsada entonces dejo el personaje quieto mirando hacia el lado que corresponda
-	else
-	{
-		if(sprite->animation() == MOVE_LEFT)
-			sprite->changeAnimation(STAND_LEFT);
-		else if(sprite->animation() == MOVE_RIGHT)
-			sprite->changeAnimation(STAND_RIGHT);
-	}
-	// Si está saltando
-	if(bJumping)
-	{
-		jumpAngle += JUMP_ANGLE_STEP;
-		if(jumpAngle == 180) {
-			bJumping = false;
-			pos.y = startY;
+		// Con la flecha derecha hago exactamente lo mismo
+		else if(Game::instance().getKey(GLFW_KEY_RIGHT))
+		{
+			// Si la animación actual no es moverse a la derecha, cambio la animación a mover a la izquierda y le sumo desplazamiento
+			if (sprite->animation() != MOVE_RIGHT)
+				sprite->changeAnimation(MOVE_RIGHT);
+			incrRight();
+			// Si detecto colisión o se sale del mapa
+			if (map->collisionMoveRight(pos, glm::ivec2(32, 32)) || pos.x > ((map->getMapSize().x - 1) * map->getTileSize()))
+			{
+				incrLeft();
+				sprite->changeAnimation(STAND_RIGHT);
+			}
 		}
+		// Si ninguna de las flechas está pulsada entonces dejo el personaje quieto mirando hacia el lado que corresponda
 		else
 		{
-			pos.y = int(startY - 96 * sin(3.14159f * jumpAngle / 180.f));
-			if(jumpAngle > 90)
-				bJumping = !map->collisionMoveDown(pos, glm::ivec2(32, 32), &pos.y, FALL_STEP);
+			if(sprite->animation() == MOVE_LEFT)
+				sprite->changeAnimation(STAND_LEFT);
+			else if(sprite->animation() == MOVE_RIGHT)
+				sprite->changeAnimation(STAND_RIGHT);
 		}
-	}
-	else if (!map->collisionLadderUp(pos, glm::ivec2(32, 32)) && !map->collisionLadderDown(pos, glm::ivec2(32, 32)))
-	{
-		pos.y += FALL_STEP;
-		if(map->collisionMoveDown(pos, glm::ivec2(32, 32), &pos.y, FALL_STEP))
+		// Si está saltando
+		if(bJumping)
 		{
-			if(Game::instance().getKey(GLFW_KEY_SPACE))
+			jumpAngle += JUMP_ANGLE_STEP;
+			if(jumpAngle == 180) {
+				bJumping = false;
+				pos.y = startY;
+			}
+			else
 			{
-				bJumping = true;
-				jumpAngle = 0;
-				startY = pos.y;
+				pos.y = int(startY - 96 * sin(3.14159f * jumpAngle / 180.f));
+				if(jumpAngle > 90)
+					bJumping = !map->collisionMoveDown(pos, glm::ivec2(32, 32), &pos.y, FALL_STEP);
+			}
+		}
+		else if (!map->collisionLadderUp(pos, glm::ivec2(32, 32)) && !map->collisionLadderDown(pos, glm::ivec2(32, 32)))
+		{
+			pos.y += FALL_STEP;
+			if(map->collisionMoveDown(pos, glm::ivec2(32, 32), &pos.y, FALL_STEP))
+			{
+				if(Game::instance().getKey(GLFW_KEY_SPACE))
+				{
+					bJumping = true;
+					jumpAngle = 0;
+					startY = pos.y;
+				}
 			}
 		}
 	}
 
+
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
+}
+
+void Player::setAnimation(const string& anim)
+{
+	if (anim == "STAND_LEFT")
+		sprite->changeAnimation(STAND_LEFT);
+	else if (anim == "STAND_RIGHT")
+		sprite->changeAnimation(STAND_RIGHT);
+	else if (anim == "MOVE_LEFT")
+		sprite->changeAnimation(MOVE_LEFT);
+	else if (anim == "MOVE_RIGHT")
+		sprite->changeAnimation(MOVE_RIGHT);
+	else if (anim == "ENTERING_DOOR")
+		sprite->changeAnimation(ENTERING_DOOR);
+	else if (anim == "EXITING_DOOR")
+		sprite->changeAnimation(EXITING_DOOR);
 }
 
 void Player::setTileMap(TileMap *tileMap)
