@@ -31,6 +31,7 @@ private:
 	int jumpAngle, startY;				// Ángulo de salto y posición inicial en Y para el salto
 	TileMap* map;						// Mapa de tiles para detectar colisiones
 	bool blockedInput;
+
 };
 
 

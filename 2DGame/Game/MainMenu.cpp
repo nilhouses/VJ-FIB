@@ -3,7 +3,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
-MainMenu::MainMenu() {
+MainMenu::MainMenu() : Scene(SceneType::MAINMENU) {
     background = NULL;
     cursor = NULL;
 }

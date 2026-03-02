@@ -10,7 +10,7 @@
 #define SCREEN_X 0
 #define SCREEN_Y 0
 
-enum LevelState { NORMAL, ENTERING_DOOR, EXITING_DOOR };
+enum LevelState { NORMAL, ENTERING_DOOR, EXITING_DOOR, DYING};
 
 // Cooldowns entre interacciones
 float transitionTimer = 0.f;
@@ -18,7 +18,7 @@ float transitionTimer = 0.f;
 
 // ---------------------- CONSTRUCTORS ----------------------
 
-Level::Level(int levelNumber)
+Level::Level(int levelNumber) : Scene(SceneType::LEVEL)
 {
     level = levelNumber;
 }
@@ -210,8 +210,15 @@ void Level::handlePlayerCollision(Player* player, Entity* e, glm::vec2& rangeCol
             Dummy* d = static_cast<Dummy*>(e);
             // Si el dummy se està muriendo no puede matar a nadie
             if (!d->isDying()) {
-                d->die();
-                //player->die();
+
+                // Configurar transición a la nueva habitación
+                state = DYING;
+                transitionTimer = 1000.f;
+                rooms[currentRoom]->setTransitioning(true);
+
+                // Cambiar estado visual
+                player->setAnimation("DIE");
+                player->blockInput(); // Bloquear input del jugador durante la transición
             }
             break;
         }        
@@ -247,7 +254,9 @@ void Level::checkCollisions()
         glm::vec2 offset(0.f, 0.f);
         if (e->getType() == Type::KEY) {
             offset = glm::vec2(8.f, 8.f);
-        }
+        } else if (e->getType() == Type::DUMMY) {
+            offset = glm::vec2(5.f, 9.f);
+		}
 
 		CollisionInfo collision = overlap(playerBox, e->getBoundingBox(), offset);
 
@@ -284,7 +293,7 @@ void Level::update(int deltaTime)
                 player->setAnimation("EXITING_DOOR");
                 rooms[currentRoom]->setTransitioning(true);
 
-                // Cambio de estado a ENTERING_DOOR
+                // Cambio de estado a EXITING_DOOR
                 state = EXITING_DOOR;
                 transitionTimer = 1000.f;
             }
@@ -303,6 +312,19 @@ void Level::update(int deltaTime)
             }
 
             break;
+        case DYING:
+            transitionTimer = std::max(0.f, transitionTimer - deltaTime);
+            if (transitionTimer == 0.f) {
+                // Animación acabada
+                Player* player = rooms[currentRoom]->getPlayer();
+                player->unblockInput();
+                if (numLives > 0) {
+                    numLives--;
+					cout << "numLives: " << numLives << endl;
+                    init(); // Temporal, el init vuelve a leer todos los ficheros. Necesitaremos un reset()
+                }
+            }
+			break;
 	}
 }
 
@@ -314,3 +336,8 @@ void Level::render()
     // Se renderiza solo la habitación actual en su estado actual
 	rooms[currentRoom]->render();
 }
+
+
+
+bool Level::gameOver() { return (numLives == 0); }
+bool Level::getLevelCompleted() { return levelCompleted; } // Se deberá poner que se haya entrado en la última puerta, con todas las llaves recogidas

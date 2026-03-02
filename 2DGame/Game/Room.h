@@ -26,7 +26,8 @@ public:
 	Player* getPlayer() { return player; }
     TileMap* getMap() { return map; }
     vector<Entity*>& getEntities() { return entities; }
-
+    vector<Entity*>& getEnemys() { return enemies; }
+    
 	void setTransitioning(bool t) { transitioning = t; }
 
 
@@ -40,6 +41,7 @@ private:
 	Player* player;            // El jugador de la habitación, para facilitar el acceso a la habitación desde el jugador y viceversa
     TileMap* map;
     vector<Entity*> entities;
+    vector<Entity*> enemies;
     vector<Asset*> assets;
 	int numRoom;
 	bool transitioning; // Indica si se está realizando una transición entre habitaciones para evitar actualizar la lógica de la habitación durante la transición

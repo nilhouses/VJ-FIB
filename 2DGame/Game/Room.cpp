@@ -32,6 +32,11 @@ Room::~Room()
             delete entity;
     }
 	entities.clear();
+    for (Entity* enemy : enemies) {
+        if (enemy != nullptr)
+            delete enemy;
+    }
+    enemies.clear();
     for (Asset* asset : assets) {
         if (asset != nullptr)
             delete asset;
@@ -86,6 +91,7 @@ void Room::createEntity(const glm::ivec2& tileMapPos, const string& type, int tx
         dummy->init(tileMapPos, texProgram, camera);
         dummy->setTileMap(map);
         entity = dummy;
+		enemies.push_back(dummy);
     }
     // ...
      

@@ -13,7 +13,7 @@
 // Definimos 4 tipos de animaciones para el jugador
 enum PlayerAnims
 {
-	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, ENTERING_DOOR, EXITING_DOOR, NUM_ANIMS
+	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, ENTERING_DOOR, EXITING_DOOR, DIE, NUM_ANIMS
 };
 
 
@@ -68,6 +68,13 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	sprite->addKeyframe(EXITING_DOOR, glm::vec2(0.75f, 0.f));
 	sprite->addKeyframe(EXITING_DOOR, glm::vec2(0.75f, 0.25f));
 	sprite->addKeyframe(EXITING_DOOR, glm::vec2(0.75f, 0.5f));
+
+	sprite->setAnimationSpeed(DIE, 20);
+	sprite->addKeyframe(DIE, glm::vec2(0.5f, 0.f));
+	sprite->addKeyframe(DIE, glm::vec2(0.5f, 0.5f));
+	sprite->addKeyframe(DIE, glm::vec2(0.5f, 0.25f));
+	sprite->addKeyframe(DIE, glm::vec2(0.f, 0.f));
+
 
 	sprite->changeAnimation(STAND_RIGHT);
 }
@@ -194,6 +201,8 @@ void Player::setAnimation(const string& anim)
 		sprite->changeAnimation(ENTERING_DOOR);
 	else if (anim == "EXITING_DOOR")
 		sprite->changeAnimation(EXITING_DOOR);
+	else if (anim == "DIE")
+		sprite->changeAnimation(DIE);
 }
 
 void Player::setTileMap(TileMap *tileMap)

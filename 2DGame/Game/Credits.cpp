@@ -3,7 +3,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
-Credits::Credits() {
+Credits::Credits() : Scene(SceneType::CREDITS) {
     background = NULL;
 }
 
@@ -48,7 +48,7 @@ void Credits::render() {
     text.render("CREDITS", glm::vec2(200, 80), 40, glm::vec4(0, 0, 0, 1), projection); // Verde claro
 
     text.render("DEVELOPERS:", glm::vec2(100, 180), 20, glm::vec4(0, 0, 0, 1), projection);
-    text.render("Alejandro Ruiz Patón", glm::vec2(100, 230), 25, glm::vec4(0, 0, 0, 1), projection);
+    text.render("Alejandro Ruiz Patn", glm::vec2(100, 230), 25, glm::vec4(0, 0, 0, 1), projection);
     text.render("Nil Casas Duatis", glm::vec2(100, 280), 25, glm::vec4(0, 0, 0, 1), projection);
     
     text.render("ART DESIGN:", glm::vec2(100, 350), 20, glm::vec4(0, 0, 0, 1), projection);
