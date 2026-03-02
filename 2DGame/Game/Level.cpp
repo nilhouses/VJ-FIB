@@ -10,6 +10,12 @@
 #define SCREEN_X 0
 #define SCREEN_Y 0
 
+// Tamaño de cámara
+#define CAMERA_WIDTH 640
+#define CAMERA_HEIGHT 480
+#define HUD_HEIGHT 0
+
+
 enum LevelState { NORMAL, ENTERING_DOOR, EXITING_DOOR, DYING};
 
 // Cooldowns entre interacciones
@@ -64,38 +70,170 @@ void Level::initShaders()
     fShader.free();
 }
 
-
-void Level::loadGlobalInfo(const string& globalInfoPath)
+Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom)
 {
-    ifstream fin(globalInfoPath);
-	string property;
+    Entity* entity = nullptr;
+	TileMap* map = rooms[indexRoom]->getMap();
 
-    while (fin >> property)
+    if (type == "PLAYER")
     {
-        if (property == "ALL_KEYS")
+        player = new Player();
+        player->init(glm::vec2(SCREEN_X,SCREEN_Y), texProgram, camera);
+        player->setTileMap(map);
+        entity = player;
+    }
+    else if (type == "KEY")
+    {
+        Key* key = new Key();
+        key->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera);
+        entity = key;
+    }
+    else if (type == "WEIGHT")
+    {
+        Weight* weight = new Weight();
+        weight->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera, glm::vec2(float(tx * map->getTileSize()), float(ty * map->getTileSize())));
+        weight->setTileMap(map);
+        entity = weight;
+    }
+    else if (type == "DOOR")
+    {
+        Door* door = new Door();
+        door->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera);
+        if (indexRoom != 0)
+            door->setToVisited();
+        entity = door;
+    }
+    else if (type == "DUMMY")
+    {
+        Dummy* dummy = new Dummy();
+        dummy->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera);
+        dummy->setTileMap(map);
+        entity = dummy;
+        // Añado al vector de enemigos
+		rooms[indexRoom]->addEnemy(dummy);
+    }
+    // ...
+
+    // Común para todas las entidades
+    if (entity != nullptr)
+    {
+        entity->setPosition(glm::vec2(float(tx * map->getTileSize()), float(ty * map->getTileSize())));
+		entity->setRoom(indexRoom);
+		// Añado la entidad a la habitación correspondiente
+        if (type != "PLAYER") rooms[indexRoom]->addEntity(entity);
+    }
+
+	return entity;
+}
+
+
+void Level::loadEntities()
+{
+	string entityPath = "levels/level0" + std::to_string(level) + "/entities.txt";
+    ifstream fin(entityPath);
+
+    string type;
+    int count;
+
+    while (fin >> type)
+    {
+        fin >> count;
+
+        for (int i = 0; i < count; ++i)
         {
-            fin >> allKeys;
+            int indexRoom, tileX, tileY;
+            fin >> indexRoom >> tileX >> tileY;
+
+            Entity* e1 = createEntity(type, tileX, tileY, indexRoom);
+            
+            // Si la entidad es una puerta leo su puerta conectada para enlazarlas
+            if (type == "DOOR") {
+                fin >> indexRoom >> tileX >> tileY;
+                Entity* e2 = createEntity(type, tileX, tileY, indexRoom);
+
+                Door* d1 = static_cast<Door*>(e1);
+                Door* d2 = static_cast<Door*>(e2);
+
+				d1->setDoorTo(d2);
+				d2->setDoorTo(d1);
+            }
         }
-        else if (property == "NUM_ROOMS")
+    }
+}
+
+
+void Level::createAsset(const string& spriteDir, glm::vec2& pos, glm::vec2& size, int indexRoom)
+{
+    Asset* asset = new Asset();
+    asset->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, spriteDir, size, camera);
+	int tileSize = rooms[indexRoom]->getMap()->getTileSize();
+    asset->setPosition(glm::vec2(float(pos.x * tileSize), float(pos.y * tileSize)));
+	// Añado el asset a la habitación correspondiente
+	rooms[indexRoom]->addAsset(asset);
+}
+
+
+void Level::loadAssets()
+{
+	string assetPath = "levels/level0" + std::to_string(level) + "/assets.txt";
+    ifstream fin(assetPath);
+
+    string path;
+    int count;
+
+    while (fin >> path)
+    {
+        fin >> count;
+
+        int sizeX, sizeY;
+
+        fin >> sizeX >> sizeY;
+
+        for (int i = 0; i < count; ++i)
         {
-            fin >> numRooms;
-		}
-        // Aquí se pueden añadir más propiedades globales del nivel
+            int indexRoom, tileX, tileY;
+            fin >> indexRoom >> tileX >> tileY;
+
+            createAsset(path, glm::vec2(tileX, tileY), glm::vec2(sizeX, sizeY), indexRoom);
+        }
+    }
+}
+
+
+void Level::loadMaps(vector<TileMap*>& maps, int totalMaps)
+{
+    for (int i = 0; i < totalMaps; ++i)
+    {
+        string mapPath = "levels/level0" + std::to_string(level) + "/maps/map" + std::to_string(i) + ".txt";
+        maps[i] = TileMap::createTileMap(mapPath, glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	}
 }
 
 
-void Level::loadRooms()
+void Level::createRooms()
 {
-    for (int i = 0; i <= numRooms; ++i)
+    string indexPath = "levels/level0" + std::to_string(level) + "/indexMapToRoom.txt";
+	ifstream fin(indexPath);
+
+	int totalRooms, totalMaps;
+	fin >> totalRooms >> totalMaps; // Número de Rooms y Maps distintos
+
+	vector<TileMap*> maps(totalMaps);
+	loadMaps(maps, totalMaps);  // Se cargan los mapas y se guardan sus referencias en el vector maps para asignarlos a cada habitación
+
+	int roomIndex, mapIndex;
+    for (int i = 0; i < totalRooms; ++i)
     {
-        Room* room = new Room(texProgram, projection);
-        string levelPath = "levels/level0" + std::to_string(level) + "/room0" + std::to_string(i) + "/map.txt";
-        string entityPath = "levels/level0" + std::to_string(level) + "/room0" + std::to_string(i) + "/entities.txt";
-        string assetPath = "levels/level0" + std::to_string(level) + "/room0" + std::to_string(i) + "/assets.txt";
-        room->init(glm::vec2(SCREEN_X, SCREEN_Y), levelPath, entityPath, assetPath, i);
-        rooms.push_back(room);
-    }
+        fin >> roomIndex >> mapIndex;
+		Room* room = new Room(texProgram);
+        room->init();
+		room->setMap(maps[mapIndex]); // Se asigna el mapa correspondiente a la habitación
+		rooms.push_back(room);
+	}
+
+	// Se cargan las entidades y los assets después de crear las habitaciones para poder asignar cada entidad a su habitación correspondiente
+	loadAssets();
+    loadEntities();
 }
 
 
@@ -106,13 +244,14 @@ void Level::init()
 	// Atributos globales del nivel
 	collectedKeys = 0;
 	string globalInfoPath = "levels/level0" + std::to_string(level) + "/globalInfo.txt";
-    loadGlobalInfo(globalInfoPath);
 	levelCompleted = false;
 	rooms = vector<Room*>();
 	currentRoom = 0;
     state = NORMAL;
+    camera = new Camera(CAMERA_WIDTH, CAMERA_HEIGHT, HUD_HEIGHT);
+    projection = glm::ortho(0.f, float(CAMERA_WIDTH), float(CAMERA_HEIGHT), 0.f);
 
-    loadRooms();
+    createRooms();
 
     currentTime = 0.0f;
 }
@@ -150,7 +289,7 @@ CollisionInfo Level::overlap(const glm::vec4& a, const glm::vec4& b, const glm::
 }
 
 
-void Level::handlePlayerCollision(Player* player, Entity* e, glm::vec2& rangeCollided)
+void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided)
 {
     switch (e->getType())
     {
@@ -194,8 +333,9 @@ void Level::handlePlayerCollision(Player* player, Entity* e, glm::vec2& rangeCol
                 // Configurar transición a la nueva habitación
                 state = ENTERING_DOOR;
                 transitionTimer = 1000.f;
-                targetRoom = door->getRoomTo();
-                targetSpawnPosition = door->getDoorTargetPosition();
+				Door* targetDoor = door->getDoorTo();
+                targetRoom = targetDoor->getRoom();
+                targetSpawnPosition = targetDoor->getPosition();
                 rooms[currentRoom]->setTransitioning(true);
 
                 // Cambiar estado visual
@@ -242,7 +382,6 @@ void Level::handlePlayerCollision(Player* player, Entity* e, glm::vec2& rangeCol
 void Level::checkCollisions()
 {
 	// Comprobar colisiones entre el jugador y las entidades del nivel actual
-	Player* player = rooms[currentRoom]->getPlayer();
     vector<Entity*>& entities = rooms[currentRoom]->getEntities();
 
     auto playerBox = player->getBoundingBox();
@@ -262,7 +401,7 @@ void Level::checkCollisions()
 
         if ((e->getType() != player->getType()) && collision.colliding)
         {
-            handlePlayerCollision(player, e, collision.rangeColision);
+            handlePlayerCollision(e, collision.rangeColision);
         }
     }
 }
@@ -273,6 +412,7 @@ void Level::update(int deltaTime)
     currentTime += deltaTime;
 
     rooms[currentRoom]->update(deltaTime);
+	player->update(deltaTime);
 
     switch(state)
     {
@@ -286,9 +426,9 @@ void Level::update(int deltaTime)
             if (transitionTimer == 0.f) {
                 currentRoom = targetRoom;
 
-                Player* player = rooms[currentRoom]->getPlayer();
 				float tileSize = rooms[currentRoom]->getMap()->getTileSize();
-                player->setPosition(glm::vec2(targetSpawnPosition.x * tileSize, targetSpawnPosition.y * tileSize));
+                player->setPosition(glm::vec2(targetSpawnPosition.x, targetSpawnPosition.y));
+                player->setTileMap(rooms[currentRoom]->getMap());
 				player->blockInput();
                 player->setAnimation("EXITING_DOOR");
                 rooms[currentRoom]->setTransitioning(true);
@@ -304,7 +444,6 @@ void Level::update(int deltaTime)
             transitionTimer = std::max(0.f, transitionTimer - deltaTime);
 
             if (transitionTimer == 0.f) {
-                Player* player = rooms[currentRoom]->getPlayer();
                 player->setAnimation("STAND_RIGHT");
 				player->unblockInput();
                 rooms[currentRoom]->setTransitioning(false);
@@ -316,7 +455,6 @@ void Level::update(int deltaTime)
             transitionTimer = std::max(0.f, transitionTimer - deltaTime);
             if (transitionTimer == 0.f) {
                 // Animación acabada
-                Player* player = rooms[currentRoom]->getPlayer();
                 player->unblockInput();
                 if (numLives > 0) {
                     numLives--;
@@ -326,6 +464,8 @@ void Level::update(int deltaTime)
             }
 			break;
 	}
+
+	camera->update(player->getPosition(), rooms[currentRoom]->getMap()->getMapSize() * rooms[currentRoom]->getMap()->getTileSize());
 }
 
 
@@ -334,7 +474,8 @@ void Level::update(int deltaTime)
 void Level::render()
 {
     // Se renderiza solo la habitación actual en su estado actual
-	rooms[currentRoom]->render();
+	rooms[currentRoom]->render(camera, projection);
+	player->render();
 }
 
 

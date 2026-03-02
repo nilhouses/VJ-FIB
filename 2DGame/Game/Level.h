@@ -34,18 +34,24 @@ public:
 
 private:
 	void initShaders();	// Carga el VS y FS y los linkea al texProgram
-	void loadGlobalInfo(const string& globalInfoPath); // Carga la información global del nivel (número total de llaves, etc.) a través de un fichero de texto
-	void loadRooms(); // Carga las habitaciones del nivel
+	void createRooms(); // Carga las habitaciones del nivel
 
 	void checkCollisions(); // Comprueba las colisiones entre el jugador y las entidades del nivel actual y actualiza el estado del juego en consecuencia
-	void handlePlayerCollision(Player* player, Entity* e, glm::vec2& rangeCollided); // Maneja la colisión entre el jugador y una entidad.
+	void handlePlayerCollision(Entity* e, glm::vec2& rangeCollided); // Maneja la colisión entre el jugador y una entidad.
 	CollisionInfo overlap(const glm::vec4& a, const glm::vec4& b, const glm::vec2& offset); // Función auxiliar para detectar si dos bounding boxes se solapan (colisionan)
+
+	void loadMaps(vector<TileMap*>& maps, int totalMaps);		// Carga los mapas de tiles de cada habitación a través de un fichero de texto
+	void loadEntities();	// Carga las entidades del nivel a través de un fichero de texto
+	void loadAssets();		// Carga los elementos decorativos del nivel a través de un fichero de texto
+	Entity* createEntity(const string& type, int tileX, int tileY, int indexRoom); // Crea una entidad del tipo dado en la posición dada (en tiles)
+	void createAsset(const string& spriteDir, glm::vec2& pos, glm::vec2& size, int indexRoom); // Crea un elemento decorativo en la posición dada (en tiles) y con el tamaño dado (en tiles)
 
 private:
     ShaderProgram texProgram;	// El programa de shaders para renderizar el mapa y el jugador
     float currentTime;			// El tiempo actual del juego
 
 	// Global attributes of the level
+	Player* player;			// El jugador del nivel
     int level;
 	int collectedKeys;			// N�mero de llaves recogidas por el jugador
 	int allKeys;				// N�mero total de llaves en el nivel
@@ -58,6 +64,9 @@ private:
 	int state;
 	int targetRoom;					// La habitación a la que se quiere entrar o salir (en caso de estar en estado ENTERING_DOOR o EXITING_DOOR)
 	glm::vec2 targetSpawnPosition;	// La posición a la que se quiere posicionar el jugador al entrar o salir por una puerta
+
+	Camera* camera;
+	glm::mat4 projection;
 };
 
 #endif // _LEVEL_INCLUDE

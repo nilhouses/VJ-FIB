@@ -19,15 +19,13 @@ public:
 
 	void setToVisited();
 	bool getVisited() { return visited; }
-	void setRoomTo(int room) { roomTo = room; }
-	int getRoomTo() { return roomTo; }
-	void setDoorTargetPosition(const glm::vec2& pos) { doorTargetPosition = pos; }
-	glm::vec2 getDoorTargetPosition() { return doorTargetPosition; }
+
+	void setDoorTo(Door* door) { this->doorTo = door; }
+	Door* getDoorTo() { return doorTo; }
 
 private:
 	bool visited;
-	int roomTo;						// Número de habitación a la que lleva la puerta
-	glm::vec2 doorTargetPosition;	// Posición a la que se quiere posicionar el jugador al entrar por esta puerta (en tiles)
+	Door* doorTo; // Puerta a la que se conecta esta puerta
 };
 
 

@@ -80,8 +80,6 @@ bool TileMap::loadLevel(const string& levelFile)
 	if (!fin.is_open())
 		return false;
 	getline(fin, line);
-	if (line.compare(0, 7, "TILEMAP") != 0)
-		return false;
 	getline(fin, line);
 	sstream.str(line);
 	sstream >> mapSize.x >> mapSize.y;
@@ -319,4 +317,30 @@ bool TileMap::isSolid(int x, int y)
 bool TileMap::isLadder(int x, int y) {
 	int tile = front[y * mapSize.x + x];
 	return getTileType(tile) == TILE_LADDER;
+}
+
+
+
+
+void TileMap::print() const
+{
+	for (int j = 0; j < mapSize.y; j++)
+	{
+		for (int i = 0; i < mapSize.x; i++)
+		{
+			cout << map[j * mapSize.x + i] << " ";
+		}
+		cout << endl;
+	}
+
+	cout << "---------------------" << endl;
+
+	for (int j = 0; j < mapSize.y; j++)
+	{
+		for (int i = 0; i < mapSize.x; i++)
+		{
+			cout << front[j * mapSize.x + i] << " ";
+		}
+		cout << endl;
+	}
 }

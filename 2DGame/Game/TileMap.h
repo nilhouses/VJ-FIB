@@ -42,6 +42,8 @@ public:
 	bool collisionLadderUp(const glm::vec2& pos, const glm::ivec2& size);
 	bool collisionLadderDown(const glm::vec2& pos, const glm::ivec2& size);
 	bool collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY, int fallStep);
+
+	void print() const; // Función de depuración para imprimir el mapa en consola
 	
 private:
 	bool loadLevel(const string& levelFile);

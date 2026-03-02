@@ -7,19 +7,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 
-// Tamaño de cámara
-#define CAMERA_WIDTH 640
-#define CAMERA_HEIGHT 480
-#define HUD_HEIGHT 0
-
-
 // ---------------------- CONSTRUCTORS ----------------------
 
-Room::Room(ShaderProgram& shaderProgram, glm::mat4& projection)
-	: texProgram(shaderProgram), projection(projection)
+Room::Room(ShaderProgram& shaderProgram)
+	: texProgram(shaderProgram)
 {
-	camera = nullptr;
-    player = nullptr;
     map = nullptr;
 }
 
@@ -42,145 +34,13 @@ Room::~Room()
             delete asset;
 	}
 	assets.clear();
-	if (camera != nullptr)
-        delete camera;
-    if (player != nullptr)
-		delete player;
 }
 
 // ---------------------- INIT ----------------------
 
-void Room::createEntity(const glm::ivec2& tileMapPos, const string& type, int tx, int ty, int roomTo, int prx, int pry)
+void Room::init()
 {
-    Entity* entity = nullptr;
-
-    if (type == "PLAYER")
-    {
-        player = new Player();
-        player->init(tileMapPos, texProgram, camera);
-        player->setTileMap(map);
-        entity = player;
-    }
-    else if (type == "KEY")
-    {
-        Key* key = new Key();
-        key->init(tileMapPos, texProgram, camera);
-        entity = key;
-    }
-    else if (type == "WEIGHT")
-    {
-        Weight* weight = new Weight();
-        weight->init(tileMapPos, texProgram, camera, glm::vec2(float(tx * map->getTileSize()), float(ty * map->getTileSize())));
-        weight->setTileMap(map);
-        entity = weight;
-    }
-    else if (type == "DOOR")
-    {
-        Door* door = new Door();
-        door->init(tileMapPos, texProgram, camera);
-		door->setRoomTo(roomTo);
-        if (numRoom != 0)
-            door->setToVisited();
-		door->setDoorTargetPosition(glm::vec2(float(prx), float(pry)));
-
-        entity = door;
-    }
-    else if (type == "DUMMY")
-    {
-        Dummy* dummy = new Dummy();
-        dummy->init(tileMapPos, texProgram, camera);
-        dummy->setTileMap(map);
-        entity = dummy;
-		enemies.push_back(dummy);
-    }
-    // ...
-     
-    // Común para todas las entidades
-    if (entity != nullptr)
-    {
-        entity->setPosition(glm::vec2(float(tx * map->getTileSize()), float(ty * map->getTileSize())));
-        entities.push_back(entity);
-    }
-}
-
-void Room::loadEntities(const glm::ivec2& tileMapPos, const string& entityPath)
-{
-    ifstream fin(entityPath);
-
-    string type;
-    int count;
-
-    while (fin >> type)
-    {
-        fin >> count;
-
-        for (int i = 0; i < count; ++i)
-        {
-            int tileX, tileY;
-            fin >> tileX >> tileY;
-
-            int roomTo = -1;
-            int posRelativeDoorX = -1;
-            int posRelativeDoorY = -1;
-
-			if (type == "DOOR") // Las puertas tienen info extra (número de room destino, posición relativa a la puerta a la que se teletransporta el jugador)
-                fin >> roomTo >> posRelativeDoorX >> posRelativeDoorY;
-
-            createEntity(tileMapPos, type, tileX, tileY, roomTo, posRelativeDoorX, posRelativeDoorY);
-        }
-    }
-}
-
-
-void Room::createAsset(const glm::ivec2& tileMapPos, const string& spriteDir, glm::vec2& pos, glm::vec2& size)
-{
-    Asset* asset = new Asset();
-    asset->init(tileMapPos, texProgram, spriteDir, size, camera);
-    asset->setPosition(glm::vec2(float(pos.x * map->getTileSize()), float(pos.y * map->getTileSize())));
-    assets.push_back(asset);
-}
-
-
-void Room::loadAssets(const glm::ivec2& tileMapPos, const string& assetPath)
-{
-    ifstream fin(assetPath);
-
-    string path;
-    int count;
-
-    while (fin >> path)
-    {
-        fin >> count;
-
-        int sizeX, sizeY;
-
-        fin >> sizeX >> sizeY;
-
-        for (int i = 0; i < count; ++i)
-        {
-            int tileX, tileY;
-            fin >> tileX >> tileY;
-
-            createAsset(tileMapPos, path, glm::vec2(tileX, tileY), glm::vec2(sizeX, sizeY));
-        }
-    }
-}
-
-
-void Room::init(const glm::ivec2& tileMapPos, const string& levelPath, const string& entityPath, const string& assetPath, int numRoom)
-{
-    // Creamos la cámara para que se añada a cada elemento del mapa
-    camera = new Camera(CAMERA_WIDTH, CAMERA_HEIGHT, HUD_HEIGHT);
-    projection = glm::ortho(0.f, float(CAMERA_WIDTH), float(CAMERA_HEIGHT), 0.f);
-	this->numRoom = numRoom;
 	transitioning = false;
-
-    // Carga el mapa a través de un fichero de texto
-    map = TileMap::createTileMap(levelPath, tileMapPos, texProgram);
-	// Carga las entidades
-    loadEntities(tileMapPos, entityPath);
-	// Carga los elementos decorativos
-    loadAssets(tileMapPos, assetPath);
 }
 
 
@@ -190,9 +50,7 @@ void Room::init(const glm::ivec2& tileMapPos, const string& levelPath, const str
 void Room::update(int deltaTime)
 {
     // Solo actualizo la animación del jugador durante la transición y se mantiene bloqueada su entrada
-    if (transitioning)
-		player->update(deltaTime);
-    else {
+    if (!transitioning) {
         // Actualizar entidades
         for (Entity* entity : entities)
         {
@@ -200,16 +58,12 @@ void Room::update(int deltaTime)
                 entity->update(deltaTime);
         }
     }
-
-    camera->update(player->getPosition(), map->getMapSize() * map->getTileSize());
-
-    // Las colisiones se detectarán desde la clase global Level para actualizar el estado del juego
 }
 
 
 // ---------------------- RENDER ----------------------
 
-void Room::render()
+void Room::render(Camera* camera, glm::mat4& projection)
 {
     glm::mat4 modelview;
     texProgram.use();
