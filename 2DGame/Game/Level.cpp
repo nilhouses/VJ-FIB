@@ -213,9 +213,8 @@ void Level::handlePlayerCollision(Player* player, Entity* e, glm::vec2& rangeCol
                 d->die();
                 //player->die();
             }
-            break
-        }
-        
+            break;
+        }        
     }
 }
 
