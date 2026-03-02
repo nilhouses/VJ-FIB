@@ -164,6 +164,11 @@ void Level::handlePlayerCollision(Player* player, Entity* e, glm::vec2& rangeCol
         {
             // Castear a clase Weight, entity no tiene la función
             Weight* w = static_cast<Weight*>(e);
+
+            //El player no trata el weight como una caja si esta está explotando
+            if (w->isExploding()) break;
+            
+            // Colisiones
             float playerBottom = player->getPosition().y + (player->getBoundingBox().w);
             float weightTop = w->getPosition().y;
             float weightBottom = w->getPosition().y + (w->getBoundingBox().w);
@@ -225,23 +230,30 @@ void Level::handlePlayerCollision(Player* player, Entity* e, glm::vec2& rangeCol
     }
 }
 
-//void Level::handleEnemyCollision(Enemy* enemy, Entity* e)
-//{
-//    switch (e->getType())
-//    {
-//    case Type::WEIGHT:
-//        Weight* w = static_cast<Weight*>(e);
-//        if (w->isMoving()) {
-//            enemy->die();
-//        }
-//        break;
-//    }
-//}
+void Level::handleEnemyCollision(Entity* enemy, Entity* e, glm::vec2& rangeCollided)
+{
+    switch (enemy->getType())
+    {
+        case Type::DUMMY:
+        {
+            Dummy* d = static_cast<Dummy*>(enemy);
+            switch (e->getType())
+            {
+            case Type::WEIGHT:
+                Weight* w = static_cast<Weight*>(e);
+                if (w->isMoving() || w->isExploding())
+                    d->die();
+                else d->changeDirection();
+                break;
+            }
+        }
+    }
+}
 
 
 void Level::checkCollisions()
 {
-	// Comprobar colisiones entre el jugador y las entidades del nivel actual
+	// 1. Comprobar colisiones entre el jugador y las entidades del nivel actual
 	Player* player = rooms[currentRoom]->getPlayer();
     vector<Entity*>& entities = rooms[currentRoom]->getEntities();
 
@@ -263,6 +275,36 @@ void Level::checkCollisions()
         if ((e->getType() != player->getType()) && collision.colliding)
         {
             handlePlayerCollision(player, e, collision.rangeColision);
+        }
+    }
+
+    // 2. Comprobar colisiones entre los enemigos y las distintas entidades del nivel actual
+    vector<Entity*>& enemies = rooms[currentRoom]->getEnemies();
+
+    for (Entity* enemy : enemies)
+    {
+        if (!enemy->isActive()) continue;
+
+        // El Dummy no tiene colisiones si se está muriendo
+        if (enemy->getType() == Type::DUMMY) {
+            Dummy* d = static_cast<Dummy*>(enemy);
+            if (d->isDying()) continue;
+        }
+
+        auto enemyBox = enemy->getBoundingBox();
+
+        for (Entity* e : entities)
+        {
+            if (!e->isActive()) continue;
+
+            // Offset según cada entity
+            glm::vec2 offset(0.f, 0.f);
+            CollisionInfo collision = overlap(enemyBox, e->getBoundingBox(), offset);
+
+            if ((e->getType() != enemy->getType()) && collision.colliding)
+            {
+                handleEnemyCollision(enemy, e, collision.rangeColision);
+            }
         }
     }
 }

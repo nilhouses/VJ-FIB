@@ -26,7 +26,7 @@ public:
 	Player* getPlayer() { return player; }
     TileMap* getMap() { return map; }
     vector<Entity*>& getEntities() { return entities; }
-    vector<Entity*>& getEnemys() { return enemies; }
+    vector<Entity*>& getEnemies() { return enemies; }
     
 	void setTransitioning(bool t) { transitioning = t; }
 
