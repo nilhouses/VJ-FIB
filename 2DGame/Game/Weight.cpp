@@ -4,7 +4,7 @@
 #include "Weight.h"
 #include "Game.h"
 
-#define FALL_STEP 6	
+#define FALL_STEP 10	
 #define EXPLOSION_DURATION 1000.f // ms
 
 enum WeightAnims
