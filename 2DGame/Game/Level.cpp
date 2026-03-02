@@ -160,18 +160,37 @@ void Level::handlePlayerCollision(Player* player, Entity* e)
         break;
     }
     case Type::DOOR:
-		int centerX = player->getPosition().x + player->getBoundingBox().z / 2;
-        if (Game::instance().getKey(GLFW_KEY_UP) && roomChangeCooldown == 0 && Utils::isCentered(centerX)) {
-
-			// Animación de entrar a la puerta
-			currentRoom = static_cast<Door*>(e)->getRoomTo();
-			// Animación de salir de la puerta
-
-			roomChangeCooldown = 1000.f;     // Cooldown de dos segundos
+    {
+        int centerX = player->getPosition().x + player->getBoundingBox().z / 2;
+        if (Game::instance().getKey(GLFW_KEY_UP) && roomChangeCooldown == 0 && Utils::isCentered(centerX))
+            // Animación de entrar a la puerta
+            currentRoom = static_cast<Door*>(e)->getRoomTo();
+        // Animación de salir de la puerta
+        roomChangeCooldown = 1000.f;     // Cooldown de dos segundos
+    }
+    case Type::DUMMY:
+        Dummy* d = static_cast<Dummy*>(e);
+        // Si el dummy se està muriendo no puede matar a nadie
+        if (!d->isDying()) {
+            d->die();
+            //player->die();
         }
         break;
     }
 }
+
+//void Level::handleEnemyCollision(Enemy* enemy, Entity* e)
+//{
+//    switch (e->getType())
+//    {
+//    case Type::WEIGHT:
+//        Weight* w = static_cast<Weight*>(e);
+//        if (w->isMoving()) {
+//            enemy->die();
+//        }
+//        break;
+//    }
+//}
 
 
 void Level::checkCollisions()

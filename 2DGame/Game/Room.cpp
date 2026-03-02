@@ -73,11 +73,18 @@ void Room::createEntity(const glm::ivec2& tileMapPos, const string& type, int tx
     {
         Door* door = new Door();
         door->init(tileMapPos, texProgram, camera);
-		door->setRoomTo(roomTo);
+        door->setRoomTo(roomTo);
         entity = door;
     }
-    // Aquí se pueden añadir más tipos de entidades
-
+    else if (type == "DUMMY")
+    {
+        Dummy* dummy = new Dummy();
+        dummy->init(tileMapPos, texProgram, camera);
+        dummy->setTileMap(map);
+        entity = dummy;
+    }
+    // ...
+     
     // Común para todas las entidades
     if (entity != nullptr)
     {

@@ -9,6 +9,7 @@
 #include "Key.h"
 #include "Weight.h"
 #include "Door.h"
+#include "Dummy.h"
 #include "Game.h"
 #include "Asset.h"
 

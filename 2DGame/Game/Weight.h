@@ -22,6 +22,7 @@ public:
 	bool isFalling();
 	bool isMoving();
 	void explodeWeight();
+	bool isExploding() const { return explode; }
 
 private:
 	TileMap* map;						// Mapa de tiles para detectar colisiones
