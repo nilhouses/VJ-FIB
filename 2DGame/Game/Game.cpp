@@ -29,7 +29,7 @@ bool Game::update(int deltaTime)
                 if (level->getLevelCompleted()) {
                     currentLevel++;
                     if (currentLevel == 6) changeState(CREDITS); // Ya haremos cinemática tope épica
-                    changeState(PLAYING, currentLevel);
+                    else changeState(PLAYING, currentLevel);
                 }
             }
         }
@@ -82,6 +82,7 @@ void Game::changeState(GameState newState, int levelNumber)
         currentScene = new MainMenu();
         break;
     case PLAYING:
+		cout << "Loading level " << currentLevel << "..." << endl;
         currentScene = new Level(currentLevel);
         break;
     case INSTRUCTIONS:

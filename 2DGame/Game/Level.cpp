@@ -139,24 +139,32 @@ void Level::loadEntities()
     {
         fin >> count;
 
+		if (type == "KEY") allKeys = count;
+
         for (int i = 0; i < count; ++i)
         {
-            int indexRoom, tileX, tileY;
-            fin >> indexRoom >> tileX >> tileY;
+            int indexRoom1, tileX1, tileY1;
+            fin >> indexRoom1 >> tileX1 >> tileY1;
 
-            Entity* e1 = createEntity(type, tileX, tileY, indexRoom);
-            
-            // Si la entidad es una puerta leo su puerta conectada para enlazarlas
-            if (type == "DOOR") {
-                fin >> indexRoom >> tileX >> tileY;
-                Entity* e2 = createEntity(type, tileX, tileY, indexRoom);
+			if (type == "DOOR") {
+                int indexRoom2, tileX2, tileY2;
+                fin >> indexRoom2 >> tileX2 >> tileY2;
+
+                Entity* e1 = createEntity(type, tileX1, tileY1, indexRoom1);
+                Entity* e2 = createEntity(type, tileX2, tileY2, indexRoom2);
 
                 Door* d1 = static_cast<Door*>(e1);
                 Door* d2 = static_cast<Door*>(e2);
 
 				d1->setDoorTo(d2);
 				d2->setDoorTo(d1);
+
+				bool isFinalDoor = (indexRoom1 == indexRoom2) && (tileX1 == tileX2) && (tileY1 == tileY2); // Si la puerta conecta consigo misma, es la puerta final
+				d1->setIsFinalDoor(isFinalDoor);
+				d2->setIsFinalDoor(isFinalDoor);
             }
+            else
+				createEntity(type, tileX1, tileY1, indexRoom1);
         }
     }
 }
@@ -296,7 +304,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided)
         case Type::KEY:
             collectedKeys++;
             e->deactivate();
-            cout << "collectedKeys: " << collectedKeys << endl;
+            cout << "collectedKeys: " << collectedKeys << "/" << allKeys << endl;
             break;
 
         case Type::WEIGHT:
@@ -341,13 +349,18 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided)
             if (Game::instance().getKey(GLFW_KEY_UP) && state == NORMAL && rangeCollided.x > 20) {
                 
                 Door* door = static_cast<Door*>(e);
+
+				if (door->getIsFinalDoor()) {
+                    if (collectedKeys < allKeys) {
+                        cout << "You need to collect all keys to enter the final door!" << endl;
+                        break;
+                    }
+                }
                 
                 // Configurar transición a la nueva habitación
                 state = ENTERING_DOOR;
                 transitionTimer = 1000.f;
-				Door* targetDoor = door->getDoorTo();
-                targetRoom = targetDoor->getRoom();
-                targetSpawnPosition = targetDoor->getPosition();
+				interactedDoor = door;
                 rooms[currentRoom]->setTransitioning(true);
 
                 // Cambiar estado visual
@@ -479,18 +492,27 @@ void Level::update(int deltaTime)
             transitionTimer = std::max(0.f, transitionTimer - deltaTime);
 
             if (transitionTimer == 0.f) {
-                currentRoom = targetRoom;
+				// Si se han recogido todas las llaves y la puerta interactuada es la puerta final, se completa el nivel
+                if (allKeys == collectedKeys && interactedDoor->getIsFinalDoor()) {
+					levelCompleted = true;
+                }
+				// Sino se entra a la habitación conectada a través de la puerta
+                else {
+                    Door* targetDoor = interactedDoor->getDoorTo();
+                    currentRoom = targetDoor->getRoom();
+                    glm::vec2 targetSpawnPosition = targetDoor->getPosition();
 
-				float tileSize = rooms[currentRoom]->getMap()->getTileSize();
-                player->setPosition(glm::vec2(targetSpawnPosition.x, targetSpawnPosition.y));
-                player->setTileMap(rooms[currentRoom]->getMap());
-				player->blockInput();
-                player->setAnimation("EXITING_DOOR");
-                rooms[currentRoom]->setTransitioning(true);
+                    player->setPosition(glm::vec2(targetSpawnPosition.x, targetSpawnPosition.y));
+                    player->setTileMap(rooms[currentRoom]->getMap());
+				    player->blockInput();
+                    player->setAnimation("EXITING_DOOR");
+                    rooms[currentRoom]->setTransitioning(true);
 
-                // Cambio de estado a EXITING_DOOR
-                state = EXITING_DOOR;
-                transitionTimer = 1000.f;
+                    // Cambio de estado a EXITING_DOOR
+                    state = EXITING_DOOR;
+                    transitionTimer = 1000.f;
+                }
+                
             }
 
             break;

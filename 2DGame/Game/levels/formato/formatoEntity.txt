@@ -6,6 +6,8 @@ DOOR		// Nombre de la Entity
 3 1 4
 0 6 9
 2 1 4
+0 20 7		// La puerta final tiene que tener asociada como salida su propia posición
+0 20 7
 KEY
 7
 0 16 2

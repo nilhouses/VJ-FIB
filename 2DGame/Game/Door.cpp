@@ -6,7 +6,7 @@
 
 enum DoorAnims
 {
-	CLOSED, OPENED, NUM_ANIMS
+	CLOSED, OPENED, FINAL, NUM_ANIMS
 };
 
 Door::Door() : Entity(Type::DOOR) {}
@@ -33,6 +33,9 @@ void Door::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Came
 	sprite->setAnimationSpeed(OPENED, 1);
 	sprite->addKeyframe(OPENED, glm::vec2(0.f, 1.f));
 
+	sprite->setAnimationSpeed(FINAL, 1);
+	sprite->addKeyframe(FINAL, glm::vec2(0.66666f, 1.f));
+
 	sprite->changeAnimation(CLOSED);
 }
 
@@ -46,4 +49,10 @@ void Door::setToVisited()
 {
 	visited = true;
 	sprite->changeAnimation(OPENED);
+}
+
+void Door::setIsFinalDoor(bool isFinal)
+{
+	this->isFinalDoor = isFinal;
+	if (isFinal) sprite->changeAnimation(FINAL);
 }

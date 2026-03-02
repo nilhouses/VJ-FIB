@@ -64,8 +64,7 @@ private:
 	int currentRoom;				// La habitación actual en la que se encuentra el jugador
 
 	int state;
-	int targetRoom;					// La habitación a la que se quiere entrar o salir (en caso de estar en estado ENTERING_DOOR o EXITING_DOOR)
-	glm::vec2 targetSpawnPosition;	// La posición a la que se quiere posicionar el jugador al entrar o salir por una puerta
+	Door* interactedDoor = nullptr;
 
 	Camera* camera;
 	glm::mat4 projection;

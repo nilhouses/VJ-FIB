@@ -23,9 +23,13 @@ public:
 	void setDoorTo(Door* door) { this->doorTo = door; }
 	Door* getDoorTo() { return doorTo; }
 
+	void setIsFinalDoor(bool isFinal);
+	bool getIsFinalDoor() { return isFinalDoor; }
+
 private:
 	bool visited;
-	Door* doorTo; // Puerta a la que se conecta esta puerta
+	Door* doorTo = nullptr; // Puerta a la que se conecta esta puerta
+	bool isFinalDoor;
 };
 
 
