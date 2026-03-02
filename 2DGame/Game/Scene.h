@@ -7,6 +7,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <algorithm>
 
+enum class SceneType {
+    MAINMENU,
+    LEVEL,
+    INSTRUCTIONS,
+    CREDITS
+};
+
 // Scene contains all the entities of our game.
 // It is responsible for updating and render them.
 
@@ -18,12 +25,15 @@ class Scene
 {
 
 public:
+    Scene(SceneType t) { this->t = t; }
 	virtual ~Scene() {} // El destructor es virtual porque vamos a usar punteros a Scene para manejar las diferentes pantallas del juego (menú, juego, créditos...)
 	
 	// Estas funciones son virtuales puras, lo que obliga a que cualquier clase que herede de Scene tenga que implementarlas. De esta forma, cada pantalla del juego (menú, juego, créditos...) implementa su propia versión de estas funciones.
 	virtual void init() = 0;
 	virtual void update(int deltaTime) = 0;
 	virtual void render() = 0;
+
+	virtual SceneType getType() { return t; }
 
     // Resize se hará tanto en menús como en partidas para conservar la RA, por lo que se define aquí mismo.
     virtual void resize(int width, int height, int raW, int raH) {
@@ -37,6 +47,7 @@ public:
     }
 protected:
     glm::mat4 projection;
+	SceneType t;
 };
 
 

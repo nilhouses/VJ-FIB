@@ -32,6 +32,11 @@ Room::~Room()
             delete entity;
     }
 	entities.clear();
+    for (Entity* enemy : enemies) {
+        if (enemy != nullptr)
+            delete enemy;
+    }
+    enemies.clear();
     for (Asset* asset : assets) {
         if (asset != nullptr)
             delete asset;
@@ -80,8 +85,16 @@ void Room::createEntity(const glm::ivec2& tileMapPos, const string& type, int tx
 
         entity = door;
     }
-    // Aquí se pueden añadir más tipos de entidades
-
+    else if (type == "DUMMY")
+    {
+        Dummy* dummy = new Dummy();
+        dummy->init(tileMapPos, texProgram, camera);
+        dummy->setTileMap(map);
+        entity = dummy;
+		enemies.push_back(dummy);
+    }
+    // ...
+     
     // Común para todas las entidades
     if (entity != nullptr)
     {

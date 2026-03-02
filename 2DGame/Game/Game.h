@@ -50,9 +50,8 @@ public:
 	// Cambia el estado del juego a newState. Si el nuevo estado es PLAYING, se carga el nivel indicado por levelNumber (por defecto el 1)
 	void changeState(GameState newState, int levelNumber = 1);
 private:
-	bool bPlay;					// Guarda si el juego debe seguir ejecutandose o no
-	bool keys[GLFW_KEY_LAST+1]; // Guarda por cada tecla si está pulsada o no
-	GameState currentState;      // Estado actual del juego (MAIN_MENU, PLAYING, INSTRUCTIONS o CREDITS)
+	bool bPlay;					 // Guarda si el juego debe seguir ejecutandose o no
+	bool keys[GLFW_KEY_LAST+1];  // Guarda por cada tecla si está pulsada o no
 	Scene* currentScene;         // Puntero a la pantalla a la que estamos
 	int currentLevel;            // Nivel actual
 

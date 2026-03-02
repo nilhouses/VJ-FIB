@@ -29,6 +29,8 @@ public:
     void init() override;
     void update(int deltaTime) override;
     void render() override;
+	bool gameOver();
+	bool getLevelCompleted();
 
 private:
 	void initShaders();	// Carga el VS y FS y los linkea al texProgram
@@ -49,7 +51,7 @@ private:
 	int allKeys;				// N�mero total de llaves en el nivel
 	int numRooms;				// N�mero total de habitaciones en el nivel
 	bool levelCompleted;		// Indica si el nivel ha sido completado
-
+	int numLives = 3;
 	vector<Room*> rooms;			// Las diferentes habitaciones del nivel
 	int currentRoom;				// La habitación actual en la que se encuentra el jugador
 

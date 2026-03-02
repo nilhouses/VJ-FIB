@@ -20,6 +20,19 @@ bool Game::update(int deltaTime)
 {
     if (currentScene != nullptr) {
         currentScene->update(deltaTime);
+        if (currentScene->getType() == SceneType::LEVEL) {
+            Level* level = static_cast<Level*>(currentScene);
+            if (level->gameOver()) {
+                changeState(MAIN_MENU);
+            }
+            else {
+                if (level->getLevelCompleted()) {
+                    currentLevel++;
+                    if (currentLevel == 6) changeState(CREDITS); // Ya haremos cinemática tope épica
+                    changeState(PLAYING, currentLevel);
+                }
+            }
+        }
     }
 
 	return bPlay;
@@ -58,19 +71,13 @@ bool Game::getKey(int key) const
 	return keys[key];
 }
 
+
 void Game::changeState(GameState newState, int levelNumber)
 {
-    // Liberamos la memoria de la escena anterior si existe
-    if (currentScene != nullptr) {
-        delete currentScene;
-        currentScene = nullptr;
-    }
-
-    currentState = newState;
     currentLevel = levelNumber;
 
     // Instanciamos la nueva escena seg�n el estado
-    switch (currentState) {
+    switch (newState) {
     case MAIN_MENU:
         currentScene = new MainMenu();
         break;

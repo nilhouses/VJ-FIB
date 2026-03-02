@@ -3,7 +3,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
-Instructions::Instructions() {
+Instructions::Instructions() : Scene(SceneType::INSTRUCTIONS) {
     background = NULL;
 }
 
