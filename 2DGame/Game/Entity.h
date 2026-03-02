@@ -39,6 +39,8 @@ public:
 	Type getType() const { return type; }
 	// Devuelve el bounding box de la entidad para detectar colisiones.
 	glm::vec4 getBoundingBox() const;
+	// Devuelve el tamaño de la entidad
+	const glm::ivec2& getSize() const { return size; }
 
 protected:
 	glm::ivec2 tileMapDispl, pos;			// Posición de la entidad en el mapa de tiles

@@ -165,13 +165,17 @@ void Level::handlePlayerCollision(Player* player, Entity* e, glm::vec2& rangeCol
             // Castear a clase Weight, entity no tiene la función
             Weight* w = static_cast<Weight*>(e);
 
-            //El player no trata el weight como una caja si esta está explotando
+            // El player no trata el weight como una caja si esta está explotando
             if (w->isExploding()) break;
             
             // Colisiones
-            float playerBottom = player->getPosition().y + (player->getBoundingBox().w);
+            glm::ivec2 pSize = player->getSize();
+            glm::ivec2 wSize = w->getSize();
+
+            float playerBottom = player->getPosition().y + pSize.y;
             float weightTop = w->getPosition().y;
-            float weightBottom = w->getPosition().y + (w->getBoundingBox().w);
+            float weightBottom = w->getPosition().y + wSize.y;
+
             // Colisión vertical
             if (weightTop <= playerBottom && weightBottom > playerBottom) {
                 player->incrUp(playerBottom - weightTop);
@@ -180,11 +184,14 @@ void Level::handlePlayerCollision(Player* player, Entity* e, glm::vec2& rangeCol
                 // Colisión horizontal En función del player se empuja para un lado o otro
                 float xPlayer = player->getPosition().x;
                 float xWeight = e->getPosition().x;
+                int pushDist = 2 * rooms[currentRoom]->getMap()->getTileSize();
                 if (xPlayer < xWeight) {
-                    if (!w->incrRight(player->getSpeed())) player->incrLeft();
+                    w->startPush(1, pushDist);
+                    player->setPosition(glm::vec2(xWeight - wSize.x, player->getPosition().y));
                 }
                 else {
-                    if (!w->incrLeft(player->getSpeed())) player->incrRight();
+                    w->startPush(-1, pushDist);
+                    player->setPosition(glm::vec2(xWeight + wSize.x, player->getPosition().y));
                 }
             }
             break;
@@ -241,8 +248,14 @@ void Level::handleEnemyCollision(Entity* enemy, Entity* e, glm::vec2& rangeColli
             {
             case Type::WEIGHT:
                 Weight* w = static_cast<Weight*>(e);
-                if (w->isMoving() || w->isExploding())
+                if (w->isMoving()) {
+					// El peso explota en la misma posición del dummy, NO al lado
+                    glm::vec2 enemyPos = enemy->getPosition();
+                    w->setPosition(enemyPos);
                     d->die();
+                    w->stopPush();
+                    w->explodeWeight();
+                }
                 else d->changeDirection();
                 break;
             }
