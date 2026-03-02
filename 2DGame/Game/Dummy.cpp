@@ -63,18 +63,19 @@ void Dummy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Cam
 
 void Dummy::update(int deltaTime)
 {
+    sprite->update(deltaTime);
+
     if (isDying()) {
         deathTimer += deltaTime;
         if (deathTimer >= DEATH_DURATION) this->deactivate();
         return;
     }
-    sprite->update(deltaTime);
+
     bool shouldTurn = false;
     int mapWidth = map->getMapSize().x * map->getTileSize();
 
     if (movingRight) {
         glm::ivec2 nextPos = glm::ivec2(pos.x + SPEED, pos.y);
-
         bool wallAhead = map->collisionMoveRight(nextPos, size);
         bool outOfMap = nextPos.x + size.x >= mapWidth;
 
@@ -89,11 +90,10 @@ void Dummy::update(int deltaTime)
     }
     else {
         glm::ivec2 nextPos = glm::ivec2(pos.x - SPEED, pos.y);
-
         bool wallAhead = map->collisionMoveLeft(nextPos, size);
         bool outOfMap = nextPos.x <= 0;
 
-		// Pie delantero izquierdo, 1px de ancho justo debajo del pie
+        // Pie delantero izquierdo, 1px de ancho justo debajo del pie
         glm::ivec2 floorCheck = glm::ivec2(nextPos.x, pos.y + size.y);
         glm::ivec2 floorSize = glm::ivec2(1, 1);
         int tempY = floorCheck.y;
@@ -103,15 +103,11 @@ void Dummy::update(int deltaTime)
         else shouldTurn = true;
     }
 
-    if (shouldTurn) {
-        movingRight = !movingRight;
-        sprite->changeAnimation(movingRight ? MOVE_RIGHT : MOVE_LEFT);
-    }
+    if (shouldTurn) changeDirection();
 
     // Gravedad
     pos.y += FALL_STEP;
     map->collisionMoveDown(pos, size, &pos.y, FALL_STEP);
-
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
 }
 
@@ -146,4 +142,10 @@ void Dummy::die()
 
 bool Dummy::isDying() {
     return dying;
+}
+
+void Dummy::changeDirection() {
+    movingRight = !movingRight;
+    if (movingRight) sprite->changeAnimation(MOVE_RIGHT);
+    else sprite->changeAnimation(MOVE_LEFT);
 }

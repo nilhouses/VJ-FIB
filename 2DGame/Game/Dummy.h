@@ -23,6 +23,7 @@ public:
 	void incrLeft();
 	void die();
 	bool isDying();
+	void changeDirection();
 
 private:
 	TileMap* map;						  // Mapa de tiles para detectar colisiones

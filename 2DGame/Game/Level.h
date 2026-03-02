@@ -38,6 +38,8 @@ private:
 
 	void checkCollisions(); // Comprueba las colisiones entre el jugador y las entidades del nivel actual y actualiza el estado del juego en consecuencia
 	void handlePlayerCollision(Entity* e, glm::vec2& rangeCollided); // Maneja la colisión entre el jugador y una entidad.
+	void handleEnemyCollision(Entity* enemy, Entity* e, glm::vec2& rangeCollided); // Maneja la colisión entre un enemigo y una entidad distinta de player
+
 	CollisionInfo overlap(const glm::vec4& a, const glm::vec4& b, const glm::vec2& offset); // Función auxiliar para detectar si dos bounding boxes se solapan (colisionan)
 
 	void loadMaps(vector<TileMap*>& maps, int totalMaps);		// Carga los mapas de tiles de cada habitación a través de un fichero de texto

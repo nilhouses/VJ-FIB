@@ -35,7 +35,7 @@ public:
 	void addAsset(Asset* a) { assets.push_back(a); }
 
 	void setTransitioning(bool t) { transitioning = t; }
-   
+
 private:
     TileMap* map;
     vector<Entity*> entities;
