@@ -28,7 +28,7 @@ public:
     vector<Entity*>& getEntities() { return entities; }
 	void addEntity(Entity* e) { entities.push_back(e); }
 
-    vector<Entity*>& getEnemys() { return enemies; }
+    vector<Entity*>& getEnemies() { return enemies; }
 	void addEnemy(Entity* e) { enemies.push_back(e); }
 
 	vector<Asset*>& getAssets() { return assets; }
