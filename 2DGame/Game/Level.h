@@ -13,6 +13,7 @@
 #include "Asset.h"
 #include "Room.h"
 #include "Utils.h"
+#include "SoundManager.h"
 
 struct CollisionInfo {
 	bool colliding;

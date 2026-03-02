@@ -5,6 +5,8 @@
 #include "Level.h"
 #include "Instructions.h"
 #include "Credits.h"
+#include "SoundManager.h"
+
 
 void Game::init()
 {
@@ -14,6 +16,9 @@ void Game::init()
     currentLevel = 1;
 	currentScene = nullptr;
 	changeState(MAIN_MENU);
+    SoundManager::instance().init();
+    // Reproducir música de fondo
+    SoundManager::instance().playMusic();
 }
 
 bool Game::update(int deltaTime)

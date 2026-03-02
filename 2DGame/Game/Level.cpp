@@ -384,6 +384,9 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided)
                 // Cambiar estado visual
                 player->setAnimation("DIE");
                 player->blockInput(); // Bloquear input del jugador durante la transición
+
+				// Reproducir sonido de muerte
+				SoundManager::instance().playSound("horse");
             }
             break;
         }        
