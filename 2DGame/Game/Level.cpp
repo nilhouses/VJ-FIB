@@ -221,7 +221,7 @@ void Level::checkCollisions()
 
         glm::vec2 offset(0.f, 0.f);
         if (e->getType() == Type::KEY) {
-            offset = glm::vec2(8.f, 8.f);
+            offset = glm::vec2(12.f, 12.f);
         }
 
 		CollisionInfo collision = overlap(playerBox, e->getBoundingBox(), offset);
