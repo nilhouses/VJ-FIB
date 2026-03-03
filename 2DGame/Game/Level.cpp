@@ -386,7 +386,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided)
                 player->blockInput(); // Bloquear input del jugador durante la transición
 
 				// Reproducir sonido de muerte
-				SoundManager::instance().playSound("horse");
+				SoundManager::instance().playSound("horse", 0.1);
             }
             break;
         }        
@@ -432,7 +432,7 @@ void Level::checkCollisions()
         if (!e->isActive()) continue;
 
         glm::vec2 offset(0.f, 0.f);
-        if (e->getType() == Type::KEY) {
+        if (e->getType() == Type::KEY || e->getType() == Type::WEIGHT) {
             offset = glm::vec2(8.f, 8.f);
         } else if (e->getType() == Type::DUMMY) {
             offset = glm::vec2(5.f, 9.f);

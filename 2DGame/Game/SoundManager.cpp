@@ -17,11 +17,32 @@ void SoundManager::init() {
     initialized = true;
 }
 
-void SoundManager::playSound(const std::string& sound) {
+void SoundManager::playSound(const std::string& sound, float volume) {
     if (!initialized) return;
-    // Reproduce un sonido y se olvida (el motor gestiona la memoria solo)
-	auto it = sounds.find(sound);
-    ma_engine_play_sound(&engine, it->second.c_str(), NULL);
+
+    auto it = sounds.find(sound);
+    if (it == sounds.end()) {
+        std::cout << "Error: Sonido '" << sound << "' no encontrado en el mapa." << std::endl;
+        return;
+    }
+
+    // 1. Creamos un nuevo objeto de sonido en el heap
+    ma_sound* sfx = new ma_sound();
+
+    // 2. Lo inicializamos (usamos la ruta de tu mapa: it->second)
+    ma_result result = ma_sound_init_from_file(&engine, it->second.c_str(), 0, NULL, NULL, sfx);
+
+    if (result == MA_SUCCESS) {
+        // 3. Aplicamos el volumen y lo lanzamos
+        ma_sound_set_volume(sfx, volume);
+        ma_sound_start(sfx);
+
+        // 4. Lo guardamos en la lista para que no se destruya al salir de la función
+        activeSounds.push_back(sfx);
+    }
+    else {
+        delete sfx; // Limpieza si falla la carga
+    }
 }
 
 void SoundManager::playMusic(bool loop) {
@@ -34,6 +55,7 @@ void SoundManager::playMusic(bool loop) {
     ma_result result = ma_sound_init_from_file(&engine, it->second.c_str(), MA_SOUND_FLAG_STREAM, NULL, NULL, &bgm);
     if (result == MA_SUCCESS) {
         ma_sound_set_looping(&bgm, loop ? MA_TRUE : MA_FALSE);
+		ma_sound_set_volume(&bgm, musicVolume);
         ma_sound_start(&bgm);
         musicPlaying = true;
     }
@@ -51,5 +73,36 @@ void SoundManager::shutdown() {
     if (initialized) {
         if (musicPlaying) stopMusic();
         ma_engine_uninit(&engine);
+    }
+}
+
+void SoundManager::setMasterVolume(float volume) {
+    if (!initialized) return;
+    ma_engine_set_volume(&engine, volume);
+}
+
+void SoundManager::setMusicVolume(float volume) {
+    if (!initialized) return;
+    musicVolume = volume;
+    if (musicPlaying) {
+        ma_sound_set_volume(&bgm, volume);
+    }
+}
+
+
+void SoundManager::update() {
+    if (!initialized) return;
+
+    // Recorremos la lista y eliminamos los que ya han terminado de sonar
+    auto it = activeSounds.begin();
+    while (it != activeSounds.end()) {
+        if (ma_sound_at_end(*it)) {
+            ma_sound_uninit(*it); // Libera recursos de miniaudio
+            delete* it;           // Libera memoria de C++
+            it = activeSounds.erase(it); // Lo quita de la lista
+        }
+        else {
+            ++it;
+        }
     }
 }

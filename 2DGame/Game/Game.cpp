@@ -40,6 +40,8 @@ bool Game::update(int deltaTime)
         }
     }
 
+	SoundManager::instance().update(); // Limpiar sonidos que ya han terminado
+
 	return bPlay;
 }
 
