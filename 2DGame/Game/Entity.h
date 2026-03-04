@@ -8,7 +8,7 @@ enum class Type {
 	PLAYER,
 	KEY,
 	WEIGHT,
-	DUMMY,
+	ENEMY,
 	DOOR
 };
 
@@ -18,7 +18,6 @@ public:
 	Entity(Type t);
 	~Entity();
 
-public:
 	// Todas las entidades se inicializan con la misma función init. En este punto la posición es fija respecto al mapa de tiles
 	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, const string& spritesheetDir, const glm::vec2& quadSize, const glm::vec2& sizeInSpritesheet, Camera* c);
 	
@@ -44,7 +43,7 @@ public:
 
 	int getRoom() const { return room; }
 	void setRoom(int r) { room = r; }
-
+	virtual bool isEnemy() const { return false; }
 
 	void printDebugInfo() const; // Función para imprimir información de depuración sobre la entidad (posición, tipo, estado, etc.)
 

@@ -1,0 +1,51 @@
+#ifndef _ENEMY_INCLUDE
+#define _ENEMY_INCLUDE
+
+#include "Entity.h"
+#include "TileMap.h"
+
+enum class EnemyType {
+    DUMMY,
+    CLEVER,
+    SHOOTING
+};
+
+class Enemy : public Entity
+{
+public:
+    Enemy(EnemyType t);
+    virtual ~Enemy() {}
+
+    // Funciones a implementar por cada tipo de enemigo
+	virtual void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c) = 0; // Cada enemigo tiene sus animaciones, por lo que cada uno se inicializa de forma diferente
+    virtual void update(int deltaTime) override = 0;                                              // Cada enemigo se mueve distinto
+    virtual void changeDirection();                                                               // Requiere el cambio de sprite
+    virtual void die();
+
+    // Getters
+    bool isEnemy() const override { return true; }
+    EnemyType getEnemyType() const { return eType; }
+    int getSpeed() const { return speed; }
+    bool isDying() const { return dying; }
+    
+    // Setters
+    void setTileMap(TileMap* tileMap) { map = tileMap; }
+    void setSpeed(int s) { speed = s; }
+
+	// Funciones comunes a todos los enemigos
+    void incrRight();
+    void incrLeft();
+
+protected:
+    EnemyType eType;                                    // Tipos de enemigo
+    TileMap* map = nullptr;                             // Mapa de tiles para detectar colisiones
+    bool dying = false;                                 // Para poder desactivar colisiones con otras entidades
+    float deathTimer;                                   // Para controlar el tiempo que dura la animación de muerte antes del deactivate
+	int speed = 1;                                      // Todo enemigo tiene una velocidad de movimiento en px. (Por Defecto 1)
+	int fallStep = 6;                                   // Px por caída (Por defecto 6)
+	int deathDuration = 500;                            // Animación muerte en ms (Por defecto 500ms)
+    bool movingRight = true;                            // Para controlar la dirección del movimiento (true = right, false = left)
+    glm::ivec2 size = glm::ivec2(32, 32);               // Tendrán todos (32, 64?)
+};
+
+#endif // _ENEMY_INCLUDE

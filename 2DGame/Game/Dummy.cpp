@@ -4,11 +4,6 @@
 #include "Dummy.h"
 #include "Game.h"
 
-
-#define FALL_STEP 6			// Velocidad de caída del dummy
-#define SPEED 1
-#define DEATH_DURATION 500.f // ms
-
 // Definimos 4 tipos de animaciones para el dummy
 enum DummyAnims
 {
@@ -16,9 +11,9 @@ enum DummyAnims
 };
 
 
-Dummy::Dummy() : Entity(Type::DUMMY)
+Dummy::Dummy() : Enemy(EnemyType::DUMMY)
 {
-	map = NULL;
+
 }
 
 Dummy::~Dummy()
@@ -32,8 +27,7 @@ void Dummy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Cam
 	// Inicializar los atributos de la Entity
 	Entity::init(tileMapPos, shaderProgram, "images/dummy.png", glm::ivec2(32, 32), glm::vec2(0.25f, 0.25f), c);
 
-	// Atributos de dummy
-	movingRight = true;
+	// Atributos característicos del Dummy
     dying = false;
 	deathTimer = 0.f;
 
@@ -67,7 +61,8 @@ void Dummy::update(int deltaTime)
 
     if (isDying()) {
         deathTimer += deltaTime;
-        if (deathTimer >= DEATH_DURATION) this->deactivate();
+        if (deathTimer >= deathDuration) this->deactivate();
+        if (deathTimer >= deathDuration) this->deactivate();
         return;
     }
 
@@ -75,7 +70,7 @@ void Dummy::update(int deltaTime)
     int mapWidth = map->getMapSize().x * map->getTileSize();
 
     if (movingRight) {
-        glm::ivec2 nextPos = glm::ivec2(pos.x + SPEED, pos.y);
+        glm::ivec2 nextPos = glm::ivec2(pos.x + speed, pos.y);
         bool wallAhead = map->collisionMoveRight(nextPos, size);
         bool outOfMap = nextPos.x + size.x >= mapWidth;
 
@@ -85,11 +80,11 @@ void Dummy::update(int deltaTime)
         int tempY = floorCheck.y;
         bool thereIsFloor = map->collisionMoveDown(floorCheck, floorSize, &tempY, 2);
 
-        if (!wallAhead && !outOfMap && thereIsFloor) pos.x += SPEED;
+        if (!wallAhead && !outOfMap && thereIsFloor) pos.x += speed;
         else shouldTurn = true;
     }
     else {
-        glm::ivec2 nextPos = glm::ivec2(pos.x - SPEED, pos.y);
+        glm::ivec2 nextPos = glm::ivec2(pos.x - speed, pos.y);
         bool wallAhead = map->collisionMoveLeft(nextPos, size);
         bool outOfMap = nextPos.x <= 0;
 
@@ -99,36 +94,22 @@ void Dummy::update(int deltaTime)
         int tempY = floorCheck.y;
         bool thereIsFloor = map->collisionMoveDown(floorCheck, floorSize, &tempY, 2);
 
-        if (!wallAhead && !outOfMap && thereIsFloor) pos.x -= SPEED;
+        if (!wallAhead && !outOfMap && thereIsFloor) pos.x -= speed;
         else shouldTurn = true;
     }
 
     if (shouldTurn) changeDirection();
 
     // Gravedad
-    pos.y += FALL_STEP;
-    map->collisionMoveDown(pos, size, &pos.y, FALL_STEP);
+    pos.y += fallStep;
+    map->collisionMoveDown(pos, size, &pos.y, fallStep);
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
 }
 
-void Dummy::setTileMap(TileMap* tileMap)
-{
-	map = tileMap;
-}
-
-int Dummy::getSpeed() {
-	return SPEED;
-}
-
-
-void Dummy::incrRight()
-{
-	pos.x += SPEED;
-}
-
-void Dummy::incrLeft()
-{
-	pos.x -= SPEED;
+void Dummy::changeDirection() {
+    movingRight = !movingRight;
+    if (movingRight) sprite->changeAnimation(MOVE_RIGHT);
+    else sprite->changeAnimation(MOVE_LEFT);
 }
 
 void Dummy::die()
@@ -136,16 +117,6 @@ void Dummy::die()
     if (isDying()) return;
     dying = true;
     sprite->changeAnimation(DIE);
-    std::cout << "DEP Dummy" << std::endl;
+    std::cout << "RIP Dummy" << std::endl;
     // En el update se desactivará la entidad cuando acabe la animación de explosión
-}
-
-bool Dummy::isDying() {
-    return dying;
-}
-
-void Dummy::changeDirection() {
-    movingRight = !movingRight;
-    if (movingRight) sprite->changeAnimation(MOVE_RIGHT);
-    else sprite->changeAnimation(MOVE_LEFT);
 }

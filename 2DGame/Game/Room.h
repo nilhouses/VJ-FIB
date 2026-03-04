@@ -6,10 +6,13 @@
 #include "Player.h"
 #include "Scene.h"
 #include "Entity.h"
+#include "Enemy.h"
+#include "Dummy.h"
+//#include "CleverEnemy.h"
+//#include "ShootingEnemy.h"
 #include "Key.h"
 #include "Weight.h"
 #include "Door.h"
-#include "Dummy.h"
 #include "Game.h"
 #include "Asset.h"
 
@@ -28,8 +31,8 @@ public:
     vector<Entity*>& getEntities() { return entities; }
 	void addEntity(Entity* e) { entities.push_back(e); }
 
-    vector<Entity*>& getEnemies() { return enemies; }
-	void addEnemy(Entity* e) { enemies.push_back(e); }
+    vector<Enemy*>& getEnemies() { return enemies; }
+	void addEnemy(Enemy* e) { enemies.push_back(e); }
 
 	vector<Asset*>& getAssets() { return assets; }
 	void addAsset(Asset* a) { assets.push_back(a); }
@@ -39,7 +42,7 @@ public:
 private:
     TileMap* map;
     vector<Entity*> entities;
-    vector<Entity*> enemies;
+    vector<Enemy*> enemies;
     vector<Asset*> assets;
 	bool transitioning; // Indica si se está realizando una transición entre habitaciones para evitar actualizar la lógica de la habitación durante la transición
 

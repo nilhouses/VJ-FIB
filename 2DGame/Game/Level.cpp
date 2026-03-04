@@ -103,16 +103,20 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom)
             door->setToVisited();
         entity = door;
     }
-    else if (type == "DUMMY")
+    else if (type == "DUMMY" || type == "CLEVER" || type == "SHOOTING")
     {
-        Dummy* dummy = new Dummy();
-        dummy->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera);
-        dummy->setTileMap(map);
-        entity = dummy;
+        Enemy* enemy = nullptr;
+        if (type == "DUMMY") enemy = new Dummy();
+        //else if (type == "CLEVER") enemy = new Clever();
+        //else if (type == "SHOOTING") enemy = new Shooting();
+        
+        enemy->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera);
+        enemy->setTileMap(map);
+        entity = enemy;
+
         // Añado al vector de enemigos
-		rooms[indexRoom]->addEnemy(dummy);
+        rooms[indexRoom]->addEnemy(enemy);
     }
-    // ...
 
     // Común para todas las entidades
     if (entity != nullptr)
@@ -153,7 +157,7 @@ void Level::loadEntities()
                 Entity* e1 = createEntity(type, tileX1, tileY1, indexRoom1);
                 Entity* e2 = createEntity(type, tileX2, tileY2, indexRoom2);
 
-                Door* d1 = static_cast<Door*>(e1);
+                Door* d1 = static_cast<Door*>(e1);static_cast<Door*>(e1);
                 Door* d2 = static_cast<Door*>(e2);
 
 				d1->setDoorTo(d2);
@@ -297,74 +301,74 @@ CollisionInfo Level::overlap(const glm::vec4& a, const glm::vec4& b, const glm::
 }
 
 
-    void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2& offset)
+void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2& offset)
+{
+    switch (e->getType())
     {
-        switch (e->getType())
-        {
-            case Type::KEY:
-                collectedKeys++;
-                e->deactivate();
-                cout << "collectedKeys: " << collectedKeys << "/" << allKeys << endl;
-                break;
+        case Type::KEY:
+            collectedKeys++;
+            e->deactivate();
+            cout << "collectedKeys: " << collectedKeys << "/" << allKeys << endl;
+            break;
 
-            case Type::WEIGHT:
-            {
-                Weight* w = static_cast<Weight*>(e);
-                if (w->isExploding()) break;
+        case Type::WEIGHT:
+        {
+            Weight* w = static_cast<Weight*>(e);
+            if (w->isExploding()) break;
             
-                // Colisiones
-                glm::ivec2 pSize = player->getSize();
-                glm::ivec2 wSize = w->getSize();
-                float playerBottom = player->getPosition().y + pSize.y;
-                float weightTop = w->getPosition().y;
-                float weightBottom = w->getPosition().y + w->getSize().y;
+            // Colisiones
+            glm::ivec2 pSize = player->getSize();
+            glm::ivec2 wSize = w->getSize();
+            float playerBottom = player->getPosition().y + pSize.y;
+            float weightTop = w->getPosition().y;
+            float weightBottom = w->getPosition().y + w->getSize().y;
 
-                // Colisión vertical
-                if (weightTop <= playerBottom && weightBottom > playerBottom) {
-                    player->incrUp(playerBottom - weightTop - offset.y);
-                }
-                else {
-                    // Colisión horizontal En función del player se empuja para un lado o otro
-                    float xPlayer = player->getPosition().x;
-                    float xWeight = e->getPosition().x;
-                    int pushDist = 2 * rooms[currentRoom]->getMap()->getTileSize();
-                    if (xPlayer < xWeight) w->startPush(1, pushDist);
-                    else w->startPush(-1, pushDist);
-                }
-                break;
+            // Colisión vertical
+            if (weightTop <= playerBottom && weightBottom > playerBottom) {
+                player->incrUp(playerBottom - weightTop - offset.y);
             }
-            case Type::DOOR:
-        {
-            int centerX = player->getPosition().x + 16.0f;
-            if (Game::instance().getKey(GLFW_KEY_UP) && state == NORMAL && rangeCollided.x > 20) {
-                
-                Door* door = static_cast<Door*>(e);
-
-				if (door->getIsFinalDoor()) {
-                    if (collectedKeys < allKeys) {
-                        cout << "You need to collect all keys to enter the final door!" << endl;
-                        break;
-                    }
-                }
-                
-                // Configurar transición a la nueva habitación
-                state = ENTERING_DOOR;
-                transitionTimer = 1000.f;
-				interactedDoor = door;
-                rooms[currentRoom]->setTransitioning(true);
-
-                // Cambiar estado visual
-                door->setToVisited();
-                player->setAnimation("ENTERING_DOOR");
-                player->blockInput(); // Bloquear input del jugador durante la transición
+            else {
+                // Colisión horizontal En función del player se empuja para un lado o otro
+                float xPlayer = player->getPosition().x;
+                float xWeight = e->getPosition().x;
+                int pushDist = 2 * rooms[currentRoom]->getMap()->getTileSize();
+                if (xPlayer < xWeight) w->startPush(1, pushDist);
+                else w->startPush(-1, pushDist);
             }
             break;
         }
-        case Type::DUMMY:
+        case Type::DOOR:
         {
-            Dummy* d = static_cast<Dummy*>(e);
-            // Si el dummy se està muriendo no puede matar a nadie
-            if (!d->isDying() && !godMode) {
+        int centerX = player->getPosition().x + 16.0f;
+        if (Game::instance().getKey(GLFW_KEY_UP) && state == NORMAL && rangeCollided.x > 20) {
+                
+            Door* door = static_cast<Door*>(e);
+
+			if (door->getIsFinalDoor()) {
+                if (collectedKeys < allKeys) {
+                    cout << "You need to collect all keys to enter the final door!" << endl;
+                    break;
+                }
+            }
+                
+            // Configurar transición a la nueva habitación
+            state = ENTERING_DOOR;
+            transitionTimer = 1000.f;
+			interactedDoor = door;
+            rooms[currentRoom]->setTransitioning(true);
+
+            // Cambiar estado visual
+            door->setToVisited();
+            player->setAnimation("ENTERING_DOOR");
+            player->blockInput(); // Bloquear input del jugador durante la transición
+        }
+        break;
+        }
+        case Type::ENEMY:
+        {
+            Enemy* enemy = static_cast<Enemy*>(e);
+            // Si el enemigo se està muriendo no puede matar a nadie
+            if (!enemy->isDying() && !godMode) {
 
                 // Configurar transición a la nueva habitación
                 state = DYING;
@@ -383,30 +387,35 @@ CollisionInfo Level::overlap(const glm::vec4& a, const glm::vec4& b, const glm::
     }
 }
 
-void Level::handleEnemyCollision(Entity* enemy, Entity* e, glm::vec2& rangeCollided)
+void Level::handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollided)
 {
-    switch (enemy->getType())
+    switch (e->getType())
     {
-        case Type::DUMMY:
+        case Type::WEIGHT:
         {
-            Dummy* d = static_cast<Dummy*>(enemy);
-            switch (e->getType())
-            {
-            case Type::WEIGHT:
-                Weight* w = static_cast<Weight*>(e);
-                if (w->isMoving()) {
-					// El peso explota en la misma posición del dummy, NO al lado
-                    glm::vec2 enemyPos = enemy->getPosition();
-                    w->setPosition(enemyPos);
-                    d->die();
-                    w->stopPush();
-                    w->explodeWeight();
-                }
-                else d->changeDirection();
-                break;
+            Weight* w = static_cast<Weight*>(e);
+            if (w->isMoving()) {
+                // El peso explota en la misma posición del dummy, NO al lado
+                glm::vec2 enemyPos = enemy->getPosition();
+                w->setPosition(enemyPos);
+                enemy->die();
+                w->stopPush();
+                w->explodeWeight();
             }
+            else enemy->changeDirection();
+            break;
         }
+            default:
+                break;
     }
+	// Si alguna entity causa distintos efectos en función del tipo de enemigo, ya pondremos un switch dentro de cada caso:
+    /*
+    switch (enemy->getEnemyType())
+    {
+        case EnemyType::DUMMY:
+        {
+        }
+    }*/
 }
 
 
@@ -426,8 +435,16 @@ void Level::checkCollisions()
             offset = glm::vec2(8.f, 8.f);
         } else if (e->getType() == Type::WEIGHT) {
             offset = glm::vec2(8.f, 0.f); // No tocar la y para evitar que el player tiembla al pisar el peso
-        } else if (e->getType() == Type::DUMMY) {
-            offset = glm::vec2(5.f, 9.f);
+        } else if (e->getType() == Type::ENEMY) {
+            //Castear a dummy
+            Enemy* enemy = static_cast<Enemy*>(e);
+            switch (enemy->getEnemyType()) {
+                case EnemyType::DUMMY:
+                    offset = glm::vec2(5.f, 9.f);
+					break;
+                default:
+                    break;
+            }
 		}
 
 		CollisionInfo collision = overlap(playerBox, e->getBoundingBox(), offset);
@@ -439,17 +456,14 @@ void Level::checkCollisions()
     }
 
     // 2. Comprobar colisiones entre los enemigos y las distintas entidades del nivel actual
-    vector<Entity*>& enemies = rooms[currentRoom]->getEnemies();
+    vector<Enemy*>& enemies = rooms[currentRoom]->getEnemies();
 
-    for (Entity* enemy : enemies)
+    for (Enemy* enemy : enemies)
     {
         if (!enemy->isActive()) continue;
 
-        // El Dummy no tiene colisiones si se está muriendo
-        if (enemy->getType() == Type::DUMMY) {
-            Dummy* d = static_cast<Dummy*>(enemy);
-            if (d->isDying()) continue;
-        }
+        // Ningún enemigo tiene colisiones si se está muriendo
+        if (enemy->isDying()) continue;
 
         auto enemyBox = enemy->getBoundingBox();
 
