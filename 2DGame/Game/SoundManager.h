@@ -40,7 +40,6 @@ private:
     bool musicPlaying = false;
 
     float musicVolume = 0.1f;
-
     std::list<ma_sound*> activeSounds; // Lista de sonidos en reproducción
 };
 

@@ -3,8 +3,7 @@
 
 #include "Enemy.h"
 
-// El dummy contiene su propia información
-// Sprite, posición, usa tileMap para detectar colisiones, etc.
+
 class Dummy : public Enemy
 {
 public:
@@ -21,5 +20,3 @@ public:
 
 
 #endif // _DUMMY_INCLUDE
-
-

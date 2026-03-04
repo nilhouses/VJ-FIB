@@ -107,7 +107,7 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom)
     {
         Enemy* enemy = nullptr;
         if (type == "DUMMY") enemy = new Dummy();
-        //else if (type == "CLEVER") enemy = new Clever();
+        else if (type == "CLEVER") enemy = new Clever();
         //else if (type == "SHOOTING") enemy = new Shooting();
         
         enemy->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera);
@@ -246,6 +246,15 @@ void Level::createRooms()
 	// Se cargan las entidades y los assets después de crear las habitaciones para poder asignar cada entidad a su habitación correspondiente
 	loadAssets();
     loadEntities();
+
+    for (Room* room : rooms) {
+        for (Enemy* enemy : room->getEnemies()) {
+            if (enemy->getEnemyType() == EnemyType::CLEVER) {
+                Clever* clever = static_cast<Clever*>(enemy);
+                clever->setPlayerTarget(this->player);
+            }
+        }
+    }
 }
 
 
@@ -402,7 +411,13 @@ void Level::handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollid
                 w->stopPush();
                 w->explodeWeight();
             }
-            else enemy->changeDirection();
+            else {
+                enemy->changeDirection();
+                if(enemy->getEnemyType() == EnemyType::CLEVER) {
+                    Clever* clever = static_cast<Clever*>(enemy);
+                    clever->ignorePlayer();
+                }
+            }
             break;
         }
             default:

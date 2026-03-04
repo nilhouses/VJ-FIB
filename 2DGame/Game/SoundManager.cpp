@@ -5,7 +5,7 @@
 // Sonidos predefinidos
 std::unordered_map<std::string, std::string> sounds = {
     { "horse", "sounds/caballoMVP.mp3"},
-    { "background", "sounds/bonprofit_remix.mp3" }
+    { "background", "sounds/intro.mp3"}//    bonprofit_remix.mp3" }
 };
 
 
