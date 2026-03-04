@@ -297,53 +297,43 @@ CollisionInfo Level::overlap(const glm::vec4& a, const glm::vec4& b, const glm::
 }
 
 
-void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided)
-{
-    switch (e->getType())
+    void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2& offset)
     {
-        case Type::KEY:
-            collectedKeys++;
-            e->deactivate();
-            cout << "collectedKeys: " << collectedKeys << "/" << allKeys << endl;
-            break;
-
-        case Type::WEIGHT:
+        switch (e->getType())
         {
-            // Castear a clase Weight, entity no tiene la función
-            Weight* w = static_cast<Weight*>(e);
+            case Type::KEY:
+                collectedKeys++;
+                e->deactivate();
+                cout << "collectedKeys: " << collectedKeys << "/" << allKeys << endl;
+                break;
 
-            // El player no trata el weight como una caja si esta está explotando
-            if (w->isExploding()) break;
+            case Type::WEIGHT:
+            {
+                Weight* w = static_cast<Weight*>(e);
+                if (w->isExploding()) break;
             
-            // Colisiones
-            glm::ivec2 pSize = player->getSize();
-            glm::ivec2 wSize = w->getSize();
+                // Colisiones
+                glm::ivec2 pSize = player->getSize();
+                glm::ivec2 wSize = w->getSize();
+                float playerBottom = player->getPosition().y + pSize.y;
+                float weightTop = w->getPosition().y;
+                float weightBottom = w->getPosition().y + w->getSize().y;
 
-            float playerBottom = player->getPosition().y + pSize.y;
-            float weightTop = w->getPosition().y;
-            float weightBottom = w->getPosition().y + wSize.y;
-
-            // Colisión vertical
-            if (weightTop <= playerBottom && weightBottom > playerBottom) {
-                player->incrUp(playerBottom - weightTop);
-            }
-            else {
-                // Colisión horizontal En función del player se empuja para un lado o otro
-                float xPlayer = player->getPosition().x;
-                float xWeight = e->getPosition().x;
-                int pushDist = 2 * rooms[currentRoom]->getMap()->getTileSize();
-                if (xPlayer < xWeight) {
-                    w->startPush(1, pushDist);
-                    player->setPosition(glm::vec2(xWeight - wSize.x, player->getPosition().y));
+                // Colisión vertical
+                if (weightTop <= playerBottom && weightBottom > playerBottom) {
+                    player->incrUp(playerBottom - weightTop - offset.y);
                 }
                 else {
-                    w->startPush(-1, pushDist);
-                    player->setPosition(glm::vec2(xWeight + wSize.x, player->getPosition().y));
+                    // Colisión horizontal En función del player se empuja para un lado o otro
+                    float xPlayer = player->getPosition().x;
+                    float xWeight = e->getPosition().x;
+                    int pushDist = 2 * rooms[currentRoom]->getMap()->getTileSize();
+                    if (xPlayer < xWeight) w->startPush(1, pushDist);
+                    else w->startPush(-1, pushDist);
                 }
+                break;
             }
-            break;
-        }
-        case Type::DOOR:
+            case Type::DOOR:
         {
             int centerX = player->getPosition().x + 16.0f;
             if (Game::instance().getKey(GLFW_KEY_UP) && state == NORMAL && rangeCollided.x > 20) {
@@ -432,8 +422,10 @@ void Level::checkCollisions()
         if (!e->isActive()) continue;
 
         glm::vec2 offset(0.f, 0.f);
-        if (e->getType() == Type::KEY || e->getType() == Type::WEIGHT) {
+        if (e->getType() == Type::KEY) {
             offset = glm::vec2(8.f, 8.f);
+        } else if (e->getType() == Type::WEIGHT) {
+            offset = glm::vec2(8.f, 0.f); // No tocar la y para evitar que el player tiembla al pisar el peso
         } else if (e->getType() == Type::DUMMY) {
             offset = glm::vec2(5.f, 9.f);
 		}
@@ -442,7 +434,7 @@ void Level::checkCollisions()
 
         if ((e->getType() != player->getType()) && collision.colliding)
         {
-            handlePlayerCollision(e, collision.rangeColision);
+            handlePlayerCollision(e, collision.rangeColision, offset);
         }
     }
 
@@ -483,14 +475,11 @@ void Level::update(int deltaTime)
     currentTime += deltaTime;
 
     rooms[currentRoom]->update(deltaTime);
+    if(state == NORMAL) checkCollisions();
     player->update(deltaTime);
 
     switch (state)
     {
-    case NORMAL:
-        checkCollisions();
-        break;
-
     case ENTERING_DOOR:
         transitionTimer = std::max(0.f, transitionTimer - deltaTime);
 
@@ -543,6 +532,8 @@ void Level::update(int deltaTime)
             }
         }
         break;
+    default:
+		break;
     }
 
     camera->update(player->getPosition(), rooms[currentRoom]->getMap()->getMapSize() * rooms[currentRoom]->getMap()->getTileSize());
