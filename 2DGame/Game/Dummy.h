@@ -3,7 +3,6 @@
 
 #include "Enemy.h"
 
-
 class Dummy : public Enemy
 {
 public:

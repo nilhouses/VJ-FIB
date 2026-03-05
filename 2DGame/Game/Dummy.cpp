@@ -62,7 +62,6 @@ void Dummy::update(int deltaTime)
     if (isDying()) {
         deathTimer += deltaTime;
         if (deathTimer >= deathDuration) this->deactivate();
-        if (deathTimer >= deathDuration) this->deactivate();
         return;
     }
 

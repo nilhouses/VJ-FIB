@@ -108,15 +108,19 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom)
         Enemy* enemy = nullptr;
         if (type == "DUMMY") enemy = new Dummy();
         else if (type == "CLEVER") enemy = new Clever();
-        //else if (type == "SHOOTING") enemy = new Shooting();
-        
+        else if (type == "SHOOTING") {
+            enemy = new Shooting();
+            static_cast<Shooting*>(enemy)->setRoom(rooms[indexRoom]);
+        }
+
         enemy->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera);
         enemy->setTileMap(map);
-        entity = enemy;
 
         // Añado al vector de enemigos
         rooms[indexRoom]->addEnemy(enemy);
+        entity = enemy;
     }
+
 
     // Común para todas las entidades
     if (entity != nullptr)
@@ -157,7 +161,7 @@ void Level::loadEntities()
                 Entity* e1 = createEntity(type, tileX1, tileY1, indexRoom1);
                 Entity* e2 = createEntity(type, tileX2, tileY2, indexRoom2);
 
-                Door* d1 = static_cast<Door*>(e1);static_cast<Door*>(e1);
+                Door* d1 = static_cast<Door*>(e1);
                 Door* d2 = static_cast<Door*>(e2);
 
 				d1->setDoorTo(d2);
@@ -392,7 +396,9 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
 				SoundManager::instance().playSound("horse", 0.1);
             }
             break;
-        }        
+        }
+        default:
+			break;
     }
 }
 
@@ -409,7 +415,7 @@ void Level::handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollid
                 w->setPosition(enemyPos);
                 enemy->die();
                 w->stopPush();
-                w->explodeWeight();
+                w->explode();
             }
             else {
                 enemy->changeDirection();
@@ -449,9 +455,9 @@ void Level::checkCollisions()
         if (e->getType() == Type::KEY) {
             offset = glm::vec2(8.f, 8.f);
         } else if (e->getType() == Type::WEIGHT) {
-            offset = glm::vec2(8.f, 0.f); // No tocar la y para evitar que el player tiembla al pisar el peso
+            offset = glm::vec2(8.f, 0.f); // No tocar la y para evitar que el player tiemble al pisar el peso
         } else if (e->getType() == Type::ENEMY) {
-            //Castear a dummy
+            // Custom BoundingBox Dummy
             Enemy* enemy = static_cast<Enemy*>(e);
             switch (enemy->getEnemyType()) {
                 case EnemyType::DUMMY:
@@ -591,7 +597,6 @@ void Level::render()
 	rooms[currentRoom]->render(camera, projection);
 	player->render();
 }
-
 
 
 bool Level::gameOver() { return (numLives == 0); }

@@ -1,0 +1,26 @@
+#ifndef _BULLET_INCLUDE
+#define _BULLET_INCLUDE
+
+#include "Entity.h"
+
+
+class Bullet : public Entity
+{
+public:
+    Bullet();
+    Bullet::~Bullet();
+    void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c);
+    void update(int deltaTime) override;
+
+    void setDirection(bool right) { movingRight = right; }
+    void explode();
+    bool isExploding() const { return exploding; }
+
+private:
+    bool movingRight;
+    int speed;
+    bool exploding;
+    float explosionTimer;
+};
+
+#endif // _BULLET_INCLUDE

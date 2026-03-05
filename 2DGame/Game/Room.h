@@ -9,7 +9,7 @@
 #include "Enemy.h"
 #include "Dummy.h"
 #include "Clever.h"
-//#include "Shooting.h"
+#include "Shooting.h"
 #include "Key.h"
 #include "Weight.h"
 #include "Door.h"

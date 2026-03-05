@@ -1,0 +1,187 @@
+#include <cmath>
+#include <iostream>
+#include <GL/glew.h>
+#include "Shooting.h"
+#include "Room.h"
+
+// Definimos 4 tipos de animaciones para el Shooting
+enum ShootingAnims
+{
+    MOVE_LEFT, MOVE_RIGHT, IDLE_LEFT, IDLE_RIGHT, SHOOT_LEFT, SHOOT_RIGHT, DIE, NUM_ANIMS
+};
+
+Shooting::Shooting() : Enemy(EnemyType::SHOOTING) {
+    sprite = nullptr;
+}
+
+Shooting::~Shooting()
+{
+    if (sprite != NULL)
+        delete sprite;
+}
+
+void Shooting::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c)
+{
+    this->shaderProgram = &shaderProgram;
+    this->cameraPtr = c;
+
+    // Inicializar los atributos de la Entity
+    Entity::init(tileMapPos, shaderProgram, "images/shooting.png", glm::ivec2(32, 32), glm::vec2(0.25f, 0.25f), c);
+
+    // Atributos característicos del Shooting
+    dying = false;
+    deathTimer = 0.f;
+
+    currentState = WALKING;
+    stateTimer = 3000.f;
+
+    // Configuración de animaciones
+    sprite->setNumberAnimations(NUM_ANIMS);
+
+    sprite->setAnimationSpeed(MOVE_LEFT, 20);
+    sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.50f, 0.f));
+    sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.75f, 0.f));
+
+    sprite->setAnimationSpeed(MOVE_RIGHT, 20);
+    sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.f, 0.f));
+    sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25f, 0.f));
+
+    sprite->setAnimationSpeed(IDLE_LEFT, 20);
+    sprite->addKeyframe(IDLE_LEFT, glm::vec2(0.50f, 0.25f));
+    sprite->addKeyframe(IDLE_LEFT, glm::vec2(0.75f, 0.25f));
+
+    sprite->setAnimationSpeed(IDLE_RIGHT, 20);
+    sprite->addKeyframe(IDLE_RIGHT, glm::vec2(0.f, 0.25f));
+    sprite->addKeyframe(IDLE_RIGHT, glm::vec2(0.25f, 0.25f));
+
+    sprite->setAnimationSpeed(SHOOT_LEFT, 20);
+    sprite->addKeyframe(SHOOT_LEFT, glm::vec2(0.5f, 0.5f));
+
+    sprite->setAnimationSpeed(SHOOT_RIGHT, 20);
+    sprite->addKeyframe(SHOOT_RIGHT, glm::vec2(0.25f, 0.5f));
+    sprite->addKeyframe(SHOOT_RIGHT, glm::vec2(0.75f, 0.5f));
+
+    sprite->setAnimationSpeed(DIE, 3);
+    sprite->addKeyframe(DIE, glm::vec2(0.f, 0.75f));
+    sprite->addKeyframe(DIE, glm::vec2(0.25f, 0.75f));
+    sprite->addKeyframe(DIE, glm::vec2(0.50f, 0.75f));
+    sprite->addKeyframe(DIE, glm::vec2(0.75f, 0.75f));
+
+    sprite->changeAnimation(MOVE_RIGHT);
+}
+
+void Shooting::changeState(EnemyState newState) {
+    currentState = newState;
+    switch (currentState) {
+    case WALKING:
+        stateTimer = 7000 + (rand() % 3000); // Cada (7-10) segundos dispara
+        sprite->changeAnimation(movingRight ? MOVE_RIGHT : MOVE_LEFT);
+        break;
+    case IDLING:
+        stateTimer = 1000.f; // 1 segundo preparando el disparo
+        sprite->changeAnimation(movingRight ? IDLE_RIGHT : IDLE_LEFT);
+        break;
+    case SHOOTING:
+        stateTimer = 1500.f;  // Disparo de 1 segundo y medio
+        sprite->changeAnimation(movingRight ? SHOOT_RIGHT : SHOOT_LEFT);
+        shoot();
+        break;
+    }
+}
+
+
+void Shooting::update(int deltaTime)
+{
+    sprite->update(deltaTime);
+
+    if (isDying()) {
+        deathTimer += deltaTime;
+        if (deathTimer >= deathDuration) this->deactivate();
+        return;
+    }
+
+    stateTimer -= deltaTime;
+
+    if (currentState == WALKING) {
+        bool shouldTurn = false;
+        int mapWidth = map->getMapSize().x * map->getTileSize();
+
+        if (movingRight) {
+            glm::ivec2 nextPos = glm::ivec2(pos.x + speed, pos.y);
+            bool wallAhead = map->collisionMoveRight(nextPos, size);
+            bool outOfMap = nextPos.x + size.x >= mapWidth;
+
+            // Pie delantero derecho, 1px de ancho justo debajo del pie
+            glm::ivec2 floorCheck = glm::ivec2(nextPos.x + size.x - 1, pos.y + size.y);
+            int tempY = floorCheck.y;
+            bool thereIsFloor = map->collisionMoveDown(floorCheck, glm::ivec2(1, 1), &tempY, 2);
+
+            if (!wallAhead && !outOfMap && thereIsFloor) pos.x += speed;
+            else shouldTurn = true;
+        }
+        else {
+            glm::ivec2 nextPos = glm::ivec2(pos.x - speed, pos.y);
+            bool wallAhead = map->collisionMoveLeft(nextPos, size);
+            bool outOfMap = nextPos.x <= 0;
+
+            // Pie delantero izquierdo, 1px de ancho justo debajo del pie
+            glm::ivec2 floorCheck = glm::ivec2(nextPos.x, pos.y + size.y);
+            int tempY = floorCheck.y;
+            bool thereIsFloor = map->collisionMoveDown(floorCheck, glm::ivec2(1, 1), &tempY, 2);
+
+            if (!wallAhead && !outOfMap && thereIsFloor) pos.x -= speed;
+            else shouldTurn = true;
+        }
+
+        if (shouldTurn) changeDirection();
+        if (stateTimer <= 0) changeState(IDLING);
+
+    }
+    else if (currentState == IDLING) {
+        if (stateTimer <= 0) changeState(SHOOTING);
+    }
+    else if (currentState == SHOOTING) {
+        if (stateTimer <= 0) changeState(WALKING);
+    }
+    // Gravedad
+    pos.y += fallStep;
+    map->collisionMoveDown(pos, size, &pos.y, fallStep);
+    sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
+}
+
+void Shooting::changeDirection() {
+    movingRight = !movingRight;
+    if (movingRight) sprite->changeAnimation(MOVE_RIGHT);
+    else sprite->changeAnimation(MOVE_LEFT);
+}
+
+void Shooting::shoot() {
+    if (currentRoom == nullptr) {
+        std::cout << "The shooting enemy doesn't have a room assigned" << endl; 
+        return;
+    }
+
+    Bullet* bullet = new Bullet();
+
+    bullet->init(glm::ivec2(tileMapDispl.x, tileMapDispl.y), *shaderProgram, cameraPtr);
+
+    // Crear bala a 3/4 de altura del enemigo
+    glm::ivec2 shootingSize = this->getSize();
+    glm::vec2 bulletPos = glm::vec2(this->pos.x, + float(this->pos.y + (0.25f * shootingSize.y)));
+    if (movingRight) bulletPos.x += size.x;
+
+    bullet->setPosition(bulletPos);
+    bullet->setTileMap(map);
+    bullet->setDirection(movingRight);
+
+    // Añadir bala a Room
+    currentRoom->addEntity(bullet);
+}
+void Shooting::die()
+{
+    if (isDying()) return;
+    dying = true;
+    sprite->changeAnimation(DIE);
+    std::cout << "RIP Shooting" << std::endl;
+    // En el update se desactivará la entidad cuando acabe la animación de explosión
+}

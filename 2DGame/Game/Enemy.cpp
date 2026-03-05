@@ -2,7 +2,6 @@
 #include <iostream>
 #include <GL/glew.h>
 #include "Enemy.h"
-#include "Game.h"
 
 // Definimos 4 tipos de animaciones para el dummy
 enum DummyAnims

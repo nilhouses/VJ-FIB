@@ -2,7 +2,6 @@
 #define _ENEMY_INCLUDE
 
 #include "Entity.h"
-#include "TileMap.h"
 
 enum class EnemyType {
     DUMMY,
@@ -38,7 +37,6 @@ public:
 
 protected:
     EnemyType eType;                                    // Tipos de enemigo
-    TileMap* map = nullptr;                             // Mapa de tiles para detectar colisiones
     bool dying = false;                                 // Para poder desactivar colisiones con otras entidades
     float deathTimer;                                   // Para controlar el tiempo que dura la animación de muerte antes del deactivate
 	int speed = 1;                                      // Todo enemigo tiene una velocidad de movimiento en px. (Por Defecto 1)

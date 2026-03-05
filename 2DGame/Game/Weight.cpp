@@ -32,7 +32,7 @@ void Weight::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	// Atributos del peso
 	this->prevPos = prevPos;
 	explosionTimer = 0.0f;
-	explode = false;
+	exploding = false;
 	isBeingPushed = false;
 	pushDirection = 0;
 	targetX = 0.0f;
@@ -58,7 +58,7 @@ void Weight::update(int deltaTime)
 {
 	sprite->update(deltaTime);
 	// Si esta haciendo la animación de explosión, no hacer nada más que actualizar la animación
-	if (explode) {
+	if (exploding) {
 		explosionTimer += deltaTime;
 		if (explosionTimer >= EXPLOSION_DURATION) this->deactivate();
 		return;
@@ -92,16 +92,11 @@ void Weight::update(int deltaTime)
 	map->collisionMoveDown(pos, glm::ivec2(32, 32), &pos.y, fallSpeed);
 
 	// Si tras caer tocamos el suelo explosión
-	if (isFalling() && pos.y == frameStartPos.y) explodeWeight();
+	if (isFalling() && pos.y == frameStartPos.y) explode();
 
 	// Actualizaciones de variables
 	prevPos = frameStartPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y))); // Actualizar posición visual
-}
-
-void Weight::setTileMap(TileMap* tileMap)
-{
-	map = tileMap;
 }
 
 bool Weight::incrRight(int units)
@@ -137,10 +132,10 @@ bool Weight::isFalling() { return pos.y > prevPos.y; }
 
 bool Weight::isMoving() { return (pos.x != prevPos.x || pos.y != prevPos.y); }
 
-void Weight::explodeWeight() {
+void Weight::explode() {
 	// No explotar varias veces
-	if (explode) return;
-	explode = true;
+	if (exploding) return;
+	exploding = true;
 	sprite->changeAnimation(EXPLOSION);
 	std::cout << "BOOM!" << std::endl;
 	// En el update se desactivará la entidad cuando acabe la animación de explosión

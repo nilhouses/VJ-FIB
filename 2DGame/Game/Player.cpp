@@ -205,11 +205,6 @@ void Player::setAnimation(const string& anim)
 		sprite->changeAnimation(DIE);
 }
 
-void Player::setTileMap(TileMap *tileMap)
-{
-	map = tileMap;
-}
-
 int Player::getSpeed() {
 	return SPEED;
 }

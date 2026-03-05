@@ -3,12 +3,14 @@
 
 #include <glm/glm.hpp>
 #include "Sprite.h"
+#include "TileMap.h"
 
 enum class Type {
 	PLAYER,
 	KEY,
 	WEIGHT,
 	ENEMY,
+	BULLET,
 	DOOR
 };
 
@@ -30,6 +32,7 @@ public:
 	void setPosition(const glm::vec2& pos);
 	glm::ivec2 getPosition() const { return pos; }
 
+	void setTileMap(TileMap* tileMap){map = tileMap;}
 	// Función para activar o desactivar la entidad. Si una entidad está desactivada, no se renderiza ni se actualiza, pero sigue existiendo en el juego (por ejemplo, un enemigo que ha sido derrotado pero que sigue existiendo en el mapa).
 	void deactivate() { active = false; }
 	// Devuelve si está activo o no
@@ -48,6 +51,7 @@ public:
 	void printDebugInfo() const; // Función para imprimir información de depuración sobre la entidad (posición, tipo, estado, etc.)
 
 protected:
+	TileMap* map;					    	// Mapa de tiles para detectar colisiones
 	glm::ivec2 tileMapDispl, pos;			// Posición de la entidad en el mapa de tiles
 	Texture spritesheet;
 	Sprite *sprite;
