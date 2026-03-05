@@ -88,7 +88,7 @@ void Bullet::explode() {
     if (exploding) return;
     exploding = true;
     sprite->changeAnimation(EXPLODE);
-    std::cout << "Bullet explosion!" << std::endl;
+    cout << "Bullet explosion!" << endl;
     // En el update se desactivar� la entidad cuando acabe la animaci�n de explosi�n
 
 }

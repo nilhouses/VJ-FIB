@@ -11,7 +11,7 @@
 #include "Clever.h"
 #include "Shooter.h"
 #include "Key.h"
-#include "Weight.h"
+#include "Barrel.h"
 #include "Door.h"
 #include "Game.h"
 #include "Asset.h"

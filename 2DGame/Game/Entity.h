@@ -8,7 +8,7 @@
 enum class Type {
 	PLAYER,
 	KEY,
-	WEIGHT,
+	BARREL,
 	ENEMY,
 	BULLET,
 	DOOR

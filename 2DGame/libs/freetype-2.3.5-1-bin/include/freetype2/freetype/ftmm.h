@@ -199,7 +199,7 @@ FT_BEGIN_HEADER
   /*                       GX which allows certain design coordinates to   */
   /*                       have a string ID (in the `name' table)          */
   /*                       associated with them.  The font can tell the    */
-  /*                       user that, for example, Weight=1.5 is `Bold'.   */
+  /*                       user that, for example, Barrel=1.5 is `Bold'.   */
   /*                                                                       */
   /*    axis            :: A table of axis descriptors.                    */
   /*                       GX fonts contain slightly more data than MM.    */

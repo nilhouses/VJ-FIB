@@ -21,7 +21,7 @@ void Credits::init() {
     background = TexturedQuad::createTexturedQuad(geomBG, texCoords, texProgram);
 
     if (!text.init("fonts/PressStart2P.ttf"))
-        std::cout << "Could not load pixel font!!!" << std::endl;
+        cout << "Could not load pixel font!!!" << endl;
 
     projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 }

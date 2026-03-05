@@ -20,13 +20,13 @@ void Instructions::init() {
     background = TexturedQuad::createTexturedQuad(geomBG, texCoords, texProgram);
 
     if (!text.init("fonts/PressStart2P.ttf"))
-        std::cout << "Could not load pixel font!!!" << std::endl;
+        cout << "Could not load pixel font!!!" << endl;
 
     projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 }
 
 void Instructions::update(int deltaTime) {
-    // Si el jugador pulsa ESC o B, volvemos al menú principal
+    // Si el jugador pulsa ESC o B, volvemos al menï¿½ principal
     if (Game::instance().getKey(GLFW_KEY_ESCAPE) || Game::instance().getKey(GLFW_KEY_B)) {
         Game::instance().changeState(MAIN_MENU);
     }

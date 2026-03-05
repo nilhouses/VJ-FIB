@@ -5553,7 +5553,7 @@ typedef struct
     const ma_channel* pChannelMapOut;
     ma_channel_mix_mode mixingMode;
     ma_bool32 calculateLFEFromSpatialChannels;  /* When an output LFE channel is present, but no input LFE, set to true to set the output LFE to the average of all spatial channels (LR, FR, etc.). Ignored when an input LFE is present. */
-    float** ppWeights;  /* [in][out]. Only used when mixingMode is set to ma_channel_mix_mode_custom_weights. */
+    float** ppBarrels;  /* [in][out]. Only used when mixingMode is set to ma_channel_mix_mode_custom_weights. */
 } ma_channel_converter_config;
 
 MA_API ma_channel_converter_config ma_channel_converter_config_init(ma_format format, ma_uint32 channelsIn, const ma_channel* pChannelMapIn, ma_uint32 channelsOut, const ma_channel* pChannelMapOut, ma_channel_mix_mode mixingMode);
@@ -5606,7 +5606,7 @@ typedef struct
     ma_dither_mode ditherMode;
     ma_channel_mix_mode channelMixMode;
     ma_bool32 calculateLFEFromSpatialChannels;  /* When an output LFE channel is present, but no input LFE, set to true to set the output LFE to the average of all spatial channels (LR, FR, etc.). Ignored when an input LFE is present. */
-    float** ppChannelWeights;  /* [in][out]. Only used when mixingMode is set to ma_channel_mix_mode_custom_weights. */
+    float** ppChannelBarrels;  /* [in][out]. Only used when mixingMode is set to ma_channel_mix_mode_custom_weights. */
     ma_bool32 allowDynamicSampleRate;
     ma_resampler_config resampling;
 } ma_data_converter_config;
@@ -55211,7 +55211,7 @@ static ma_result ma_channel_converter_get_heap_layout(const ma_channel_converter
         pHeapLayout->sizeInBytes += sizeof(ma_uint8) * pConfig->channelsOut;
     }
 
-    /* Weights */
+    /* Barrels */
     pHeapLayout->weightsOffset = pHeapLayout->sizeInBytes;
     if (conversionPath == ma_channel_conversion_path_weights) {
         pHeapLayout->sizeInBytes += sizeof(float*) * pConfig->channelsIn;
@@ -55344,13 +55344,13 @@ MA_API ma_result ma_channel_converter_init_preallocated(const ma_channel_convert
         {
             case ma_channel_mix_mode_custom_weights:
             {
-                if (pConfig->ppWeights == NULL) {
+                if (pConfig->ppBarrels == NULL) {
                     return MA_INVALID_ARGS; /* Config specified a custom weights mixing mode, but no custom weights have been specified. */
                 }
 
                 for (iChannelIn = 0; iChannelIn < pConverter->channelsIn; iChannelIn += 1) {
                     for (iChannelOut = 0; iChannelOut < pConverter->channelsOut; iChannelOut += 1) {
-                        float weight = pConfig->ppWeights[iChannelIn][iChannelOut];
+                        float weight = pConfig->ppBarrels[iChannelIn][iChannelOut];
 
                         if (pConverter->format == ma_format_f32) {
                             pConverter->weights.f32[iChannelIn][iChannelOut] = weight;
@@ -55959,7 +55959,7 @@ static ma_channel_converter_config ma_channel_converter_config_init_from_data_co
     MA_ASSERT(pConfig != NULL);
 
     channelConverterConfig = ma_channel_converter_config_init(ma_data_converter_config_get_mid_format(pConfig), pConfig->channelsIn, pConfig->pChannelMapIn, pConfig->channelsOut, pConfig->pChannelMapOut, pConfig->channelMixMode);
-    channelConverterConfig.ppWeights = pConfig->ppChannelWeights;
+    channelConverterConfig.ppBarrels = pConfig->ppChannelBarrels;
     channelConverterConfig.calculateLFEFromSpatialChannels = pConfig->calculateLFEFromSpatialChannels;
 
     return channelConverterConfig;

@@ -27,11 +27,11 @@ void Clever::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
     // Inicializar los atributos de la Entity
     Entity::init(tileMapPos, shaderProgram, "images/clever.png", glm::ivec2(32, 32), glm::vec2(0.25f, 0.25f), c);
 
-    // Atributos característicos del Clever
+    // Atributos caracterï¿½sticos del Clever
     dying = false;
     deathTimer = 0.f;
 
-    // Configuración de animaciones
+    // Configuraciï¿½n de animaciones
     sprite->setNumberAnimations(NUM_ANIMS);
 
     sprite->setAnimationSpeed(MOVE_LEFT, 20);
@@ -146,7 +146,7 @@ void Clever::update(int deltaTime)
 
             if (shouldTurn) {
                 changeDirection();
-                // Si estava actuando como un Dummy significa que ya ha llegado al otro extremo de la plataforma, así que lo volvemos a poner en modo persecución
+                // Si estava actuando como un Dummy significa que ya ha llegado al otro extremo de la plataforma, asï¿½ que lo volvemos a poner en modo persecuciï¿½n
                 if (ignoringPlayer) ignoringPlayer = false;
             }
         }
@@ -171,6 +171,6 @@ void Clever::die()
     if (isDying()) return;
     dying = true;
     sprite->changeAnimation(DIE);
-    std::cout << "RIP Clever" << std::endl;
-    // En el update se desactivará la entidad cuando acabe la animación de explosión
+    cout << "RIP Clever" << endl;
+    // En el update se desactivarï¿½ la entidad cuando acabe la animaciï¿½n de explosiï¿½n
 }

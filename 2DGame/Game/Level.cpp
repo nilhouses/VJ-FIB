@@ -88,9 +88,9 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom)
         key->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera);
         entity = key;
     }
-    else if (type == "WEIGHT")
+    else if (type == "BARREL")
     {
-        Weight* weight = new Weight();
+        Barrel* weight = new Barrel();
         weight->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera, glm::vec2(float(tx * map->getTileSize()), float(ty * map->getTileSize())));
         weight->setTileMap(map);
         entity = weight;
@@ -324,9 +324,9 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             cout << "collectedKeys: " << collectedKeys << "/" << allKeys << endl;
             break;
 
-        case Type::WEIGHT:
+        case Type::BARREL:
         {
-            Weight* w = static_cast<Weight*>(e);
+            Barrel* w = static_cast<Barrel*>(e);
             if (w->isExploding()) break;
             
             // Colisiones
@@ -343,9 +343,9 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             else {
                 // Colisión horizontal En función del player se empuja para un lado o otro
                 float xPlayer = player->getPosition().x;
-                float xWeight = e->getPosition().x;
+                float xBarrel = e->getPosition().x;
                 int pushDist = 2 * rooms[currentRoom]->getMap()->getTileSize();
-                if (xPlayer < xWeight) w->startPush(1, pushDist);
+                if (xPlayer < xBarrel) w->startPush(1, pushDist);
                 else w->startPush(-1, pushDist);
             }
             break;
@@ -426,9 +426,9 @@ void Level::handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollid
 {
     switch (e->getType())
     {
-        case Type::WEIGHT:
+        case Type::BARREL:
         {
-            Weight* w = static_cast<Weight*>(e);
+            Barrel* w = static_cast<Barrel*>(e);
             if (w->isMoving()) {
                 // El peso explota en la misma posición del dummy, NO al lado
                 glm::vec2 enemyPos = enemy->getPosition();
@@ -470,9 +470,9 @@ void Level::handleBulletCollision(Bullet* b, Entity* e, glm::vec2& rangeCollided
 {
     switch (e->getType())
     {
-        case Type::WEIGHT:
+        case Type::BARREL:
         {
-            Weight* w = static_cast<Weight*>(e);
+            Barrel* w = static_cast<Barrel*>(e);
             if (w->isMoving()) w->stopPush();
             w->explode();
             b->explode();
@@ -499,7 +499,7 @@ void Level::checkCollisions()
         glm::vec2 offset(0.f, 0.f);
         if (e->getType() == Type::KEY) {
             offset = glm::vec2(8.f, 8.f);
-        } else if (e->getType() == Type::WEIGHT) {
+        } else if (e->getType() == Type::BARREL) {
             offset = glm::vec2(8.f, 0.f); // No tocar la y para evitar que el player tiemble al pisar el peso
         } else if (e->getType() == Type::ENEMY) {
             // Custom BoundingBox Dummy

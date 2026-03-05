@@ -351,7 +351,7 @@ FT_BEGIN_HEADER
   {
     FT_UShort  version;                /* 0x0001 - more or 0xFFFF */
     FT_Short   xAvgCharWidth;
-    FT_UShort  usWeightClass;
+    FT_UShort  usBarrelClass;
     FT_UShort  usWidthClass;
     FT_Short   fsType;
     FT_Short   ySubscriptXSize;
@@ -451,7 +451,7 @@ FT_BEGIN_HEADER
     FT_Char    TypeFace[16];
     FT_Char    CharacterComplement[8];
     FT_Char    FileName[6];
-    FT_Char    StrokeWeight;
+    FT_Char    StrokeBarrel;
     FT_Char    WidthType;
     FT_Byte    SerifStyle;
     FT_Byte    Reserved;

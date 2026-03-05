@@ -45,13 +45,13 @@ glm::vec4 Entity::getBoundingBox() const
 
 void Entity::printDebugInfo() const
 {
-	std::cout << "===============================" << std::endl;
-	std::cout << "Entity Type: " << static_cast<int>(type) << std::endl;
-	std::cout << "In Room: " << room << std::endl;
-	std::cout << "Position: (" << pos.x << ", " << pos.y << ")" << std::endl;
-	std::cout << "Active: " << (active ? "Yes" : "No") << std::endl;
-	std::cout << "Bounding Box: (" << getBoundingBox().x << ", " << getBoundingBox().y << ", " 
-			  << getBoundingBox().z << ", " << getBoundingBox().w << ")" << std::endl;
-	std::cout << "===============================" << std::endl;
-	std::cout << std::endl;
+	cout << "===============================" << endl;
+	cout << "Entity Type: " << static_cast<int>(type) << endl;
+	cout << "In Room: " << room << endl;
+	cout << "Position: (" << pos.x << ", " << pos.y << ")" << endl;
+	cout << "Active: " << (active ? "Yes" : "No") << endl;
+	cout << "Bounding Box: (" << getBoundingBox().x << ", " << getBoundingBox().y << ", " 
+			  << getBoundingBox().z << ", " << getBoundingBox().w << ")" << endl;
+	cout << "===============================" << endl;
+	cout << endl;
 }

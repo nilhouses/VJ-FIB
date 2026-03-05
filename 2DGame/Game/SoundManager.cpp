@@ -3,7 +3,7 @@
 #include <iostream>
 
 // Sonidos predefinidos
-std::unordered_map<std::string, std::string> sounds = {
+unordered_map<string, string> sounds = {
     { "horse", "sounds/caballoMVP.mp3"},
     { "background", "sounds/intro.mp3"}//    bonprofit_remix.mp3" }
 };
@@ -11,18 +11,18 @@ std::unordered_map<std::string, std::string> sounds = {
 
 void SoundManager::init() {
     if (ma_engine_init(NULL, &engine) != MA_SUCCESS) {
-        std::cout << "Error: No se pudo iniciar el motor de audio." << std::endl;
+        cout << "Error: No se pudo iniciar el motor de audio." << endl;
         return;
     }
     initialized = true;
 }
 
-void SoundManager::playSound(const std::string& sound, float volume) {
+void SoundManager::playSound(const string& sound, float volume) {
     if (!initialized) return;
 
     auto it = sounds.find(sound);
     if (it == sounds.end()) {
-        std::cout << "Error: Sonido '" << sound << "' no encontrado en el mapa." << std::endl;
+        cout << "Error: Sonido '" << sound << "' no encontrado en el mapa." << endl;
         return;
     }
 

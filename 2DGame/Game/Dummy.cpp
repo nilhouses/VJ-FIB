@@ -27,11 +27,11 @@ void Dummy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Cam
 	// Inicializar los atributos de la Entity
 	Entity::init(tileMapPos, shaderProgram, "images/dummy.png", glm::ivec2(32, 32), glm::vec2(0.25f, 0.25f), c);
 
-	// Atributos característicos del Dummy
+	// Atributos caracterï¿½sticos del Dummy
     dying = false;
 	deathTimer = 0.f;
 
-	// Configuración de animaciones
+	// Configuraciï¿½n de animaciones
 	sprite->setNumberAnimations(NUM_ANIMS);
 
 	sprite->setAnimationSpeed(MOVE_LEFT, 20);
@@ -116,6 +116,6 @@ void Dummy::die()
     if (isDying()) return;
     dying = true;
     sprite->changeAnimation(DIE);
-    std::cout << "RIP Dummy" << std::endl;
-    // En el update se desactivará la entidad cuando acabe la animación de explosión
+    cout << "RIP Dummy" << endl;
+    // En el update se desactivarï¿½ la entidad cuando acabe la animaciï¿½n de explosiï¿½n
 }

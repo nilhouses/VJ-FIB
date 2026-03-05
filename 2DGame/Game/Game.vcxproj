@@ -39,7 +39,7 @@
     <ClInclude Include="TexturedQuad.h" />
     <ClInclude Include="TileMap.h" />
     <ClInclude Include="Utils.h" />
-    <ClInclude Include="Weight.h" />
+    <ClInclude Include="Barrel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Asset.cpp" />
@@ -69,7 +69,7 @@
     <ClCompile Include="TexturedQuad.cpp" />
     <ClCompile Include="TileMap.cpp" />
     <ClCompile Include="Utils.cpp" />
-    <ClCompile Include="Weight.cpp" />
+    <ClCompile Include="Barrel.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5BE6CA2A-E5A8-40CC-9015-047CE0C78036}</ProjectGuid>

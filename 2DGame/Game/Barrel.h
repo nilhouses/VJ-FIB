@@ -1,15 +1,15 @@
-#ifndef _WEIGHT_INCLUDE
-#define _WEIGHT_INCLUDE
+#ifndef _BARREL_INCLUDE
+#define _BARREL_INCLUDE
 
 
 #include "Entity.h"
 #include "Camera.h"
 
-class Weight : public Entity
+class Barrel : public Entity
 {
 public:
-	Weight();
-	~Weight();
+	Barrel();
+	~Barrel();
 
 public:
 	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, glm::vec2 prevPos);
@@ -24,15 +24,15 @@ public:
 	bool isExploding() const { return exploding; }
 
 private:
-	glm::vec2 prevPos;			        // Para trackear caídas(y) y movimiento(x) del peso
+	glm::vec2 prevPos;			        // Para trackear caï¿½das(y) y movimiento(x) del peso
 	bool exploding;						// Para evitar que un peso explote varias veces
-	float explosionTimer;				// Para controlar el tiempo que dura la animación de explosión antes del deactivate
-	float targetX;						// Donde llega el peso con el último empuje
-	bool isBeingPushed;					// Si el peso está siendo empujado
+	float explosionTimer;				// Para controlar el tiempo que dura la animaciï¿½n de explosiï¿½n antes del deactivate
+	float targetX;						// Donde llega el peso con el ï¿½ltimo empuje
+	bool isBeingPushed;					// Si el peso estï¿½ siendo empujado
 	int pushDirection;					// 1 derecha, -1 izquierda
-	float fallSpeed;				    // Para controlar la velocidad de caída del peso, ahora que hay aceleración
+	float fallSpeed;				    // Para controlar la velocidad de caï¿½da del peso, ahora que hay aceleraciï¿½n
 };
 
 
-#endif // _WEIGHT_INCLUDE
+#endif // _BARREL_INCLUDE
 

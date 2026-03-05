@@ -1654,7 +1654,7 @@ typedef void (GLAPIENTRY * PFNGLWINDOWPOS3SVPROC) (const GLshort *p);
 #define GL_EDGE_FLAG_ARRAY_BUFFER_BINDING 0x889B
 #define GL_SECONDARY_COLOR_ARRAY_BUFFER_BINDING 0x889C
 #define GL_FOG_COORDINATE_ARRAY_BUFFER_BINDING 0x889D
-#define GL_WEIGHT_ARRAY_BUFFER_BINDING 0x889E
+#define GL_BARREL_ARRAY_BUFFER_BINDING 0x889E
 #define GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING 0x889F
 #define GL_READ_ONLY 0x88B8
 #define GL_WRITE_ONLY 0x88B9
@@ -6913,7 +6913,7 @@ typedef void (GLAPIENTRY * PFNGLGETCOMPRESSEDTEXIMAGEARBPROC) (GLenum target, GL
 #define GL_ARB_texture_filter_minmax 1
 
 #define GL_TEXTURE_REDUCTION_MODE_ARB 0x9366
-#define GL_WEIGHTED_AVERAGE_ARB 0x9367
+#define GL_BARRELED_AVERAGE_ARB 0x9367
 
 #define GLEW_ARB_texture_filter_minmax GLEW_GET_VAR(__GLEW_ARB_texture_filter_minmax)
 
@@ -7507,14 +7507,14 @@ typedef void (GLAPIENTRY * PFNGLVERTEXBINDINGDIVISORPROC) (GLuint bindingindex, 
 #define GL_MODELVIEW1_ARB 0x850A
 #define GL_MAX_VERTEX_UNITS_ARB 0x86A4
 #define GL_ACTIVE_VERTEX_UNITS_ARB 0x86A5
-#define GL_WEIGHT_SUM_UNITY_ARB 0x86A6
+#define GL_BARREL_SUM_UNITY_ARB 0x86A6
 #define GL_VERTEX_BLEND_ARB 0x86A7
-#define GL_CURRENT_WEIGHT_ARB 0x86A8
-#define GL_WEIGHT_ARRAY_TYPE_ARB 0x86A9
-#define GL_WEIGHT_ARRAY_STRIDE_ARB 0x86AA
-#define GL_WEIGHT_ARRAY_SIZE_ARB 0x86AB
-#define GL_WEIGHT_ARRAY_POINTER_ARB 0x86AC
-#define GL_WEIGHT_ARRAY_ARB 0x86AD
+#define GL_CURRENT_BARREL_ARB 0x86A8
+#define GL_BARREL_ARRAY_TYPE_ARB 0x86A9
+#define GL_BARREL_ARRAY_STRIDE_ARB 0x86AA
+#define GL_BARREL_ARRAY_SIZE_ARB 0x86AB
+#define GL_BARREL_ARRAY_POINTER_ARB 0x86AC
+#define GL_BARREL_ARRAY_ARB 0x86AD
 #define GL_MODELVIEW2_ARB 0x8722
 #define GL_MODELVIEW3_ARB 0x8723
 #define GL_MODELVIEW4_ARB 0x8724
@@ -7547,26 +7547,26 @@ typedef void (GLAPIENTRY * PFNGLVERTEXBINDINGDIVISORPROC) (GLuint bindingindex, 
 #define GL_MODELVIEW31_ARB 0x873F
 
 typedef void (GLAPIENTRY * PFNGLVERTEXBLENDARBPROC) (GLint count);
-typedef void (GLAPIENTRY * PFNGLWEIGHTPOINTERARBPROC) (GLint size, GLenum type, GLsizei stride, void *pointer);
-typedef void (GLAPIENTRY * PFNGLWEIGHTBVARBPROC) (GLint size, GLbyte *weights);
-typedef void (GLAPIENTRY * PFNGLWEIGHTDVARBPROC) (GLint size, GLdouble *weights);
-typedef void (GLAPIENTRY * PFNGLWEIGHTFVARBPROC) (GLint size, GLfloat *weights);
-typedef void (GLAPIENTRY * PFNGLWEIGHTIVARBPROC) (GLint size, GLint *weights);
-typedef void (GLAPIENTRY * PFNGLWEIGHTSVARBPROC) (GLint size, GLshort *weights);
-typedef void (GLAPIENTRY * PFNGLWEIGHTUBVARBPROC) (GLint size, GLubyte *weights);
-typedef void (GLAPIENTRY * PFNGLWEIGHTUIVARBPROC) (GLint size, GLuint *weights);
-typedef void (GLAPIENTRY * PFNGLWEIGHTUSVARBPROC) (GLint size, GLushort *weights);
+typedef void (GLAPIENTRY * PFNGLBARRELPOINTERARBPROC) (GLint size, GLenum type, GLsizei stride, void *pointer);
+typedef void (GLAPIENTRY * PFNGLBARRELBVARBPROC) (GLint size, GLbyte *weights);
+typedef void (GLAPIENTRY * PFNGLBARRELDVARBPROC) (GLint size, GLdouble *weights);
+typedef void (GLAPIENTRY * PFNGLBARRELFVARBPROC) (GLint size, GLfloat *weights);
+typedef void (GLAPIENTRY * PFNGLBARRELIVARBPROC) (GLint size, GLint *weights);
+typedef void (GLAPIENTRY * PFNGLBARRELSVARBPROC) (GLint size, GLshort *weights);
+typedef void (GLAPIENTRY * PFNGLBARRELUBVARBPROC) (GLint size, GLubyte *weights);
+typedef void (GLAPIENTRY * PFNGLBARRELUIVARBPROC) (GLint size, GLuint *weights);
+typedef void (GLAPIENTRY * PFNGLBARRELUSVARBPROC) (GLint size, GLushort *weights);
 
 #define glVertexBlendARB GLEW_GET_FUN(__glewVertexBlendARB)
-#define glWeightPointerARB GLEW_GET_FUN(__glewWeightPointerARB)
-#define glWeightbvARB GLEW_GET_FUN(__glewWeightbvARB)
-#define glWeightdvARB GLEW_GET_FUN(__glewWeightdvARB)
-#define glWeightfvARB GLEW_GET_FUN(__glewWeightfvARB)
-#define glWeightivARB GLEW_GET_FUN(__glewWeightivARB)
-#define glWeightsvARB GLEW_GET_FUN(__glewWeightsvARB)
-#define glWeightubvARB GLEW_GET_FUN(__glewWeightubvARB)
-#define glWeightuivARB GLEW_GET_FUN(__glewWeightuivARB)
-#define glWeightusvARB GLEW_GET_FUN(__glewWeightusvARB)
+#define glBarrelPointerARB GLEW_GET_FUN(__glewBarrelPointerARB)
+#define glBarrelbvARB GLEW_GET_FUN(__glewBarrelbvARB)
+#define glBarreldvARB GLEW_GET_FUN(__glewBarreldvARB)
+#define glBarrelfvARB GLEW_GET_FUN(__glewBarrelfvARB)
+#define glBarrelivARB GLEW_GET_FUN(__glewBarrelivARB)
+#define glBarrelsvARB GLEW_GET_FUN(__glewBarrelsvARB)
+#define glBarrelubvARB GLEW_GET_FUN(__glewBarrelubvARB)
+#define glBarreluivARB GLEW_GET_FUN(__glewBarreluivARB)
+#define glBarrelusvARB GLEW_GET_FUN(__glewBarrelusvARB)
 
 #define GLEW_ARB_vertex_blend GLEW_GET_VAR(__GLEW_ARB_vertex_blend)
 
@@ -7591,7 +7591,7 @@ typedef void (GLAPIENTRY * PFNGLWEIGHTUSVARBPROC) (GLint size, GLushort *weights
 #define GL_EDGE_FLAG_ARRAY_BUFFER_BINDING_ARB 0x889B
 #define GL_SECONDARY_COLOR_ARRAY_BUFFER_BINDING_ARB 0x889C
 #define GL_FOG_COORDINATE_ARRAY_BUFFER_BINDING_ARB 0x889D
-#define GL_WEIGHT_ARRAY_BUFFER_BINDING_ARB 0x889E
+#define GL_BARREL_ARRAY_BUFFER_BINDING_ARB 0x889E
 #define GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING_ARB 0x889F
 #define GL_READ_ONLY_ARB 0x88B8
 #define GL_WRITE_ONLY_ARB 0x88B9
@@ -10208,7 +10208,7 @@ typedef void (GLAPIENTRY * PFNGLGETCOLORTABLEPARAMETERIVEXTPROC) (GLenum target,
 #define GL_PIXEL_TRANSFORM_2D_EXT 0x8330
 #define GL_PIXEL_MAG_FILTER_EXT 0x8331
 #define GL_PIXEL_MIN_FILTER_EXT 0x8332
-#define GL_PIXEL_CUBIC_WEIGHT_EXT 0x8333
+#define GL_PIXEL_CUBIC_BARREL_EXT 0x8333
 #define GL_CUBIC_EXT 0x8334
 #define GL_AVERAGE_EXT 0x8335
 #define GL_PIXEL_TRANSFORM_2D_STACK_DEPTH_EXT 0x8336
@@ -10920,7 +10920,7 @@ typedef void (GLAPIENTRY * PFNGLTEXBUFFEREXTPROC) (GLenum target, GLenum interna
 #define GL_EXT_texture_filter_minmax 1
 
 #define GL_TEXTURE_REDUCTION_MODE_EXT 0x9366
-#define GL_WEIGHTED_AVERAGE_EXT 0x9367
+#define GL_BARRELED_AVERAGE_EXT 0x9367
 
 #define GLEW_EXT_texture_filter_minmax GLEW_GET_VAR(__GLEW_EXT_texture_filter_minmax)
 
@@ -11576,22 +11576,22 @@ typedef void (GLAPIENTRY * PFNGLWRITEMASKEXTPROC) (GLuint res, GLuint in, GLenum
 #define GL_MODELVIEW0_EXT 0x1700
 #define GL_MODELVIEW1_STACK_DEPTH_EXT 0x8502
 #define GL_MODELVIEW1_MATRIX_EXT 0x8506
-#define GL_VERTEX_WEIGHTING_EXT 0x8509
+#define GL_VERTEX_BARRELING_EXT 0x8509
 #define GL_MODELVIEW1_EXT 0x850A
-#define GL_CURRENT_VERTEX_WEIGHT_EXT 0x850B
-#define GL_VERTEX_WEIGHT_ARRAY_EXT 0x850C
-#define GL_VERTEX_WEIGHT_ARRAY_SIZE_EXT 0x850D
-#define GL_VERTEX_WEIGHT_ARRAY_TYPE_EXT 0x850E
-#define GL_VERTEX_WEIGHT_ARRAY_STRIDE_EXT 0x850F
-#define GL_VERTEX_WEIGHT_ARRAY_POINTER_EXT 0x8510
+#define GL_CURRENT_VERTEX_BARREL_EXT 0x850B
+#define GL_VERTEX_BARREL_ARRAY_EXT 0x850C
+#define GL_VERTEX_BARREL_ARRAY_SIZE_EXT 0x850D
+#define GL_VERTEX_BARREL_ARRAY_TYPE_EXT 0x850E
+#define GL_VERTEX_BARREL_ARRAY_STRIDE_EXT 0x850F
+#define GL_VERTEX_BARREL_ARRAY_POINTER_EXT 0x8510
 
-typedef void (GLAPIENTRY * PFNGLVERTEXWEIGHTPOINTEREXTPROC) (GLint size, GLenum type, GLsizei stride, void *pointer);
-typedef void (GLAPIENTRY * PFNGLVERTEXWEIGHTFEXTPROC) (GLfloat weight);
-typedef void (GLAPIENTRY * PFNGLVERTEXWEIGHTFVEXTPROC) (GLfloat* weight);
+typedef void (GLAPIENTRY * PFNGLVERTEXBARRELPOINTEREXTPROC) (GLint size, GLenum type, GLsizei stride, void *pointer);
+typedef void (GLAPIENTRY * PFNGLVERTEXBARRELFEXTPROC) (GLfloat weight);
+typedef void (GLAPIENTRY * PFNGLVERTEXBARRELFVEXTPROC) (GLfloat* weight);
 
-#define glVertexWeightPointerEXT GLEW_GET_FUN(__glewVertexWeightPointerEXT)
-#define glVertexWeightfEXT GLEW_GET_FUN(__glewVertexWeightfEXT)
-#define glVertexWeightfvEXT GLEW_GET_FUN(__glewVertexWeightfvEXT)
+#define glVertexBarrelPointerEXT GLEW_GET_FUN(__glewVertexBarrelPointerEXT)
+#define glVertexBarrelfEXT GLEW_GET_FUN(__glewVertexBarrelfEXT)
+#define glVertexBarrelfvEXT GLEW_GET_FUN(__glewVertexBarrelfvEXT)
 
 #define GLEW_EXT_vertex_weighting GLEW_GET_VAR(__GLEW_EXT_vertex_weighting)
 
@@ -13250,8 +13250,8 @@ typedef void (GLAPIENTRY * PFNGLVERTEXATTRIBS1HVNVPROC) (GLuint index, GLsizei n
 typedef void (GLAPIENTRY * PFNGLVERTEXATTRIBS2HVNVPROC) (GLuint index, GLsizei n, const GLhalf* v);
 typedef void (GLAPIENTRY * PFNGLVERTEXATTRIBS3HVNVPROC) (GLuint index, GLsizei n, const GLhalf* v);
 typedef void (GLAPIENTRY * PFNGLVERTEXATTRIBS4HVNVPROC) (GLuint index, GLsizei n, const GLhalf* v);
-typedef void (GLAPIENTRY * PFNGLVERTEXWEIGHTHNVPROC) (GLhalf weight);
-typedef void (GLAPIENTRY * PFNGLVERTEXWEIGHTHVNVPROC) (const GLhalf* weight);
+typedef void (GLAPIENTRY * PFNGLVERTEXBARRELHNVPROC) (GLhalf weight);
+typedef void (GLAPIENTRY * PFNGLVERTEXBARRELHVNVPROC) (const GLhalf* weight);
 
 #define glColor3hNV GLEW_GET_FUN(__glewColor3hNV)
 #define glColor3hvNV GLEW_GET_FUN(__glewColor3hvNV)
@@ -13297,8 +13297,8 @@ typedef void (GLAPIENTRY * PFNGLVERTEXWEIGHTHVNVPROC) (const GLhalf* weight);
 #define glVertexAttribs2hvNV GLEW_GET_FUN(__glewVertexAttribs2hvNV)
 #define glVertexAttribs3hvNV GLEW_GET_FUN(__glewVertexAttribs3hvNV)
 #define glVertexAttribs4hvNV GLEW_GET_FUN(__glewVertexAttribs4hvNV)
-#define glVertexWeighthNV GLEW_GET_FUN(__glewVertexWeighthNV)
-#define glVertexWeighthvNV GLEW_GET_FUN(__glewVertexWeighthvNV)
+#define glVertexBarrelhNV GLEW_GET_FUN(__glewVertexBarrelhNV)
+#define glVertexBarrelhvNV GLEW_GET_FUN(__glewVertexBarrelhvNV)
 
 #define GLEW_NV_half_float GLEW_GET_VAR(__GLEW_NV_half_float)
 
@@ -13648,7 +13648,7 @@ typedef void (GLAPIENTRY * PFNGLSTENCILTHENCOVERFILLPATHNVPROC) (GLuint path, GL
 typedef void (GLAPIENTRY * PFNGLSTENCILTHENCOVERSTROKEPATHINSTANCEDNVPROC) (GLsizei numPaths, GLenum pathNameType, const void *paths, GLuint pathBase, GLint reference, GLuint mask, GLenum coverMode, GLenum transformType, const GLfloat *transformValues);
 typedef void (GLAPIENTRY * PFNGLSTENCILTHENCOVERSTROKEPATHNVPROC) (GLuint path, GLint reference, GLuint mask, GLenum coverMode);
 typedef void (GLAPIENTRY * PFNGLTRANSFORMPATHNVPROC) (GLuint resultPath, GLuint srcPath, GLenum transformType, const GLfloat* transformValues);
-typedef void (GLAPIENTRY * PFNGLWEIGHTPATHSNVPROC) (GLuint resultPath, GLsizei numPaths, const GLuint paths[], const GLfloat weights[]);
+typedef void (GLAPIENTRY * PFNGLBARRELPATHSNVPROC) (GLuint resultPath, GLsizei numPaths, const GLuint paths[], const GLfloat weights[]);
 
 #define glCopyPathNV GLEW_GET_FUN(__glewCopyPathNV)
 #define glCoverFillPathInstancedNV GLEW_GET_FUN(__glewCoverFillPathInstancedNV)
@@ -13713,7 +13713,7 @@ typedef void (GLAPIENTRY * PFNGLWEIGHTPATHSNVPROC) (GLuint resultPath, GLsizei n
 #define glStencilThenCoverStrokePathInstancedNV GLEW_GET_FUN(__glewStencilThenCoverStrokePathInstancedNV)
 #define glStencilThenCoverStrokePathNV GLEW_GET_FUN(__glewStencilThenCoverStrokePathNV)
 #define glTransformPathNV GLEW_GET_FUN(__glewTransformPathNV)
-#define glWeightPathsNV GLEW_GET_FUN(__glewWeightPathsNV)
+#define glBarrelPathsNV GLEW_GET_FUN(__glewBarrelPathsNV)
 
 #define GLEW_NV_path_rendering GLEW_GET_VAR(__GLEW_NV_path_rendering)
 
@@ -17514,15 +17514,15 @@ GLEW_FUN_EXPORT PFNGLVERTEXATTRIBLFORMATPROC __glewVertexAttribLFormat;
 GLEW_FUN_EXPORT PFNGLVERTEXBINDINGDIVISORPROC __glewVertexBindingDivisor;
 
 GLEW_FUN_EXPORT PFNGLVERTEXBLENDARBPROC __glewVertexBlendARB;
-GLEW_FUN_EXPORT PFNGLWEIGHTPOINTERARBPROC __glewWeightPointerARB;
-GLEW_FUN_EXPORT PFNGLWEIGHTBVARBPROC __glewWeightbvARB;
-GLEW_FUN_EXPORT PFNGLWEIGHTDVARBPROC __glewWeightdvARB;
-GLEW_FUN_EXPORT PFNGLWEIGHTFVARBPROC __glewWeightfvARB;
-GLEW_FUN_EXPORT PFNGLWEIGHTIVARBPROC __glewWeightivARB;
-GLEW_FUN_EXPORT PFNGLWEIGHTSVARBPROC __glewWeightsvARB;
-GLEW_FUN_EXPORT PFNGLWEIGHTUBVARBPROC __glewWeightubvARB;
-GLEW_FUN_EXPORT PFNGLWEIGHTUIVARBPROC __glewWeightuivARB;
-GLEW_FUN_EXPORT PFNGLWEIGHTUSVARBPROC __glewWeightusvARB;
+GLEW_FUN_EXPORT PFNGLBARRELPOINTERARBPROC __glewBarrelPointerARB;
+GLEW_FUN_EXPORT PFNGLBARRELBVARBPROC __glewBarrelbvARB;
+GLEW_FUN_EXPORT PFNGLBARRELDVARBPROC __glewBarreldvARB;
+GLEW_FUN_EXPORT PFNGLBARRELFVARBPROC __glewBarrelfvARB;
+GLEW_FUN_EXPORT PFNGLBARRELIVARBPROC __glewBarrelivARB;
+GLEW_FUN_EXPORT PFNGLBARRELSVARBPROC __glewBarrelsvARB;
+GLEW_FUN_EXPORT PFNGLBARRELUBVARBPROC __glewBarrelubvARB;
+GLEW_FUN_EXPORT PFNGLBARRELUIVARBPROC __glewBarreluivARB;
+GLEW_FUN_EXPORT PFNGLBARRELUSVARBPROC __glewBarrelusvARB;
 
 GLEW_FUN_EXPORT PFNGLBINDBUFFERARBPROC __glewBindBufferARB;
 GLEW_FUN_EXPORT PFNGLBUFFERDATAARBPROC __glewBufferDataARB;
@@ -18319,9 +18319,9 @@ GLEW_FUN_EXPORT PFNGLVARIANTUIVEXTPROC __glewVariantuivEXT;
 GLEW_FUN_EXPORT PFNGLVARIANTUSVEXTPROC __glewVariantusvEXT;
 GLEW_FUN_EXPORT PFNGLWRITEMASKEXTPROC __glewWriteMaskEXT;
 
-GLEW_FUN_EXPORT PFNGLVERTEXWEIGHTPOINTEREXTPROC __glewVertexWeightPointerEXT;
-GLEW_FUN_EXPORT PFNGLVERTEXWEIGHTFEXTPROC __glewVertexWeightfEXT;
-GLEW_FUN_EXPORT PFNGLVERTEXWEIGHTFVEXTPROC __glewVertexWeightfvEXT;
+GLEW_FUN_EXPORT PFNGLVERTEXBARRELPOINTEREXTPROC __glewVertexBarrelPointerEXT;
+GLEW_FUN_EXPORT PFNGLVERTEXBARRELFEXTPROC __glewVertexBarrelfEXT;
+GLEW_FUN_EXPORT PFNGLVERTEXBARRELFVEXTPROC __glewVertexBarrelfvEXT;
 
 GLEW_FUN_EXPORT PFNGLIMPORTSYNCEXTPROC __glewImportSyncEXT;
 
@@ -18590,8 +18590,8 @@ GLEW_FUN_EXPORT PFNGLVERTEXATTRIBS1HVNVPROC __glewVertexAttribs1hvNV;
 GLEW_FUN_EXPORT PFNGLVERTEXATTRIBS2HVNVPROC __glewVertexAttribs2hvNV;
 GLEW_FUN_EXPORT PFNGLVERTEXATTRIBS3HVNVPROC __glewVertexAttribs3hvNV;
 GLEW_FUN_EXPORT PFNGLVERTEXATTRIBS4HVNVPROC __glewVertexAttribs4hvNV;
-GLEW_FUN_EXPORT PFNGLVERTEXWEIGHTHNVPROC __glewVertexWeighthNV;
-GLEW_FUN_EXPORT PFNGLVERTEXWEIGHTHVNVPROC __glewVertexWeighthvNV;
+GLEW_FUN_EXPORT PFNGLVERTEXBARRELHNVPROC __glewVertexBarrelhNV;
+GLEW_FUN_EXPORT PFNGLVERTEXBARRELHVNVPROC __glewVertexBarrelhvNV;
 
 GLEW_FUN_EXPORT PFNGLGETINTERNALFORMATSAMPLEIVNVPROC __glewGetInternalformatSampleivNV;
 
@@ -18670,7 +18670,7 @@ GLEW_FUN_EXPORT PFNGLSTENCILTHENCOVERFILLPATHNVPROC __glewStencilThenCoverFillPa
 GLEW_FUN_EXPORT PFNGLSTENCILTHENCOVERSTROKEPATHINSTANCEDNVPROC __glewStencilThenCoverStrokePathInstancedNV;
 GLEW_FUN_EXPORT PFNGLSTENCILTHENCOVERSTROKEPATHNVPROC __glewStencilThenCoverStrokePathNV;
 GLEW_FUN_EXPORT PFNGLTRANSFORMPATHNVPROC __glewTransformPathNV;
-GLEW_FUN_EXPORT PFNGLWEIGHTPATHSNVPROC __glewWeightPathsNV;
+GLEW_FUN_EXPORT PFNGLBARRELPATHSNVPROC __glewBarrelPathsNV;
 
 GLEW_FUN_EXPORT PFNGLFLUSHPIXELDATARANGENVPROC __glewFlushPixelDataRangeNV;
 GLEW_FUN_EXPORT PFNGLPIXELDATARANGENVPROC __glewPixelDataRangeNV;

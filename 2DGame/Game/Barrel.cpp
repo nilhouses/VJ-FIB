@@ -1,7 +1,7 @@
 #include <cmath>
 #include <iostream>
 #include <GL/glew.h>
-#include "Weight.h"
+#include "Barrel.h"
 #include "Game.h"
 
 #define GRAVITY 0.5f
@@ -10,21 +10,21 @@
 #define EXPLOSION_DURATION 1000.f // ms
 #define PUSH_SPEED 3.f
 
-enum WeightAnims
+enum BarrelAnims
 {
 	IDLE, EXPLOSION, NUM_ANIMS
 };
 
-Weight::Weight() : Entity(Type::WEIGHT) {}
+Barrel::Barrel() : Entity(Type::BARREL) {}
 
 
-Weight::~Weight()
+Barrel::~Barrel()
 {
 	if (sprite != NULL)
 		delete sprite;
 }
 
-void Weight::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, glm::vec2 prevPos)
+void Barrel::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, glm::vec2 prevPos)
 {
 	// Inicializar los atributos de la Entity
 	Entity::init(tileMapPos, shaderProgram, "images/weightTileset.png", glm::ivec2(32, 32), glm::vec2(0.25f, 0.25f), c);
@@ -54,7 +54,7 @@ void Weight::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 }
 
 
-void Weight::update(int deltaTime)
+void Barrel::update(int deltaTime)
 {
 	sprite->update(deltaTime);
 	// Si esta haciendo la animación de explosión, no hacer nada más que actualizar la animación
@@ -99,7 +99,7 @@ void Weight::update(int deltaTime)
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y))); // Actualizar posición visual
 }
 
-bool Weight::incrRight(int units)
+bool Barrel::incrRight(int units)
 {
 	pos.x += units;
 	// Si detecto colisi�n o se sale del mapa
@@ -110,7 +110,7 @@ bool Weight::incrRight(int units)
 	return true;
 }
 
-bool Weight::incrLeft(int units)
+bool Barrel::incrLeft(int units)
 {
 	pos.x -= units;
 	// Si detecto colisi�n o se sale del mapa
@@ -121,22 +121,22 @@ bool Weight::incrLeft(int units)
 	return true;
 }
 
-void Weight::startPush(int dir, int distance) {
+void Barrel::startPush(int dir, int distance) {
 	if (isBeingPushed) return; // Evita empentes infinites
 	isBeingPushed = true;
 	pushDirection = dir;
 	targetX = pos.x + (dir * distance);
 }
 
-bool Weight::isFalling() { return pos.y > prevPos.y; }
+bool Barrel::isFalling() { return pos.y > prevPos.y; }
 
-bool Weight::isMoving() { return (pos.x != prevPos.x || pos.y != prevPos.y); }
+bool Barrel::isMoving() { return (pos.x != prevPos.x || pos.y != prevPos.y); }
 
-void Weight::explode() {
+void Barrel::explode() {
 	// No explotar varias veces
 	if (exploding) return;
 	exploding = true;
 	sprite->changeAnimation(EXPLOSION);
-	std::cout << "Weight explosion!" << std::endl;
+	cout << "Barrel explosion!" << endl;
 	// En el update se desactivará la entidad cuando acabe la animación de explosión
 }

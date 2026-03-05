@@ -157,7 +157,7 @@ void Shooter::changeDirection() {
 
 void Shooter::shoot() {
     if (currentRoom == nullptr) {
-        std::cout << "The shooting enemy doesn't have a room assigned" << endl; 
+        cout << "The shooting enemy doesn't have a room assigned" << endl; 
         return;
     }
 
@@ -192,6 +192,6 @@ void Shooter::die()
     if (isDying()) return;
     dying = true;
     sprite->changeAnimation(DIE);
-    std::cout << "RIP Shooter" << std::endl;
+    cout << "RIP Shooter" << endl;
     // En el update se desactivar� la entidad cuando acabe la animaci�n de explosi�n
 }
