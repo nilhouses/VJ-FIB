@@ -1,22 +1,22 @@
-#ifndef _SHOOTING_INCLUDE
-#define _SHOOTING_INCLUDE
+#ifndef _SHOOTER_INCLUDE
+#define _SHOOTER_INCLUDE
 
 #include "Enemy.h"
 #include "Bullet.h"
 
-class Room; // Forward declaration de Room que sino peta porque Room incluye Shooting y Shooting incluye Room
+class Room; // Forward declaration de Room que sino peta porque Room incluye Shooter y Shooter incluye Room
 
 enum EnemyState {
 	WALKING,
 	IDLING,
-	SHOOTING
+	SHOOTER
 };
 
-class Shooting : public Enemy
+class Shooter : public Enemy
 {
 public:
-	Shooting();
-	~Shooting();
+	Shooter();
+	~Shooter();
 
 	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c);
 	void update(int deltaTime) override;
@@ -37,4 +37,4 @@ private:
 };
 
 
-#endif // _SHOOTING_INCLUDE
+#endif // _SHOOTER_INCLUDE

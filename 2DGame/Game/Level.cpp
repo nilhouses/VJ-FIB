@@ -103,14 +103,14 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom)
             door->setToVisited();
         entity = door;
     }
-    else if (type == "DUMMY" || type == "CLEVER" || type == "SHOOTING")
+    else if (type == "DUMMY" || type == "CLEVER" || type == "SHOOTER")
     {
         Enemy* enemy = nullptr;
         if (type == "DUMMY") enemy = new Dummy();
         else if (type == "CLEVER") enemy = new Clever();
-        else if (type == "SHOOTING") {
-            enemy = new Shooting();
-            static_cast<Shooting*>(enemy)->setRoom(rooms[indexRoom]);
+        else if (type == "SHOOTER") {
+            enemy = new Shooter();
+            static_cast<Shooter*>(enemy)->setRoom(rooms[indexRoom]);
         }
 
         enemy->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera);
@@ -397,6 +397,26 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             }
             break;
         }
+        case Type::BULLET:
+        {
+            Bullet* b = static_cast<Bullet*>(e);
+            if (!godMode) {
+                // Configurar transición a la nueva habitación
+                state = DYING;
+                transitionTimer = 1000.f;
+                rooms[currentRoom]->setTransitioning(true);
+
+                // Cambiar estado visual
+                player->setAnimation("DIE");
+                player->blockInput(); // Bloquear input del jugador durante la transición
+
+                // Reproducir sonido de muerte
+                SoundManager::instance().playSound("horse", 0.1);
+
+                b->explode();
+            }
+            break;
+        }
         default:
 			break;
     }
@@ -426,8 +446,15 @@ void Level::handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollid
             }
             break;
         }
-            default:
-                break;
+        case Type::BULLET:
+        {
+            Bullet* b = static_cast<Bullet*>(e);
+            enemy->die();
+            b->explode();
+            break;
+        }
+        default:
+            break;
     }
 	// Si alguna entity causa distintos efectos en función del tipo de enemigo, ya pondremos un switch dentro de cada caso:
     /*
@@ -437,6 +464,24 @@ void Level::handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollid
         {
         }
     }*/
+}
+
+void Level::handleBulletCollision(Bullet* b, Entity* e, glm::vec2& rangeCollided)
+{
+    switch (e->getType())
+    {
+        case Type::WEIGHT:
+        {
+            Weight* w = static_cast<Weight*>(e);
+            if (w->isMoving()) w->stopPush();
+            w->explode();
+            b->explode();
+            break;
+        }
+        default:
+            break;
+
+    }
 }
 
 
@@ -474,9 +519,30 @@ void Level::checkCollisions()
         {
             handlePlayerCollision(e, collision.rangeColision, offset);
         }
+		// 2. Colisiones entre y otras entidades (PE: bala y barril)
+        Bullet bullet;
+        if (e->getType() == bullet.getType())
+        {
+			Bullet* b = static_cast<Bullet*>(e);
+            
+            if (b->isExploding() || !b->isActive()) continue;
+
+            for(Entity* e1 : entities) {
+                if (!e1->isActive() || e1 == e) continue;
+                
+                glm::vec2 offset(0.f, 0.f);
+                CollisionInfo collisionBullet = overlap(b->getBoundingBox(), e1->getBoundingBox(), offset);
+
+                if (collisionBullet.colliding) {
+                    handleBulletCollision(b, e1, collision.rangeColision);
+                    break;
+                }
+			}
+            
+        }
     }
 
-    // 2. Comprobar colisiones entre los enemigos y las distintas entidades del nivel actual
+    // 3. Comprobar colisiones entre los enemigos y las distintas entidades del nivel actual
     vector<Enemy*>& enemies = rooms[currentRoom]->getEnemies();
 
     for (Enemy* enemy : enemies)

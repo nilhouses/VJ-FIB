@@ -52,10 +52,10 @@ void Room::update(int deltaTime)
     // Solo actualizo la animación del jugador durante la transición y se mantiene bloqueada su entrada
     if (!transitioning) {
         // Actualizar entidades
-        for (Entity* entity : entities)
+        for (size_t i = 0; i < entities.size(); ++i)
         {
-            if (entity->isActive())
-                entity->update(deltaTime);
+            if (entities[i]->isActive())
+                entities[i]->update(deltaTime);
         }
     }
 }
@@ -96,9 +96,9 @@ void Room::render(Camera* camera, glm::mat4& projection)
     texProgram.setUniformMatrix4f("modelview", modelview);
     map->renderFront();
 
-    for (Entity* entity : entities)
+    for (size_t i = 0; i < entities.size(); ++i)
     {
-        if (entity->isActive())
-            entity->render();
+        if (entities[i]->isActive())
+            entities[i]->render();
     }
 }

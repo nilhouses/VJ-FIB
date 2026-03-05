@@ -28,7 +28,7 @@ void Bullet::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
     explosionTimer = 0.0f;
     exploding = false;
 
-    // Configuración de animaciones
+    // Configuraciï¿½n de animaciones
     sprite->setNumberAnimations(NUM_ANIMS);
 
     sprite->setAnimationSpeed(LEFT, 20);
@@ -88,7 +88,7 @@ void Bullet::explode() {
     if (exploding) return;
     exploding = true;
     sprite->changeAnimation(EXPLODE);
-    std::cout << "BOOM!" << std::endl;
-    // En el update se desactivará la entidad cuando acabe la animación de explosión
+    std::cout << "Bullet explosion!" << std::endl;
+    // En el update se desactivarï¿½ la entidad cuando acabe la animaciï¿½n de explosiï¿½n
 
 }

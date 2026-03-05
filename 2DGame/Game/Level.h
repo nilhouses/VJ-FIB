@@ -5,12 +5,6 @@
 #include "TileMap.h"
 #include "Player.h"
 #include "Scene.h"
-#include "Entity.h"
-#include "Key.h"
-#include "Weight.h"
-#include "Door.h"
-#include "Game.h"
-#include "Asset.h"
 #include "Room.h"
 #include "Utils.h"
 #include "SoundManager.h"
@@ -40,7 +34,7 @@ private:
 	void checkCollisions(); // Comprueba las colisiones entre el jugador y las entidades del nivel actual y actualiza el estado del juego en consecuencia
 	void handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2& offsetUsed); // Maneja la colisión entre el jugador y una entidad.
 	void handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollided); // Maneja la colisión entre un enemigo y una entidad distinta de player
-
+	void handleBulletCollision(Bullet* b, Entity* e, glm::vec2& rangeCollided); // Maneja la colisión entre una bala y otra entidad
 	CollisionInfo overlap(const glm::vec4& a, const glm::vec4& b, const glm::vec2& offset); // Función auxiliar para detectar si dos bounding boxes se solapan (colisionan)
 
 	void loadMaps(vector<TileMap*>& maps, int totalMaps);		// Carga los mapas de tiles de cada habitación a través de un fichero de texto

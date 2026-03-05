@@ -137,6 +137,6 @@ void Weight::explode() {
 	if (exploding) return;
 	exploding = true;
 	sprite->changeAnimation(EXPLOSION);
-	std::cout << "BOOM!" << std::endl;
+	std::cout << "Weight explosion!" << std::endl;
 	// En el update se desactivará la entidad cuando acabe la animación de explosión
 }

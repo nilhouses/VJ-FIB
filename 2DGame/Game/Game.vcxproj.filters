@@ -96,7 +96,7 @@
     <ClInclude Include="Clever.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Shooting.h">
+    <ClInclude Include="Shooter.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
@@ -182,7 +182,7 @@
     <ClCompile Include="Clever.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
-    <ClCompile Include="Shooting.cpp">
+    <ClCompile Include="Shooter.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp">

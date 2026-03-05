@@ -6,7 +6,7 @@
 enum class EnemyType {
     DUMMY,
     CLEVER,
-    SHOOTING
+    SHOOTER
 };
 
 class Enemy : public Entity
@@ -38,12 +38,12 @@ public:
 protected:
     EnemyType eType;                                    // Tipos de enemigo
     bool dying = false;                                 // Para poder desactivar colisiones con otras entidades
-    float deathTimer;                                   // Para controlar el tiempo que dura la animación de muerte antes del deactivate
+    float deathTimer;                                   // Para controlar el tiempo que dura la animaciï¿½n de muerte antes del deactivate
 	int speed = 1;                                      // Todo enemigo tiene una velocidad de movimiento en px. (Por Defecto 1)
-	int fallStep = 6;                                   // Px por caída (Por defecto 6)
-	int deathDuration = 500;                            // Animación muerte en ms (Por defecto 500ms)
-    bool movingRight = true;                            // Para controlar la dirección del movimiento (true = right, false = left)
-    glm::ivec2 size = glm::ivec2(32, 32);               // Tendrán todos (32, 64?)
+	int fallStep = 6;                                   // Px por caï¿½da (Por defecto 6)
+	int deathDuration = 500;                            // Animaciï¿½n muerte en ms (Por defecto 500ms)
+    bool movingRight = true;                            // Para controlar la direcciï¿½n del movimiento (true = right, false = left)
+    glm::ivec2 size = glm::ivec2(32, 32);               // Tendrï¿½n todos (32, 64?)
 };
 
 #endif // _ENEMY_INCLUDE
