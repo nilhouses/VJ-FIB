@@ -12,7 +12,7 @@
 
 enum BarrelAnims
 {
-	IDLE, EXPLOSION, NUM_ANIMS
+	IDLE, ROLLING, EXPLOSION, NUM_ANIMS
 };
 
 Barrel::Barrel() : Entity(Type::BARREL) {}
@@ -27,7 +27,7 @@ Barrel::~Barrel()
 void Barrel::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, glm::vec2 prevPos)
 {
 	// Inicializar los atributos de la Entity
-	Entity::init(tileMapPos, shaderProgram, "images/weightTileset.png", glm::ivec2(32, 32), glm::vec2(0.25f, 0.25f), c);
+	Entity::init(tileMapPos, shaderProgram, "images/barrel.png", glm::ivec2(32, 32), glm::vec2(0.25f, 0.25f), c);
 
 	// Atributos del barril
 	this->prevPos = prevPos;
@@ -44,11 +44,17 @@ void Barrel::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	sprite->setAnimationSpeed(IDLE, 1);
 	sprite->addKeyframe(IDLE, glm::vec2(0.f, 0.f));
 	
+	sprite->setAnimationSpeed(ROLLING, 15);
+	sprite->addKeyframe(ROLLING, glm::vec2(0.00f, 0.f));
+	sprite->addKeyframe(ROLLING, glm::vec2(0.25f, 0.f));
+	sprite->addKeyframe(ROLLING, glm::vec2(0.50f, 0.f));
+	sprite->addKeyframe(ROLLING, glm::vec2(0.75f, 0.f));
+
 	sprite->setAnimationSpeed(EXPLOSION, 8);
-	sprite->addKeyframe(EXPLOSION, glm::vec2(0.25f, 0.f));
-	sprite->addKeyframe(EXPLOSION, glm::vec2(0.50f, 0.f));
-	sprite->addKeyframe(EXPLOSION, glm::vec2(0.75f, 0.f));
-	sprite->addKeyframe(EXPLOSION, glm::vec2(0.0f, 0.25f));
+	sprite->addKeyframe(EXPLOSION, glm::vec2(0.00f, 0.75f));
+	sprite->addKeyframe(EXPLOSION, glm::vec2(0.25f, 0.75f));
+	sprite->addKeyframe(EXPLOSION, glm::vec2(0.50f, 0.75f));
+	sprite->addKeyframe(EXPLOSION, glm::vec2(0.75f, 0.75f));
 
 	sprite->changeAnimation(IDLE);
 }
@@ -68,6 +74,10 @@ void Barrel::update(int deltaTime)
 	glm::vec2 frameStartPos = pos;
 
 	if (isBeingPushed) {
+		if (sprite->animation() != ROLLING) {
+			sprite->changeAnimation(ROLLING);
+		}
+
 		bool collided = false;
 		float distRemaining = std::abs(targetX - pos.x);
 		int moveAmount = (distRemaining < PUSH_SPEED) ? (int)distRemaining : (int)PUSH_SPEED;
@@ -80,6 +90,7 @@ void Barrel::update(int deltaTime)
 		// Parar movimiento
 		if (collided || distRemaining <= 0.5f || moveAmount <= 0) {
 			isBeingPushed = false;
+			sprite->changeAnimation(IDLE);
 			if (!collided) pos.x = targetX;
 		}
 	}
@@ -94,9 +105,29 @@ void Barrel::update(int deltaTime)
 	// Si tras caer tocamos el suelo explosión
 	if (isFalling() && pos.y == frameStartPos.y) explode();
 
+	// Variables para empujar el barril
+	if (!beingTouchedThisFrame && !isBeingPushed) {
+		pushAccumulator = std::max(0.f, pushAccumulator - 1.0f);
+	}
+	beingTouchedThisFrame = false;
+
 	// Actualizaciones de variables
 	prevPos = frameStartPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y))); // Actualizar posición visual
+}
+
+bool Barrel::tryPush(int dir, float amount, int distance) {
+	if (isBeingPushed || exploding) return false;
+
+	beingTouchedThisFrame = true;
+	pushAccumulator += amount;
+
+	if (pushAccumulator >= PUSH_THRESHOLD) {
+		pushAccumulator = 0;
+		startPush(dir, distance);
+		return true; // El movimiento se ha iniciado este frame
+	}
+	return false; // Se está haciendo fuerza para empujar el barril
 }
 
 bool Barrel::incrRight(int units)

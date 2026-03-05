@@ -22,6 +22,7 @@ public:
 	bool isMoving();
 	void explode();
 	bool isExploding() const { return exploding; }
+	bool tryPush(int dir, float amount, int distance);
 
 private:
 	glm::vec2 prevPos;			        // Para trackear ca�das(y) y movimiento(x) del barril
@@ -31,6 +32,10 @@ private:
 	bool isBeingPushed;					// Si el barril est� siendo empujado
 	int pushDirection;					// 1 derecha, -1 izquierda
 	float fallSpeed;				    // Para controlar la velocidad de ca�da del barril, ahora que hay aceleraci�n
+	// Interacciones con el jugador
+	float pushAccumulator = 0.f;
+	const float PUSH_THRESHOLD = 30.f; // Tiempo necesario para que el jugador ewmpuje el barril
+	bool beingTouchedThisFrame = false;
 };
 
 

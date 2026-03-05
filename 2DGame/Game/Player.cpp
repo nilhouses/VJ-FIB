@@ -8,12 +8,12 @@
 #define JUMP_ANGLE_STEP 4	// Velocidad del salto del jugador, cuanto más alto más lento será el salto
 #define JUMP_HEIGHT 96		// Altura máxima del salto del jugador
 #define FALL_STEP 4			// Velocidad de caída del jugador
-#define SPEED 2
+#define SPEED 2 			// Velocidad de movimiento del jugador
 
-// Definimos 4 tipos de animaciones para el jugador
+// Definimos tipos de animaciones para el jugador
 enum PlayerAnims
 {
-	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, ENTERING_DOOR, EXITING_DOOR, DIE, NUM_ANIMS
+	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, PUSH_LEFT, PUSH_RIGHT, ENTERING_DOOR, EXITING_DOOR, DIE, NUM_ANIMS
 };
 
 
@@ -58,6 +58,14 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25f, 0.25f));
 	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25f, 0.5f));
 
+	sprite->setAnimationSpeed(PUSH_LEFT, 20);
+	sprite->addKeyframe(PUSH_LEFT, glm::vec2(0.f, 0.75f));
+	sprite->addKeyframe(PUSH_LEFT, glm::vec2(0.25f, 0.75f));
+
+	sprite->setAnimationSpeed(PUSH_RIGHT, 20);
+	sprite->addKeyframe(PUSH_RIGHT, glm::vec2(0.5f, 0.75f));
+	sprite->addKeyframe(PUSH_RIGHT, glm::vec2(0.75f, 0.75f));
+
 	sprite->setAnimationSpeed(ENTERING_DOOR, 20);
 	sprite->addKeyframe(ENTERING_DOOR, glm::vec2(0.5f, 0.f));
 	sprite->addKeyframe(ENTERING_DOOR, glm::vec2(0.5f, 0.5f));
@@ -84,7 +92,14 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 void Player::update(int deltaTime)
 {
 	sprite->update(deltaTime);
-	
+
+	int tempY = int(pos.y);
+
+	bool climbing = map->collisionLadderUp(pos, glm::ivec2(32, 32)) ||
+		map->collisionLadderDown(pos, glm::ivec2(32, 32));
+
+	onGround = map->collisionMoveDown(pos, glm::ivec2(32, 32), &tempY, 2);
+
 	if (!blockedInput) {
 
 		// Con la flecha hacia arriba el personaje subirá si existe una escalera en esa posición
@@ -121,7 +136,7 @@ void Player::update(int deltaTime)
 		else if(Game::instance().getKey(GLFW_KEY_LEFT))
 		{
 			// Si la animación actual no es moverse a la izquierda, cambio la animación a mover a la izquierda y le sumo desplazamiento
-			if (sprite->animation() != MOVE_LEFT)
+			if (sprite->animation() != MOVE_LEFT && sprite->animation() != PUSH_LEFT)
 				sprite->changeAnimation(MOVE_LEFT);
 			incrLeft();
 			// Si detecto colisión o se sale del mapa
@@ -134,9 +149,9 @@ void Player::update(int deltaTime)
 		// Con la flecha derecha hago exactamente lo mismo
 		else if(Game::instance().getKey(GLFW_KEY_RIGHT))
 		{
-			// Si la animación actual no es moverse a la derecha, cambio la animación a mover a la izquierda y le sumo desplazamiento
-			if (sprite->animation() != MOVE_RIGHT)
+			if (sprite->animation() != MOVE_RIGHT && sprite->animation() != PUSH_RIGHT)
 				sprite->changeAnimation(MOVE_RIGHT);
+			// Si la animación actual no es moverse a la derecha, cambio la animación a mover a la izquierda y le sumo desplazamiento
 			incrRight();
 			// Si detecto colisión o se sale del mapa
 			if (map->collisionMoveRight(pos, glm::ivec2(32, 32)) || pos.x > ((map->getMapSize().x - 1) * map->getTileSize()))
@@ -164,11 +179,16 @@ void Player::update(int deltaTime)
 			else
 			{
 				pos.y = int(startY - 96 * sin(3.14159f * jumpAngle / 180.f));
-				if(jumpAngle > 90)
-					bJumping = !map->collisionMoveDown(pos, glm::ivec2(32, 32), &pos.y, FALL_STEP);
+				if (jumpAngle > 90) {
+					int jumpY = int(pos.y);
+					if (map->collisionMoveDown(pos, glm::ivec2(32, 32), &jumpY, FALL_STEP)) {
+						bJumping = false;
+						pos.y = float(jumpY);
+					}
+				}
 			}
 		}
-		else if (!map->collisionLadderUp(pos, glm::ivec2(32, 32)) && !map->collisionLadderDown(pos, glm::ivec2(32, 32)))
+		else if (!climbing)
 		{
 			pos.y += FALL_STEP;
 			if(map->collisionMoveDown(pos, glm::ivec2(32, 32), &pos.y, FALL_STEP))
@@ -183,7 +203,6 @@ void Player::update(int deltaTime)
 		}
 	}
 
-
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
 }
 
@@ -197,12 +216,34 @@ void Player::setAnimation(const string& anim)
 		sprite->changeAnimation(MOVE_LEFT);
 	else if (anim == "MOVE_RIGHT")
 		sprite->changeAnimation(MOVE_RIGHT);
+	else if (anim == "PUSH_LEFT")
+		sprite->changeAnimation(PUSH_LEFT);
+	else if (anim == "PUSH_RIGHT")
+		sprite->changeAnimation(PUSH_RIGHT);
 	else if (anim == "ENTERING_DOOR")
 		sprite->changeAnimation(ENTERING_DOOR);
 	else if (anim == "EXITING_DOOR")
 		sprite->changeAnimation(EXITING_DOOR);
 	else if (anim == "DIE")
 		sprite->changeAnimation(DIE);
+}
+
+string Player::getCurrentAnimationName() const {
+
+	int currentAnimId = sprite->animation();
+
+	switch (currentAnimId) {
+	case STAND_LEFT:     return "STAND_LEFT";
+	case STAND_RIGHT:    return "STAND_RIGHT";
+	case MOVE_LEFT:      return "MOVE_LEFT";
+	case MOVE_RIGHT:     return "MOVE_RIGHT";
+	case PUSH_LEFT:      return "PUSH_LEFT";
+	case PUSH_RIGHT:     return "PUSH_RIGHT";
+	case ENTERING_DOOR:  return "ENTERING_DOOR";
+	case EXITING_DOOR:   return "EXITING_DOOR";
+	case DIE:            return "DIE";
+	default:             return "UNKNOWN";
+	}
 }
 
 int Player::getSpeed() {

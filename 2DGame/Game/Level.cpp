@@ -90,10 +90,10 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom)
     }
     else if (type == "BARREL")
     {
-        Barrel* weight = new Barrel();
-        weight->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera, glm::vec2(float(tx * map->getTileSize()), float(ty * map->getTileSize())));
-        weight->setTileMap(map);
-        entity = weight;
+        Barrel* barrel = new Barrel();
+        barrel->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera, glm::vec2(float(tx * map->getTileSize()), float(ty * map->getTileSize())));
+        barrel->setTileMap(map);
+        entity = barrel;
     }
     else if (type == "DOOR")
     {
@@ -326,27 +326,65 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
 
         case Type::BARREL:
         {
-            Barrel* w = static_cast<Barrel*>(e);
-            if (w->isExploding()) break;
+            Barrel* b = static_cast<Barrel*>(e);
+            if (b->isExploding()) break;
             
             // Colisiones
             glm::ivec2 pSize = player->getSize();
-            glm::ivec2 wSize = w->getSize();
-            float playerBottom = player->getPosition().y + pSize.y;
-            float weightTop = w->getPosition().y;
-            float weightBottom = w->getPosition().y + w->getSize().y;
+            glm::vec2 pPos = player->getPosition();
+            glm::vec2 bPos = b->getPosition();
+            glm::ivec2 bSize = b->getSize();
+
+            float playerBottom = pPos.y + pSize.y;
+            float barrelTop = bPos.y;
 
             // Colisión vertical
-            if (weightTop <= playerBottom && weightBottom > playerBottom) {
-                player->incrUp(playerBottom - weightTop - offset.y);
+            if (rangeCollided.y < rangeCollided.x && pPos.y < bPos.y)
+            {
+                player->incrUp(playerBottom - barrelTop - offset.y);
             }
-            else {
-                // Colisión horizontal En función del player se empuja para un lado o otro
-                float xPlayer = player->getPosition().x;
-                float xBarrel = e->getPosition().x;
-                int pushDist = 2 * rooms[currentRoom]->getMap()->getTileSize();
-                if (xPlayer < xBarrel) w->startPush(1, pushDist);
-                else w->startPush(-1, pushDist);
+            else
+            {
+                // Colisión horizontal, lógica de empuje
+                int tileSize = rooms[currentRoom]->getMap()->getTileSize();
+                int pushDist = 2*tileSize + (rand() % (tileSize * 2));
+
+                if (pPos.x < bPos.x) {
+                    // Estem a l'esquerra: retrocedim exactament el que hem entrat (rangeCollided.x)
+                    player->setPosition(glm::vec2(pPos.x - rangeCollided.x, pPos.y));
+
+                    if (Game::instance().getKey(GLFW_KEY_RIGHT)) {
+                        if (b->tryPush(1, 1.0f, pushDist) && (player->getCurrentAnimationName() != "MOVE_RIGHT"))
+                            player->setAnimation("MOVE_RIGHT");
+                        else {
+							if (player->getCurrentAnimationName() != "PUSH_RIGHT")
+                                player->setAnimation("PUSH_RIGHT");
+                        }
+                    }
+                    else {
+                       // Hay contacto pero no se está empujando
+                       if (player->getCurrentAnimationName() == "PUSH_RIGHT")
+                            player->setAnimation("STAND_RIGHT");
+                    }
+                }
+                else {
+                    // Estem a la dreta: ens movem cap a la dreta el que hem entrat
+                    player->setPosition(glm::vec2(pPos.x + rangeCollided.x, pPos.y));
+
+                    if (Game::instance().getKey(GLFW_KEY_LEFT)) {
+                        if (b->tryPush(-1, 1.0f, pushDist) && (player->getCurrentAnimationName() != "MOVE_LEFT"))
+                            player->setAnimation("MOVE_LEFT");
+                        else {
+                            if (player->getCurrentAnimationName() != "PUSH_LEFT")
+                                player->setAnimation("PUSH_LEFT");
+                        }
+                    }
+                    else {
+                        // Hay contacto pero no se está empujando
+                        if (player->getCurrentAnimationName() == "PUSH_LEFT")
+                            player->setAnimation("STAND_LEFT");
+                    }
+                }
             }
             break;
         }
@@ -500,7 +538,7 @@ void Level::checkCollisions()
         if (e->getType() == Type::KEY) {
             offset = glm::vec2(8.f, 8.f);
         } else if (e->getType() == Type::BARREL) {
-            offset = glm::vec2(8.f, 0.f); // No tocar la y para evitar que el player tiemble al pisar el peso
+            offset = glm::vec2(8.f, 0.f); // Ajustar la X en función de la anchura del sprite definitivo
         } else if (e->getType() == Type::ENEMY) {
             // Custom BoundingBox Dummy
             Enemy* enemy = static_cast<Enemy*>(e);
