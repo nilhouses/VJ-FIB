@@ -29,7 +29,7 @@ void Barrel::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	// Inicializar los atributos de la Entity
 	Entity::init(tileMapPos, shaderProgram, "images/weightTileset.png", glm::ivec2(32, 32), glm::vec2(0.25f, 0.25f), c);
 
-	// Atributos del peso
+	// Atributos del barril
 	this->prevPos = prevPos;
 	explosionTimer = 0.0f;
 	exploding = false;

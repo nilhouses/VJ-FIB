@@ -3,7 +3,7 @@
 #include <iostream>
 
 // Sonidos predefinidos
-unordered_map<string, string> sounds = {
+std::unordered_map<std::string, std::string> sounds = {
     { "horse", "sounds/caballoMVP.mp3"},
     { "background", "sounds/intro.mp3"}//    bonprofit_remix.mp3" }
 };
@@ -11,18 +11,18 @@ unordered_map<string, string> sounds = {
 
 void SoundManager::init() {
     if (ma_engine_init(NULL, &engine) != MA_SUCCESS) {
-        cout << "Error: No se pudo iniciar el motor de audio." << endl;
+        std::cout << "Error: No se pudo iniciar el motor de audio." << std::endl;
         return;
     }
     initialized = true;
 }
 
-void SoundManager::playSound(const string& sound, float volume) {
+void SoundManager::playSound(const std::string& sound, float volume) {
     if (!initialized) return;
 
     auto it = sounds.find(sound);
     if (it == sounds.end()) {
-        cout << "Error: Sonido '" << sound << "' no encontrado en el mapa." << endl;
+        std::cout << "Error: Sonido '" << sound << "' no encontrado en el mapa." << std::endl;
         return;
     }
 
@@ -51,11 +51,11 @@ void SoundManager::playMusic(bool loop) {
     if (musicPlaying) stopMusic();
 
     // Cargamos la música como "Stream" (para que no ocupe mucha RAM)
-	auto it = sounds.find("background");
+    auto it = sounds.find("background");
     ma_result result = ma_sound_init_from_file(&engine, it->second.c_str(), MA_SOUND_FLAG_STREAM, NULL, NULL, &bgm);
     if (result == MA_SUCCESS) {
         ma_sound_set_looping(&bgm, loop ? MA_TRUE : MA_FALSE);
-		ma_sound_set_volume(&bgm, musicVolume);
+        ma_sound_set_volume(&bgm, musicVolume);
         ma_sound_start(&bgm);
         musicPlaying = true;
     }

@@ -428,14 +428,14 @@ void Level::handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollid
     {
         case Type::BARREL:
         {
-            Barrel* w = static_cast<Barrel*>(e);
-            if (w->isMoving()) {
-                // El peso explota en la misma posición del dummy, NO al lado
+            Barrel* b = static_cast<Barrel*>(e);
+            if (b->isMoving()) {
+                // El barril explota en la misma posición del dummy, NO al lado
                 glm::vec2 enemyPos = enemy->getPosition();
-                w->setPosition(enemyPos);
+                b->setPosition(enemyPos);
                 enemy->die();
-                w->stopPush();
-                w->explode();
+                b->stopPush();
+                b->explode();
             }
             else {
                 enemy->changeDirection();
@@ -472,9 +472,9 @@ void Level::handleBulletCollision(Bullet* b, Entity* e, glm::vec2& rangeCollided
     {
         case Type::BARREL:
         {
-            Barrel* w = static_cast<Barrel*>(e);
-            if (w->isMoving()) w->stopPush();
-            w->explode();
+            Barrel* b = static_cast<Barrel*>(e);
+            if (b->isMoving()) b->stopPush();
+            b->explode();
             b->explode();
             break;
         }
