@@ -329,6 +329,8 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             Barrel* b = static_cast<Barrel*>(e);
             if (b->isExploding()) break;
             
+			cout << rangeCollided.x << " " << rangeCollided.y << endl;
+
             // Colisiones
             glm::ivec2 pSize = player->getSize();
             glm::vec2 pPos = player->getPosition();
@@ -342,6 +344,9 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             if (rangeCollided.y < rangeCollided.x && pPos.y < bPos.y)
             {
                 player->incrUp(playerBottom - barrelTop - offset.y);
+                if (player->getCurrentAnimationName() == "FALL") {
+					player->setAnimation("IDLE");
+                }
             }
             else
             {
@@ -354,8 +359,8 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                     player->setPosition(glm::vec2(pPos.x - rangeCollided.x, pPos.y));
 
                     if (Game::instance().getKey(GLFW_KEY_RIGHT)) {
-                        if (b->tryPush(1, 1.0f, pushDist) && (player->getCurrentAnimationName() != "MOVE_RIGHT"))
-                            player->setAnimation("MOVE_RIGHT");
+                        if (b->tryPush(1, 1.0f, pushDist) && (player->getCurrentAnimationName() != "WALK_RIGHT"))
+                            player->setAnimation("WALK_RIGHT");
                         else {
 							if (player->getCurrentAnimationName() != "PUSH_RIGHT")
                                 player->setAnimation("PUSH_RIGHT");
@@ -364,7 +369,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                     else {
                        // Hay contacto pero no se está empujando
                        if (player->getCurrentAnimationName() == "PUSH_RIGHT")
-                            player->setAnimation("STAND_RIGHT");
+                            player->setAnimation("IDLE");
                     }
                 }
                 else {
@@ -372,8 +377,8 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                     player->setPosition(glm::vec2(pPos.x + rangeCollided.x, pPos.y));
 
                     if (Game::instance().getKey(GLFW_KEY_LEFT)) {
-                        if (b->tryPush(-1, 1.0f, pushDist) && (player->getCurrentAnimationName() != "MOVE_LEFT"))
-                            player->setAnimation("MOVE_LEFT");
+                        if (b->tryPush(-1, 1.0f, pushDist) && (player->getCurrentAnimationName() != "WALK_LEFT"))
+                            player->setAnimation("WALK_LEFT");
                         else {
                             if (player->getCurrentAnimationName() != "PUSH_LEFT")
                                 player->setAnimation("PUSH_LEFT");
@@ -382,7 +387,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                     else {
                         // Hay contacto pero no se está empujando
                         if (player->getCurrentAnimationName() == "PUSH_LEFT")
-                            player->setAnimation("STAND_LEFT");
+                            player->setAnimation("IDLE");
                     }
                 }
             }
@@ -410,7 +415,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
 
             // Cambiar estado visual
             door->setToVisited();
-            player->setAnimation("ENTERING_DOOR");
+            player->setAnimation("ENTER");
             player->blockInput(); // Bloquear input del jugador durante la transición
         }
         break;
@@ -534,11 +539,11 @@ void Level::checkCollisions()
     {
         if (!e->isActive()) continue;
 
-        glm::vec2 offset(0.f, 0.f);
+        glm::vec2 offset(2.f, 6.f);
         if (e->getType() == Type::KEY) {
             offset = glm::vec2(8.f, 8.f);
         } else if (e->getType() == Type::BARREL) {
-            offset = glm::vec2(8.f, 0.f); // Ajustar la X en función de la anchura del sprite definitivo
+            offset = glm::vec2(8.f, 4.f); // Ajustar la X en función de la anchura del sprite definitivo
         } else if (e->getType() == Type::ENEMY) {
             // Custom BoundingBox Dummy
             Enemy* enemy = static_cast<Enemy*>(e);
@@ -614,8 +619,8 @@ void Level::update(int deltaTime)
     currentTime += deltaTime;
 
     rooms[currentRoom]->update(deltaTime);
-    if(state == NORMAL) checkCollisions();
     player->update(deltaTime);
+    if(state == NORMAL) checkCollisions();
 
     switch (state)
     {
@@ -636,7 +641,7 @@ void Level::update(int deltaTime)
                 player->setPosition(glm::vec2(targetSpawnPosition.x, targetSpawnPosition.y));
                 player->setTileMap(rooms[currentRoom]->getMap());
                 player->blockInput();
-                player->setAnimation("EXITING_DOOR");
+				player->setAnimation("IDLE");   // TODO: Animación de salida de la puerta
                 rooms[currentRoom]->setTransitioning(true);
 
                 // Cambio de estado a EXITING_DOOR
@@ -652,7 +657,7 @@ void Level::update(int deltaTime)
         transitionTimer = std::max(0.f, transitionTimer - deltaTime);
 
         if (transitionTimer == 0.f) {
-            player->setAnimation("STAND_RIGHT");
+            player->setAnimation("IDLE");
             player->unblockInput();
             rooms[currentRoom]->setTransitioning(false);
             state = NORMAL;

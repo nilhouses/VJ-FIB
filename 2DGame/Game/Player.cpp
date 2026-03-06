@@ -13,7 +13,7 @@
 // Definimos tipos de animaciones para el jugador
 enum PlayerAnims
 {
-	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, PUSH_LEFT, PUSH_RIGHT, ENTERING_DOOR, EXITING_DOOR, DIE, NUM_ANIMS
+	IDLE, WALK_LEFT, WALK_RIGHT, DIE, FALL, CLIMB, OPEN_AND_ENTER, ENTER, ENTER_TUNEL, EXIT_TUNEL, PICK_ITEM, PUSH_LEFT, PUSH_RIGHT, GUN_WALK_LEFT, GUN_WALK_RIGHT, NUM_ANIMS
 };
 
 
@@ -31,7 +31,7 @@ Player::~Player()
 void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c)
 {
 	// Inicializar los atributos de la Entity
-	Entity::init(tileMapPos, shaderProgram, "images/bub.png", glm::ivec2(32, 32), glm::vec2(0.25f, 0.25f), c);
+	Entity::init(tileMapPos, shaderProgram, "images/playerSheet.png", glm::ivec2(32, 64), glm::vec2(1.f/35.f, 1.f/7.f), c);
 
 	// Inicializar los atributos del Player
 	bJumping = false;
@@ -42,49 +42,128 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	// Configuración de animaciones
 	sprite->setNumberAnimations(NUM_ANIMS);
 
-	sprite->setAnimationSpeed(STAND_LEFT, 8);
-	sprite->addKeyframe(STAND_LEFT, glm::vec2(0.f, 0.f));
+	sprite->setAnimationSpeed(IDLE, 8);
+	sprite->addKeyframe(IDLE, glm::vec2(0.f, 0.f));
+	sprite->addKeyframe(IDLE, glm::vec2(1.f / 35.f, 0.f));
 
-	sprite->setAnimationSpeed(STAND_RIGHT, 8);
-	sprite->addKeyframe(STAND_RIGHT, glm::vec2(0.25f, 0.f));
+	sprite->setAnimationSpeed(WALK_LEFT, 8);
+	sprite->addKeyframe(WALK_LEFT, glm::vec2(2.f / 35.f, 0.f));
+	sprite->addKeyframe(WALK_LEFT, glm::vec2(3.f / 35.f, 0.f));
+	sprite->addKeyframe(WALK_LEFT, glm::vec2(4.f / 35.f, 0.f));
+	sprite->addKeyframe(WALK_LEFT, glm::vec2(5.f / 35.f, 0.f));
 
-	sprite->setAnimationSpeed(MOVE_LEFT, 20 );
-	sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.f, 0.f));
-	sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.f, 0.25f));
-	sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.f, 0.5f));
+	sprite->setAnimationSpeed(WALK_RIGHT, 8);
+	sprite->addKeyframe(WALK_RIGHT, glm::vec2(6.f / 35.f, 0.f));
+	sprite->addKeyframe(WALK_RIGHT, glm::vec2(7.f / 35.f, 0.f));
+	sprite->addKeyframe(WALK_RIGHT, glm::vec2(8.f / 35.f, 0.f));
+	sprite->addKeyframe(WALK_RIGHT, glm::vec2(9.f / 35.f, 0.f));
 
-	sprite->setAnimationSpeed(MOVE_RIGHT, 20);
-	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25f, 0.f));
-	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25f, 0.25f));
-	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25f, 0.5f));
+	sprite->setAnimationSpeed(DIE, 8);
+	sprite->addKeyframe(DIE, glm::vec2(10.f / 35.f, 0.f));
+	sprite->addKeyframe(DIE, glm::vec2(11.f / 35.f, 0.f));
+	sprite->addKeyframe(DIE, glm::vec2(12.f / 35.f, 0.f));
+	sprite->addKeyframe(DIE, glm::vec2(13.f / 35.f, 0.f));
 
-	sprite->setAnimationSpeed(PUSH_LEFT, 20);
-	sprite->addKeyframe(PUSH_LEFT, glm::vec2(0.f, 0.75f));
-	sprite->addKeyframe(PUSH_LEFT, glm::vec2(0.25f, 0.75f));
+	sprite->setAnimationSpeed(FALL, 20);
+	sprite->addKeyframe(FALL, glm::vec2(15.f / 35.f, 1.f / 7.f));
+	sprite->addKeyframe(FALL, glm::vec2(16.f / 35.f, 1.f / 7.f));
 
-	sprite->setAnimationSpeed(PUSH_RIGHT, 20);
-	sprite->addKeyframe(PUSH_RIGHT, glm::vec2(0.5f, 0.75f));
-	sprite->addKeyframe(PUSH_RIGHT, glm::vec2(0.75f, 0.75f));
+	sprite->setAnimationSpeed(CLIMB, 20);
+	sprite->addKeyframe(CLIMB, glm::vec2(14.f / 35.f, 0.f));
+	sprite->addKeyframe(CLIMB, glm::vec2(15.f / 35.f, 0.f));
+	sprite->addKeyframe(CLIMB, glm::vec2(16.f / 35.f, 0.f));
+	sprite->addKeyframe(CLIMB, glm::vec2(17.f / 35.f, 0.f));
 
-	sprite->setAnimationSpeed(ENTERING_DOOR, 20);
-	sprite->addKeyframe(ENTERING_DOOR, glm::vec2(0.5f, 0.f));
-	sprite->addKeyframe(ENTERING_DOOR, glm::vec2(0.5f, 0.5f));
-	sprite->addKeyframe(ENTERING_DOOR, glm::vec2(0.5f, 0.25f));
-	sprite->addKeyframe(ENTERING_DOOR, glm::vec2(0.f, 0.f));
+	sprite->setAnimationSpeed(OPEN_AND_ENTER, 8);
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(18.f / 35.f, 0.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(19.f / 35.f, 0.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(20.f / 35.f, 0.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(21.f / 35.f, 0.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(22.f / 35.f, 0.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(23.f / 35.f, 0.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(24.f / 35.f, 0.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(25.f / 35.f, 0.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(26.f / 35.f, 0.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(27.f / 35.f, 0.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(28.f / 35.f, 0.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(29.f / 35.f, 0.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(30.f / 35.f, 0.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(31.f / 35.f, 0.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(32.f / 35.f, 0.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(33.f / 35.f, 0.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(34.f / 35.f, 0.f));
 
-	sprite->setAnimationSpeed(EXITING_DOOR, 20);
-	sprite->addKeyframe(EXITING_DOOR, glm::vec2(0.75f, 0.f));
-	sprite->addKeyframe(EXITING_DOOR, glm::vec2(0.75f, 0.25f));
-	sprite->addKeyframe(EXITING_DOOR, glm::vec2(0.75f, 0.5f));
+	sprite->setAnimationSpeed(ENTER, 8);
+	sprite->addKeyframe(ENTER, glm::vec2(20.f / 35.f, 1.f / 7.f));
+	sprite->addKeyframe(ENTER, glm::vec2(21.f / 35.f, 1.f / 7.f));
+	sprite->addKeyframe(ENTER, glm::vec2(22.f / 35.f, 1.f / 7.f));
+	sprite->addKeyframe(ENTER, glm::vec2(23.f / 35.f, 1.f / 7.f));
+	sprite->addKeyframe(ENTER, glm::vec2(24.f / 35.f, 1.f / 7.f));
+	sprite->addKeyframe(ENTER, glm::vec2(25.f / 35.f, 1.f / 7.f));
+	sprite->addKeyframe(ENTER, glm::vec2(26.f / 35.f, 1.f / 7.f));
+	sprite->addKeyframe(ENTER, glm::vec2(27.f / 35.f, 1.f / 7.f));
+	sprite->addKeyframe(ENTER, glm::vec2(28.f / 35.f, 1.f / 7.f));
 
-	sprite->setAnimationSpeed(DIE, 20);
-	sprite->addKeyframe(DIE, glm::vec2(0.5f, 0.f));
-	sprite->addKeyframe(DIE, glm::vec2(0.5f, 0.5f));
-	sprite->addKeyframe(DIE, glm::vec2(0.5f, 0.25f));
-	sprite->addKeyframe(DIE, glm::vec2(0.f, 0.f));
+	sprite->setAnimationSpeed(ENTER_TUNEL, 8);
+	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(10.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(11.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(12.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(13.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(14.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(15.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(16.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(17.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(18.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(19.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(20.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(21.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(22.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(23.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(24.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(25.f / 35.f, 2.f / 7.f));
 
+	sprite->setAnimationSpeed(EXIT_TUNEL, 8);
+	sprite->addKeyframe(EXIT_TUNEL, glm::vec2(26.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(EXIT_TUNEL, glm::vec2(27.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(EXIT_TUNEL, glm::vec2(28.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(EXIT_TUNEL, glm::vec2(29.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(EXIT_TUNEL, glm::vec2(30.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(EXIT_TUNEL, glm::vec2(31.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(EXIT_TUNEL, glm::vec2(32.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(EXIT_TUNEL, glm::vec2(33.f / 35.f, 2.f / 7.f));
 
-	sprite->changeAnimation(STAND_RIGHT);
+	sprite->setAnimationSpeed(PICK_ITEM, 8);
+	sprite->addKeyframe(PICK_ITEM, glm::vec2(10.f / 35.f, 1.f / 7.f));
+	sprite->addKeyframe(PICK_ITEM, glm::vec2(11.f / 35.f, 1.f / 7.f));
+	sprite->addKeyframe(PICK_ITEM, glm::vec2(12.f / 35.f, 1.f / 7.f));
+	sprite->addKeyframe(PICK_ITEM, glm::vec2(13.f / 35.f, 1.f / 7.f));
+	sprite->addKeyframe(PICK_ITEM, glm::vec2(14.f / 35.f, 1.f / 7.f));
+
+	sprite->setAnimationSpeed(PUSH_LEFT, 8);
+	sprite->addKeyframe(PUSH_LEFT, glm::vec2(2.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(PUSH_LEFT, glm::vec2(3.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(PUSH_LEFT, glm::vec2(4.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(PUSH_LEFT, glm::vec2(5.f / 35.f, 2.f / 7.f));
+
+	sprite->setAnimationSpeed(PUSH_RIGHT, 8);
+	sprite->addKeyframe(PUSH_RIGHT, glm::vec2(6.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(PUSH_RIGHT, glm::vec2(7.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(PUSH_RIGHT, glm::vec2(8.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(PUSH_RIGHT, glm::vec2(9.f / 35.f, 2.f / 7.f));
+
+	sprite->setAnimationSpeed(GUN_WALK_LEFT, 8);
+	sprite->addKeyframe(GUN_WALK_LEFT, glm::vec2(2.f / 35.f, 1.f / 7.f));
+	sprite->addKeyframe(GUN_WALK_LEFT, glm::vec2(3.f / 35.f, 1.f / 7.f));
+	sprite->addKeyframe(GUN_WALK_LEFT, glm::vec2(4.f / 35.f, 1.f / 7.f));
+	sprite->addKeyframe(GUN_WALK_LEFT, glm::vec2(5.f / 35.f, 1.f / 7.f));
+
+	sprite->setAnimationSpeed(GUN_WALK_RIGHT, 8);
+	sprite->addKeyframe(GUN_WALK_RIGHT, glm::vec2(6.f / 35.f, 1.f / 7.f));
+	sprite->addKeyframe(GUN_WALK_RIGHT, glm::vec2(7.f / 35.f, 1.f / 7.f));
+	sprite->addKeyframe(GUN_WALK_RIGHT, glm::vec2(8.f / 35.f, 1.f / 7.f));
+	sprite->addKeyframe(GUN_WALK_RIGHT, glm::vec2(9.f / 35.f, 1.f / 7.f));
+
+	sprite->changeAnimation(IDLE);
 }
 
 
@@ -95,79 +174,67 @@ void Player::update(int deltaTime)
 
 	int tempY = int(pos.y);
 
-	bool climbing = map->collisionLadderUp(pos, glm::ivec2(32, 32)) ||
-		map->collisionLadderDown(pos, glm::ivec2(32, 32));
+	bool inputDetected = true;
 
-	onGround = map->collisionMoveDown(pos, glm::ivec2(32, 32), &tempY, 2);
+	onGround = map->collisionMoveDown(pos, getSize(), &tempY, 2);
 
 	if (!blockedInput) {
 
 		// Con la flecha hacia arriba el personaje subirá si existe una escalera en esa posición
 		if (Game::instance().getKey(GLFW_KEY_UP)) {
-			if (map->collisionLadderUp(pos, glm::ivec2(32, 32))) {
-				// TODO: Aplicar la nueva animación de subir escaleras
+			if (map->collisionLadderUp(pos, getSize())) {
+				if (sprite->animation() != CLIMB)
+					sprite->changeAnimation(CLIMB);
 				pos.y -= SPEED;
 
 				bJumping = false;
 			}
-			// TEMPORAL: Si no hay escalera, el personaje se quedará quieto mirando hacia el lado que corresponda
-			else {
-				if (sprite->animation() == MOVE_LEFT)
-					sprite->changeAnimation(STAND_LEFT);
-				else if (sprite->animation() == MOVE_RIGHT)
-					sprite->changeAnimation(STAND_RIGHT);
-			}
+			else if (sprite->animation() != IDLE) sprite->changeAnimation(IDLE);
 		}
 		// Con la flecha hacia abajo el personaje bajará si existe una escalera en esa posición
 		else if (Game::instance().getKey(GLFW_KEY_DOWN)) {
-			if (map->collisionLadderDown(pos, glm::ivec2(32, 32))) {
-				// TODO: Aplicar la nueva animación de bajar escaleras
+			if (map->collisionLadderDown(pos, getSize())) {
+				if (sprite->animation() != CLIMB)
+					sprite->changeAnimation(CLIMB);
 				pos.y += SPEED;
 				bJumping = false;
-			} 
-			else {
-				if (sprite->animation() == MOVE_LEFT)
-					sprite->changeAnimation(STAND_LEFT);
-				else if (sprite->animation() == MOVE_RIGHT)
-					sprite->changeAnimation(STAND_RIGHT);
 			}
+			else if (sprite->animation() != IDLE) sprite->changeAnimation(IDLE);
 		}
 		// Si la flecha izquierda está pulsada
-		else if(Game::instance().getKey(GLFW_KEY_LEFT))
+		else if (Game::instance().getKey(GLFW_KEY_LEFT))
 		{
 			// Si la animación actual no es moverse a la izquierda, cambio la animación a mover a la izquierda y le sumo desplazamiento
-			if (sprite->animation() != MOVE_LEFT && sprite->animation() != PUSH_LEFT)
-				sprite->changeAnimation(MOVE_LEFT);
+			if (sprite->animation() != WALK_LEFT && sprite->animation() != PUSH_LEFT)
+				sprite->changeAnimation(WALK_LEFT);
 			incrLeft();
 			// Si detecto colisión o se sale del mapa
-			if (map->collisionMoveLeft(pos, glm::ivec2(32, 32)) || pos.x < 0.f)
+			if (map->collisionMoveLeft(pos, getSize()) || pos.x < 0.f)
 			{
 				incrRight();
-				sprite->changeAnimation(STAND_LEFT);
 			}
 		}
 		// Con la flecha derecha hago exactamente lo mismo
-		else if(Game::instance().getKey(GLFW_KEY_RIGHT))
+		else if (Game::instance().getKey(GLFW_KEY_RIGHT))
 		{
-			if (sprite->animation() != MOVE_RIGHT && sprite->animation() != PUSH_RIGHT)
-				sprite->changeAnimation(MOVE_RIGHT);
+			if (sprite->animation() != WALK_RIGHT && sprite->animation() != PUSH_RIGHT)
+				sprite->changeAnimation(WALK_RIGHT);
 			// Si la animación actual no es moverse a la derecha, cambio la animación a mover a la izquierda y le sumo desplazamiento
 			incrRight();
 			// Si detecto colisión o se sale del mapa
-			if (map->collisionMoveRight(pos, glm::ivec2(32, 32)) || pos.x > ((map->getMapSize().x - 1) * map->getTileSize()))
+			if (map->collisionMoveRight(pos, getSize()) || pos.x > ((map->getMapSize().x - 1) * map->getTileSize()))
 			{
 				incrLeft();
-				sprite->changeAnimation(STAND_RIGHT);
 			}
 		}
+		else inputDetected = false;
 		// Si ninguna de las flechas está pulsada entonces dejo el personaje quieto mirando hacia el lado que corresponda
-		else
-		{
-			if(sprite->animation() == MOVE_LEFT)
-				sprite->changeAnimation(STAND_LEFT);
-			else if(sprite->animation() == MOVE_RIGHT)
-				sprite->changeAnimation(STAND_RIGHT);
+
+		if (!inputDetected) {
+			if (sprite->animation() != IDLE && sprite->animation() != CLIMB)
+				sprite->changeAnimation(IDLE);
 		}
+
 		// Si está saltando
 		if(bJumping)
 		{
@@ -181,17 +248,17 @@ void Player::update(int deltaTime)
 				pos.y = int(startY - 96 * sin(3.14159f * jumpAngle / 180.f));
 				if (jumpAngle > 90) {
 					int jumpY = int(pos.y);
-					if (map->collisionMoveDown(pos, glm::ivec2(32, 32), &jumpY, FALL_STEP)) {
+					if (map->collisionMoveDown(pos, getSize(), &jumpY, FALL_STEP)) {
 						bJumping = false;
 						pos.y = float(jumpY);
 					}
 				}
 			}
 		}
-		else if (!climbing)
+		else if (!map->collisionLadderUp(pos, getSize()) && !map->collisionLadderDown(pos, getSize()))
 		{
 			pos.y += FALL_STEP;
-			if(map->collisionMoveDown(pos, glm::ivec2(32, 32), &pos.y, FALL_STEP))
+			if(map->collisionMoveDown(pos, getSize(), &pos.y, FALL_STEP))
 			{
 				if(Game::instance().getKey(GLFW_KEY_SPACE))
 				{
@@ -200,49 +267,74 @@ void Player::update(int deltaTime)
 					startY = pos.y;
 				}
 			}
+			else {
+				onGround = false;
+				if (sprite->animation() != FALL)
+					sprite->changeAnimation(FALL);
+			}
 		}
 	}
 
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
 }
 
+
 void Player::setAnimation(const string& anim)
 {
-	if (anim == "STAND_LEFT")
-		sprite->changeAnimation(STAND_LEFT);
-	else if (anim == "STAND_RIGHT")
-		sprite->changeAnimation(STAND_RIGHT);
-	else if (anim == "MOVE_LEFT")
-		sprite->changeAnimation(MOVE_LEFT);
-	else if (anim == "MOVE_RIGHT")
-		sprite->changeAnimation(MOVE_RIGHT);
+	if (anim == "IDLE")
+		sprite->changeAnimation(IDLE);
+	else if (anim == "WALK_LEFT")
+		sprite->changeAnimation(WALK_LEFT);
+	else if (anim == "WALK_RIGHT")
+		sprite->changeAnimation(WALK_RIGHT);
+	else if (anim == "DIE")
+		sprite->changeAnimation(DIE);
+	else if (anim == "FALL")
+		sprite->changeAnimation(FALL);
+	else if (anim == "CLIMB")
+		sprite->changeAnimation(CLIMB);
+	else if (anim == "OPEN_AND_ENTER")
+		sprite->changeAnimation(OPEN_AND_ENTER);
+	else if (anim == "ENTER")
+		sprite->changeAnimation(ENTER);
+	else if (anim == "ENTER_TUNEL")
+		sprite->changeAnimation(ENTER_TUNEL);
+	else if (anim == "EXIT_TUNEL")
+		sprite->changeAnimation(EXIT_TUNEL);
+	else if (anim == "PICK_ITEM")
+		sprite->changeAnimation(PICK_ITEM);
 	else if (anim == "PUSH_LEFT")
 		sprite->changeAnimation(PUSH_LEFT);
 	else if (anim == "PUSH_RIGHT")
 		sprite->changeAnimation(PUSH_RIGHT);
-	else if (anim == "ENTERING_DOOR")
-		sprite->changeAnimation(ENTERING_DOOR);
-	else if (anim == "EXITING_DOOR")
-		sprite->changeAnimation(EXITING_DOOR);
-	else if (anim == "DIE")
-		sprite->changeAnimation(DIE);
+	else if (anim == "GUN_WALK_LEFT")
+		sprite->changeAnimation(GUN_WALK_LEFT);
+	else if (anim == "GUN_WALK_RIGHT")
+		sprite->changeAnimation(GUN_WALK_RIGHT);
 }
+
 
 string Player::getCurrentAnimationName() const {
 
 	int currentAnimId = sprite->animation();
 
 	switch (currentAnimId) {
-	case STAND_LEFT:     return "STAND_LEFT";
-	case STAND_RIGHT:    return "STAND_RIGHT";
-	case MOVE_LEFT:      return "MOVE_LEFT";
-	case MOVE_RIGHT:     return "MOVE_RIGHT";
-	case PUSH_LEFT:      return "PUSH_LEFT";
-	case PUSH_RIGHT:     return "PUSH_RIGHT";
-	case ENTERING_DOOR:  return "ENTERING_DOOR";
-	case EXITING_DOOR:   return "EXITING_DOOR";
-	case DIE:            return "DIE";
-	default:             return "UNKNOWN";
+	case IDLE:				return "IDLE";
+	case WALK_LEFT:			return "WALK_LEFT";
+	case WALK_RIGHT:		return "WALK_RIGHT";
+	case DIE:				return "DIE";
+	case FALL:				return "FALL";
+	case CLIMB:				return "CLIMB";
+	case OPEN_AND_ENTER:    return "OPEN_AND_ENTER";
+	case ENTER:				return "ENTER";
+	case ENTER_TUNEL:		return "ENTER_TUNEL";
+	case EXIT_TUNEL:        return "EXIT_TUNEL";
+	case PICK_ITEM:         return "PICK_ITEM";
+	case PUSH_LEFT:         return "PUSH_LEFT";
+	case PUSH_RIGHT:        return "PUSH_RIGHT";
+	case GUN_WALK_LEFT:     return "GUN_WALK_LEFT";
+	case GUN_WALK_RIGHT:    return "GUN_WALK_RIGHT";
+	default:				return "UNKNOWN";
 	}
 }
 
