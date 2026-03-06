@@ -10,6 +10,7 @@
 
 void Game::init()
 {
+    srand(time(NULL));
 	bPlay = true;
 	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 	// Estado inicial del juego

@@ -60,6 +60,7 @@ private:
 
 	int state;
 	Door* interactedDoor = nullptr;
+	Entity* interactedEntity = nullptr;
 
 	Camera* camera;
 	glm::mat4 projection;

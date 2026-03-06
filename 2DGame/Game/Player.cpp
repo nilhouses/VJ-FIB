@@ -9,6 +9,7 @@
 #define JUMP_HEIGHT 96		// Altura máxima del salto del jugador
 #define FALL_STEP 4			// Velocidad de caída del jugador
 #define SPEED 2 			// Velocidad de movimiento del jugador
+#define PICK_ITEM_TIMER 500 // Duración de la animación de recoger un item (ms)
 
 // Definimos tipos de animaciones para el jugador
 enum PlayerAnims
@@ -38,11 +39,11 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	jumpAngle = 0;
 	startY = 0;
 	blockedInput = false;
-
+	itemPickTimer = 0;
 	// Configuración de animaciones
 	sprite->setNumberAnimations(NUM_ANIMS);
 
-	sprite->setAnimationSpeed(IDLE, 8);
+	sprite->setAnimationSpeed(IDLE, 4);
 	sprite->addKeyframe(IDLE, glm::vec2(0.f, 0.f));
 	sprite->addKeyframe(IDLE, glm::vec2(1.f / 35.f, 0.f));
 
@@ -68,7 +69,7 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	sprite->addKeyframe(FALL, glm::vec2(15.f / 35.f, 1.f / 7.f));
 	sprite->addKeyframe(FALL, glm::vec2(16.f / 35.f, 1.f / 7.f));
 
-	sprite->setAnimationSpeed(CLIMB, 20);
+	sprite->setAnimationSpeed(CLIMB, 12);
 	sprite->addKeyframe(CLIMB, glm::vec2(14.f / 35.f, 0.f));
 	sprite->addKeyframe(CLIMB, glm::vec2(15.f / 35.f, 0.f));
 	sprite->addKeyframe(CLIMB, glm::vec2(16.f / 35.f, 0.f));
@@ -132,7 +133,7 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	sprite->addKeyframe(EXIT_TUNEL, glm::vec2(32.f / 35.f, 2.f / 7.f));
 	sprite->addKeyframe(EXIT_TUNEL, glm::vec2(33.f / 35.f, 2.f / 7.f));
 
-	sprite->setAnimationSpeed(PICK_ITEM, 8);
+	sprite->setAnimationSpeed(PICK_ITEM, 10);
 	sprite->addKeyframe(PICK_ITEM, glm::vec2(10.f / 35.f, 1.f / 7.f));
 	sprite->addKeyframe(PICK_ITEM, glm::vec2(11.f / 35.f, 1.f / 7.f));
 	sprite->addKeyframe(PICK_ITEM, glm::vec2(12.f / 35.f, 1.f / 7.f));
@@ -173,10 +174,15 @@ void Player::update(int deltaTime)
 	sprite->update(deltaTime);
 
 	int tempY = int(pos.y);
-
 	bool inputDetected = true;
 
-	onGround = map->collisionMoveDown(pos, getSize(), &tempY, 2);
+	if (sprite->animation() == PICK_ITEM) {
+		itemPickTimer -= deltaTime;
+		if (itemPickTimer <= 0) {
+			unblockInput();
+			sprite->changeAnimation(IDLE);
+		}
+	}
 
 	if (!blockedInput) {
 
@@ -185,8 +191,9 @@ void Player::update(int deltaTime)
 			if (map->collisionLadderUp(pos, getSize())) {
 				if (sprite->animation() != CLIMB)
 					sprite->changeAnimation(CLIMB);
+				
+				sprite->setPaused(false);
 				pos.y -= SPEED;
-
 				bJumping = false;
 			}
 			else if (sprite->animation() != IDLE) sprite->changeAnimation(IDLE);
@@ -196,6 +203,8 @@ void Player::update(int deltaTime)
 			if (map->collisionLadderDown(pos, getSize())) {
 				if (sprite->animation() != CLIMB)
 					sprite->changeAnimation(CLIMB);
+
+				sprite->setPaused(false);
 				pos.y += SPEED;
 				bJumping = false;
 			}
@@ -204,34 +213,44 @@ void Player::update(int deltaTime)
 		// Si la flecha izquierda está pulsada
 		else if (Game::instance().getKey(GLFW_KEY_LEFT))
 		{
-			// Si la animación actual no es moverse a la izquierda, cambio la animación a mover a la izquierda y le sumo desplazamiento
-			if (sprite->animation() != WALK_LEFT && sprite->animation() != PUSH_LEFT)
-				sprite->changeAnimation(WALK_LEFT);
-			incrLeft();
-			// Si detecto colisión o se sale del mapa
-			if (map->collisionMoveLeft(pos, getSize()) || pos.x < 0.f)
-			{
-				incrRight();
+			int jumpY = int(pos.y);
+			if (sprite->animation() == CLIMB && !map->collisionMoveDown(pos, getSize(), &jumpY, FALL_STEP)) {}	// Prohibido salir de la escalera a medias
+			else {
+				if (sprite->animation() != WALK_LEFT && sprite->animation() != PUSH_LEFT)
+					sprite->changeAnimation(WALK_LEFT);
+				incrLeft();
+				// Si detecto colisión o se sale del mapa
+				if (map->collisionMoveLeft(pos, getSize()) || pos.x < 0.f)
+				{
+					incrRight();
+				}
 			}
+			// Si la animación actual no es moverse a la izquierda, cambio la animación a mover a la izquierda y le sumo desplazamiento
 		}
 		// Con la flecha derecha hago exactamente lo mismo
 		else if (Game::instance().getKey(GLFW_KEY_RIGHT))
 		{
-			if (sprite->animation() != WALK_RIGHT && sprite->animation() != PUSH_RIGHT)
-				sprite->changeAnimation(WALK_RIGHT);
-			// Si la animación actual no es moverse a la derecha, cambio la animación a mover a la izquierda y le sumo desplazamiento
-			incrRight();
-			// Si detecto colisión o se sale del mapa
-			if (map->collisionMoveRight(pos, getSize()) || pos.x > ((map->getMapSize().x - 1) * map->getTileSize()))
-			{
-				incrLeft();
+			int jumpY = int(pos.y);
+			if (sprite->animation() == CLIMB && !map->collisionMoveDown(pos, getSize(), &jumpY, FALL_STEP)) {}	// Prohibido salir de la escalera a medias
+			else {
+				if (sprite->animation() != WALK_RIGHT && sprite->animation() != PUSH_RIGHT)
+					sprite->changeAnimation(WALK_RIGHT);
+				// Si la animación actual no es moverse a la derecha, cambio la animación a mover a la izquierda y le sumo desplazamiento
+				incrRight();
+				// Si detecto colisión o se sale del mapa
+				if (map->collisionMoveRight(pos, getSize()) || pos.x > ((map->getMapSize().x - 1) * map->getTileSize()))
+				{
+					incrLeft();
+				}			
 			}
 		}
 		else inputDetected = false;
 		// Si ninguna de las flechas está pulsada entonces dejo el personaje quieto mirando hacia el lado que corresponda
 
 		if (!inputDetected) {
-			if (sprite->animation() != IDLE && sprite->animation() != CLIMB)
+			if(sprite->animation() == CLIMB)
+				sprite->setPaused(true);
+			else if (sprite->animation() != IDLE)
 				sprite->changeAnimation(IDLE);
 		}
 
@@ -248,7 +267,7 @@ void Player::update(int deltaTime)
 				pos.y = int(startY - 96 * sin(3.14159f * jumpAngle / 180.f));
 				if (jumpAngle > 90) {
 					int jumpY = int(pos.y);
-					if (map->collisionMoveDown(pos, getSize(), &jumpY, FALL_STEP)) {
+					if (map->collisionMoveDown(pos, getSize(), &jumpY, FALL_STEP) || onGround) {
 						bJumping = false;
 						pos.y = float(jumpY);
 					}
@@ -257,9 +276,11 @@ void Player::update(int deltaTime)
 		}
 		else if (!map->collisionLadderUp(pos, getSize()) && !map->collisionLadderDown(pos, getSize()))
 		{
-			pos.y += FALL_STEP;
-			if(map->collisionMoveDown(pos, getSize(), &pos.y, FALL_STEP))
+			if (!onGround) pos.y += FALL_STEP;
+			if(map->collisionMoveDown(pos, getSize(), &pos.y, FALL_STEP) || onGround)
 			{
+				onGround = true;
+
 				if(Game::instance().getKey(GLFW_KEY_SPACE))
 				{
 					bJumping = true;
@@ -268,13 +289,12 @@ void Player::update(int deltaTime)
 				}
 			}
 			else {
-				onGround = false;
 				if (sprite->animation() != FALL)
 					sprite->changeAnimation(FALL);
 			}
 		}
 	}
-
+	onGround = false;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
 }
 
@@ -356,4 +376,38 @@ void Player::incrLeft()
 void Player::incrUp(int px)
 {
 	pos.y -= (px + FALL_STEP); // Evitar gravedad
+}
+
+void Player::handlePush(int dir, bool pushSuccess) {
+	switch (dir) 
+	{
+		case (1):
+			if (pushSuccess && (sprite->animation() != WALK_RIGHT)) {
+				sprite->changeAnimation(WALK_RIGHT);
+			}
+			else {
+				if (sprite->animation() != PUSH_RIGHT)
+					sprite->changeAnimation(PUSH_RIGHT);
+			}
+			break;
+		case(-1):
+			 if (pushSuccess && sprite->animation() != WALK_LEFT) {
+				sprite->changeAnimation(WALK_LEFT);
+			}
+			else {
+				if (sprite->animation() != PUSH_LEFT)
+					sprite->changeAnimation(PUSH_LEFT);
+			}
+			 break;
+		default:
+			cout << "Invalid push direction: " << dir << endl;
+			break;
+	}
+	
+}
+
+void Player::pickItem() {
+	itemPickTimer = PICK_ITEM_TIMER;
+	blockInput();
+	if (sprite->animation() != PICK_ITEM) sprite->changeAnimation(PICK_ITEM);
 }

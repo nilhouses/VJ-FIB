@@ -37,6 +37,7 @@ public:
 	int animation() const;
 	
 	void setPosition(const glm::vec2 &pos);
+	void setPaused(bool paused) { isPaused = paused; }
 
 private:
 	Texture *texture;
@@ -50,6 +51,7 @@ private:
 	glm::vec2 texCoordDispl;
 	vector<AnimKeyframes> animations;
 	Camera* camera;
+	bool isPaused = false;
 
 };
 

@@ -43,7 +43,7 @@ Sprite::~Sprite()
 
 void Sprite::update(int deltaTime)
 {
-	if(currentAnimation >= 0)
+	if((currentAnimation >= 0) && !isPaused)
 	{
 		timeAnimation += deltaTime;
 		while(timeAnimation > animations[currentAnimation].millisecsPerKeyframe)
@@ -97,6 +97,7 @@ void Sprite::changeAnimation(int animId)
 {
 	if(animId < int(animations.size()))
 	{
+		setPaused(false);
 		currentAnimation = animId;
 		currentKeyframe = 0;
 		timeAnimation = 0.f;

@@ -24,13 +24,18 @@ public:
 	void incrUp(int px);
 	void blockInput() { blockedInput = true; }
 	void unblockInput() { blockedInput = false; }
-	bool isOnGround() const { return onGround; }
+	void setOnGround(bool b) { onGround = b; }
+	bool getOnGround() { return onGround; }
+	void handlePush(int dir, bool pushSuccess);
+	void pickItem();
 
 private:
 	bool bJumping;						// Indica si el jugador está saltando o no
 	int jumpAngle, startY;				// Ángulo de salto y posición inicial en Y para el salto
+	bool onGround = false;
 	bool blockedInput;
-	bool onGround = true;
+	int itemPickTimer;
+
 };
 
 

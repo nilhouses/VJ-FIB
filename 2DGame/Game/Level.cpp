@@ -16,7 +16,7 @@
 #define HUD_HEIGHT 0
 
 
-enum LevelState { NORMAL, ENTERING_DOOR, EXITING_DOOR, DYING};
+enum LevelState { NORMAL, ENTERING_DOOR, EXITING_DOOR, DYING, PICKING_OBJECT };
 
 // Cooldowns entre interacciones
 float transitionTimer = 0.f;
@@ -319,8 +319,12 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
     switch (e->getType())
     {
         case Type::KEY:
+            player->pickItem();
             collectedKeys++;
-            e->deactivate();
+            // Configurar transición a la nueva habitación
+            state = PICKING_OBJECT;
+            transitionTimer = 300.f;
+            interactedEntity = e;
             cout << "collectedKeys: " << collectedKeys << "/" << allKeys << endl;
             break;
 
@@ -328,8 +332,6 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
         {
             Barrel* b = static_cast<Barrel*>(e);
             if (b->isExploding()) break;
-            
-			cout << rangeCollided.x << " " << rangeCollided.y << endl;
 
             // Colisiones
             glm::ivec2 pSize = player->getSize();
@@ -341,31 +343,17 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             float barrelTop = bPos.y;
 
             // Colisión vertical
-            if (rangeCollided.y < rangeCollided.x && pPos.y < bPos.y)
-            {
-                player->incrUp(playerBottom - barrelTop - offset.y);
-                if (player->getCurrentAnimationName() == "FALL") {
-					player->setAnimation("IDLE");
-                }
-            }
+            if (rangeCollided.y < rangeCollided.x && pPos.y < bPos.y) player->setOnGround(true);
             else
             {
                 // Colisión horizontal, lógica de empuje
                 int tileSize = rooms[currentRoom]->getMap()->getTileSize();
-                int pushDist = 2*tileSize + (rand() % (tileSize * 2));
+				int pushDist = (2 + (rand() % 3)) * tileSize; // De 2 - 4 tiles de distancia
 
                 if (pPos.x < bPos.x) {
-                    // Estem a l'esquerra: retrocedim exactament el que hem entrat (rangeCollided.x)
                     player->setPosition(glm::vec2(pPos.x - rangeCollided.x, pPos.y));
 
-                    if (Game::instance().getKey(GLFW_KEY_RIGHT)) {
-                        if (b->tryPush(1, 1.0f, pushDist) && (player->getCurrentAnimationName() != "WALK_RIGHT"))
-                            player->setAnimation("WALK_RIGHT");
-                        else {
-							if (player->getCurrentAnimationName() != "PUSH_RIGHT")
-                                player->setAnimation("PUSH_RIGHT");
-                        }
-                    }
+                    if (Game::instance().getKey(GLFW_KEY_RIGHT)) player->handlePush(1, b->tryPush(1, 1.0f, pushDist));
                     else {
                        // Hay contacto pero no se está empujando
                        if (player->getCurrentAnimationName() == "PUSH_RIGHT")
@@ -373,17 +361,9 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                     }
                 }
                 else {
-                    // Estem a la dreta: ens movem cap a la dreta el que hem entrat
                     player->setPosition(glm::vec2(pPos.x + rangeCollided.x, pPos.y));
 
-                    if (Game::instance().getKey(GLFW_KEY_LEFT)) {
-                        if (b->tryPush(-1, 1.0f, pushDist) && (player->getCurrentAnimationName() != "WALK_LEFT"))
-                            player->setAnimation("WALK_LEFT");
-                        else {
-                            if (player->getCurrentAnimationName() != "PUSH_LEFT")
-                                player->setAnimation("PUSH_LEFT");
-                        }
-                    }
+                    if (Game::instance().getKey(GLFW_KEY_LEFT)) player->handlePush(-1, b->tryPush(-1, 1.0f, pushDist));
                     else {
                         // Hay contacto pero no se está empujando
                         if (player->getCurrentAnimationName() == "PUSH_LEFT")
@@ -515,9 +495,9 @@ void Level::handleBulletCollision(Bullet* b, Entity* e, glm::vec2& rangeCollided
     {
         case Type::BARREL:
         {
-            Barrel* b = static_cast<Barrel*>(e);
-            if (b->isMoving()) b->stopPush();
-            b->explode();
+            Barrel* barrel = static_cast<Barrel*>(e);
+            if (barrel->isMoving()) barrel->stopPush();
+            barrel->explode();
             b->explode();
             break;
         }
@@ -648,7 +628,6 @@ void Level::update(int deltaTime)
                 state = EXITING_DOOR;
                 transitionTimer = 1000.f;
             }
-
         }
 
         break;
@@ -674,6 +653,15 @@ void Level::update(int deltaTime)
                 cout << "numLives: " << numLives << endl;
                 init(); // Temporal, el init vuelve a leer todos los ficheros. Necesitaremos un reset()
             }
+        }
+        break;
+    case PICKING_OBJECT:
+        transitionTimer = std::max(0.f, transitionTimer - deltaTime);
+        if (transitionTimer == 0.f) {
+            // Animación acabada
+            player->unblockInput();
+			interactedEntity->deactivate();
+            state = NORMAL;
         }
         break;
     default:
