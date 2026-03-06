@@ -22,8 +22,10 @@ public:
 
 private:
 	Player* playerTarget = nullptr; // Puntero al jugador target
-	bool isClimbing = false;        // Estado
-	bool ignoringPlayer = false;    // Indica que el Clever tiene que actuar como un 
+	bool isClimbing = false;
+	bool climbingUp = false;
+	bool climbingDown = false;
+	bool ignoringPlayer = false;    // Indica que el Clever tiene que actuar como un Dummy
 };
 
 
