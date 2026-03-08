@@ -167,7 +167,7 @@ void Barrel::explode() {
 	// No explotar varias veces
 	if (exploding) return;
 	exploding = true;
-	SoundManager::instance().playSound("explosion", 0.1);
+	SoundManager::instance().playSound("explosion", 0.4);
 	sprite->changeAnimation(EXPLOSION);
 	cout << "Barrel explosion!" << endl;
 	// En el update se desactivará la entidad cuando acabe la animación de explosión

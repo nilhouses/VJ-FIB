@@ -165,8 +165,8 @@ void Shooter::shoot() {
     }
 
     Bullet* bullet = new Bullet();
-
     bullet->init(glm::ivec2(tileMapDispl.x, tileMapDispl.y), *shaderProgram, cameraPtr);
+	bullet->setDirection(movingRight);
     
     glm::ivec2 enemySize = this->getSize();
     glm::ivec2 bulletSize = bullet->getSize();
@@ -175,10 +175,8 @@ void Shooter::shoot() {
     
 	float gap = 2.f; // Separaci�n horizontal entre el enemigo y la bala
 
-    if (movingRight)
-        bulletPos.x = this->pos.x + enemySize.x + gap;
-    else
-        bulletPos.x = this->pos.x - bulletSize.x - gap;
+    if (movingRight) bulletPos.x = this->pos.x + enemySize.x + gap;
+    else bulletPos.x = this->pos.x - bulletSize.x - gap;
     
     // Y, la bala sale a 1/4 de altura desde la cabeza del enemigo
     bulletPos.y = float(this->pos.y + (0.25f * enemySize.y));

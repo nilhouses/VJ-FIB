@@ -2,7 +2,7 @@
 #define _BULLET_INCLUDE
 
 #include "Entity.h"
-
+#include "SoundManager.h"
 
 class Bullet : public Entity
 {
@@ -12,12 +12,12 @@ public:
     void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c);
     void update(int deltaTime) override;
 
-    void setDirection(bool right) { movingRight = right; }
+    void setDirection(bool right);
     void explode();
     bool isExploding() const { return exploding; }
 
 private:
-    bool movingRight;
+    bool movingRight = true;
     int speed;
     bool exploding;
     float explosionTimer;

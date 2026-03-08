@@ -81,6 +81,7 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, b
         player = new Player();
         player->init(glm::vec2(SCREEN_X,SCREEN_Y), texProgram, camera);
         player->setTileMap(map);
+        player->setRoom(rooms[indexRoom]);
         entity = player;
     }
     else if (type == "KEY")
@@ -133,7 +134,12 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, b
         sb->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera);
         entity = sb;
     }
-
+    else if (type == "GUN")
+    {
+        Gun* gun = new Gun();
+        gun->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera);
+        entity = gun;
+    }
     // Común para todas las entidades
     if (entity != nullptr)
     {
@@ -346,7 +352,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             transitionTimer = 300.f;
             interactedEntity = e;
             cout << "collectedKeys: " << collectedKeys << "/" << allKeys << endl;
-            SoundManager::instance().playSound("key", 0.1);
+            SoundManager::instance().playSound("key", 0.7);
             break;
 
         case Type::LIFE:
@@ -365,11 +371,26 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             player->pickItem();
             SpeedBoost* sb = static_cast<SpeedBoost*>(e);
 			player->activateSpeedBoost(sb->getMultiplier(), sb->getTimeActive());
+			sb->collect();
             // Configurar transición a la nueva habitación
             state = PICKING_OBJECT;
             transitionTimer = 300.f;
             interactedEntity = e;
             SoundManager::instance().playSound("kachow", 0.1);
+            break;
+        }
+
+        case Type::GUN:
+        {
+            player->pickItem();
+            player->addBullet();
+            Gun* gun = static_cast<Gun*>(e);
+            gun->collect();
+            // Configurar transición a la nueva habitación
+            state = PICKING_OBJECT;
+            transitionTimer = 300.f;
+            interactedEntity = e;
+            SoundManager::instance().playSound("gun", 0.3);
             break;
         }
 
@@ -479,7 +500,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
         case Type::BULLET:
         {
             Bullet* b = static_cast<Bullet*>(e);
-            if (!godMode) {
+            if (!godMode && !b->isExploding()) {
                 // Configurar transición a la nueva habitación
                 state = DYING;
                 transitionTimer = 1000.f;
@@ -551,7 +572,6 @@ void Level::handleBulletCollision(Bullet* b, Entity* e, glm::vec2& rangeCollided
             Barrel* barrel = static_cast<Barrel*>(e);
             if (barrel->isMoving()) barrel->stopPush();
             barrel->explode();
-
             b->explode();
             break;
         }

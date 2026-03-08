@@ -23,8 +23,6 @@ void Bullet::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
     Entity::init(tileMapPos, shaderProgram, "images/bullet.png", glm::ivec2(12, 12), glm::vec2(0.25f, 0.25f), c);
 
     speed = 4.0f;
-    movingRight = true;
-
     explosionTimer = 0.0f;
     exploding = false;
 
@@ -37,8 +35,8 @@ void Bullet::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
     sprite->addKeyframe(LEFT, glm::vec2(0.25f, 0.25f));
 
     sprite->setAnimationSpeed(RIGHT, 20);
-    sprite->addKeyframe(RIGHT, glm::vec2(0.f, 0.25f));
-    sprite->addKeyframe(RIGHT, glm::vec2(0.5f, 0.25f));
+    sprite->addKeyframe(RIGHT, glm::vec2(0.f, 0.f));
+    sprite->addKeyframe(RIGHT, glm::vec2(0.5f, 0.f));
     sprite->addKeyframe(RIGHT, glm::vec2(0.75f, 0.25f));
 
     sprite->setAnimationSpeed(EXPLODE, 20);
@@ -47,6 +45,7 @@ void Bullet::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
     sprite->addKeyframe(EXPLODE, glm::vec2(0.75f, 0.5f));
 
     sprite->changeAnimation(RIGHT);
+    SoundManager::instance().playSound("shot", 0.05);
 }
 
 void Bullet::update(int deltaTime)
@@ -59,10 +58,8 @@ void Bullet::update(int deltaTime)
         return;
     }
 
-    if (movingRight)
-        pos.x += speed;
-    else
-        pos.x -= speed;
+    if (movingRight) pos.x += speed;
+    else pos.x -= speed;
 
     bool collision = false;
 
@@ -90,5 +87,10 @@ void Bullet::explode() {
     sprite->changeAnimation(EXPLODE);
     cout << "Bullet explosion!" << endl;
     // En el update se desactivar� la entidad cuando acabe la animaci�n de explosi�n
+}
 
+void Bullet::setDirection(bool right) {
+	movingRight = right;
+    auto anim = (movingRight) ? RIGHT : LEFT;
+    sprite->changeAnimation(anim);
 }

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <GL/glew.h>
 #include "Player.h"
+#include "Room.h"
 #include "Game.h"
 
 
@@ -41,6 +42,8 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	blockedInput = false;
 	itemPickTimer = 0;
 	speedBoostTimer = 0;
+	this->shaderProgram = &shaderProgram;
+	this->cameraPtr = c;
 
 	// Configuración de animaciones
 	sprite->setNumberAnimations(NUM_ANIMS);
@@ -184,7 +187,7 @@ void Player::update(int deltaTime)
 		}
 	}
 
-	// Miramos si aún tenemos SpeedBoost activo
+	// SpeedBoost
 	if (speedBoostTimer > 0) {
 		speedBoostTimer -= deltaTime;
 		if (speedBoostTimer <= 0) {
@@ -192,11 +195,31 @@ void Player::update(int deltaTime)
 			speedMultiplier = 1.f;
 		}
 	}
+	
+	// Disparos
+	if (shootCooldown > 0) shootCooldown -= deltaTime;
+	if (isShooting) {
+		shootAnimTimer -= deltaTime;
+		if (shootAnimTimer <= 0) {
+			isShooting = false;
+			unblockInput();
+			sprite->changeAnimation(IDLE);
+		}
+	}
 
+	
 
 	bool inputDetected = true;
 	
 	if (!blockedInput) {
+
+		if (Game::instance().getKey(GLFW_KEY_Q) && hasBullets()) {
+			shoot();
+			numBullets--;
+			// [TODO] Animación de disparo y/o bloquear input temporalmente
+			// blockInput();
+			// sprite->changeAnimation(facingRight ? SHOOT_RIGHT : SHOOT_LEFT);
+		}
 
 		// Con la flecha hacia arriba el personaje subirá si existe una escalera en esa posición
 		if (Game::instance().getKey(GLFW_KEY_UP)) {
@@ -225,29 +248,27 @@ void Player::update(int deltaTime)
 		// Si la flecha izquierda está pulsada
 		else if (Game::instance().getKey(GLFW_KEY_LEFT))
 		{
+			facingRight = false;
 			int jumpY = int(pos.y);
 			if (sprite->animation() == CLIMB && !map->collisionMoveDown(pos, getSize(), &jumpY, FALL_STEP)) {}	// Prohibido salir de la escalera a medias
 			else {
-				if (sprite->animation() != WALK_LEFT && sprite->animation() != PUSH_LEFT)
-					sprite->changeAnimation(WALK_LEFT);
+				auto targetAnim = hasBullets() ? GUN_WALK_LEFT : WALK_LEFT;
+				if (sprite->animation() != targetAnim && sprite->animation() != PUSH_LEFT) sprite->changeAnimation(targetAnim);
 				incrLeft();
 				// Si detecto colisión o se sale del mapa
-				if (map->collisionMoveLeft(pos, getSize()) || pos.x < 0.f)
-				{
-					incrRight();
-				}
+				if (map->collisionMoveLeft(pos, getSize()) || pos.x < 0.f) incrRight();
 			}
 			// Si la animación actual no es moverse a la izquierda, cambio la animación a mover a la izquierda y le sumo desplazamiento
 		}
 		// Con la flecha derecha hago exactamente lo mismo
 		else if (Game::instance().getKey(GLFW_KEY_RIGHT))
 		{
+			facingRight = true;
 			int jumpY = int(pos.y);
 			if (sprite->animation() == CLIMB && !map->collisionMoveDown(pos, getSize(), &jumpY, FALL_STEP)) {}	// Prohibido salir de la escalera a medias
 			else {
-				if (sprite->animation() != WALK_RIGHT && sprite->animation() != PUSH_RIGHT)
-					sprite->changeAnimation(WALK_RIGHT);
-				// Si la animación actual no es moverse a la derecha, cambio la animación a mover a la izquierda y le sumo desplazamiento
+				auto targetAnim = hasBullets() ? GUN_WALK_RIGHT : WALK_RIGHT;
+				if (sprite->animation() != targetAnim && sprite->animation() != PUSH_RIGHT) sprite->changeAnimation(targetAnim);
 				incrRight();
 				// Si detecto colisión o se sale del mapa
 				if (map->collisionMoveRight(pos, getSize()) || pos.x > ((map->getMapSize().x - 1) * map->getTileSize()))
@@ -422,4 +443,40 @@ void Player::pickItem() {
 void Player::activateSpeedBoost(float multiplier, int duration) {
 	speedBoostTimer = duration;
 	speedMultiplier = multiplier;
+}
+
+void Player::shoot()
+{
+	if (currentRoom == nullptr) {
+		cout << "Player doesn't have a room assigned" << endl;
+		return;
+	}
+
+	cout << "Shots fired! Remaining bullets: " << numBullets - 1 << endl;
+	
+	// Creación de la bala
+	Bullet* bullet = new Bullet();
+	bullet->init(glm::ivec2(tileMapDispl.x, tileMapDispl.y), *shaderProgram, cameraPtr);
+	bullet->setDirection(facingRight);
+
+	glm::ivec2 playerSize = this->getSize();
+	glm::ivec2 bulletSize = bullet->getSize();
+	
+	glm::vec2  bulletPos;
+	float gap = 6.f;
+
+	if (facingRight) bulletPos.x = this->pos.x + playerSize.x + gap;
+	else bulletPos.x = this->pos.x - bulletSize.x - gap;
+	bulletPos.y = float(this->pos.y + 0.35f * playerSize.y);
+
+	bullet->setPosition(bulletPos);
+	bullet->setTileMap(map);
+	currentRoom->addEntity(bullet);
+
+	// Animación de disparo
+	shootAnimTimer = 300;
+	isShooting = true;
+	blockInput();
+	// [TODO] añadir sprite disparo 
+	// sprite->changeAnimation(facingRight ? SHOOT_RIGHT : SHOOT_LEFT);
 }
