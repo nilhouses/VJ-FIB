@@ -24,9 +24,10 @@ float transitionTimer = 0.f;
 
 // ---------------------- CONSTRUCTORS ----------------------
 
-Level::Level(int levelNumber) : Scene(SceneType::LEVEL)
+Level::Level(int levelNumber, int numLives) : Scene(SceneType::LEVEL)
 {
     level = levelNumber;
+    this->numLives = numLives;
 }
 
 Level::~Level()
@@ -119,6 +120,12 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, b
         // Añado al vector de enemigos
         rooms[indexRoom]->addEnemy(enemy);
         entity = enemy;
+    }
+    else if (type == "LIFE")
+    {
+        Life* life = new Life();
+        life->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera);
+        entity = life;
     }
 
     // Común para todas las entidades
@@ -328,11 +335,23 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
         case Type::KEY:
             player->pickItem();
             collectedKeys++;
-            // Configurar transición a la nueva habitación
+            // Transición de estado
             state = PICKING_OBJECT;
             transitionTimer = 300.f;
             interactedEntity = e;
             cout << "collectedKeys: " << collectedKeys << "/" << allKeys << endl;
+            SoundManager::instance().playSound("key", 0.1);
+            break;
+
+        case Type::LIFE:
+            player->pickItem();
+            numLives++;
+            // Configurar transición a la nueva habitación
+            state = PICKING_OBJECT;
+            transitionTimer = 300.f;
+            interactedEntity = e;
+            cout << "numLives: " << numLives << endl;
+            SoundManager::instance().playSound("life", 0.1);
             break;
 
         case Type::BARREL:
@@ -347,8 +366,6 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                 // Cambiar estado visual
                 player->setAnimation("DIE");
                 player->blockInput(); // Bloquear input del jugador durante la transición
-
-                // Reproducir sonido de muerte
                 SoundManager::instance().playSound("horse", 0.1);
                 break;
             }
@@ -373,7 +390,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                 if (pPos.x < bPos.x) {
                     player->setPosition(glm::vec2(pPos.x - rangeCollided.x, pPos.y));
 
-                    if (Game::instance().getKey(GLFW_KEY_RIGHT)) player->handlePush(1, b->tryPush(1, 1.0f, pushDist));
+                    if (Game::instance().getKey(GLFW_KEY_RIGHT)) player->handlePush(1, b->tryPush(1, 1.0f));
                     else {
                        // Hay contacto pero no se está empujando
                        if (player->getCurrentAnimationName() == "PUSH_RIGHT")
@@ -383,7 +400,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                 else {
                     player->setPosition(glm::vec2(pPos.x + rangeCollided.x, pPos.y));
 
-                    if (Game::instance().getKey(GLFW_KEY_LEFT)) player->handlePush(-1, b->tryPush(-1, 1.0f, pushDist));
+                    if (Game::instance().getKey(GLFW_KEY_LEFT)) player->handlePush(-1, b->tryPush(-1, 1.0f));
                     else {
                         // Hay contacto pero no se está empujando
                         if (player->getCurrentAnimationName() == "PUSH_LEFT")
@@ -455,7 +472,6 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
 
                 // Reproducir sonido de muerte
                 SoundManager::instance().playSound("horse", 0.1);
-
                 b->explode();
             }
             break;
@@ -516,6 +532,7 @@ void Level::handleBulletCollision(Bullet* b, Entity* e, glm::vec2& rangeCollided
             Barrel* barrel = static_cast<Barrel*>(e);
             if (barrel->isMoving()) barrel->stopPush();
             barrel->explode();
+
             b->explode();
             break;
         }
@@ -540,7 +557,9 @@ void Level::checkCollisions()
         glm::vec2 offset(2.f, 6.f);
         if (e->getType() == Type::KEY) {
             offset = glm::vec2(8.f, 8.f);
-        } else if (e->getType() == Type::BARREL) {
+        }else if (e->getType() == Type::LIFE) {
+            offset = glm::vec2(8.f, 8.f);
+		} else if (e->getType() == Type::BARREL) {
             offset = glm::vec2(8.f, 4.f); // Ajustar la X en función de la anchura del sprite definitivo
         } else if (e->getType() == Type::ENEMY) {
             // Custom BoundingBox Dummy

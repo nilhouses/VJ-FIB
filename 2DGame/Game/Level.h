@@ -18,7 +18,7 @@ class Level : public Scene
 {
 public:
     // Pasamos el nivel para el constructor para que sepa que .txt cargar
-    Level(int levelNumber);
+    Level(int levelNumber, int numLives = 3);
     ~Level();
 
     void init() override;
@@ -26,6 +26,7 @@ public:
     void render() override;
 	bool gameOver();
 	bool getLevelCompleted();
+	int getLives() { return numLives; }
 
 private:
 	void initShaders();	// Carga el VS y FS y los linkea al texProgram
@@ -41,7 +42,7 @@ private:
 	void loadEntities();	// Carga las entidades del nivel a través de un fichero de texto
 	void loadAssets();		// Carga los elementos decorativos del nivel a través de un fichero de texto
 	Entity* createEntity(const string& type, int tileX, int tileY, int indexRoom, bool movingRight = false); // Crea una entidad del tipo dado en la posición dada (en tiles)
-	void createAsset(const string& spriteDir, glm::vec2& pos, glm::vec2& size, int indexRoom); // Crea un elemento decorativo en la posición dada (en tiles) y con el tamaño dado (en tiles)
+	void createAsset(const string& spriteDir, glm::vec2& pos, glm::vec2& size, int indexRoom); // Crea un elemento decorativo en la posición dada (en tiles) y con el tamaño dado (en tiles
 
 private:
     ShaderProgram texProgram;	// El programa de shaders para renderizar el mapa y el jugador
@@ -54,7 +55,7 @@ private:
 	int allKeys;				// N�mero total de llaves en el nivel
 	int numRooms;				// N�mero total de habitaciones en el nivel
 	bool levelCompleted;		// Indica si el nivel ha sido completado
-	int numLives = 3;
+	int numLives;
 	vector<Room*> rooms;			// Las diferentes habitaciones del nivel
 	int currentRoom;				// La habitación actual en la que se encuentra el jugador
 

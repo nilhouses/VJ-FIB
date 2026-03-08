@@ -108,7 +108,7 @@ void Barrel::update(int deltaTime)
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y))); // Actualizar posición visual
 }
 
-bool Barrel::tryPush(int dir, float amount, int distance) {
+bool Barrel::tryPush(int dir, float amount) {
 	if (isBeingPushed || exploding) return false;
 
 	beingTouchedThisFrame = true;
@@ -116,7 +116,7 @@ bool Barrel::tryPush(int dir, float amount, int distance) {
 
 	if (pushAccumulator >= PUSH_THRESHOLD) {
 		pushAccumulator = 0;
-		startPush(dir, distance);
+		startPush(dir);
 		return true; // El movimiento se ha iniciado este frame
 	}
 	return false; // Se está haciendo fuerza para empujar el barril
@@ -153,7 +153,7 @@ bool Barrel::incrLeft(int units)
 	return true;
 }
 
-void Barrel::startPush(int dir, int distance) {
+void Barrel::startPush(int dir) {
 	if (isBeingPushed) return;
 	isBeingPushed = true;
 	pushDirection = dir;
@@ -167,6 +167,7 @@ void Barrel::explode() {
 	// No explotar varias veces
 	if (exploding) return;
 	exploding = true;
+	SoundManager::instance().playSound("explosion", 0.1);
 	sprite->changeAnimation(EXPLOSION);
 	cout << "Barrel explosion!" << endl;
 	// En el update se desactivará la entidad cuando acabe la animación de explosión

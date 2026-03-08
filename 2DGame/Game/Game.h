@@ -54,6 +54,7 @@ private:
 	bool keys[GLFW_KEY_LAST+1];  // Guarda por cada tecla si está pulsada o no
 	Scene* currentScene;         // Puntero a la pantalla a la que estamos
 	int currentLevel;            // Nivel actual
+	int numLives = 3;            // Número de vidas del jugador en la partida actual, se mantiene al cambiar de nivel  
 
 };
 

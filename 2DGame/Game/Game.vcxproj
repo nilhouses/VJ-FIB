@@ -24,6 +24,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Instructions.h" />
     <ClInclude Include="Key.h" />
+    <ClInclude Include="Life.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Level.h" />
@@ -42,6 +43,7 @@
     <ClInclude Include="Barrel.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Life.cpp" />
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Camera.cpp" />

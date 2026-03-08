@@ -13,6 +13,7 @@
 #include "Key.h"
 #include "Barrel.h"
 #include "Door.h"
+#include "Life.h"
 #include "Game.h"
 #include "Asset.h"
 

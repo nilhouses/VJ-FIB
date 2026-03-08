@@ -59,27 +59,19 @@ void Game::keyPressed(int key)
 	if(key == GLFW_KEY_ESCAPE) // Escape code
 		bPlay = false;
 	keys[key] = true;
-    
-    if (key == GLFW_KEY_1) {
-        currentLevel = 1;
-		changeState(PLAYING, currentLevel);
-    }
-    else if (key == GLFW_KEY_2) {
-        currentLevel = 2;
+    bool levelChanged = false;
+    if (key == GLFW_KEY_1) { currentLevel = 1; levelChanged = true; }
+    else if (key == GLFW_KEY_2) { currentLevel = 2; levelChanged = true; }    
+	else if (key == GLFW_KEY_3) { currentLevel = 3; levelChanged = true; }
+    else if (key == GLFW_KEY_4) { currentLevel = 4; levelChanged = true; }
+    else if (key == GLFW_KEY_5) { currentLevel = 5; levelChanged = true; }
+    if (levelChanged) {
+        if (currentScene != nullptr && currentScene->getType() == SceneType::LEVEL) {
+            Level* level = static_cast<Level*>(currentScene);
+            numLives = level->getLives();
+		}
         changeState(PLAYING, currentLevel);
-    }
-    else if (key == GLFW_KEY_3) {
-        currentLevel = 3;
-        changeState(PLAYING, currentLevel);
-    }
-    else if (key == GLFW_KEY_4) {
-        currentLevel = 4;
-        changeState(PLAYING, currentLevel);
-    }
-    else if (key == GLFW_KEY_5) {
-        currentLevel = 5;
-        changeState(PLAYING, currentLevel);
-    }
+	}
 }
 
 void Game::keyReleased(int key)
@@ -111,8 +103,7 @@ void Game::changeState(GameState newState, int levelNumber)
         currentScene = new MainMenu();
         break;
     case PLAYING:
-		cout << "Loading level " << currentLevel << "..." << endl;
-        currentScene = new Level(currentLevel);
+        currentScene = new Level(currentLevel, numLives);
         break;
     case INSTRUCTIONS:
         currentScene = new Instructions();

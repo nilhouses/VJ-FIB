@@ -11,7 +11,8 @@ enum class Type {
 	BARREL,
 	ENEMY,
 	BULLET,
-	DOOR
+	DOOR,
+	LIFE
 };
 
 class Entity
