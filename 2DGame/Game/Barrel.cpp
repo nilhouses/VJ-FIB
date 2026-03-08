@@ -35,7 +35,6 @@ void Barrel::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	exploding = false;
 	isBeingPushed = false;
 	pushDirection = 0;
-	targetX = 0.0f;
 	fallSpeed = 0.0f;
 
 	// Configuraci�n de animaciones
@@ -74,24 +73,17 @@ void Barrel::update(int deltaTime)
 	glm::vec2 frameStartPos = pos;
 
 	if (isBeingPushed) {
-		if (sprite->animation() != ROLLING) {
-			sprite->changeAnimation(ROLLING);
-		}
+		if (sprite->animation() != ROLLING) sprite->changeAnimation(ROLLING);
 
 		bool collided = false;
-		float distRemaining = std::abs(targetX - pos.x);
-		int moveAmount = (distRemaining < PUSH_SPEED) ? (int)distRemaining : (int)PUSH_SPEED;
+		if (pushDirection > 0) collided = !incrRight((int)PUSH_SPEED);
+		else collided = !incrLeft((int)PUSH_SPEED);
 
-		if (moveAmount > 0) {
-			if (pushDirection > 0) collided = !incrRight(moveAmount);
-			else collided = !incrLeft(moveAmount);
-		}
 
 		// Parar movimiento
-		if (collided || distRemaining <= 0.5f || moveAmount <= 0) {
+		if (collided) {
 			isBeingPushed = false;
 			sprite->changeAnimation(IDLE);
-			if (!collided) pos.x = targetX;
 		}
 	}
 
@@ -133,8 +125,12 @@ bool Barrel::tryPush(int dir, float amount, int distance) {
 bool Barrel::incrRight(int units)
 {
 	pos.x += units;
-	// Si detecto colisi�n o se sale del mapa
-	if (map->collisionMoveRight(pos, glm::ivec2(32, 32)) || pos.x > ((map->getMapSize().x - 1) * map->getTileSize())){ 
+
+	if (pos.x > (map->getMapSize().x - 1) * map->getTileSize()) {
+		this->deactivate();
+		return true;
+	}
+	if (map->collisionMoveRight(pos, getSize())) {
 		pos.x -= units;
 		return false;
 	}
@@ -144,8 +140,13 @@ bool Barrel::incrRight(int units)
 bool Barrel::incrLeft(int units)
 {
 	pos.x -= units;
-	// Si detecto colisi�n o se sale del mapa
-	if (map->collisionMoveLeft(pos, glm::ivec2(32, 32)) || pos.x < 0.f) {
+
+	if (pos.x < 0.f) {
+		this->deactivate();
+		return true;
+	}
+
+	if (map->collisionMoveLeft(pos, getSize())) {
 		pos.x += units;
 		return false;
 	}
@@ -153,10 +154,9 @@ bool Barrel::incrLeft(int units)
 }
 
 void Barrel::startPush(int dir, int distance) {
-	if (isBeingPushed) return; // Evita empentes infinites
+	if (isBeingPushed) return;
 	isBeingPushed = true;
 	pushDirection = dir;
-	targetX = pos.x + (dir * distance);
 }
 
 bool Barrel::isFalling() { return pos.y > prevPos.y; }

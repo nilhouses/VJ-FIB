@@ -331,8 +331,20 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
         case Type::BARREL:
         {
             Barrel* b = static_cast<Barrel*>(e);
-            if (b->isExploding()) break;
+            if (b->isExploding()) {
+                // Configurar transición a la nueva habitación
+                state = DYING;
+                transitionTimer = 1000.f;
+                rooms[currentRoom]->setTransitioning(true);
 
+                // Cambiar estado visual
+                player->setAnimation("DIE");
+                player->blockInput(); // Bloquear input del jugador durante la transición
+
+                // Reproducir sonido de muerte
+                SoundManager::instance().playSound("horse", 0.1);
+            }
+            
             // Colisiones
             glm::ivec2 pSize = player->getSize();
             glm::vec2 pPos = player->getPosition();
@@ -452,7 +464,7 @@ void Level::handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollid
         case Type::BARREL:
         {
             Barrel* b = static_cast<Barrel*>(e);
-            if (b->isMoving()) {
+            if (b->isMoving()  || b->isExploding()) {
                 // El barril explota en la misma posición del dummy, NO al lado
                 glm::vec2 enemyPos = enemy->getPosition();
                 b->setPosition(enemyPos);
