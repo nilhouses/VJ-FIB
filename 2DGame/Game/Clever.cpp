@@ -53,137 +53,79 @@ void Clever::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
     sprite->setAnimationSpeed(DIE, 3);
     sprite->addKeyframe(DIE, glm::vec2(0.5f, 0.75f));
     sprite->addKeyframe(DIE, glm::vec2(0.75f, 0.75f));
-    
+
     sprite->changeAnimation(MOVE_RIGHT);
 }
 
 void Clever::update(int deltaTime)
 {
     sprite->update(deltaTime);
+    if (isDying() || playerTarget == nullptr) return;
 
-    if (isDying()) {
-        deathTimer += deltaTime;
-        if (deathTimer >= deathDuration) this->deactivate();
-        return;
-    }
-
-    if (playerTarget == nullptr) return;
-
-    glm::ivec2 targetPos = playerTarget->getPosition();
-    glm::ivec2 targetSize = playerTarget->getSize();
-    int playerBottomY = targetPos.y + targetSize.y;
+    glm::ivec2 playerPos = playerTarget->getPosition();
+    int playerBottomY = playerPos.y + playerTarget->getSize().y;
     int cleverBottomY = pos.y + size.y;
 
-    bool sameFloor = abs(playerBottomY - cleverBottomY) < 4;
-    bool playerAbove = playerBottomY < cleverBottomY - 4;
-    bool playerBelow = playerBottomY > cleverBottomY + 4;
+    bool canClimbUp = map->collisionLadderUp(pos, size);
+    bool canClimbDown = map->collisionLadderDown(pos, size);
+
+    // 1. Movimiento vertical
     isClimbing = false;
-
-    // 1. Vertical: commit to finishing a ladder once started
-    if (!climbingUp && !climbingDown) {
-        // Decide to start climbing only when player is clearly on another floor
-        if (playerAbove && map->collisionLadderUp(pos, size)) {
-            climbingUp = true;
-            ignoringPlayer = false; // Player changed floor, re-engage
-        }
-        else if (playerBelow && map->collisionLadderDown(pos, size)) {
-            climbingDown = true;
-            ignoringPlayer = false; // Player changed floor, re-engage
-        }
-    }
-
-    if (climbingUp) {
-        if (map->collisionLadderUp(pos, size)) {
+    if (playerBottomY != cleverBottomY) {
+        if (playerBottomY < cleverBottomY && canClimbUp) {
             pos.y -= speed;
             isClimbing = true;
-            if (sprite->animation() != CLIMB) sprite->changeAnimation(CLIMB);
         }
-        else {
-            climbingUp = false; // Reached the top, stop
-        }
-    }
-    else if (climbingDown) {
-        if (map->collisionLadderDown(pos, size)) {
+        else if (playerBottomY > cleverBottomY && canClimbDown) {
             pos.y += speed;
             isClimbing = true;
-            if (sprite->animation() != CLIMB) sprite->changeAnimation(CLIMB);
+        }
+        if (isClimbing && sprite->animation() != CLIMB) sprite->changeAnimation(CLIMB);
+    }
+
+    // 2. Movimiento horizontal
+    if (!isClimbing) {
+        int mapWidth = map->getMapSize().x * map->getTileSize();
+        if (movingRight) {
+            if (sprite->animation() != MOVE_RIGHT) sprite->changeAnimation(MOVE_RIGHT);
+            glm::ivec2 nextPos(pos.x + speed, pos.y);
+            if (!map->collisionMoveRight(nextPos, size) && nextPos.x + size.x < mapWidth)
+                pos.x += speed;
+            else changeDirection();
         }
         else {
-            climbingDown = false; // Reached the bottom, stop
+            if (sprite->animation() != MOVE_LEFT) sprite->changeAnimation(MOVE_LEFT);
+            glm::ivec2 nextPos(pos.x - speed, pos.y);
+            if (!map->collisionMoveLeft(nextPos, size) && nextPos.x > 0)
+                pos.x -= speed;
+            else changeDirection();
         }
     }
 
-    // 2. Horizontal
+    // 3. Gravedad
     if (!isClimbing) {
-        if (sameFloor) {
-			// Jugador detrás del enemigo, no lo ve y no lo persigue
-            bool playerBehind = (movingRight && targetPos.x < pos.x) || (!movingRight && targetPos.x > pos.x);
-            if (playerBehind) ignoringPlayer = true;
+        if (!onGround) {
+            int oldY = pos.y;
+            pos.y += fallStep;
+            map->collisionMoveDown(pos, size, &pos.y, fallStep);
+            onGround = (pos.y == oldY);
         }
-
-        if (sameFloor && !ignoringPlayer) {
-            // Chase the player
-            if (targetPos.x > pos.x) {
-                movingRight = true;
-                if (sprite->animation() != MOVE_RIGHT) sprite->changeAnimation(MOVE_RIGHT);
-                glm::ivec2 nextPos = glm::ivec2(pos.x + speed, pos.y);
-                if (!map->collisionMoveRight(nextPos, size)) pos.x += speed;
-            }
-            else if (targetPos.x < pos.x) {
-                movingRight = false;
-                if (sprite->animation() != MOVE_LEFT) sprite->changeAnimation(MOVE_LEFT);
-                glm::ivec2 nextPos = glm::ivec2(pos.x - speed, pos.y);
-                if (!map->collisionMoveLeft(nextPos, size)) pos.x -= speed;
-            }
-        }
-        else {
-			// Dummy walk + jump logic to follow the player if he is ahead and on another floor
-            bool shouldTurn = false;
-            int mapWidth = map->getMapSize().x * map->getTileSize();
-
-            if (movingRight) {
-                if (sprite->animation() != MOVE_RIGHT) sprite->changeAnimation(MOVE_RIGHT);
-                glm::ivec2 nextPos = glm::ivec2(pos.x + speed, pos.y);
-                bool wallAhead = map->collisionMoveRight(nextPos, size);
-                bool outOfMap = nextPos.x + size.x >= mapWidth;
-                glm::ivec2 floorCheck = glm::ivec2(nextPos.x + size.x - 1, pos.y + size.y);
-                glm::ivec2 floorSize = glm::ivec2(1, 1);
-                int tempY = floorCheck.y;
-                bool thereIsFloor = map->collisionMoveDown(floorCheck, floorSize, &tempY, 2);
-                bool shouldChaseDown = playerBelow && targetPos.x > pos.x; // player is ahead and below, follow him
-                if (!wallAhead && !outOfMap && (thereIsFloor || shouldChaseDown)) pos.x += speed;
-                else shouldTurn = true;
-            }
-            else {
-                if (sprite->animation() != MOVE_LEFT) sprite->changeAnimation(MOVE_LEFT);
-                glm::ivec2 nextPos = glm::ivec2(pos.x - speed, pos.y);
-                bool wallAhead = map->collisionMoveLeft(nextPos, size);
-                bool outOfMap = nextPos.x <= 0;
-                glm::ivec2 floorCheck = glm::ivec2(nextPos.x, pos.y + size.y);
-                glm::ivec2 floorSize = glm::ivec2(1, 1);
-                int tempY = floorCheck.y;
-                bool thereIsFloor = map->collisionMoveDown(floorCheck, floorSize, &tempY, 2);
-                bool shouldChaseDown = playerBelow && targetPos.x < pos.x; // player is ahead and below, follow him
-                if (!wallAhead && !outOfMap && (thereIsFloor || shouldChaseDown)) pos.x -= speed;
-                else shouldTurn = true;
-            }
-            if (shouldTurn) {
-                changeDirection();
-                if (ignoringPlayer) ignoringPlayer = false;
-            }
-        }
+        bool justLanded = (wasInAir && onGround) || (wasClimbing && !isClimbing);
+        if (justLanded) movingRight = (playerPos.x > pos.x);
+        wasInAir = !onGround;
+        onGround = false;
     }
-
-    // 3. Gravity
-    if (!isClimbing) {
-        pos.y += fallStep;
-        map->collisionMoveDown(pos, size, &pos.y, fallStep);
+    else {
+        wasInAir = false;
+        onGround = false;
     }
+    wasClimbing = isClimbing;
 
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
 }
 
 void Clever::changeDirection() {
+    if (isClimbing) return;
     movingRight = !movingRight;
     if (movingRight) sprite->changeAnimation(MOVE_RIGHT);
     else sprite->changeAnimation(MOVE_LEFT);
@@ -194,6 +136,6 @@ void Clever::die()
     if (isDying()) return;
     dying = true;
     sprite->changeAnimation(DIE);
-    cout << "RIP Clever" << endl;
-    // En el update se desactivar la entidad cuando acabe la animaci�n de explosi�n
+    std::cout << "RIP Clever" << std::endl;
+    // En el update se desactivar� la entidad cuando acabe la animaci�n de explosi�n
 }

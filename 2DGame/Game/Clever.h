@@ -18,14 +18,12 @@ public:
 
 	// Funciones del Clever
 	void setPlayerTarget(Player* p) { playerTarget = p; }
-	void ignorePlayer() { ignoringPlayer = true; }
 
 private:
-	Player* playerTarget = nullptr; // Puntero al jugador target
+	Player* playerTarget = nullptr;
 	bool isClimbing = false;
-	bool climbingUp = false;
-	bool climbingDown = false;
-	bool ignoringPlayer = false;    // Indica que el Clever tiene que actuar como un Dummy
+	bool wasInAir = false;
+	bool wasClimbing = false;
 };
 
 

@@ -461,12 +461,14 @@ void Level::handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollid
                 b->explode();
             }
             else {
-                enemy->changeDirection();
-                if(enemy->getEnemyType() == EnemyType::CLEVER) {
-                    Clever* clever = static_cast<Clever*>(enemy);
-                    clever->ignorePlayer();
-                }
+                glm::vec2 enemyPos = enemy->getPosition();
+                glm::ivec2 enemySize = enemy->getSize();
+                glm::vec2 bPos = b->getPosition();
+                if (rangeCollided.y < rangeCollided.x && enemyPos.y < bPos.y) {
+                    enemy->setOnGround(true);
+                } else enemy->changeDirection();
             }
+			cout << "Enemy colliding with barrel!" << endl;
             break;
         }
         case Type::BULLET:
@@ -479,14 +481,6 @@ void Level::handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollid
         default:
             break;
     }
-	// Si alguna entity causa distintos efectos en función del tipo de enemigo, ya pondremos un switch dentro de cada caso:
-    /*
-    switch (enemy->getEnemyType())
-    {
-        case EnemyType::DUMMY:
-        {
-        }
-    }*/
 }
 
 void Level::handleBulletCollision(Bullet* b, Entity* e, glm::vec2& rangeCollided)

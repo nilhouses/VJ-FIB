@@ -30,6 +30,7 @@ public:
     // Setters
     void setTileMap(TileMap* tileMap) { map = tileMap; }
     void setSpeed(int s) { speed = s; }
+    void setOnGround(bool b) { onGround = b; }
 
 	// Funciones comunes a todos los enemigos
     void incrRight();
@@ -44,6 +45,7 @@ protected:
 	int deathDuration = 500;                            // Animaci�n muerte en ms (Por defecto 500ms)
     bool movingRight = true;                            // Para controlar la direcci�n del movimiento (true = right, false = left)
     glm::ivec2 size = glm::ivec2(32, 32);               // Tendr�n todos (32, 64?)
+    bool onGround = false;
 };
 
 #endif // _ENEMY_INCLUDE
