@@ -12,7 +12,9 @@ enum class Type {
 	ENEMY,
 	BULLET,
 	DOOR,
-	LIFE
+	LIFE,
+	SPEEDBOOST,
+	GUN
 };
 
 class Entity

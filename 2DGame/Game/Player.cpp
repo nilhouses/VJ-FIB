@@ -40,6 +40,8 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	startY = 0;
 	blockedInput = false;
 	itemPickTimer = 0;
+	speedBoostTimer = 0;
+
 	// Configuración de animaciones
 	sprite->setNumberAnimations(NUM_ANIMS);
 
@@ -173,9 +175,7 @@ void Player::update(int deltaTime)
 {
 	sprite->update(deltaTime);
 
-	int tempY = int(pos.y);
-	bool inputDetected = true;
-
+	// Animación de recoger un item no permite hacer nada más
 	if (sprite->animation() == PICK_ITEM) {
 		itemPickTimer -= deltaTime;
 		if (itemPickTimer <= 0) {
@@ -184,6 +184,18 @@ void Player::update(int deltaTime)
 		}
 	}
 
+	// Miramos si aún tenemos SpeedBoost activo
+	if (speedBoostTimer > 0) {
+		speedBoostTimer -= deltaTime;
+		if (speedBoostTimer <= 0) {
+			speedBoostTimer = 0;
+			speedMultiplier = 1.f;
+		}
+	}
+
+
+	bool inputDetected = true;
+	
 	if (!blockedInput) {
 
 		// Con la flecha hacia arriba el personaje subirá si existe una escalera en esa posición
@@ -193,7 +205,7 @@ void Player::update(int deltaTime)
 					sprite->changeAnimation(CLIMB);
 				
 				sprite->setPaused(false);
-				pos.y -= SPEED;
+				pos.y -= SPEED * speedMultiplier;
 				bJumping = false;
 			}
 			else if (sprite->animation() != IDLE) sprite->changeAnimation(IDLE);
@@ -205,7 +217,7 @@ void Player::update(int deltaTime)
 					sprite->changeAnimation(CLIMB);
 
 				sprite->setPaused(false);
-				pos.y += SPEED;
+				pos.y += SPEED * speedMultiplier;
 				bJumping = false;
 			}
 			else if (sprite->animation() != IDLE) sprite->changeAnimation(IDLE);
@@ -358,19 +370,14 @@ string Player::getCurrentAnimationName() const {
 	}
 }
 
-int Player::getSpeed() {
-	return SPEED;
-}
-
-
 void Player::incrRight()
 {
-	pos.x += SPEED;
+	pos.x += SPEED * speedMultiplier;
 }
 
 void Player::incrLeft()
 {
-	pos.x -= SPEED;
+	pos.x -= SPEED * speedMultiplier;
 }
 
 void Player::incrUp(int px)
@@ -410,4 +417,9 @@ void Player::pickItem() {
 	itemPickTimer = PICK_ITEM_TIMER;
 	blockInput();
 	if (sprite->animation() != PICK_ITEM) sprite->changeAnimation(PICK_ITEM);
+}
+
+void Player::activateSpeedBoost(float multiplier, int duration) {
+	speedBoostTimer = duration;
+	speedMultiplier = multiplier;
 }

@@ -18,7 +18,6 @@ public:
 	
 	void setAnimation(const string& anim);
 	string getCurrentAnimationName() const;
-	int getSpeed();
 	void incrRight();
 	void incrLeft();
 	void incrUp(int px);
@@ -28,6 +27,8 @@ public:
 	bool getOnGround() { return onGround; }
 	void handlePush(int dir, bool pushSuccess);
 	void pickItem();
+	void activateSpeedBoost(float multiplier, int duration);
+	bool hasSpeedBoost() { return speedBoostTimer > 0; }
 
 private:
 	bool bJumping;						// Indica si el jugador está saltando o no
@@ -35,7 +36,8 @@ private:
 	bool onGround = false;
 	bool blockedInput;
 	int itemPickTimer;
-
+	int speedBoostTimer;
+	float speedMultiplier = 1.f;
 };
 
 

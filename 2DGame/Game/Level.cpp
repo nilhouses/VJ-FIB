@@ -127,6 +127,12 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, b
         life->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera);
         entity = life;
     }
+    else if (type == "SPEEDBOOST")
+    {
+        SpeedBoost* sb = new SpeedBoost();
+        sb->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera);
+        entity = sb;
+    }
 
     // Común para todas las entidades
     if (entity != nullptr)
@@ -354,6 +360,19 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             SoundManager::instance().playSound("life", 0.1);
             break;
 
+        case Type::SPEEDBOOST:
+        {
+            player->pickItem();
+            SpeedBoost* sb = static_cast<SpeedBoost*>(e);
+			player->activateSpeedBoost(sb->getMultiplier(), sb->getTimeActive());
+            // Configurar transición a la nueva habitación
+            state = PICKING_OBJECT;
+            transitionTimer = 300.f;
+            interactedEntity = e;
+            SoundManager::instance().playSound("kachow", 0.1);
+            break;
+        }
+
         case Type::BARREL:
         {
             Barrel* b = static_cast<Barrel*>(e);
@@ -555,9 +574,7 @@ void Level::checkCollisions()
         if (!e->isActive()) continue;
 
         glm::vec2 offset(2.f, 6.f);
-        if (e->getType() == Type::KEY) {
-            offset = glm::vec2(8.f, 8.f);
-        }else if (e->getType() == Type::LIFE) {
+        if (e->getType() == Type::KEY || e->getType() == Type::LIFE || e->getType() == Type::SPEEDBOOST) {
             offset = glm::vec2(8.f, 8.f);
 		} else if (e->getType() == Type::BARREL) {
             offset = glm::vec2(8.f, 4.f); // Ajustar la X en función de la anchura del sprite definitivo

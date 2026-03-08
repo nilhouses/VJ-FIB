@@ -14,6 +14,7 @@
 #include "Barrel.h"
 #include "Door.h"
 #include "Life.h"
+#include "SpeedBoost.h";
 #include "Game.h"
 #include "Asset.h"
 
