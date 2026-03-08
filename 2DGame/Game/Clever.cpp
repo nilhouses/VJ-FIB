@@ -60,7 +60,12 @@ void Clever::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 void Clever::update(int deltaTime)
 {
     sprite->update(deltaTime);
-    if (isDying() || playerTarget == nullptr) return;
+    
+    if (isDying()) {
+        deathTimer += deltaTime;
+        if (deathTimer >= deathDuration) this->deactivate();
+        return;
+    }
 
     glm::ivec2 playerPos = playerTarget->getPosition();
     int playerBottomY = playerPos.y + playerTarget->getSize().y;

@@ -464,9 +464,14 @@ void Level::handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollid
                 glm::vec2 enemyPos = enemy->getPosition();
                 glm::ivec2 enemySize = enemy->getSize();
                 glm::vec2 bPos = b->getPosition();
-                if (rangeCollided.y < rangeCollided.x && enemyPos.y < bPos.y) {
-                    enemy->setOnGround(true);
-                } else enemy->changeDirection();
+                glm::ivec2 bSize = b->getSize();
+
+                if (rangeCollided.y < rangeCollided.x && enemyPos.y < bPos.y) enemy->setOnGround(true);
+                else {
+                    if (enemyPos.x < bPos.x) enemy->setPosition(glm::ivec2(bPos.x - enemySize.x, enemyPos.y));
+                    else enemy->setPosition(glm::ivec2(bPos.x + bSize.x, enemyPos.y));
+                    enemy->changeDirection();
+                }
             }
 			cout << "Enemy colliding with barrel!" << endl;
             break;
