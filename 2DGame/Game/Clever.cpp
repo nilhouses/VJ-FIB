@@ -22,7 +22,7 @@ Clever::~Clever()
         delete sprite;
 }
 
-void Clever::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c)
+void Clever::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, bool movingRight)
 {
     // Inicializar los atributos de la Entity
     Entity::init(tileMapPos, shaderProgram, "images/clever.png", glm::ivec2(32, 32), glm::vec2(0.25f, 0.25f), c);
@@ -54,7 +54,8 @@ void Clever::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
     sprite->addKeyframe(DIE, glm::vec2(0.5f, 0.75f));
     sprite->addKeyframe(DIE, glm::vec2(0.75f, 0.75f));
 
-    sprite->changeAnimation(MOVE_RIGHT);
+    this->movingRight = movingRight;
+    sprite->changeAnimation(movingRight ? MOVE_RIGHT : MOVE_LEFT);
 }
 
 void Clever::update(int deltaTime)

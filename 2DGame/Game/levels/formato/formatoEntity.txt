@@ -20,6 +20,15 @@ KEY
 BARREL
 1
 0 4 6
+DUMMY			// Los enemigos tienen la dirección de movimiento al final (1 Derecha, otra cosa izquierda)
+1
+0 9 4 0
+SHOOTER
+1
+0 4 10 0
+CLEVER
+1
+0 3 8 1
 PLAYER
 1
 0 5 6

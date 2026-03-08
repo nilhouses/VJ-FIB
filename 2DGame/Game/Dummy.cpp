@@ -22,36 +22,37 @@ Dummy::~Dummy()
 		delete sprite;
 }
 
-void Dummy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c)
+void Dummy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, bool movingRight)
 {
-	// Inicializar los atributos de la Entity
-	Entity::init(tileMapPos, shaderProgram, "images/dummy.png", glm::ivec2(32, 32), glm::vec2(0.25f, 0.25f), c);
+    // Inicializar los atributos de la Entity
+    Entity::init(tileMapPos, shaderProgram, "images/dummy.png", glm::ivec2(32, 32), glm::vec2(0.25f, 0.25f), c);
 
-	// Atributos caracter�sticos del Dummy
+    // Atributos caracter�sticos del Dummy
     dying = false;
-	deathTimer = 0.f;
+    deathTimer = 0.f;
 
-	// Configuraci�n de animaciones
-	sprite->setNumberAnimations(NUM_ANIMS);
+    // Configuraci�n de animaciones
+    sprite->setNumberAnimations(NUM_ANIMS);
 
-	sprite->setAnimationSpeed(MOVE_LEFT, 20);
-	sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.f, 0.25f));
-	sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.25f, 0.25f));
-	sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.50f, 0.25f));
-	sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.75f, 0.25f));
+    sprite->setAnimationSpeed(MOVE_LEFT, 20);
+    sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.f, 0.25f));
+    sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.25f, 0.25f));
+    sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.50f, 0.25f));
+    sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.75f, 0.25f));
 
-	sprite->setAnimationSpeed(MOVE_RIGHT, 20);
-	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.f, 0.f));
-	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25f, 0.f));
-	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.50f, 0.f));
-	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.75f, 0.f));
+    sprite->setAnimationSpeed(MOVE_RIGHT, 20);
+    sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.f, 0.f));
+    sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25f, 0.f));
+    sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.50f, 0.f));
+    sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.75f, 0.f));
 
     sprite->setAnimationSpeed(DIE, 3);
     sprite->addKeyframe(DIE, glm::vec2(0.f, 0.75f));
     sprite->addKeyframe(DIE, glm::vec2(0.25f, 0.75f));
     sprite->addKeyframe(DIE, glm::vec2(0.50f, 0.75f));
 
-	sprite->changeAnimation(MOVE_RIGHT);
+    this->movingRight = movingRight;
+    sprite->changeAnimation(movingRight ? MOVE_RIGHT : MOVE_LEFT);
 }
 
 

@@ -20,7 +20,7 @@ Shooter::~Shooter()
         delete sprite;
 }
 
-void Shooter::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c)
+void Shooter::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, bool movingRight)
 {
     this->shaderProgram = &shaderProgram;
     this->cameraPtr = c;
@@ -67,7 +67,8 @@ void Shooter::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, C
     sprite->addKeyframe(DIE, glm::vec2(0.50f, 0.75f));
     sprite->addKeyframe(DIE, glm::vec2(0.75f, 0.75f));
 
-    sprite->changeAnimation(MOVE_RIGHT);
+    this->movingRight = movingRight;
+    sprite->changeAnimation(movingRight ? MOVE_RIGHT : MOVE_LEFT);
 }
 
 void Shooter::changeState(EnemyState newState) {
@@ -133,7 +134,7 @@ void Shooter::update(int deltaTime)
             else shouldTurn = true;
         }
 
-        if (shouldTurn) changeDirection();
+        if (shouldTurn && onGround) changeDirection();
         if (stateTimer <= 0) changeState(IDLING);
 
     }
@@ -144,8 +145,10 @@ void Shooter::update(int deltaTime)
         if (stateTimer <= 0) changeState(WALKING);
     }
     // Gravedad
+    int prevY = pos.y;
     pos.y += fallStep;
     map->collisionMoveDown(pos, size, &pos.y, fallStep);
+    onGround = (pos.y < prevY + fallStep);
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
 }
 
@@ -187,6 +190,7 @@ void Shooter::shoot() {
     // A�adir bala a Room
     currentRoom->addEntity(bullet);
 }
+
 void Shooter::die()
 {
     if (isDying()) return;

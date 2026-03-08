@@ -70,7 +70,7 @@ void Level::initShaders()
     fShader.free();
 }
 
-Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom)
+Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, bool movingRight)
 {
     Entity* entity = nullptr;
 	TileMap* map = rooms[indexRoom]->getMap();
@@ -113,14 +113,13 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom)
             static_cast<Shooter*>(enemy)->setRoom(rooms[indexRoom]);
         }
 
-        enemy->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera);
+        enemy->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera, movingRight);
         enemy->setTileMap(map);
 
         // Añado al vector de enemigos
         rooms[indexRoom]->addEnemy(enemy);
         entity = enemy;
     }
-
 
     // Común para todas las entidades
     if (entity != nullptr)
@@ -142,6 +141,7 @@ void Level::loadEntities()
 
     string type;
     int count;
+    bool movingRight = true;
 
     while (fin >> type)
     {
@@ -171,8 +171,15 @@ void Level::loadEntities()
 				d1->setIsFinalDoor(isFinalDoor);
 				d2->setIsFinalDoor(isFinalDoor);
             }
-            else
-				createEntity(type, tileX1, tileY1, indexRoom1);
+            else if (type == "DUMMY" || type == "CLEVER" || type == "SHOOTER") {
+                int dir;
+                fin >> dir;
+				movingRight = (dir == 1);
+                createEntity(type, tileX1, tileY1, indexRoom1, movingRight);
+            }
+            else 
+                createEntity(type, tileX1, tileY1, indexRoom1);
+            
         }
     }
 }
@@ -343,6 +350,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
 
                 // Reproducir sonido de muerte
                 SoundManager::instance().playSound("horse", 0.1);
+                break;
             }
             
             // Colisiones
@@ -485,7 +493,6 @@ void Level::handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollid
                     enemy->changeDirection();
                 }
             }
-			cout << "Enemy colliding with barrel!" << endl;
             break;
         }
         case Type::BULLET:

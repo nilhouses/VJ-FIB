@@ -11,7 +11,7 @@ public:
 	~Clever();
 
 public:
-	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c);
+	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, bool movingRight) override;
 	void update(int deltaTime) override;
 	void die() override;
 	void changeDirection() override;

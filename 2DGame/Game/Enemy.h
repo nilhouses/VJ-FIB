@@ -16,7 +16,7 @@ public:
     virtual ~Enemy() {}
 
     // Funciones a implementar por cada tipo de enemigo
-	virtual void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c) = 0; // Cada enemigo tiene sus animaciones, por lo que cada uno se inicializa de forma diferente
+	virtual void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, bool movingRight) = 0; // Cada enemigo tiene sus animaciones, por lo que cada uno se inicializa de forma diferente
     virtual void update(int deltaTime) override = 0;                                              // Cada enemigo se mueve distinto
     virtual void changeDirection();                                                               // Requiere el cambio de sprite
     virtual void die();
@@ -31,6 +31,7 @@ public:
     void setTileMap(TileMap* tileMap) { map = tileMap; }
     void setSpeed(int s) { speed = s; }
     void setOnGround(bool b) { onGround = b; }
+	void setMovingRight(bool b) { movingRight = b; }
 
 	// Funciones comunes a todos los enemigos
     void incrRight();
@@ -43,7 +44,7 @@ protected:
 	int speed = 1;                                      // Todo enemigo tiene una velocidad de movimiento en px. (Por Defecto 1)
 	int fallStep = 6;                                   // Px por ca�da (Por defecto 6)
 	int deathDuration = 500;                            // Animaci�n muerte en ms (Por defecto 500ms)
-    bool movingRight = true;                            // Para controlar la direcci�n del movimiento (true = right, false = left)
+    bool movingRight;                                   // Para controlar la direcci�n del movimiento (true = right, false = left)
     glm::ivec2 size = glm::ivec2(32, 32);               // Tendr�n todos (32, 64?)
     bool onGround = false;
 };
