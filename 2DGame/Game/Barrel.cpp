@@ -161,7 +161,7 @@ void Barrel::startPush(int dir) {
 
 bool Barrel::isFalling() { return pos.y > prevPos.y; }
 
-bool Barrel::isMoving() { return (pos.x != prevPos.x || pos.y != prevPos.y); }
+bool Barrel::isMoving() { return (pos.x != prevPos.x || pos.y != prevPos.y) && (sprite->animation() == ROLLING); }
 
 void Barrel::explode() {
 	// No explotar varias veces

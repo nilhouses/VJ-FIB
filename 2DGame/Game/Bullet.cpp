@@ -45,7 +45,7 @@ void Bullet::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
     sprite->addKeyframe(EXPLODE, glm::vec2(0.75f, 0.5f));
 
     sprite->changeAnimation(RIGHT);
-    SoundManager::instance().playSound("shot", 0.05);
+    SoundManager::instance().playSound("shot", (float)0.05);
 }
 
 void Bullet::update(int deltaTime)

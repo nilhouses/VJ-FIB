@@ -27,6 +27,7 @@
     <ClInclude Include="Key.h" />
     <ClInclude Include="Life.h" />
     <ClInclude Include="MainMenu.h" />
+    <ClInclude Include="Platform.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="Room.h" />
@@ -60,6 +61,7 @@
     <ClCompile Include="Key.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainMenu.cpp" />
+    <ClCompile Include="Platform.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Room.cpp" />

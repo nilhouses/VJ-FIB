@@ -14,7 +14,8 @@ enum class Type {
 	DOOR,
 	LIFE,
 	SPEEDBOOST,
-	GUN
+	GUN,
+	PLATFORM
 };
 
 class Entity
@@ -32,7 +33,7 @@ public:
 	// La función de render es común para todas porque delega la lógica de renderizado al sprite, que es el mismo para todas las entidades. De esta forma, cada entidad solo tiene que implementar la función de update con su propia lógica.
 	void render();
 
-	void setPosition(const glm::vec2& pos);
+	virtual void setPosition(const glm::vec2& pos);
 	glm::ivec2 getPosition() const { return pos; }
 
 	void setTileMap(TileMap* tileMap){map = tileMap;}

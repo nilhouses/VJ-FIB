@@ -71,7 +71,7 @@ void Level::initShaders()
     fShader.free();
 }
 
-Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, bool movingRight)
+Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, bool movingRight, int rangePixels, int axis, int dir)
 {
     Entity* entity = nullptr;
 	TileMap* map = rooms[indexRoom]->getMap();
@@ -140,6 +140,11 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, b
         gun->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera);
         entity = gun;
     }
+    else if (type == "PLATFORM") {
+        Platform* p = new Platform();
+        p->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera, rangePixels, axis, dir);
+        entity = p;
+    }
     // Común para todas las entidades
     if (entity != nullptr)
     {
@@ -195,6 +200,11 @@ void Level::loadEntities()
                 fin >> dir;
 				movingRight = (dir == 1);
                 createEntity(type, tileX1, tileY1, indexRoom1, movingRight);
+            }
+            else if (type == "PLATFORM") {
+                int rangePixels, axis, dir;
+                fin >> rangePixels >> axis >> dir;
+                createEntity(type, tileX1, tileY1, indexRoom1, false, rangePixels, axis, dir);
             }
             else 
                 createEntity(type, tileX1, tileY1, indexRoom1);
@@ -393,7 +403,6 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             SoundManager::instance().playSound("gun", 0.3);
             break;
         }
-
         case Type::BARREL:
         {
             Barrel* b = static_cast<Barrel*>(e);
@@ -433,8 +442,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                     if (Game::instance().getKey(GLFW_KEY_RIGHT)) player->handlePush(1, b->tryPush(1, 1.0f));
                     else {
                        // Hay contacto pero no se está empujando
-                       if (player->getCurrentAnimationName() == "PUSH_RIGHT")
-                            player->setAnimation("IDLE");
+                       if (player->getCurrentAnimationName() == "PUSH_RIGHT") player->setAnimation("IDLE");
                     }
                 }
                 else {
@@ -443,10 +451,29 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                     if (Game::instance().getKey(GLFW_KEY_LEFT)) player->handlePush(-1, b->tryPush(-1, 1.0f));
                     else {
                         // Hay contacto pero no se está empujando
-                        if (player->getCurrentAnimationName() == "PUSH_LEFT")
-                            player->setAnimation("IDLE");
+                        if (player->getCurrentAnimationName() == "PUSH_LEFT") player->setAnimation("IDLE");
                     }
                 }
+            }
+            break;
+        }
+        case Type::PLATFORM:
+        {
+            Platform* p = static_cast<Platform*>(e);
+
+            glm::ivec2 playerSize = player->getSize();
+            glm::vec2 playerPos = player->getPosition();
+            glm::vec2 pPos = p->getPosition();
+            glm::ivec2 pSize = p->getSize();
+
+            float playerFeet = playerPos.y + playerSize.y;
+            bool isAbove = playerFeet <= (pPos.y + 8.0f);
+            
+            // Colisión vertical
+            if (rangeCollided.y < rangeCollided.x && isAbove) {
+                player->setOnGround(true);
+                glm::vec2 plaformOffset = p->getDeltaMovement();
+                player->setPosition(glm::vec2(playerPos.x + plaformOffset.x, playerPos.y + plaformOffset.y));
             }
             break;
         }
@@ -551,6 +578,26 @@ void Level::handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollid
             }
             break;
         }
+        case Type::PLATFORM:
+        {
+            Platform* p = static_cast<Platform*>(e);
+
+            glm::ivec2 enemySize = enemy->getSize();
+            glm::vec2 enemyPos = enemy->getPosition();
+            glm::vec2 pPos = p->getPosition();
+            glm::ivec2 pSize = p->getSize();
+
+            float enemyFeet = enemyPos.y + enemySize.y;
+            bool isAbove = enemyFeet <= (pPos.y + 8.0f);
+
+            // Colisión vertical
+            if (rangeCollided.y < rangeCollided.x && isAbove) {
+                enemy->setOnGround(true);
+                glm::vec2 plaformOffset = p->getDeltaMovement();
+                enemy->setPosition(glm::vec2(enemyPos.x + plaformOffset.x, enemyPos.y + plaformOffset.y));
+            }
+            break;
+        }
         case Type::BULLET:
         {
             Bullet* b = static_cast<Bullet*>(e);
@@ -581,6 +628,26 @@ void Level::handleBulletCollision(Bullet* b, Entity* e, glm::vec2& rangeCollided
     }
 }
 
+void Level::handleBarrelCollision(Barrel* b, Entity* e, glm::vec2& rangeCollided)
+{
+    switch (e->getType())
+    {
+        case Type::PLATFORM:
+            if (b->isMoving()) b->explode();
+            break;
+        case Type::BARREL:
+        {
+            Barrel* barrel = static_cast<Barrel*>(e);
+            if (barrel->isMoving() || b->isMoving() || barrel->isExploding() || b->isExploding()) {
+                barrel->explode(); b->explode();
+            }
+            break;
+        }
+        default:
+            break;
+    }
+}
+
 
 void Level::checkCollisions()
 {
@@ -608,7 +675,8 @@ void Level::checkCollisions()
                 default:
                     break;
             }
-		}
+        }
+		else if (e->getType() == Type::PLATFORM) offset = glm::vec2(0.f, 0.f);
 
 		CollisionInfo collision = overlap(playerBox, e->getBoundingBox(), offset);
 
@@ -616,7 +684,8 @@ void Level::checkCollisions()
         {
             handlePlayerCollision(e, collision.rangeColision, offset);
         }
-		// 2. Colisiones entre y otras entidades (PE: bala y barril)
+		// 2. Colisiones entre entidades
+        // 2.1. Bala (para que explote)
         Bullet bullet;
         if (e->getType() == bullet.getType())
         {
@@ -635,7 +704,26 @@ void Level::checkCollisions()
                     break;
                 }
 			}
-            
+        }
+		// 2.2. Barril (para que explote con la plataforma + colisiones entre barriles)
+        Barrel barrel;
+        if (e->getType() == barrel.getType())
+        {
+            Barrel* b = static_cast<Barrel*>(e);
+
+            if (b->isExploding() || !b->isActive()) continue;
+
+            for (Entity* e1 : entities) {
+                if (!e1->isActive() || e1 == e) continue;
+
+                glm::vec2 offset(0.f, 0.f);
+                CollisionInfo collisionBarrel = overlap(b->getBoundingBox(), e1->getBoundingBox(), offset);
+
+                if (collisionBarrel.colliding) {
+                    handleBarrelCollision(b, e1, collision.rangeColision);
+                    break;
+                }
+            }
         }
     }
 

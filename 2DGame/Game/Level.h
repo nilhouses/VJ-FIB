@@ -36,12 +36,14 @@ private:
 	void handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2& offsetUsed); // Maneja la colisión entre el jugador y una entidad.
 	void handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollided); // Maneja la colisión entre un enemigo y una entidad distinta de player
 	void handleBulletCollision(Bullet* b, Entity* e, glm::vec2& rangeCollided); // Maneja la colisión entre una bala y otra entidad
+	void handleBarrelCollision(Barrel* b, Entity* e, glm::vec2& rangeCollided); // Maneja la colisión entre un barril y otra entidad
 	CollisionInfo overlap(const glm::vec4& a, const glm::vec4& b, const glm::vec2& offset); // Función auxiliar para detectar si dos bounding boxes se solapan (colisionan)
 
 	void loadMaps(vector<TileMap*>& maps, int totalMaps);		// Carga los mapas de tiles de cada habitación a través de un fichero de texto
 	void loadEntities();	// Carga las entidades del nivel a través de un fichero de texto
 	void loadAssets();		// Carga los elementos decorativos del nivel a través de un fichero de texto
-	Entity* createEntity(const string& type, int tileX, int tileY, int indexRoom, bool movingRight = false); // Crea una entidad del tipo dado en la posición dada (en tiles)
+	Entity* createEntity(const string& type, int tileX, int tileY, int indexRoom, bool movingRight = false, int rangePixels = 100, int axis = 0, int dir = 1);
+	// Crea una entidad del tipo dado en la posición dada (en tiles)
 	void createAsset(const string& spriteDir, glm::vec2& pos, glm::vec2& size, int indexRoom); // Crea un elemento decorativo en la posición dada (en tiles) y con el tamaño dado (en tiles
 
 private:

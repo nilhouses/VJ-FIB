@@ -29,6 +29,9 @@ SHOOTER
 CLEVER
 1
 0 3 8 1
+PLATFORM
+1
+0 5 6 96 0 1		// room, tileX, tileY, rangePixels, axis (0=horitzontal, 1 = vertical), dir (1 positiva, -1 negativa)
 PLAYER
 1
 0 5 6

@@ -18,7 +18,7 @@ public:
 
 private:
     bool movingRight = true;
-    int speed;
+    float speed;
     bool exploding;
     float explosionTimer;
 };
