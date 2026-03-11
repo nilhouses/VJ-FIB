@@ -105,6 +105,12 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, b
             door->setToVisited();
         entity = door;
     }
+    else if (type == "TUNNEL")
+    {
+        Tunnel* tunnel = new Tunnel();
+        tunnel->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera);
+        entity = tunnel;
+	}
     else if (type == "DUMMY" || type == "CLEVER" || type == "SHOOTER")
     {
         Enemy* enemy = nullptr;
@@ -178,22 +184,29 @@ void Level::loadEntities()
             int indexRoom1, tileX1, tileY1;
             fin >> indexRoom1 >> tileX1 >> tileY1;
 
-			if (type == "DOOR") {
+			if (type == "DOOR" || type == "TUNNEL") {
                 int indexRoom2, tileX2, tileY2;
                 fin >> indexRoom2 >> tileX2 >> tileY2;
 
                 Entity* e1 = createEntity(type, tileX1, tileY1, indexRoom1);
                 Entity* e2 = createEntity(type, tileX2, tileY2, indexRoom2);
 
-                Door* d1 = static_cast<Door*>(e1);
-                Door* d2 = static_cast<Door*>(e2);
+				Enter* enter1 = static_cast<Enter*>(e1);
+				Enter* enter2 = static_cast<Enter*>(e2);
 
-				d1->setDoorTo(d2);
-				d2->setDoorTo(d1);
+				// Conecto el túnel o puerta con su contraparte para poder acceder a ella desde la lógica del juego
+				enter1->setConnectedTo(enter2);
+				enter2->setConnectedTo(enter1);
 
-				bool isFinalDoor = (indexRoom1 == indexRoom2) && (tileX1 == tileX2) && (tileY1 == tileY2); // Si la puerta conecta consigo misma, es la puerta final
-				d1->setIsFinalDoor(isFinalDoor);
-				d2->setIsFinalDoor(isFinalDoor);
+                // Añado la información extra de la puerta
+                if (type == "DOOR") {
+                    Door* d1 = static_cast<Door*>(e1);
+                    Door* d2 = static_cast<Door*>(e2);
+
+				    bool isFinalDoor = (indexRoom1 == indexRoom2) && (tileX1 == tileX2) && (tileY1 == tileY2); // Si la puerta conecta consigo misma, es la puerta final
+				    d1->setIsFinalDoor(isFinalDoor);
+				    d2->setIsFinalDoor(isFinalDoor);
+                }
             }
             else if (type == "DUMMY" || type == "CLEVER" || type == "SHOOTER") {
                 int dir;
@@ -477,33 +490,59 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             }
             break;
         }
-        case Type::DOOR:
+        case Type::ENTER:
         {
-        int centerX = player->getPosition().x + 16.0f;
-        if (Game::instance().getKey(GLFW_KEY_UP) && state == NORMAL && rangeCollided.x > 20) {
+            int centerX = player->getPosition().x + 16.0f;
+            if (Game::instance().getKey(GLFW_KEY_UP) && state == NORMAL && rangeCollided.x > 20) {
                 
-            Door* door = static_cast<Door*>(e);
+                Enter* enter = static_cast<Door*>(e);
 
-			if (door->getIsFinalDoor()) {
-                if (collectedKeys < allKeys) {
-                    cout << "You need to collect all keys to enter the final door!" << endl;
-                    break;
-                }
+                // Según el tipo de entrada
+                switch (enter->getEnterType())
+                {
+                    case EnterType::DOOR:   // Si es una puerta entonces miramos si la puerta es final y además la animación del jugador es ENTER
+                    {
+                        cout << "Interacting with door" << endl;
+
+                        Door* door = static_cast<Door*>(enter);
+
+                        if (door->getIsFinalDoor()) {
+                            if (collectedKeys < allKeys) {
+                                cout << "You need to collect all keys to enter the final door!" << endl;
+                                return;
+                            }
+                        }
+
+                        // Cambiar estado visual
+                        door->setToVisited();
+                        player->setAnimation("ENTER");
+
+                        break;
+                    }
+                    case EnterType::TUNNEL: // Si es un túnel la animación del jugador es ENTER_TUNNEL
+                    {
+                        cout << "Interacting with tunnel" << endl;
+
+						// Cambiar estado visual
+						player->setAnimation("ENTER_TUNNEL");
+						
+                        break;
+                    }
+                    default:
+						break;
+				}
+                
+                // Configurar transición a la nueva habitación
+                state = ENTERING_DOOR;
+                transitionTimer = 1000.f;
+                interactedEnter = enter;
+                rooms[currentRoom]->setTransitioning(true);
+                player->blockInput(); // Bloquear input del jugador durante la transición
+                
             }
-                
-            // Configurar transición a la nueva habitación
-            state = ENTERING_DOOR;
-            transitionTimer = 1000.f;
-			interactedDoor = door;
-            rooms[currentRoom]->setTransitioning(true);
+            break;
+        }
 
-            // Cambiar estado visual
-            door->setToVisited();
-            player->setAnimation("ENTER");
-            player->blockInput(); // Bloquear input del jugador durante la transición
-        }
-        break;
-        }
         case Type::ENEMY:
         {
             Enemy* enemy = static_cast<Enemy*>(e);
@@ -684,6 +723,7 @@ void Level::checkCollisions()
         {
             handlePlayerCollision(e, collision.rangeColision, offset);
         }
+
 		// 2. Colisiones entre entidades
         // 2.1. Bala (para que explote)
         Bullet bullet;
@@ -705,6 +745,7 @@ void Level::checkCollisions()
                 }
 			}
         }
+
 		// 2.2. Barril (para que explote con la plataforma + colisiones entre barriles)
         Barrel barrel;
         if (e->getType() == barrel.getType())
@@ -770,26 +811,42 @@ void Level::update(int deltaTime)
         transitionTimer = std::max(0.f, transitionTimer - deltaTime);
 
         if (transitionTimer == 0.f) {
-            // Si se han recogido todas las llaves y la puerta interactuada es la puerta final, se completa el nivel
-            if (collectedKeys >= allKeys && interactedDoor->getIsFinalDoor()) {
-                levelCompleted = true;
+            
+			// Si se ha entrado por la puerta final se completa el nivel
+            if (interactedEnter->getEnterType() == EnterType::DOOR) {
+                Door* interactedDoor = static_cast<Door*>(interactedEnter);
+                if (collectedKeys >= allKeys && interactedDoor->getIsFinalDoor()) {
+                    levelCompleted = true;
+                    break;
+                }
             }
-            // Sino se entra a la habitación conectada a través de la puerta
-            else {
-                Door* targetDoor = interactedDoor->getDoorTo();
-                currentRoom = targetDoor->getRoom();
-                glm::vec2 targetSpawnPosition = targetDoor->getPosition();
 
-                player->setPosition(glm::vec2(targetSpawnPosition.x, targetSpawnPosition.y));
-                player->setTileMap(rooms[currentRoom]->getMap());
-                player->blockInput();
-				player->setAnimation("IDLE");   // TODO: Animación de salida de la puerta
-                rooms[currentRoom]->setTransitioning(true);
+            // Si se ha entrado por cualquier ENTER diferente a la puerta final
+            Enter* targetEnter = interactedEnter->getConnectedTo();
+            currentRoom = targetEnter->getRoom();
+            glm::vec2 targetSpawnPosition = targetEnter->getPosition();
 
-                // Cambio de estado a EXITING_DOOR
-                state = EXITING_DOOR;
-                transitionTimer = 1000.f;
+            player->setPosition(glm::vec2(targetSpawnPosition.x, targetSpawnPosition.y));
+            player->setTileMap(rooms[currentRoom]->getMap());
+            player->blockInput();
+            rooms[currentRoom]->setTransitioning(true);
+
+			// Según el tipo de entrada, se configura la animación del jugador
+			switch (interactedEnter->getEnterType())
+            {
+                case EnterType::DOOR:
+                    player->setAnimation("IDLE");
+                    break;
+                case EnterType::TUNNEL:
+                    player->setAnimation("EXIT_TUNNEL");
+                    break;
+                default:
+                    break;
             }
+
+            // Cambio de estado a EXITING_DOOR
+            state = EXITING_DOOR;
+            transitionTimer = 1000.f;
         }
 
         break;

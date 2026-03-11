@@ -15,7 +15,7 @@
 // Definimos tipos de animaciones para el jugador
 enum PlayerAnims
 {
-	IDLE, WALK_LEFT, WALK_RIGHT, DIE, FALL, CLIMB, OPEN_AND_ENTER, ENTER, ENTER_TUNEL, EXIT_TUNEL, PICK_ITEM, PUSH_LEFT, PUSH_RIGHT, GUN_WALK_LEFT, GUN_WALK_RIGHT, NUM_ANIMS
+	IDLE, WALK_LEFT, WALK_RIGHT, DIE, FALL, CLIMB, OPEN_AND_ENTER, ENTER, ENTER_TUNNEL, EXIT_TUNNEL, PICK_ITEM, PUSH_LEFT, PUSH_RIGHT, GUN_WALK_LEFT, GUN_WALK_RIGHT, NUM_ANIMS
 };
 
 
@@ -110,33 +110,33 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	sprite->addKeyframe(ENTER, glm::vec2(27.f / 35.f, 1.f / 7.f));
 	sprite->addKeyframe(ENTER, glm::vec2(28.f / 35.f, 1.f / 7.f));
 
-	sprite->setAnimationSpeed(ENTER_TUNEL, 8);
-	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(10.f / 35.f, 2.f / 7.f));
-	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(11.f / 35.f, 2.f / 7.f));
-	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(12.f / 35.f, 2.f / 7.f));
-	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(13.f / 35.f, 2.f / 7.f));
-	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(14.f / 35.f, 2.f / 7.f));
-	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(15.f / 35.f, 2.f / 7.f));
-	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(16.f / 35.f, 2.f / 7.f));
-	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(17.f / 35.f, 2.f / 7.f));
-	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(18.f / 35.f, 2.f / 7.f));
-	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(19.f / 35.f, 2.f / 7.f));
-	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(20.f / 35.f, 2.f / 7.f));
-	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(21.f / 35.f, 2.f / 7.f));
-	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(22.f / 35.f, 2.f / 7.f));
-	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(23.f / 35.f, 2.f / 7.f));
-	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(24.f / 35.f, 2.f / 7.f));
-	sprite->addKeyframe(ENTER_TUNEL, glm::vec2(25.f / 35.f, 2.f / 7.f));
+	sprite->setAnimationSpeed(ENTER_TUNNEL, 8);
+	sprite->addKeyframe(ENTER_TUNNEL, glm::vec2(10.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNNEL, glm::vec2(11.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNNEL, glm::vec2(12.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNNEL, glm::vec2(13.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNNEL, glm::vec2(14.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNNEL, glm::vec2(15.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNNEL, glm::vec2(16.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNNEL, glm::vec2(17.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNNEL, glm::vec2(18.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNNEL, glm::vec2(19.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNNEL, glm::vec2(20.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNNEL, glm::vec2(21.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNNEL, glm::vec2(22.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNNEL, glm::vec2(23.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNNEL, glm::vec2(24.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(ENTER_TUNNEL, glm::vec2(25.f / 35.f, 2.f / 7.f));
 
-	sprite->setAnimationSpeed(EXIT_TUNEL, 8);
-	sprite->addKeyframe(EXIT_TUNEL, glm::vec2(26.f / 35.f, 2.f / 7.f));
-	sprite->addKeyframe(EXIT_TUNEL, glm::vec2(27.f / 35.f, 2.f / 7.f));
-	sprite->addKeyframe(EXIT_TUNEL, glm::vec2(28.f / 35.f, 2.f / 7.f));
-	sprite->addKeyframe(EXIT_TUNEL, glm::vec2(29.f / 35.f, 2.f / 7.f));
-	sprite->addKeyframe(EXIT_TUNEL, glm::vec2(30.f / 35.f, 2.f / 7.f));
-	sprite->addKeyframe(EXIT_TUNEL, glm::vec2(31.f / 35.f, 2.f / 7.f));
-	sprite->addKeyframe(EXIT_TUNEL, glm::vec2(32.f / 35.f, 2.f / 7.f));
-	sprite->addKeyframe(EXIT_TUNEL, glm::vec2(33.f / 35.f, 2.f / 7.f));
+	sprite->setAnimationSpeed(EXIT_TUNNEL, 8);
+	sprite->addKeyframe(EXIT_TUNNEL, glm::vec2(26.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(EXIT_TUNNEL, glm::vec2(27.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(EXIT_TUNNEL, glm::vec2(28.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(EXIT_TUNNEL, glm::vec2(29.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(EXIT_TUNNEL, glm::vec2(30.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(EXIT_TUNNEL, glm::vec2(31.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(EXIT_TUNNEL, glm::vec2(32.f / 35.f, 2.f / 7.f));
+	sprite->addKeyframe(EXIT_TUNNEL, glm::vec2(33.f / 35.f, 2.f / 7.f));
 
 	sprite->setAnimationSpeed(PICK_ITEM, 10);
 	sprite->addKeyframe(PICK_ITEM, glm::vec2(10.f / 35.f, 1.f / 7.f));
@@ -249,8 +249,7 @@ void Player::update(int deltaTime)
 		else if (Game::instance().getKey(GLFW_KEY_LEFT))
 		{
 			facingRight = false;
-			int jumpY = int(pos.y);
-			if (sprite->animation() == CLIMB && !map->collisionMoveDown(pos, getSize(), &jumpY, FALL_STEP)) {}	// Prohibido salir de la escalera a medias
+			if (sprite->animation() == CLIMB && !map->collisionDown(pos, getSize(), 12.f)) {}	// Prohibido salir de la escalera a medias
 			else {
 				auto targetAnim = hasBullets() ? GUN_WALK_LEFT : WALK_LEFT;
 				if (sprite->animation() != targetAnim && sprite->animation() != PUSH_LEFT) sprite->changeAnimation(targetAnim);
@@ -264,8 +263,7 @@ void Player::update(int deltaTime)
 		else if (Game::instance().getKey(GLFW_KEY_RIGHT))
 		{
 			facingRight = true;
-			int jumpY = int(pos.y);
-			if (sprite->animation() == CLIMB && !map->collisionMoveDown(pos, getSize(), &jumpY, FALL_STEP)) {}	// Prohibido salir de la escalera a medias
+			if (sprite->animation() == CLIMB && !map->collisionDown(pos, getSize(), 12.f)) {}	// Prohibido salir de la escalera a medias
 			else {
 				auto targetAnim = hasBullets() ? GUN_WALK_RIGHT : WALK_RIGHT;
 				if (sprite->animation() != targetAnim && sprite->animation() != PUSH_RIGHT) sprite->changeAnimation(targetAnim);
@@ -350,10 +348,10 @@ void Player::setAnimation(const string& anim)
 		sprite->changeAnimation(OPEN_AND_ENTER);
 	else if (anim == "ENTER")
 		sprite->changeAnimation(ENTER);
-	else if (anim == "ENTER_TUNEL")
-		sprite->changeAnimation(ENTER_TUNEL);
-	else if (anim == "EXIT_TUNEL")
-		sprite->changeAnimation(EXIT_TUNEL);
+	else if (anim == "ENTER_TUNNEL")
+		sprite->changeAnimation(ENTER_TUNNEL);
+	else if (anim == "EXIT_TUNNEL")
+		sprite->changeAnimation(EXIT_TUNNEL);
 	else if (anim == "PICK_ITEM")
 		sprite->changeAnimation(PICK_ITEM);
 	else if (anim == "PUSH_LEFT")
@@ -380,8 +378,8 @@ string Player::getCurrentAnimationName() const {
 	case CLIMB:				return "CLIMB";
 	case OPEN_AND_ENTER:    return "OPEN_AND_ENTER";
 	case ENTER:				return "ENTER";
-	case ENTER_TUNEL:		return "ENTER_TUNEL";
-	case EXIT_TUNEL:        return "EXIT_TUNEL";
+	case ENTER_TUNNEL:		return "ENTER_TUNNEL";
+	case EXIT_TUNNEL:       return "EXIT_TUNNEL";
 	case PICK_ITEM:         return "PICK_ITEM";
 	case PUSH_LEFT:         return "PUSH_LEFT";
 	case PUSH_RIGHT:        return "PUSH_RIGHT";

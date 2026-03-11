@@ -62,7 +62,7 @@ private:
 	int currentRoom;				// La habitación actual en la que se encuentra el jugador
 
 	int state;
-	Door* interactedDoor = nullptr;
+	Enter* interactedEnter = nullptr;
 	Entity* interactedEntity = nullptr;
 
 	Camera* camera;

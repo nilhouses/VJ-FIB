@@ -11,11 +11,11 @@ enum class Type {
 	BARREL,
 	ENEMY,
 	BULLET,
-	DOOR,
 	LIFE,
 	SPEEDBOOST,
 	GUN,
-	PLATFORM
+	PLATFORM,
+	ENTER
 };
 
 class Entity
