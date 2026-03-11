@@ -524,7 +524,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                         cout << "Interacting with tunnel" << endl;
 
 						// Cambiar estado visual
-						player->setAnimation("ENTER_TUNNEL");
+						player->setAnimation("ENTER_TUNNEL");   // TODO
 						
                         break;
                     }
