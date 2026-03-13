@@ -14,7 +14,7 @@
 #include "Barrel.h"
 #include "Door.h"
 #include "Life.h"
-#include "SpeedBoost.h";
+#include "SpeedBoost.h"
 #include "Gun.h"
 #include "Platform.h"
 #include "Pipe.h"

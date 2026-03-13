@@ -235,10 +235,10 @@ bool TileMap::collisionLadderUp(const glm::vec2& pos, const glm::ivec2& size)
 {
 	int x, y0, y1;
 
-	int centerX = pos.x + size.x / 2;
+	int centerX = (int)pos.x + size.x / 2;
 	x = centerX / tileSize;
-	y0 = pos.y / tileSize;
-	y1 = (pos.y + size.y - 1) / tileSize;
+	y0 = (int)pos.y / tileSize;
+	y1 = ((int)pos.y + size.y - 1) / tileSize;
 	
 	for (int y = y0; y <= y1; y++)
 	{
@@ -253,9 +253,9 @@ bool TileMap::collisionLadderDown(const glm::vec2& pos, const glm::ivec2& size)
 {
 	int x, y;
 
-	int centerX = pos.x + size.x / 2;
+	int centerX = (int)pos.x + size.x / 2;
 	x = centerX / tileSize;
-	y = (pos.y + size.y) / tileSize;
+	y = ((int)pos.y + size.y) / tileSize;
 	if (isLadder(x, y) && Utils::isCentered(centerX))
 	{
 		return true;
@@ -270,7 +270,7 @@ bool TileMap::collisionDown(const glm::ivec2 &pos, const glm::ivec2 &size, float
 	int x0, x1, y, ypx;
 	x0 = pos.x / tileSize;
 	x1 = (pos.x + size.x - 1) / tileSize;
-	ypx = (pos.y + size.y + offsetY);
+	ypx = (pos.y + size.y + (int)offsetY);
 	y =  ypx / tileSize;
 	for (int x = x0; x <= x1; x++)
 	{

@@ -39,6 +39,7 @@
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="Shooter.h" />
     <ClInclude Include="SoundManager.h" />
+	<ClInclude Include="SpeedBoost.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
@@ -76,8 +77,10 @@
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="Shooter.cpp" />
     <ClCompile Include="SoundManager.cpp" />
-    <ClCompile Include="SpeedBoost.cpp" />
-    <ClCompile Include="SpeedBoost.h" />
+    <ClCompile Include="SpeedBoost.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="Texture.cpp" />

@@ -400,7 +400,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             transitionTimer = 300.f;
             interactedEntity = e;
             cout << "collectedKeys: " << collectedKeys << "/" << allKeys << endl;
-            SoundManager::instance().playSound("key", 0.7);
+            SoundManager::instance().playSound("key", 0.7f);
             break;
 
         case Type::LIFE:
@@ -411,7 +411,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             transitionTimer = 300.f;
             interactedEntity = e;
             cout << "numLives: " << numLives << endl;
-            SoundManager::instance().playSound("life", 0.1);
+            SoundManager::instance().playSound("life", 0.1f);
             break;
 
         case Type::SPEEDBOOST:
@@ -424,7 +424,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             state = PICKING_OBJECT;
             transitionTimer = 300.f;
             interactedEntity = e;
-            SoundManager::instance().playSound("kachow", 0.1);
+            SoundManager::instance().playSound("kachow", 0.1f);
             break;
         }
 
@@ -438,7 +438,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             state = PICKING_OBJECT;
             transitionTimer = 300.f;
             interactedEntity = e;
-            SoundManager::instance().playSound("gun", 0.3);
+            SoundManager::instance().playSound("gun", 0.3f);
             break;
         }
         case Type::BARREL:
@@ -453,7 +453,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                 // Cambiar estado visual
                 player->setAnimation("DIE");
                 player->blockInput(); // Bloquear input del jugador durante la transición
-                SoundManager::instance().playSound("horse", 0.1);
+                SoundManager::instance().playSound("horse", 0.1f);
                 break;
             }
             
@@ -471,9 +471,6 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             else
             {
                 // Colisión horizontal, lógica de empuje
-                int tileSize = rooms[currentRoom]->getMap()->getTileSize();
-				int pushDist = (2 + (rand() % 3)) * tileSize; // De 2 - 4 tiles de distancia
-
                 if (pPos.x < bPos.x) {
                     player->setPosition(glm::vec2(pPos.x - rangeCollided.x, pPos.y));
 
@@ -517,7 +514,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
         }
 case Type::ENTER:
         {
-            int centerX = player->getPosition().x + 16.0f;
+            int centerX = (int)(player->getPosition().x + 16.0f);
             if (Game::instance().getKey(GLFW_KEY_UP) && state == NORMAL && rangeCollided.x > 20) {
                 
                 Enter* enter = static_cast<Door*>(e);
@@ -596,7 +593,7 @@ case Type::ENTER:
                 player->blockInput(); // Bloquear input del jugador durante la transición
 
 				// Reproducir sonido de muerte
-				SoundManager::instance().playSound("horse", 0.1);
+				SoundManager::instance().playSound("horse", 0.1f);
             }
             break;
         }
@@ -614,7 +611,7 @@ case Type::ENTER:
                 player->blockInput(); // Bloquear input del jugador durante la transición
 
                 // Reproducir sonido de muerte
-                SoundManager::instance().playSound("horse", 0.1);
+                SoundManager::instance().playSound("horse", 0.1f);
                 b->explode();
             }
             break;
@@ -647,8 +644,8 @@ void Level::handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollid
 
                 if (rangeCollided.y < rangeCollided.x && enemyPos.y < bPos.y) enemy->setOnGround(true);
                 else {
-                    if (enemyPos.x < bPos.x) enemy->setPosition(glm::ivec2(bPos.x - enemySize.x, enemyPos.y));
-                    else enemy->setPosition(glm::ivec2(bPos.x + bSize.x, enemyPos.y));
+                    if (enemyPos.x < bPos.x) enemy->setPosition(glm::vec2(bPos.x - enemySize.x, enemyPos.y));
+                    else enemy->setPosition(glm::vec2(bPos.x + bSize.x, enemyPos.y));
                     enemy->changeDirection();
                 }
             }

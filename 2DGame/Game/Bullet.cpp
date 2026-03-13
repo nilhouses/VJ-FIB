@@ -58,8 +58,8 @@ void Bullet::update(int deltaTime)
         return;
     }
 
-    if (movingRight) pos.x += speed;
-    else pos.x -= speed;
+    if (movingRight) pos.x += static_cast<int>(speed);
+    else pos.x -= static_cast<int>(speed);
 
     bool collision = false;
 

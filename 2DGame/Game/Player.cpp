@@ -267,7 +267,7 @@ void Player::update(int deltaTime)
 					sprite->changeAnimation(CLIMB);
 				
 				sprite->setPaused(false);
-				pos.y -= SPEED * speedMultiplier;
+				pos.y -= (int)(SPEED * speedMultiplier);
 				bJumping = false;
 			}
 			else if (sprite->animation() != IDLE) sprite->changeAnimation(IDLE);
@@ -279,7 +279,7 @@ void Player::update(int deltaTime)
 					sprite->changeAnimation(CLIMB);
 
 				sprite->setPaused(false);
-				pos.y += SPEED * speedMultiplier;
+				pos.y += (int)(SPEED * speedMultiplier);
 				bJumping = false;
 			}
 			else if (sprite->animation() != IDLE) sprite->changeAnimation(IDLE);
@@ -339,7 +339,7 @@ void Player::update(int deltaTime)
 					int jumpY = int(pos.y);
 					if (map->collisionMoveDown(pos, getSize(), &jumpY, FALL_STEP) || onGround) {
 						bJumping = false;
-						pos.y = float(jumpY);
+						pos.y = jumpY;
 					}
 				}
 			}
@@ -444,12 +444,12 @@ string Player::getCurrentAnimationName() const {
 
 void Player::incrRight()
 {
-	pos.x += SPEED * speedMultiplier;
+	pos.x += (int)(SPEED * speedMultiplier);
 }
 
 void Player::incrLeft()
 {
-	pos.x -= SPEED * speedMultiplier;
+	pos.x -= (int)(SPEED * speedMultiplier);
 }
 
 void Player::incrUp(int px)
@@ -491,7 +491,7 @@ void Player::pickItem() {
 	if (sprite->animation() != PICK_ITEM) sprite->changeAnimation(PICK_ITEM);
 }
 
-void Player::activateSpeedBoost(float multiplier, int duration) {
+void Player::activateSpeedBoost(float multiplier, float duration) {
 	speedBoostTimer = duration;
 	speedMultiplier = multiplier;
 }

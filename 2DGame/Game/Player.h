@@ -29,7 +29,7 @@ public:
 	bool getOnGround() { return onGround; }
 	void handlePush(int dir, bool pushSuccess);
 	void pickItem();
-	void activateSpeedBoost(float multiplier, int duration);
+	void activateSpeedBoost(float multiplier, float duration);
 	bool hasSpeedBoost() { return speedBoostTimer > 0; }
 	void addBullet() { numBullets++; }
 	int  getBullets() { return numBullets; }
@@ -45,12 +45,12 @@ private:
 	// Atributos necesarios para items
 	int itemPickTimer;
 	// Atributos necesarios para el SpeedBoost
-	int speedBoostTimer;
+	float speedBoostTimer;
 	float speedMultiplier = 1.f;
 	// Atributos necesarios para disparar
 	bool isShooting = false;
-	int shootAnimTimer;
-	int shootCooldown = 0;
+	float shootAnimTimer;
+	float shootCooldown = 0;
 	int  numBullets = 0;
 	bool facingRight = true;        // Dirección disparo
 	Room* currentRoom = nullptr;

@@ -75,7 +75,7 @@ void Shooter::changeState(EnemyState newState) {
     currentState = newState;
     switch (currentState) {
     case WALKING:
-        stateTimer = 7000 + (rand() % 3000); // Cada (7-10) segundos dispara
+        stateTimer = 7000.f + (float)(rand() % 3000); // Cada (7-10) segundos dispara
         sprite->changeAnimation(movingRight ? MOVE_RIGHT : MOVE_LEFT);
         break;
     case IDLING:

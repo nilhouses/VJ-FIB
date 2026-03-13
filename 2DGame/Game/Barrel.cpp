@@ -91,8 +91,8 @@ void Barrel::update(int deltaTime)
 	fallSpeed += GRAVITY;
 	if (fallSpeed > MAX_FALL_SPEED) fallSpeed = MAX_FALL_SPEED;
 
-	pos.y += fallSpeed;
-	map->collisionMoveDown(pos, glm::ivec2(32, 32), &pos.y, fallSpeed);
+	pos.y += (int)(fallSpeed);
+	map->collisionMoveDown(pos, glm::ivec2(32, 32), &pos.y, (int)fallSpeed);
 
 	// Si tras caer tocamos el suelo explosión
 	if (isFalling() && pos.y == frameStartPos.y) explode();
@@ -167,7 +167,7 @@ void Barrel::explode() {
 	// No explotar varias veces
 	if (exploding) return;
 	exploding = true;
-	SoundManager::instance().playSound("explosion", 0.4);
+	SoundManager::instance().playSound("explosion", 0.4f);
 	sprite->changeAnimation(EXPLOSION);
 	cout << "Barrel explosion!" << endl;
 	// En el update se desactivará la entidad cuando acabe la animación de explosión
