@@ -319,10 +319,17 @@ void Level::createRooms()
     loadEntities();
 
     for (Room* room : rooms) {
+        // Recogida de pipes
+        vector<Pipe*> roomPipes;
+        for (Entity* e : room->getEntities())
+            if (e->getType() == Type::PIPE)
+                roomPipes.push_back(static_cast<Pipe*>(e));
+        // Asignar el player y las pipes a cada clever
         for (Enemy* enemy : room->getEnemies()) {
             if (enemy->getEnemyType() == EnemyType::CLEVER) {
                 Clever* clever = static_cast<Clever*>(enemy);
                 clever->setPlayerTarget(this->player);
+                clever->setPipes(roomPipes);
             }
         }
     }

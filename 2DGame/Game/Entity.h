@@ -55,7 +55,7 @@ public:
 	virtual bool isEnemy() const { return false; }
 
 	void printDebugInfo() const; // Función para imprimir información de depuración sobre la entidad (posición, tipo, estado, etc.)
-
+	
 protected:
 	TileMap* map;					    	// Mapa de tiles para detectar colisiones
 	glm::ivec2 tileMapDispl, pos;			// Posición de la entidad en el mapa de tiles
@@ -64,7 +64,7 @@ protected:
 	bool active;							// Indica si la entidad está activa (visible y actualizable) o no
 	Type type;								// Aquí guardamos qué es (Player, Key, etc.)
 	int room;
-	glm::ivec2 size = glm::ivec2(32, 32);   // Tamaño del bounding box por defecto (se asume que es un cuadrado de 32x32 píxeles, pero cada entidad puede sobreescribir esta función para devolver un bounding box diferente)
+	glm::ivec2 size = glm::ivec2(32, 32);   // Tamaño del bounding box por defecto (se asume que es un cuadrado de 32x32 píxeles, pero cada entidad puede sobreescribir esta función para devolver un bounding box diferente
 };
 
 #endif // _ENTITY_INCLUDE

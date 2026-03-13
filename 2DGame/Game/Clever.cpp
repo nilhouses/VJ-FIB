@@ -58,15 +58,54 @@ void Clever::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
     sprite->changeAnimation(movingRight ? MOVE_RIGHT : MOVE_LEFT);
 }
 
+void Clever::render()
+{
+    if (visible) sprite->render();
+}
+
+// Función auxiliar para saber si puede subir por una escalera
+pair<Pipe*, int> Clever::getPipeEntryAt() const
+{
+    glm::vec4 myBox = getBoundingBox();
+    for (Pipe* pipe : pipes) {
+        glm::vec4 b0 = pipe->getEndBoundingBox(0);
+        glm::vec4 b1 = pipe->getEndBoundingBox(1);
+        auto overlaps = [](const glm::vec4& a, const glm::vec4& b) {
+            return !(a.x + a.z < b.x || b.x + b.z < a.x || a.y + a.w < b.y || b.y + b.w < a.y);
+            };
+        if (overlaps(myBox, b0)) return { pipe, 0 };
+        if (overlaps(myBox, b1)) return { pipe, 1 };
+    }
+    return { nullptr, -1 };
+}
+
 void Clever::update(int deltaTime)
 {
     sprite->update(deltaTime);
-    
+
     if (isDying()) {
         deathTimer += deltaTime;
         if (deathTimer >= deathDuration) this->deactivate();
         return;
     }
+
+    // A media transición
+    if (inPipe) {
+        if (currentPipe->isTransitComplete()) {
+            glm::vec2 exitPos = currentPipe->getExitPosition(size.y);
+            pos = glm::ivec2(exitPos.x, exitPos.y);
+            setVisible(true);
+            inPipe = false;
+            currentPipe = nullptr;               
+            verticalCooldown = VERTICAL_COOLDOWN;
+            movingRight = (playerTarget->getPosition().x > pos.x);
+            if (movingRight) sprite->changeAnimation(MOVE_RIGHT);
+            else sprite->changeAnimation(MOVE_LEFT);
+        }
+        sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
+        return;
+    }
+    if (verticalCooldown > 0) verticalCooldown -= deltaTime;
 
     glm::ivec2 playerPos = playerTarget->getPosition();
     int playerBottomY = playerPos.y + playerTarget->getSize().y;
@@ -75,18 +114,51 @@ void Clever::update(int deltaTime)
     bool canClimbUp = map->collisionLadderUp(pos, size);
     bool canClimbDown = map->collisionLadderDown(pos, size);
 
+    // Pipes disponibles
+    pair<Pipe*, int> pipeEntry = getPipeEntryAt();
+    Pipe* foundPipe = pipeEntry.first;
+    int pipeEnd = pipeEntry.second;
+    bool canPipeUp = false;
+    bool canPipeDown = false;
+    if (foundPipe != nullptr) {
+        glm::vec2 dir = foundPipe->getEndDirection(pipeEnd);
+        canPipeUp = (dir.y < 0);
+        canPipeDown = (dir.y > 0);
+    }
+
     // 1. Movimiento vertical
     isClimbing = false;
     if (playerBottomY != cleverBottomY) {
-        if (playerBottomY < cleverBottomY && canClimbUp) {
-            pos.y -= speed;
-            isClimbing = true;
+        if (playerBottomY < cleverBottomY) {   // Subir
+            if (canClimbUp) {
+                pos.y -= speed;
+                isClimbing = true;
+                if (sprite->animation() != CLIMB) sprite->changeAnimation(CLIMB);
+            }
+            else if (canPipeUp && verticalCooldown <= 0) {
+                currentPipe = foundPipe;
+                inPipe = true;
+                setVisible(false);
+                foundPipe->startTransit(pipeEnd);
+                sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
+                return;
+            }
         }
-        else if (playerBottomY > cleverBottomY && canClimbDown) {
-            pos.y += speed;
-            isClimbing = true;
+        else if (playerBottomY > cleverBottomY) {   // Bajar
+            if (canClimbDown) {
+                pos.y += speed;
+                isClimbing = true;
+                if (sprite->animation() != CLIMB) sprite->changeAnimation(CLIMB);
+            }
+            else if (canPipeDown && verticalCooldown <= 0) {
+                currentPipe = foundPipe;
+                inPipe = true;
+                setVisible(false);
+                foundPipe->startTransit(pipeEnd);
+                sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
+                return;
+            }
         }
-        if (isClimbing && sprite->animation() != CLIMB) sprite->changeAnimation(CLIMB);
     }
 
     // 2. Movimiento horizontal
@@ -118,6 +190,7 @@ void Clever::update(int deltaTime)
         }
         bool justLanded = (wasInAir && onGround) || (wasClimbing && !isClimbing);
         if (justLanded) movingRight = (playerPos.x > pos.x);
+
         wasInAir = !onGround;
         onGround = false;
     }
@@ -136,6 +209,7 @@ void Clever::changeDirection() {
     if (movingRight) sprite->changeAnimation(MOVE_RIGHT);
     else sprite->changeAnimation(MOVE_LEFT);
 }
+
 
 void Clever::die()
 {
