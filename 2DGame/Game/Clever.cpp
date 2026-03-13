@@ -63,18 +63,27 @@ void Clever::render()
     if (visible) sprite->render();
 }
 
+bool Clever::centeredOn(const glm::vec4& bbox) const
+{
+    float centerX = pos.x + size.x * 0.5f;
+    float centerY = pos.y + size.y * 0.5f;
+    return centerX >= bbox.x && centerX <= bbox.x + bbox.z &&
+        centerY >= bbox.y && centerY <= bbox.y + bbox.w;
+}
+
+bool overlaps(const glm::vec4& a, const glm::vec4& b) {
+    return !(a.x + a.z < b.x || b.x + b.z < a.x || a.y + a.w < b.y || b.y + b.w < a.y);
+}
+
 // Función auxiliar para saber si puede subir por una escalera
 pair<Pipe*, int> Clever::getPipeEntryAt() const
 {
     glm::vec4 myBox = getBoundingBox();
-    for (Pipe* pipe : pipes) {
-        glm::vec4 b0 = pipe->getEndBoundingBox(0);
-        glm::vec4 b1 = pipe->getEndBoundingBox(1);
-        auto overlaps = [](const glm::vec4& a, const glm::vec4& b) {
-            return !(a.x + a.z < b.x || b.x + b.z < a.x || a.y + a.w < b.y || b.y + b.w < a.y);
-            };
-        if (overlaps(myBox, b0)) return { pipe, 0 };
-        if (overlaps(myBox, b1)) return { pipe, 1 };
+    for (Pipe* p : pipes) {
+        glm::vec4 b0 = p->getEndBoundingBox(0);
+        glm::vec4 b1 = p->getEndBoundingBox(1);
+        if (overlaps(myBox, b0) && centeredOn(b0)) return { p, 0 };
+        if (overlaps(myBox, b1) && centeredOn(b1)) return { p, 1 };
     }
     return { nullptr, -1 };
 }
@@ -132,7 +141,7 @@ void Clever::update(int deltaTime)
         if (playerBottomY < cleverBottomY) {   // Subir
             if (canClimbUp) {
                 pos.y -= speed;
-                isClimbing = true;
+                isClimbing = true;  
                 if (sprite->animation() != CLIMB) sprite->changeAnimation(CLIMB);
             }
             else if (canPipeUp && verticalCooldown <= 0) {
@@ -209,7 +218,6 @@ void Clever::changeDirection() {
     if (movingRight) sprite->changeAnimation(MOVE_RIGHT);
     else sprite->changeAnimation(MOVE_LEFT);
 }
-
 
 void Clever::die()
 {

@@ -24,6 +24,7 @@ public:
 	pair<Pipe*, int> getPipeEntryAt() const;
 	void setVisible(bool v) { visible = v; }
 	bool isVisible() const { return visible; }
+	bool centeredOn(const glm::vec4& bbox) const;
 
 private:
 	Player* playerTarget = nullptr;

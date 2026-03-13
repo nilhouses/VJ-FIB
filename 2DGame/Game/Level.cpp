@@ -737,11 +737,11 @@ void Level::checkCollisions()
         if (!e->isActive()) continue;
 
         glm::vec2 offset(2.f, 6.f);
-        if (e->getType() == Type::KEY || e->getType() == Type::LIFE || e->getType() == Type::SPEEDBOOST) {
+        if (e->getType() == Type::KEY || e->getType() == Type::LIFE || e->getType() == Type::SPEEDBOOST)
             offset = glm::vec2(8.f, 8.f);
-		} else if (e->getType() == Type::BARREL) {
+		else if (e->getType() == Type::BARREL)
             offset = glm::vec2(8.f, 4.f); // Ajustar la X en función de la anchura del sprite definitivo
-        } else if (e->getType() == Type::ENEMY) {
+        else if (e->getType() == Type::ENEMY) {
             // Custom BoundingBox Dummy
             Enemy* enemy = static_cast<Enemy*>(e);
             switch (enemy->getEnemyType()) {
@@ -752,9 +752,9 @@ void Level::checkCollisions()
                     break;
             }
         }
-		else if (e->getType() == Type::PLATFORM) offset = glm::vec2(0.f, 0.f);
-
-		if (e->getType() == Type::PIPE) { // Se maneja distinto porque una pipe tiene dos zonas de colisión
+		else if (e->getType() == Type::PLATFORM) 
+            offset = glm::vec2(0.f, 0.f);
+		else if (e->getType() == Type::PIPE) { // Se maneja distinto porque una pipe tiene dos zonas de colisión
             Pipe* pipe = static_cast<Pipe*>(e);
 
             glm::vec4 b0 = pipe->getEndBoundingBox(0);
