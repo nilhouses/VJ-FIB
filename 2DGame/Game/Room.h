@@ -20,6 +20,7 @@
 #include "Pipe.h"
 #include "Game.h"
 #include "Asset.h"
+#include "Tunnel.h"
 
 class Room {
 public:

@@ -20,6 +20,7 @@
     <ClInclude Include="Door.h" />
     <ClInclude Include="Dummy.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Enter.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Gun.h" />
@@ -43,10 +44,12 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TexturedQuad.h" />
     <ClInclude Include="TileMap.h" />
+    <ClInclude Include="Tunnel.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Barrel.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Enter.cpp" />
     <ClCompile Include="Gun.cpp" />
     <ClCompile Include="Life.cpp" />
     <ClCompile Include="Asset.cpp" />
@@ -80,6 +83,7 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TexturedQuad.cpp" />
     <ClCompile Include="TileMap.cpp" />
+    <ClCompile Include="Tunnel.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Barrel.cpp" />
   </ItemGroup>
