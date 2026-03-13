@@ -33,7 +33,7 @@ private:
 	void createRooms(); // Carga las habitaciones del nivel
 
 	void checkCollisions(); // Comprueba las colisiones entre el jugador y las entidades del nivel actual y actualiza el estado del juego en consecuencia
-	void handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2& offsetUsed); // Maneja la colisión entre el jugador y una entidad.
+	void handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2& offset, int end); // Maneja la colisión entre el jugador y una entidad.
 	void handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollided); // Maneja la colisión entre un enemigo y una entidad distinta de player
 	void handleBulletCollision(Bullet* b, Entity* e, glm::vec2& rangeCollided); // Maneja la colisión entre una bala y otra entidad
 	void handleBarrelCollision(Barrel* b, Entity* e, glm::vec2& rangeCollided); // Maneja la colisión entre un barril y otra entidad
@@ -42,11 +42,12 @@ private:
 	void loadMaps(vector<TileMap*>& maps, int totalMaps);		// Carga los mapas de tiles de cada habitación a través de un fichero de texto
 	void loadEntities();	// Carga las entidades del nivel a través de un fichero de texto
 	void loadAssets();		// Carga los elementos decorativos del nivel a través de un fichero de texto
-	Entity* createEntity(const string& type, int tileX, int tileY, int indexRoom, bool movingRight = false, int rangePixels = 100, int axis = 0, int dir = 1);
+	Entity* createEntity(const string& type, int tileX, int tileY, int indexRoom, bool movingRight = false, int rangePixels = 100, int axis = 0, int dir = 1, const vector<glm::ivec2>& segments = {});
 	// Crea una entidad del tipo dado en la posición dada (en tiles)
 	void createAsset(const string& spriteDir, glm::vec2& pos, glm::vec2& size, int indexRoom); // Crea un elemento decorativo en la posición dada (en tiles) y con el tamaño dado (en tiles
 
 private:
+	bool playerCenteredOn(const glm::vec4& bbox) const;
     ShaderProgram texProgram;	// El programa de shaders para renderizar el mapa y el jugador
     float currentTime;			// El tiempo actual del juego
 
@@ -64,6 +65,7 @@ private:
 	int state;
 	Door* interactedDoor = nullptr;
 	Entity* interactedEntity = nullptr;
+	Pipe* interactedPipe = nullptr;
 
 	Camera* camera;
 	glm::mat4 projection;

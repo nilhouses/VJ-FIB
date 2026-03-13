@@ -15,7 +15,8 @@ enum class Type {
 	LIFE,
 	SPEEDBOOST,
 	GUN,
-	PLATFORM
+	PLATFORM,
+	PIPE
 };
 
 class Entity
@@ -31,20 +32,21 @@ public:
 	virtual void update(int deltaTime) = 0;
 	
 	// La función de render es común para todas porque delega la lógica de renderizado al sprite, que es el mismo para todas las entidades. De esta forma, cada entidad solo tiene que implementar la función de update con su propia lógica.
-	void render();
+	virtual void render();
 
 	virtual void setPosition(const glm::vec2& pos);
 	glm::ivec2 getPosition() const { return pos; }
 
 	void setTileMap(TileMap* tileMap){map = tileMap;}
 	// Función para activar o desactivar la entidad. Si una entidad está desactivada, no se renderiza ni se actualiza, pero sigue existiendo en el juego (por ejemplo, un enemigo que ha sido derrotado pero que sigue existiendo en el mapa).
+	void activate() { active = true; }
 	void deactivate() { active = false; }
 	// Devuelve si está activo o no
 	bool isActive() const { return active; }
 	// Devuelve el tipo de la entidad
 	Type getType() const { return type; }
 	// Devuelve el bounding box de la entidad para detectar colisiones.
-	glm::vec4 getBoundingBox() const;
+	virtual glm::vec4 getBoundingBox() const;
 	// Devuelve el tamaño de la entidad
 	const glm::ivec2& getSize() const { return size; }
 

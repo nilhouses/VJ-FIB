@@ -17,6 +17,7 @@
 #include "SpeedBoost.h";
 #include "Gun.h"
 #include "Platform.h"
+#include "Pipe.h"
 #include "Game.h"
 #include "Asset.h"
 

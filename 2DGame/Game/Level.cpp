@@ -16,7 +16,7 @@
 #define HUD_HEIGHT 0
 
 
-enum LevelState { NORMAL, ENTERING_DOOR, EXITING_DOOR, DYING, PICKING_OBJECT };
+enum LevelState { NORMAL, ENTERING_DOOR, EXITING_DOOR, DYING, PICKING_OBJECT, ENTERING_PIPE};
 
 // Cooldowns entre interacciones
 float transitionTimer = 0.f;
@@ -71,7 +71,7 @@ void Level::initShaders()
     fShader.free();
 }
 
-Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, bool movingRight, int rangePixels, int axis, int dir)
+Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, bool movingRight, int rangePixels, int axis, int dir, const vector<glm::ivec2>& segments)
 {
     Entity* entity = nullptr;
 	TileMap* map = rooms[indexRoom]->getMap();
@@ -145,13 +145,18 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, b
         p->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera, rangePixels, axis, dir);
         entity = p;
     }
+    else if (type == "PIPE") {
+        Pipe* pipe = new Pipe();
+        pipe->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera, segments, map->getTileSize());
+        entity = pipe;
+	}
     // Común para todas las entidades
     if (entity != nullptr)
     {
-        entity->setPosition(glm::vec2(float(tx * map->getTileSize()), float(ty * map->getTileSize())));
+        if (type != "PIPE") entity->setPosition(glm::vec2(float(tx * map->getTileSize()), float(ty * map->getTileSize())));
 		entity->setRoom(indexRoom);
 		// Añado la entidad a la habitación correspondiente
-        if (type != "PLAYER") rooms[indexRoom]->addEntity(entity);
+        if (type != "PLAYER" ) rooms[indexRoom]->addEntity(entity);
     }
 
 	return entity;
@@ -176,6 +181,20 @@ void Level::loadEntities()
         for (int i = 0; i < count; ++i)
         {
             int indexRoom1, tileX1, tileY1;
+
+            if (type == "PIPE") {
+                int nSegments;
+				fin >> nSegments;
+                vector<glm::ivec2> segments;
+                for (int i = 0; i < nSegments; ++i)
+                {
+                    fin >> indexRoom1 >> tileX1 >> tileY1;
+                    segments.push_back(glm::ivec2(tileX1, tileY1));
+                }
+                createEntity(type, tileX1, tileY1, indexRoom1, false, 0, 0, 0, segments);
+                continue;
+            }
+
             fin >> indexRoom1 >> tileX1 >> tileY1;
 
 			if (type == "DOOR") {
@@ -208,7 +227,6 @@ void Level::loadEntities()
             }
             else 
                 createEntity(type, tileX1, tileY1, indexRoom1);
-            
         }
     }
 }
@@ -350,7 +368,7 @@ CollisionInfo Level::overlap(const glm::vec4& a, const glm::vec4& b, const glm::
 }
 
 
-void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2& offset)
+void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2& offset, int end = -1)
 {
     switch (e->getType())
     {
@@ -503,6 +521,19 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             player->blockInput(); // Bloquear input del jugador durante la transición
         }
         break;
+        }
+        case Type::PIPE:
+        {
+            if (state != NORMAL) break;
+            Pipe* pipe = static_cast<Pipe*>(e);
+            if (pipe->getEntryKey(end)) {
+                interactedPipe = pipe;
+                player->deactivate();
+                player->blockInput();
+                pipe->startTransit(end);
+                state = ENTERING_PIPE;
+            }
+            break;
         }
         case Type::ENEMY:
         {
@@ -678,6 +709,24 @@ void Level::checkCollisions()
         }
 		else if (e->getType() == Type::PLATFORM) offset = glm::vec2(0.f, 0.f);
 
+
+		if (e->getType() == Type::PIPE) { // Se maneja distinto porque tiene dos zonas de colisión distintas
+            Pipe* pipe = static_cast<Pipe*>(e);
+
+            glm::vec4 b0 = pipe->getEndBoundingBox(0);
+            glm::vec4 b1 = pipe->getEndBoundingBox(1);
+
+            CollisionInfo c0 = overlap(playerBox, b0, glm::vec2(0.f));
+            CollisionInfo c1 = overlap(playerBox, b1, glm::vec2(0.f));
+
+            if (c0.colliding && playerCenteredOn(b0))
+                handlePlayerCollision(e, c0.rangeColision, glm::vec2(0.f), 0);
+            else if (c1.colliding && playerCenteredOn(b1))
+                handlePlayerCollision(e, c1.rangeColision, glm::vec2(0.f), 1);
+
+            continue;
+        }
+
 		CollisionInfo collision = overlap(playerBox, e->getBoundingBox(), offset);
 
         if ((e->getType() != player->getType()) && collision.colliding)
@@ -805,6 +854,16 @@ void Level::update(int deltaTime)
         }
 
         break;
+    case ENTERING_PIPE:
+        if (interactedPipe->isTransitComplete()) {
+            glm::vec2 exitPos = interactedPipe->getExitPosition((int)player->getSize().y);
+            player->setPosition(exitPos);
+            player->activate();
+            player->unblockInput();
+            state = NORMAL;
+            interactedPipe = nullptr;
+        }
+        break;
     case DYING:
         transitionTimer = std::max(0.f, transitionTimer - deltaTime);
         if (transitionTimer == 0.f) {
@@ -857,6 +916,14 @@ void Level::render()
 	player->render();
 }
 
-
 bool Level::gameOver() { return (numLives == 0); }
 bool Level::getLevelCompleted() { return levelCompleted; } // Se deberá poner que se haya entrado en la última puerta, con todas las llaves recogidas
+
+bool Level::playerCenteredOn(const glm::vec4& bbox) const {
+    glm::vec2 pPos = player->getPosition();
+    glm::ivec2 pSize = player->getSize();
+    float centerX = pPos.x + pSize.x * 0.5f;
+    float centerY = pPos.y + pSize.y * 0.5f;
+
+    return centerX >= bbox.x && centerX <= bbox.x + bbox.z && centerY >= bbox.y && centerY <= bbox.y + bbox.w;
+}
