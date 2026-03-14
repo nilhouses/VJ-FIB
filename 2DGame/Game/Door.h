@@ -14,13 +14,15 @@ public:
 	~Door();
 
 public:
-	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c);
+	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, int sr);
 
 	void setToVisited();
 	bool getVisited() { return visited; }
 
 	void setIsFinalDoor(bool isFinal);
 	bool getIsFinalDoor() { return isFinalDoor; }
+
+	void openingAnim();
 
 private:
 	bool visited;

@@ -71,7 +71,7 @@ void Level::initShaders()
     fShader.free();
 }
 
-Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, bool movingRight, int rangePixels, int axis, int dir, const vector<glm::ivec2>& segments)
+Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, bool movingRight, int rangePixels, int axis, int dir, const vector<glm::ivec2>& segments, int sr)
 {
     Entity* entity = nullptr;
 	TileMap* map = rooms[indexRoom]->getMap();
@@ -100,7 +100,7 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, b
     else if (type == "DOOR")
     {
         Door* door = new Door();
-        door->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera);
+        door->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera, sr);
         if (indexRoom != 0)
             door->setToVisited();
         entity = door;
@@ -108,7 +108,7 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, b
     else if (type == "TUNNEL")
     {
         Tunnel* tunnel = new Tunnel();
-        tunnel->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera);
+        tunnel->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera, sr);
         entity = tunnel;
 	}
     else if (type == "DUMMY" || type == "CLEVER" || type == "SHOOTER")
@@ -204,11 +204,12 @@ void Level::loadEntities()
             fin >> indexRoom1 >> tileX1 >> tileY1;
 
 			if (type == "DOOR" || type == "TUNNEL") {
-                int indexRoom2, tileX2, tileY2;
-                fin >> indexRoom2 >> tileX2 >> tileY2;
+                int indexRoom2, tileX2, tileY2, spriteRow;
+                fin >> indexRoom2 >> tileX2 >> tileY2 >> spriteRow;
 
-                Entity* e1 = createEntity(type, tileX1, tileY1, indexRoom1);
-                Entity* e2 = createEntity(type, tileX2, tileY2, indexRoom2);
+                vector<glm::ivec2> segments;
+                Entity* e1 = createEntity(type, tileX1, tileY1, indexRoom1, false, 0, 0, 0, segments, spriteRow);
+                Entity* e2 = createEntity(type, tileX2, tileY2, indexRoom2, false, 0, 0, 0, segments, spriteRow);
 
 				Enter* enter1 = static_cast<Enter*>(e1);
 				Enter* enter2 = static_cast<Enter*>(e2);
@@ -225,6 +226,13 @@ void Level::loadEntities()
 				    bool isFinalDoor = (indexRoom1 == indexRoom2) && (tileX1 == tileX2) && (tileY1 == tileY2); // Si la puerta conecta consigo misma, es la puerta final
 				    d1->setIsFinalDoor(isFinalDoor);
 				    d2->setIsFinalDoor(isFinalDoor);
+                }
+                else {
+					Tunnel* t1 = static_cast<Tunnel*>(e1);
+					Tunnel* t2 = static_cast<Tunnel*>(e2);
+
+					t1->setDown();
+					t2->setUp();
                 }
             }
             else if (type == "DUMMY" || type == "CLEVER" || type == "SHOOTER") {

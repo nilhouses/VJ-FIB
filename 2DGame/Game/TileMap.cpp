@@ -318,15 +318,17 @@ TileType TileMap::getTileType(int tile) const
 // Devuelve si el bloque del índice x,y es suelo
 bool TileMap::isGround(int x, int y)
 {
-	int tile = map[y * mapSize.x + x];
-	return getTileType(tile) != TILE_EMPTY;
+	int tileBase = map[y * mapSize.x + x];
+	int tileFront = front[y * mapSize.x + x];
+	return getTileType(tileBase) != TILE_EMPTY || getTileType(tileFront) != TILE_EMPTY;
 }
 
 // Devuelve si el bloque del índice x,y es sólido
 bool TileMap::isSolid(int x, int y)
 {
-	int tile = map[y * mapSize.x + x];
-	return getTileType(tile) == TILE_SOLID;
+	int tileBase = map[y * mapSize.x + x];
+	int tileFront = front[y * mapSize.x + x];
+	return getTileType(tileBase) == TILE_SOLID || getTileType(tileFront) == TILE_SOLID;
 }
 
 // Devuelve si el bloque del índice x,y es una escalera

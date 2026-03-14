@@ -18,7 +18,7 @@ public:
 	~Enter();
 
 public:
-	virtual void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c) = 0;
+	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c);
 	void update(int deltaTime) override;
 
 	void setConnectedTo(Enter* e) { connectedTo = e; }

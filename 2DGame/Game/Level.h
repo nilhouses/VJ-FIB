@@ -42,7 +42,7 @@ private:
 	void loadMaps(vector<TileMap*>& maps, int totalMaps);		// Carga los mapas de tiles de cada habitación a través de un fichero de texto
 	void loadEntities();	// Carga las entidades del nivel a través de un fichero de texto
 	void loadAssets();		// Carga los elementos decorativos del nivel a través de un fichero de texto
-	Entity* createEntity(const string& type, int tileX, int tileY, int indexRoom, bool movingRight = false, int rangePixels = 100, int axis = 0, int dir = 1, const vector<glm::ivec2>& segments = {});
+	Entity* createEntity(const string& type, int tileX, int tileY, int indexRoom, bool movingRight = false, int rangePixels = 100, int axis = 0, int dir = 1, const vector<glm::ivec2>& segments = {}, int sr = -1);
 	// Crea una entidad del tipo dado en la posición dada (en tiles)
 	void createAsset(const string& spriteDir, glm::vec2& pos, glm::vec2& size, int indexRoom); // Crea un elemento decorativo en la posición dada (en tiles) y con el tamaño dado (en tiles
 

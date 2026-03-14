@@ -14,7 +14,10 @@ public:
 	~Tunnel();
 
 public:
-	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c);
+	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, int sr);
+
+	void setUp();
+	void setDown();
 
 private:
 

@@ -6,7 +6,7 @@
 
 enum DoorAnims
 {
-	CLOSED, OPENED, FINAL, NUM_ANIMS
+	CLOSED, OPENED, OPENING, NUM_ANIMS
 };
 
 Door::Door() : Enter(EnterType::DOOR) {}
@@ -17,10 +17,10 @@ Door::~Door()
 		delete sprite;
 }
 
-void Door::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c)
+void Door::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, int sr)
 {
 	// Inicializar los atributos de la Entity
-	Entity::init(tileMapPos, shaderProgram, "images/doors.png", glm::ivec2(32, 64), glm::vec2(0.33333f, 1.f), c);
+	Entity::init(tileMapPos, shaderProgram, "images/puertas.png", glm::ivec2(32, 64), glm::vec2(1.f / 4.f, 1.f / 12.f), c);
 
 	visited = false;
 
@@ -28,15 +28,31 @@ void Door::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Came
 	sprite->setNumberAnimations(NUM_ANIMS);
 
 	sprite->setAnimationSpeed(CLOSED, 1);
-	sprite->addKeyframe(CLOSED, glm::vec2(0.33333f, 1.f));
+	sprite->addKeyframe(CLOSED, glm::vec2(0.f, sr / 12.f));
 
-	sprite->setAnimationSpeed(OPENED, 1);
-	sprite->addKeyframe(OPENED, glm::vec2(0.f, 1.f));
+	if (sr < 4) {
+		sprite->setAnimationSpeed(OPENING, 4);
+		sprite->addKeyframe(OPENING, glm::vec2(0.f, sr / 12.f));
+		sprite->addKeyframe(OPENING, glm::vec2(0.25f, sr / 12.f));
+		sprite->addKeyframe(OPENING, glm::vec2(0.5f, sr / 12.f));
+		sprite->addKeyframe(OPENING, glm::vec2(0.75f, sr / 12.f));
 
-	sprite->setAnimationSpeed(FINAL, 1);
-	sprite->addKeyframe(FINAL, glm::vec2(0.66666f, 1.f));
+		sprite->setAnimationSpeed(OPENED, 1);
+		sprite->addKeyframe(OPENED, glm::vec2(0.75f, sr / 12.f));
+	}
+	else {
+		sprite->setAnimationSpeed(OPENING, 1);
+		sprite->addKeyframe(OPENING, glm::vec2(0.f, sr / 12.f));
+
+		sprite->setAnimationSpeed(OPENED, 1);
+		sprite->addKeyframe(OPENED, glm::vec2(0.25f, sr / 12.f));
+	}
 
 	sprite->changeAnimation(CLOSED);
+}
+
+void Door::openingAnim() {
+		sprite->changeAnimation(OPENING);
 }
 
 void Door::setToVisited()
@@ -48,5 +64,4 @@ void Door::setToVisited()
 void Door::setIsFinalDoor(bool isFinal)
 {
 	this->isFinalDoor = isFinal;
-	if (isFinal) sprite->changeAnimation(FINAL);
 }
