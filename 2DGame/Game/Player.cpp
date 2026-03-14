@@ -117,7 +117,7 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	sprite->addKeyframe(CLIMB, glm::vec2(2.f / 16.f, 4.f / 12.f));
 	sprite->addKeyframe(CLIMB, glm::vec2(3.f / 16.f, 4.f / 12.f));
 
-	sprite->setAnimationSpeed(OPEN_AND_ENTER, 8);
+	sprite->setAnimationSpeed(OPEN_AND_ENTER, 17);
 	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(5.f / 16.f, 4.f / 12.f));
 	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(6.f / 16.f, 4.f / 12.f));
 	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(7.f / 16.f, 4.f / 12.f));
@@ -142,7 +142,7 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	sprite->addKeyframe(PICK_ITEM, glm::vec2(9.f / 16.f, 5.f / 12.f));
 	sprite->addKeyframe(PICK_ITEM, glm::vec2(10.f / 16.f, 5.f / 12.f));
 
-	sprite->setAnimationSpeed(ENTER, 8);
+	sprite->setAnimationSpeed(ENTER, 9);
 	sprite->addKeyframe(ENTER, glm::vec2(0.f, 6.f / 12.f));
 	sprite->addKeyframe(ENTER, glm::vec2(1.f / 16.f, 6.f / 12.f));
 	sprite->addKeyframe(ENTER, glm::vec2(2.f / 16.f, 6.f / 12.f));
@@ -153,7 +153,7 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	sprite->addKeyframe(ENTER, glm::vec2(7.f / 16.f, 6.f / 12.f));
 	sprite->addKeyframe(ENTER, glm::vec2(8.f / 16.f, 6.f / 12.f));
 
-	sprite->setAnimationSpeed(TUNNEL_ENTER_BOTTOM, 8);
+	sprite->setAnimationSpeed(TUNNEL_ENTER_BOTTOM, 16);
 	sprite->addKeyframe(TUNNEL_ENTER_BOTTOM, glm::vec2(0.f, 7.f / 12.f));
 	sprite->addKeyframe(TUNNEL_ENTER_BOTTOM, glm::vec2(1.f / 16.f, 7.f / 12.f));
 	sprite->addKeyframe(TUNNEL_ENTER_BOTTOM, glm::vec2(2.f / 16.f, 7.f / 12.f));
@@ -171,7 +171,7 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	sprite->addKeyframe(TUNNEL_ENTER_BOTTOM, glm::vec2(14.f / 16.f, 7.f / 12.f));
 	sprite->addKeyframe(TUNNEL_ENTER_BOTTOM, glm::vec2(15.f / 16.f, 7.f / 12.f));
 
-	sprite->setAnimationSpeed(TUNNEL_ENTER_TOP, 8);
+	sprite->setAnimationSpeed(TUNNEL_ENTER_TOP, 9);
 	sprite->addKeyframe(TUNNEL_ENTER_TOP, glm::vec2(0.f, 8.f / 12.f));
 	sprite->addKeyframe(TUNNEL_ENTER_TOP, glm::vec2(1.f / 16.f, 8.f / 12.f));
 	sprite->addKeyframe(TUNNEL_ENTER_TOP, glm::vec2(2.f / 16.f, 8.f / 12.f));
@@ -182,31 +182,31 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	sprite->addKeyframe(TUNNEL_ENTER_TOP, glm::vec2(7.f / 16.f, 8.f / 12.f));
 	sprite->addKeyframe(TUNNEL_ENTER_TOP, glm::vec2(8.f / 16.f, 8.f / 12.f));
 
-	sprite->setAnimationSpeed(TUNNEL_LEAVE_TOP, 8);
-	sprite->addKeyframe(TUNNEL_LEAVE_TOP, glm::vec2(0.f, 9.f / 12.f));
-	sprite->addKeyframe(TUNNEL_LEAVE_TOP, glm::vec2(1.f / 16.f, 9.f / 12.f));
-	sprite->addKeyframe(TUNNEL_LEAVE_TOP, glm::vec2(2.f / 16.f, 9.f / 12.f));
-	sprite->addKeyframe(TUNNEL_LEAVE_TOP, glm::vec2(3.f / 16.f, 9.f / 12.f));
-	sprite->addKeyframe(TUNNEL_LEAVE_TOP, glm::vec2(4.f / 16.f, 9.f / 12.f));
-	sprite->addKeyframe(TUNNEL_LEAVE_TOP, glm::vec2(5.f / 16.f, 9.f / 12.f));
-	sprite->addKeyframe(TUNNEL_LEAVE_TOP, glm::vec2(6.f / 16.f, 9.f / 12.f));
-	sprite->addKeyframe(TUNNEL_LEAVE_TOP, glm::vec2(7.f / 16.f, 9.f / 12.f));
-
 	sprite->setAnimationSpeed(TUNNEL_LEAVE_BOTTOM, 8);
-	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(0.f, 7.f / 12.f));
-	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(1.f / 16.f, 10.f / 12.f));
-	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(2.f / 16.f, 10.f / 12.f));
-	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(3.f / 16.f, 10.f / 12.f));
-	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(4.f / 16.f, 10.f / 12.f));
-	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(5.f / 16.f, 10.f / 12.f));
-	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(6.f / 16.f, 10.f / 12.f));
-	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(7.f / 16.f, 10.f / 12.f));
-	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(8.f / 16.f, 10.f / 12.f));
-	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(9.f / 16.f, 10.f / 12.f));
-	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(10.f / 16.f, 10.f / 12.f));
-	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(11.f / 16.f, 10.f / 12.f));
-	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(12.f / 16.f, 10.f / 12.f));
-	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(13.f / 16.f, 10.f / 12.f));
+	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(0.f, 9.f / 12.f));
+	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(1.f / 16.f, 9.f / 12.f));
+	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(2.f / 16.f, 9.f / 12.f));
+	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(3.f / 16.f, 9.f / 12.f));
+	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(4.f / 16.f, 9.f / 12.f));
+	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(5.f / 16.f, 9.f / 12.f));
+	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(6.f / 16.f, 9.f / 12.f));
+	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(7.f / 16.f, 9.f / 12.f));
+
+	sprite->setAnimationSpeed(TUNNEL_LEAVE_TOP, 14);
+	sprite->addKeyframe(TUNNEL_LEAVE_TOP, glm::vec2(0.f, 10.f / 12.f));
+	sprite->addKeyframe(TUNNEL_LEAVE_TOP, glm::vec2(1.f / 16.f, 10.f / 12.f));
+	sprite->addKeyframe(TUNNEL_LEAVE_TOP, glm::vec2(2.f / 16.f, 10.f / 12.f));
+	sprite->addKeyframe(TUNNEL_LEAVE_TOP, glm::vec2(3.f / 16.f, 10.f / 12.f));
+	sprite->addKeyframe(TUNNEL_LEAVE_TOP, glm::vec2(4.f / 16.f, 10.f / 12.f));
+	sprite->addKeyframe(TUNNEL_LEAVE_TOP, glm::vec2(5.f / 16.f, 10.f / 12.f));
+	sprite->addKeyframe(TUNNEL_LEAVE_TOP, glm::vec2(6.f / 16.f, 10.f / 12.f));
+	sprite->addKeyframe(TUNNEL_LEAVE_TOP, glm::vec2(7.f / 16.f, 10.f / 12.f));
+	sprite->addKeyframe(TUNNEL_LEAVE_TOP, glm::vec2(8.f / 16.f, 10.f / 12.f));
+	sprite->addKeyframe(TUNNEL_LEAVE_TOP, glm::vec2(9.f / 16.f, 10.f / 12.f));
+	sprite->addKeyframe(TUNNEL_LEAVE_TOP, glm::vec2(10.f / 16.f, 10.f / 12.f));
+	sprite->addKeyframe(TUNNEL_LEAVE_TOP, glm::vec2(11.f / 16.f, 10.f / 12.f));
+	sprite->addKeyframe(TUNNEL_LEAVE_TOP, glm::vec2(12.f / 16.f, 10.f / 12.f));
+	sprite->addKeyframe(TUNNEL_LEAVE_TOP, glm::vec2(13.f / 16.f, 10.f / 12.f));
 
 	startAnimTimer = 750.0f;
 	sprite->changeAnimation(START);
@@ -268,9 +268,9 @@ void Player::update(int deltaTime)
 		// Con la flecha hacia arriba el personaje subirá si existe una escalera en esa posición
 		if (Game::instance().getKey(GLFW_KEY_UP)) {
 			if (map->collisionLadderUp(pos, getSize())) {
+				center();
 				if (sprite->animation() != CLIMB)
 					sprite->changeAnimation(CLIMB);
-				
 				sprite->setPaused(false);
 				pos.y -= (int)(SPEED * speedMultiplier);
 				bJumping = false;
@@ -281,6 +281,7 @@ void Player::update(int deltaTime)
 		// Con la flecha hacia abajo el personaje bajará si existe una escalera en esa posición
 		else if (Game::instance().getKey(GLFW_KEY_DOWN)) {
 			if (map->collisionLadderDown(pos, getSize())) {
+				center();
 				if (sprite->animation() != CLIMB)
 					sprite->changeAnimation(CLIMB);
 
@@ -547,4 +548,8 @@ void Player::exitPipe(bool exitingUp) {
 		blockInput();
 	}
 	// Sino ya tiene animación de caer
+}
+
+void Player::center() {
+	pos.x = ((pos.x + map->getBlockSize() / 2) / map->getBlockSize()) * map->getBlockSize();
 }

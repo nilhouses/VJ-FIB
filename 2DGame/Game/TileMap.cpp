@@ -320,7 +320,8 @@ bool TileMap::isGround(int x, int y)
 {
 	int tileBase = map[y * mapSize.x + x];
 	int tileFront = front[y * mapSize.x + x];
-	return getTileType(tileBase) != TILE_EMPTY || getTileType(tileFront) != TILE_EMPTY;
+	return (getTileType(tileBase) != TILE_EMPTY && getTileType(tileBase) != TILE_LADDER) ||
+		(getTileType(tileFront) != TILE_EMPTY && getTileType(tileFront) != TILE_LADDER);
 }
 
 // Devuelve si el bloque del índice x,y es sólido
@@ -334,10 +335,8 @@ bool TileMap::isSolid(int x, int y)
 // Devuelve si el bloque del índice x,y es una escalera
 bool TileMap::isLadder(int x, int y) {
 	int tile = front[y * mapSize.x + x];
-	return getTileType(tile) == TILE_LADDER;
+	return getTileType(tile) == TILE_LADDER || getTileType(tile) == TILE_LADDER_GROUND;
 }
-
-
 
 
 void TileMap::print() const

@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include "Door.h"
 #include "Game.h"
+#include "SoundManager.h"
 
 enum DoorAnims
 {
@@ -29,7 +30,7 @@ void Door::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Came
 
 	sprite->setAnimationSpeed(CLOSED, 1);
 	sprite->addKeyframe(CLOSED, glm::vec2(0.f, sr / 12.f));
-
+	
 	if (sr < 4) {
 		sprite->setAnimationSpeed(OPENING, 4);
 		sprite->addKeyframe(OPENING, glm::vec2(0.f, sr / 12.f));
@@ -41,18 +42,25 @@ void Door::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Came
 		sprite->addKeyframe(OPENED, glm::vec2(0.75f, sr / 12.f));
 	}
 	else {
-		sprite->setAnimationSpeed(OPENING, 1);
+		sprite->setAnimationSpeed(OPENING, 4);
 		sprite->addKeyframe(OPENING, glm::vec2(0.f, sr / 12.f));
 
 		sprite->setAnimationSpeed(OPENED, 1);
 		sprite->addKeyframe(OPENED, glm::vec2(0.25f, sr / 12.f));
 	}
-
+	spriteRow = sr;
 	sprite->changeAnimation(CLOSED);
 }
 
 void Door::openingAnim() {
-		sprite->changeAnimation(OPENING);
+	sprite->changeAnimation(OPENING);
+	
+	// Si es una puerta metálica
+	if (spriteRow == 1)
+		SoundManager::instance().playSound("clothDoorOpen", 0.3f);
+	else
+		SoundManager::instance().playSound("doorOpen", 0.3f);
+
 }
 
 void Door::setToVisited()

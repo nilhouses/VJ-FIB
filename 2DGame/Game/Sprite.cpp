@@ -95,6 +95,7 @@ void Sprite::addKeyframe(int animId, const glm::vec2 &displacement)
 
 void Sprite::changeAnimation(int animId)
 {
+
 	if(animId < int(animations.size()))
 	{
 		setPaused(false);

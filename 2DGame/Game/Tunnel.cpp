@@ -34,11 +34,13 @@ void Tunnel::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 
 void Tunnel::setUp()
 {
+	up = true;
 	sprite->changeAnimation(UP);
 }
 
 void Tunnel::setDown()
 {
+	up = false;
 	sprite->changeAnimation(DOWN);
 }
 

@@ -38,7 +38,7 @@ public:
 	
 	void setPosition(const glm::vec2 &pos);
 	void setPaused(bool paused) { isPaused = paused; }
-
+	
 private:
 	Texture *texture;
 	ShaderProgram *shaderProgram;
@@ -52,7 +52,6 @@ private:
 	vector<AnimKeyframes> animations;
 	Camera* camera;
 	bool isPaused = false;
-
 };
 
 

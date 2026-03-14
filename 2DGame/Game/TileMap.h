@@ -12,6 +12,7 @@
 enum TileType {
 	TILE_EMPTY,
 	TILE_GROUND,
+	TILE_LADDER_GROUND,
 	TILE_LADDER,
 	TILE_SOLID
 };
@@ -34,6 +35,7 @@ public:
 	void free();
 
 	int getTileSize() const { return tileSize; }
+	int getBlockSize() const { return blockSize; }
 	glm::ivec2 getMapSize() const { return mapSize; }
 
 	// Devuelve si el bloque que se encuentra en la posición dada es sólido
@@ -109,7 +111,7 @@ private:
 		{ 9, TILE_EMPTY },
 		{ 10, TILE_EMPTY },
 		{ 11, TILE_EMPTY },
-		{ 12, TILE_LADDER },
+		{ 12, TILE_LADDER_GROUND },
 		{ 13, TILE_GROUND },
 		{ 14, TILE_GROUND },
 		{ 15, TILE_GROUND },
@@ -172,7 +174,7 @@ private:
 		{ 68, TILE_SOLID },
 		{ 69, TILE_SOLID },
 		{ 70, TILE_SOLID },
-		{ 71, TILE_LADDER },
+		{ 71, TILE_LADDER_GROUND },
 		{ 72, TILE_EMPTY },
 		{ 73, TILE_EMPTY },
 		{ 74, TILE_EMPTY },

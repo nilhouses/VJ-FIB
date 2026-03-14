@@ -15,7 +15,6 @@ public:
 
 public:
 	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, int sr);
-
 	void setToVisited();
 	bool getVisited() { return visited; }
 
@@ -27,6 +26,7 @@ public:
 private:
 	bool visited;
 	bool isFinalDoor;
+	int spriteRow;
 };
 
 

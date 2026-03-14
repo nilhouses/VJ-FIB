@@ -1,4 +1,0 @@
-ALL_KEYS
-8
-NUM_ROOMS
-3

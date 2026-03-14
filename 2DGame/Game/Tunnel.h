@@ -18,9 +18,10 @@ public:
 
 	void setUp();
 	void setDown();
+	bool getUp() const { return up; }
 
 private:
-
+	bool up;
 };
 
 

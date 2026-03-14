@@ -37,6 +37,7 @@ public:
 	void shoot();
 	void setRoom(Room* room) { currentRoom = room; }
 	void exitPipe(bool exitingUp);
+	void center();
 
 private:
 	bool bJumping;						// Indica si el jugador está saltando o no

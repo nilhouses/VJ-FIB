@@ -525,10 +525,10 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
         case Type::ENTER:
         {
             int centerX = (int)(player->getPosition().x + 16.0f);
-            if (Game::instance().getKey(GLFW_KEY_UP) && state == NORMAL && rangeCollided.x > 20) {
+            if (Game::instance().getKey(GLFW_KEY_UP) && state == NORMAL && rangeCollided.x > 24) {
                 
                 Enter* enter = static_cast<Door*>(e);
-
+                player->center();
                 // Según el tipo de entrada
                 switch (enter->getEnterType())
                 {
@@ -541,23 +541,29 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                         if (door->getIsFinalDoor()) {
                             if (collectedKeys < allKeys) {
                                 cout << "You need to collect all keys to enter the final door!" << endl;
+                                // SONIDO DE BLOQUEO [TODO LEVEL]
                                 return;
                             }
                         }
 
                         // Cambiar estado visual
-                        door->setToVisited();
-                        player->setAnimation("ENTER");
-
+                        if (!door->getVisited()) {
+                            // SONIDO de abrir puerta
+                            door->openingAnim();
+							player->setAnimation("OPEN_AND_ENTER");
+                        }
+                        else player->setAnimation("ENTER"); 
                         break;
                     }
                     case EnterType::TUNNEL: // Si es un túnel la animación del jugador es ENTER_TUNNEL
                     {
                         cout << "Interacting with tunnel" << endl;
+                        
+                        Tunnel* tunnel= static_cast<Tunnel*>(enter);
+                        
+                        if (tunnel->getUp()) player->setAnimation("TUNNEL_ENTER_TOP");
+                        else player->setAnimation("TUNNEL_ENTER_BOTTOM");
 
-						// Cambiar estado visual
-						player->setAnimation("ENTER_TUNNEL");   // TODO
-						
                         break;
                     }
                     default:
@@ -570,7 +576,6 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                 interactedEnter = enter;
                 rooms[currentRoom]->setTransitioning(true);
                 player->blockInput(); // Bloquear input del jugador durante la transición
-                
             }
             break;
         }
@@ -880,6 +885,7 @@ void Level::update(int deltaTime)
 			// Si se ha entrado por la puerta final se completa el nivel
             if (interactedEnter->getEnterType() == EnterType::DOOR) {
                 Door* interactedDoor = static_cast<Door*>(interactedEnter);
+				interactedDoor->setToVisited();
                 if (collectedKeys >= allKeys && interactedDoor->getIsFinalDoor()) {
                     levelCompleted = true;
                     break;
@@ -903,8 +909,12 @@ void Level::update(int deltaTime)
                     (player->hasBullets()) ? player->setAnimation("WEAPON_IDLE") : player->setAnimation("IDLE");
                     break;
                 case EnterType::TUNNEL:
-                    player->setAnimation("EXIT_TUNNEL");
+                {
+					Tunnel* tunnel = static_cast<Tunnel*>(interactedEnter);
+                    if (tunnel->getUp()) player->setAnimation("TUNNEL_LEAVE_TOP");
+					else player->setAnimation("TUNNEL_LEAVE_BOTTOM");
                     break;
+                }
                 default:
                     break;
             }
@@ -921,8 +931,7 @@ void Level::update(int deltaTime)
 
         if (transitionTimer == 0.f) {
             if (player->getCurrentAnimationName() != "IDLE" && player->getCurrentAnimationName() != "WEAPON_IDLE")
-                (player->hasBullets()) ? player->setAnimation("IDLE") : player->setAnimation("WEAPON_IDLE");
-
+                (player->hasBullets()) ? player->setAnimation("WEAPON_IDLE") : player->setAnimation("IDLE");
             player->unblockInput();
             rooms[currentRoom]->setTransitioning(false);
             state = NORMAL;

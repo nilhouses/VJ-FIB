@@ -15,5 +15,5 @@ Enter::~Enter()
 
 void Enter::update(int deltaTime)
 {
-
+	sprite->update(deltaTime);
 }

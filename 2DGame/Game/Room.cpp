@@ -50,10 +50,11 @@ void Room::init()
 void Room::update(int deltaTime)
 {
     // Solo actualizo la animación del jugador durante la transición y se mantiene bloqueada su entrada
-    if (!transitioning) {
-        // Actualizar entidades
-        for (size_t i = 0; i < entities.size(); ++i)
-        {
+    
+    // Actualizar entidades
+    for (size_t i = 0; i < entities.size(); ++i)
+    {
+        if (!transitioning || entities[i]->getType() == Type::ENTER) {
             if (entities[i]->isActive())
                 entities[i]->update(deltaTime);
         }
