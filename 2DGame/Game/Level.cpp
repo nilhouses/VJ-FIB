@@ -485,7 +485,8 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                     if (Game::instance().getKey(GLFW_KEY_RIGHT)) player->handlePush(1, b->tryPush(1, 1.0f));
                     else {
                        // Hay contacto pero no se está empujando
-                       if (player->getCurrentAnimationName() == "PUSH_RIGHT") player->setAnimation("IDLE");
+                        if (player->getCurrentAnimationName() == "PUSH_RIGHT")
+                            (player->hasBullets()) ? player->setAnimation("WEAPON_IDLE") : player->setAnimation("IDLE");
                     }
                 }
                 else {
@@ -494,7 +495,8 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                     if (Game::instance().getKey(GLFW_KEY_LEFT)) player->handlePush(-1, b->tryPush(-1, 1.0f));
                     else {
                         // Hay contacto pero no se está empujando
-                        if (player->getCurrentAnimationName() == "PUSH_LEFT") player->setAnimation("IDLE");
+                        if (player->getCurrentAnimationName() == "PUSH_LEFT")
+                            (player->hasBullets()) ? player->setAnimation("WEAPON_IDLE") : player->setAnimation("IDLE");
                     }
                 }
             }
@@ -520,7 +522,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             }
             break;
         }
-case Type::ENTER:
+        case Type::ENTER:
         {
             int centerX = (int)(player->getPosition().x + 16.0f);
             if (Game::instance().getKey(GLFW_KEY_UP) && state == NORMAL && rangeCollided.x > 20) {
@@ -898,7 +900,7 @@ void Level::update(int deltaTime)
 			switch (interactedEnter->getEnterType())
             {
                 case EnterType::DOOR:
-                    player->setAnimation("IDLE");
+                    (player->hasBullets()) ? player->setAnimation("WEAPON_IDLE") : player->setAnimation("IDLE");
                     break;
                 case EnterType::TUNNEL:
                     player->setAnimation("EXIT_TUNNEL");
@@ -918,7 +920,9 @@ void Level::update(int deltaTime)
         transitionTimer = std::max(0.f, transitionTimer - deltaTime);
 
         if (transitionTimer == 0.f) {
-            player->setAnimation("IDLE");
+            if (player->getCurrentAnimationName() != "IDLE" && player->getCurrentAnimationName() != "WEAPON_IDLE")
+                (player->hasBullets()) ? player->setAnimation("IDLE") : player->setAnimation("WEAPON_IDLE");
+
             player->unblockInput();
             rooms[currentRoom]->setTransitioning(false);
             state = NORMAL;
@@ -932,6 +936,7 @@ void Level::update(int deltaTime)
             player->activate();
             player->unblockInput();
             state = NORMAL;
+            player->exitPipe(interactedPipe->isExitingUp());
             interactedPipe = nullptr;
         }
         break;

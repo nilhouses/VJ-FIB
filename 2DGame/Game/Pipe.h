@@ -25,6 +25,10 @@ public:
 
     void startTransit(int entryEnd);
     bool isTransitComplete() const { return transitComplete; }
+    bool isExitingUp() const {
+        int exitEnd = (entryEnd == 0) ? 1 : 0;
+        return getEndDirection(exitEnd).y > 0;
+    }
     bool getEntryKey(int end) const;
     glm::vec2 getExitPosition(int playerHeight) const;              // usa entryEnd
     glm::vec2 getExitPosition(int playerHeight, int fromEnd) const; // usa fromEnd

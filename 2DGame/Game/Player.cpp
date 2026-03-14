@@ -96,14 +96,14 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	sprite->addKeyframe(PUSH_RIGHT, glm::vec2(10.f / 16.f, 2.f / 12.f));
 	sprite->addKeyframe(PUSH_RIGHT, glm::vec2(11.f / 16.f, 2.f / 12.f));
 
-	sprite->setAnimationSpeed(DIE, 8);
+	sprite->setAnimationSpeed(DIE, 4);
 	sprite->addKeyframe(DIE, glm::vec2(0.f, 3.f / 12.f));
 	sprite->addKeyframe(DIE, glm::vec2(1.f / 16.f, 3.f / 12.f));
 	sprite->addKeyframe(DIE, glm::vec2(2.f / 16.f, 3.f / 12.f));
 	sprite->addKeyframe(DIE, glm::vec2(3.f / 16.f, 3.f / 12.f));
 
 	sprite->setAnimationSpeed(START, 8);
-	sprite->addKeyframe(START, glm::vec2(5.f, 3.f / 12.f));
+	sprite->addKeyframe(START, glm::vec2(5.f / 16.f, 3.f / 12.f));
 	sprite->addKeyframe(START, glm::vec2(6.f / 16.f, 3.f / 12.f));
 	sprite->addKeyframe(START, glm::vec2(7.f / 16.f, 3.f / 12.f));
 	sprite->addKeyframe(START, glm::vec2(8.f / 16.f, 3.f / 12.f));
@@ -208,7 +208,9 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(12.f / 16.f, 10.f / 12.f));
 	sprite->addKeyframe(TUNNEL_LEAVE_BOTTOM, glm::vec2(13.f / 16.f, 10.f / 12.f));
 
-	sprite->changeAnimation(IDLE);
+	startAnimTimer = 750.0f;
+	sprite->changeAnimation(START);
+	blockInput();
 }
 
 
@@ -217,12 +219,17 @@ void Player::update(int deltaTime)
 {
 	sprite->update(deltaTime);
 
+	if (startAnimTimer > 0) {
+		startAnimTimer -= deltaTime;
+		if (startAnimTimer <= 0) unblockInput();
+		return;
+	}
 	// Animación de recoger un item no permite hacer nada más
 	if (sprite->animation() == PICK_ITEM) {
 		itemPickTimer -= deltaTime;
 		if (itemPickTimer <= 0) {
 			unblockInput();
-			sprite->changeAnimation(IDLE);
+			(numBullets > 0) ? sprite->changeAnimation(WEAPON_IDLE) : sprite->changeAnimation(IDLE);
 		}
 	}
 
@@ -242,11 +249,9 @@ void Player::update(int deltaTime)
 		if (shootAnimTimer <= 0) {
 			isShooting = false;
 			unblockInput();
-			sprite->changeAnimation(IDLE);
+			(numBullets > 0) ? sprite->changeAnimation(WEAPON_IDLE) : sprite->changeAnimation(IDLE);
 		}
 	}
-
-	
 
 	bool inputDetected = true;
 	
@@ -270,7 +275,8 @@ void Player::update(int deltaTime)
 				pos.y -= (int)(SPEED * speedMultiplier);
 				bJumping = false;
 			}
-			else if (sprite->animation() != IDLE) sprite->changeAnimation(IDLE);
+			else if (sprite->animation() != IDLE && sprite->animation() != WEAPON_IDLE)
+				(numBullets > 0) ? sprite->changeAnimation(WEAPON_IDLE) : sprite->changeAnimation(IDLE);
 		}
 		// Con la flecha hacia abajo el personaje bajará si existe una escalera en esa posición
 		else if (Game::instance().getKey(GLFW_KEY_DOWN)) {
@@ -282,7 +288,8 @@ void Player::update(int deltaTime)
 				pos.y += (int)(SPEED * speedMultiplier);
 				bJumping = false;
 			}
-			else if (sprite->animation() != IDLE) sprite->changeAnimation(IDLE);
+			else if (sprite->animation() != IDLE && sprite->animation() != WEAPON_IDLE)
+				(numBullets > 0) ? sprite->changeAnimation(WEAPON_IDLE) : sprite->changeAnimation(IDLE);
 		}
 		// Si la flecha izquierda está pulsada
 		else if (Game::instance().getKey(GLFW_KEY_LEFT))
@@ -320,8 +327,8 @@ void Player::update(int deltaTime)
 		if (!inputDetected) {
 			if(sprite->animation() == CLIMB)
 				sprite->setPaused(true);
-			else if (sprite->animation() != IDLE)
-				sprite->changeAnimation(IDLE);
+			else if (sprite->animation() != IDLE && sprite->animation() != WEAPON_IDLE)
+				(numBullets > 0) ? sprite->changeAnimation(WEAPON_IDLE) : sprite->changeAnimation(IDLE);
 		}
 
 		// Si está saltando
@@ -528,6 +535,16 @@ void Player::shoot()
 	shootAnimTimer = 300;
 	isShooting = true;
 	blockInput();
+
 	// [TODO] añadir sprite disparo 
 	// sprite->changeAnimation(facingRight ? SHOOT_RIGHT : SHOOT_LEFT);
+}
+
+void Player::exitPipe(bool exitingUp) {
+	if (exitingUp) {
+		startAnimTimer = 750.0f;
+		sprite->changeAnimation(START);
+		blockInput();
+	}
+	// Sino ya tiene animación de caer
 }

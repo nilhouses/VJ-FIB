@@ -36,6 +36,7 @@ public:
 	bool hasBullets() { return numBullets > 0; }
 	void shoot();
 	void setRoom(Room* room) { currentRoom = room; }
+	void exitPipe(bool exitingUp);
 
 private:
 	bool bJumping;						// Indica si el jugador está saltando o no
@@ -56,6 +57,7 @@ private:
 	Room* currentRoom = nullptr;
 	ShaderProgram* shaderProgram = nullptr;
 	Camera* cameraPtr = nullptr;
+	float startAnimTimer;
 };
 
 

@@ -132,7 +132,7 @@ void Clever::update(int deltaTime)
     if (foundPipe != nullptr) {
         int exitEnd = (pipeEnd == 0) ? 1 : 0;
         glm::vec2 exitPos = foundPipe->getExitPosition(size.y, pipeEnd);
-        float currentY = pos.y + size.y;
+        float currentY = (float)(pos.y + size.y);
         float exitY = exitPos.y + size.y;
         canPipeUp = (exitY < currentY);
         canPipeDown = (exitY > currentY);
