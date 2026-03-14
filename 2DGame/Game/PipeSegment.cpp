@@ -1,7 +1,6 @@
 #include "PipeSegment.h"
 
-void PipeSegment::init(Sprite* s, const glm::vec2& idleTexCoords,
-    const glm::vec2& busyTexCoords, const glm::vec2& tilePos)
+void PipeSegment::init(Sprite* s, const glm::vec2& idleTexCoords, const glm::vec2& busyTexCoords, const glm::vec2& tilePos)
 {
     sprite = s;
     this->tilePos = tilePos;

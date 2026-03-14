@@ -825,9 +825,13 @@ void Level::checkCollisions()
     for (Enemy* enemy : enemies)
     {
         if (!enemy->isActive()) continue;
-
         // Ningún enemigo tiene colisiones si se está muriendo
         if (enemy->isDying()) continue;
+		// Al entrar al tubo, el Clever se vuelve invisible y no tiene colisiones
+        if (enemy->getEnemyType() == EnemyType::CLEVER) {
+            Clever* clever = static_cast<Clever*>(enemy);
+            if (!clever->isVisible()) continue;
+        }
 
         auto enemyBox = enemy->getBoundingBox();
 

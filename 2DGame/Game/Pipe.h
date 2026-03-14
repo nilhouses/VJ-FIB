@@ -25,8 +25,9 @@ public:
 
     void startTransit(int entryEnd);
     bool isTransitComplete() const { return transitComplete; }
-    glm::vec2 getExitPosition(int playerHeight = 64) const;
     bool getEntryKey(int end) const;
+    glm::vec2 getExitPosition(int playerHeight) const;              // usa entryEnd
+    glm::vec2 getExitPosition(int playerHeight, int fromEnd) const; // usa fromEnd
 
 private:
     glm::vec2 endTexCoords(const glm::ivec2& dirToAdjacent) const;

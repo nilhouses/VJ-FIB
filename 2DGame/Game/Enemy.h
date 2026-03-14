@@ -45,7 +45,6 @@ protected:
 	int fallStep = 6;                                   // Px por ca�da (Por defecto 6)
 	int deathDuration = 500;                            // Animaci�n muerte en ms (Por defecto 500ms)
     bool movingRight;                                   // Para controlar la direcci�n del movimiento (true = right, false = left)
-    glm::ivec2 size = glm::ivec2(32, 32);               // Tendr�n todos (32, 64?)
     bool onGround = false;
 };
 

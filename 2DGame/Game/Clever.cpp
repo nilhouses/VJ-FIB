@@ -25,7 +25,7 @@ Clever::~Clever()
 void Clever::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, bool movingRight)
 {
     // Inicializar los atributos de la Entity
-    Entity::init(tileMapPos, shaderProgram, "images/clever.png", glm::ivec2(32, 32), glm::vec2(0.25f, 0.25f), c);
+    Entity::init(tileMapPos, shaderProgram, "images/clever.png", glm::ivec2(32, 64), glm::vec2(0.25f, 0.25f), c);
 
     // Atributos caracter�sticos del Clever
     dying = false;
@@ -130,9 +130,12 @@ void Clever::update(int deltaTime)
     bool canPipeUp = false;
     bool canPipeDown = false;
     if (foundPipe != nullptr) {
-        glm::vec2 dir = foundPipe->getEndDirection(pipeEnd);
-        canPipeUp = (dir.y < 0);
-        canPipeDown = (dir.y > 0);
+        int exitEnd = (pipeEnd == 0) ? 1 : 0;
+        glm::vec2 exitPos = foundPipe->getExitPosition(size.y, pipeEnd);
+        float currentY = pos.y + size.y;
+        float exitY = exitPos.y + size.y;
+        canPipeUp = (exitY < currentY);
+        canPipeDown = (exitY > currentY);
     }
 
     // 1. Movimiento vertical

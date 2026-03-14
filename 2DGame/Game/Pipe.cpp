@@ -149,18 +149,17 @@ void Pipe::startTransit(int end)
     segments[activeSegment].setActive(true);
 }
 
-glm::vec2 Pipe::getExitPosition(int playerHeight) const
+glm::vec2 Pipe::getExitPosition(int playerHeight) const { return getExitPosition(playerHeight, entryEnd); }
+glm::vec2 Pipe::getExitPosition(int playerHeight, int fromEnd) const
 {
-    int exitEnd = (entryEnd == 0) ? 1 : 0;
+    int exitEnd = (fromEnd == 0) ? 1 : 0;
     int idx = (exitEnd == 0) ? 0 : (int)segments.size() - 1;
     glm::vec2 tp = segments[idx].getTilePos();
     glm::vec2 dir = getEndDirection(exitEnd);
     glm::vec2 off = -dir * float(size.x);
     glm::vec2 base = glm::vec2(tileMapDispl.x + tp.x + off.x,
         tileMapDispl.y + tp.y + off.y);
-
     base.y = base.y + size.y - playerHeight;
-
     return base;
 }
 
