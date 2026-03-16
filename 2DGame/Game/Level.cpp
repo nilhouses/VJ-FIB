@@ -253,14 +253,15 @@ void Level::loadEntities()
 }
 
 
-void Level::createAsset(const string& spriteDir, glm::vec2& pos, glm::vec2& size, int indexRoom)
+void Level::createAsset(const string& spriteDir, glm::vec2& pos, glm::vec2& size, int indexRoom, bool bg)
 {
     Asset* asset = new Asset();
     asset->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, spriteDir, size, camera);
 	int tileSize = rooms[indexRoom]->getMap()->getTileSize();
     asset->setPosition(glm::vec2(float(pos.x * tileSize), float(pos.y * tileSize)));
 	// Añado el asset a la habitación correspondiente
-	rooms[indexRoom]->addAsset(asset);
+    if (bg) rooms[indexRoom]->setBackground(asset);
+	else rooms[indexRoom]->addAsset(asset);
 }
 
 
@@ -270,22 +271,36 @@ void Level::loadAssets()
     ifstream fin(assetPath);
 
     string path;
+    int sizeX, sizeY;
+    int indexRoom, tileX, tileY;
     int count;
+    
+    int bgCount;
+    fin >> bgCount;
 
+	// Backgrounds (un asset por habitación)
+    while (bgCount > 0) {
+        fin >> path >> count >> sizeX >> sizeY;
+        for (int i = 0; i < count; ++i)
+        {
+            fin >> indexRoom >> tileX >> tileY;
+            createAsset(path, glm::vec2(tileX, tileY), glm::vec2(sizeX, sizeY), indexRoom, true);
+        }
+        bgCount -= count;
+    }
+    
+    // Resto de Assets
     while (fin >> path)
     {
         fin >> count;
-
-        int sizeX, sizeY;
 
         fin >> sizeX >> sizeY;
 
         for (int i = 0; i < count; ++i)
         {
-            int indexRoom, tileX, tileY;
             fin >> indexRoom >> tileX >> tileY;
 
-            createAsset(path, glm::vec2(tileX, tileY), glm::vec2(sizeX, sizeY), indexRoom);
+            createAsset(path, glm::vec2(tileX, tileY), glm::vec2(sizeX, sizeY), indexRoom, false);
         }
     }
 }
@@ -453,15 +468,17 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
         {
             Barrel* b = static_cast<Barrel*>(e);
             if (b->isExploding()) {
-                // Configurar transición a la nueva habitación
-                state = DYING;
-                transitionTimer = 1000.f;
-                rooms[currentRoom]->setTransitioning(true);
+                if (!godMode) {
+                    // Configurar transición a la nueva habitación
+                    state = DYING;
+                    transitionTimer = 1000.f;
+                    rooms[currentRoom]->setTransitioning(true);
 
-                // Cambiar estado visual
-                player->setAnimation("DIE");
-                player->blockInput(); // Bloquear input del jugador durante la transición
-                SoundManager::instance().playSound("horse", 0.1f);
+                    // Cambiar estado visual
+                    player->setAnimation("DIE");
+                    player->blockInput(); // Bloquear input del jugador durante la transición
+                    SoundManager::instance().playSound("horse", 0.1f);
+                }
                 break;
             }
             

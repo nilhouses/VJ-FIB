@@ -1,12 +1,15 @@
+2
+images/fondo_desierto.png
+2
+832 448
+0 0 0
+1 0 0
+
 images/casa_2.png
 2
 128 128
 0 14 8
-<<<<<<< HEAD
 0 5 2
-=======
-0 6 2
->>>>>>> 026c8ed445cce4a5d658424bec9a9963679255c0
 images/casa_1.png
 2
 128 96

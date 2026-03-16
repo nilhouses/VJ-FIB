@@ -86,6 +86,8 @@ void Room::render(Camera* camera, glm::mat4& projection)
         5. Entidades
         6. HUD
     */
+	background->render();
+
     map->renderBase();
 
     for (Asset* asset : assets)
@@ -103,4 +105,10 @@ void Room::render(Camera* camera, glm::mat4& projection)
         if (entities[i]->isActive())
             entities[i]->render();
     }
+}
+
+void Room::setBackground(Asset* b)
+{
+    background = b;
+	background->setParrallax(5.0f);
 }

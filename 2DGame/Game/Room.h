@@ -34,6 +34,9 @@ public:
     TileMap* getMap() { return map; }
 	void setMap(TileMap* m) { map = m; }
 
+	Asset* getBackground() { return background; }
+    void setBackground(Asset* b);
+
     vector<Entity*>& getEntities() { return entities; }
 	void addEntity(Entity* e) { entities.push_back(e); }
 
@@ -47,6 +50,7 @@ public:
 
 private:
     TileMap* map;
+	Asset* background;
     vector<Entity*> entities;
     vector<Enemy*> enemies;
     vector<Asset*> assets;

@@ -7,6 +7,7 @@
 #include "ShaderProgram.h"
 #include <unordered_map>
 #include "Utils.h"
+#include <glm/glm.hpp>
 
 // Tipos de bloque
 enum TileType {

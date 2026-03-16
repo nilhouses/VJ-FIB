@@ -39,6 +39,8 @@ public:
 	void setPosition(const glm::vec2 &pos);
 	void setPaused(bool paused) { isPaused = paused; }
 	
+	void setParallax(float f) { fParallax = f; }
+
 private:
 	Texture *texture;
 	ShaderProgram *shaderProgram;
@@ -52,6 +54,7 @@ private:
 	vector<AnimKeyframes> animations;
 	Camera* camera;
 	bool isPaused = false;
+	float fParallax = 1;
 };
 
 

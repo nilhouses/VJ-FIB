@@ -58,7 +58,7 @@ void Sprite::update(int deltaTime)
 void Sprite::render() const
 {
 	glm::vec2 offsetCam = camera->getOffset();
-	glm::mat4 modelview = glm::translate(glm::mat4(1.0f), glm::vec3(position.x + offsetCam.x, position.y + offsetCam.y, 0.f));
+	glm::mat4 modelview = glm::translate(glm::mat4(1.0f), glm::vec3(position.x + offsetCam.x / fParallax, position.y + offsetCam.y / fParallax, 0.f));
 	shaderProgram->setUniformMatrix4f("modelview", modelview);
 	shaderProgram->setUniform2f("texCoordDispl", texCoordDispl.x, texCoordDispl.y);
 	glEnable(GL_TEXTURE_2D);
@@ -68,6 +68,9 @@ void Sprite::render() const
 	glEnableVertexAttribArray(texCoordLocation);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glDisable(GL_TEXTURE_2D);
+	// Dejo el modelview como estaba por si se quiere renderizar algo más después del sprite
+	modelview = glm::translate(glm::mat4(1.0f), glm::vec3(position.x + offsetCam.x, position.y + offsetCam.y, 0.f));
+	shaderProgram->setUniformMatrix4f("modelview", modelview);
 }
 
 void Sprite::free()
