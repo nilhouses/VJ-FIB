@@ -1,19 +1,19 @@
 images/casa_2.png
 3
 128 128
-0 14 6
-0 0 9
-0 6 1
+0 14 8
+0 0 12
+0 6 2
 images/casa_1.png
 2
 128 96
-0 10 10
-0 14 4
+0 10 13
+0 14 5
 images/casa_3.png
 1
 192 96
-0 6 7
+0 6 9
 images/taladradora.png
 1
 128 160
-0 20 8
+0 20 11

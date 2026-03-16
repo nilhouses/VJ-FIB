@@ -1,12 +1,12 @@
-images/doors.png
+images/casa_1.png
 1
-96 64
-0 10 3
-images/varied.png
-5
-64 64
-0 0 0
-0 10 10
-1 2 2
-2 2 2
-3 2 2
+128 96
+0 5 5
+images/casa_2.png
+1
+128 128
+0 15 6
+images/casa_3.png
+1
+192 96
+0 14 3
