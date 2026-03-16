@@ -1,8 +1,7 @@
 images/casa_2.png
-3
+2
 128 128
 0 14 8
-0 0 12
 0 6 2
 images/casa_1.png
 2
