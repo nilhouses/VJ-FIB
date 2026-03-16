@@ -61,6 +61,20 @@ void TileMap::renderFront() const
 	glDisable(GL_TEXTURE_2D);
 }
 
+void TileMap::renderFront2() const
+{
+	if (nTilesFront2 == 0) return;
+	
+	glEnable(GL_TEXTURE_2D);
+	tilesheet.use();
+	// Print front layer 2
+	glBindVertexArray(vaoFront2);
+	glEnableVertexAttribArray(posLocationFront2);
+	glEnableVertexAttribArray(texCoordLocationFront2);
+	glDrawArrays(GL_TRIANGLES, 0, 6 * nTilesFront2);
+	glDisable(GL_TEXTURE_2D);
+}
+
 void TileMap::free()
 {
 	glDeleteVertexArrays(1, &vaoMap);
@@ -136,6 +150,25 @@ bool TileMap::loadLevel(const string& levelFile)
 		}
 	}
 
+	// Read front2
+	if (fin.peek() != EOF) {
+		getline(fin, line);
+		front2 = new int[mapSize.x * mapSize.y];
+		for (int j = 0; j < mapSize.y; j++)
+		{
+			getline(fin, line);
+			sstream.clear();
+			sstream.str(line);
+			for (int i = 0; i < mapSize.x; i++)
+			{
+				sstream >> tile;
+				if (sstream.peek() == ',')
+					sstream.ignore();
+				front2[j * mapSize.x + i] = tile + 1;
+			}
+		}
+	}
+
 	fin.close();
 
 	return true;
@@ -194,6 +227,7 @@ void TileMap::prepareArrays(const glm::vec2& minCoords, ShaderProgram& program)
 {
 	prepareLayerArray(minCoords, program, map, vaoMap, vboMap, nTilesMap, posLocationMap, texCoordLocationMap);
 	prepareLayerArray(minCoords, program, front, vaoFront, vboFront, nTilesFront, posLocationFront, texCoordLocationFront);
+	if (front2 != nullptr) prepareLayerArray(minCoords, program, front2, vaoFront2, vboFront2, nTilesFront2, posLocationFront2, texCoordLocationFront2);
 }
 
 
@@ -320,8 +354,15 @@ bool TileMap::isGround(int x, int y)
 {
 	int tileBase = map[y * mapSize.x + x];
 	int tileFront = front[y * mapSize.x + x];
-	return (getTileType(tileBase) != TILE_EMPTY && getTileType(tileBase) != TILE_LADDER) ||
+	bool b = (getTileType(tileBase) != TILE_EMPTY && getTileType(tileBase) != TILE_LADDER) ||
 		(getTileType(tileFront) != TILE_EMPTY && getTileType(tileFront) != TILE_LADDER);
+
+	if (front2 != nullptr) {
+		int tileFront2 = front2[y * mapSize.x + x];
+		b = b || (getTileType(tileFront2) != TILE_EMPTY && getTileType(tileFront2) != TILE_LADDER);
+	}
+
+	return b;
 }
 
 // Devuelve si el bloque del índice x,y es sólido
@@ -329,13 +370,27 @@ bool TileMap::isSolid(int x, int y)
 {
 	int tileBase = map[y * mapSize.x + x];
 	int tileFront = front[y * mapSize.x + x];
-	return getTileType(tileBase) == TILE_SOLID || getTileType(tileFront) == TILE_SOLID;
+	bool b = getTileType(tileBase) == TILE_SOLID || getTileType(tileFront) == TILE_SOLID;
+	
+	if (front2 != nullptr) {
+		int tileFront2 = front2[y * mapSize.x + x];
+		b = b || getTileType(tileFront2) == TILE_SOLID;
+	}
+
+	return b;
 }
 
 // Devuelve si el bloque del índice x,y es una escalera
 bool TileMap::isLadder(int x, int y) {
 	int tile = front[y * mapSize.x + x];
-	return getTileType(tile) == TILE_LADDER || getTileType(tile) == TILE_LADDER_GROUND;
+	bool b = getTileType(tile) == TILE_LADDER || getTileType(tile) == TILE_LADDER_GROUND;
+	
+	if (front2 != nullptr) {
+		int tileFront2 = front2[y * mapSize.x + x];
+		b = b || getTileType(tileFront2) == TILE_LADDER || getTileType(tileFront2) == TILE_LADDER_GROUND;
+	}
+
+	return b;
 }
 
 
@@ -357,6 +412,17 @@ void TileMap::print() const
 		for (int i = 0; i < mapSize.x; i++)
 		{
 			cout << front[j * mapSize.x + i] << " ";
+		}
+		cout << endl;
+	}
+
+	cout << "---------------------" << endl;
+
+	for (int j = 0; j < mapSize.y; j++)
+	{
+		for (int i = 0; i < mapSize.x; i++)
+		{
+			cout << front2[j * mapSize.x + i] << " ";
 		}
 		cout << endl;
 	}

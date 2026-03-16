@@ -32,6 +32,7 @@ public:
 
 	void renderBase() const;
 	void renderFront() const;
+	void renderFront2() const;
 	void free();
 
 	int getTileSize() const { return tileSize; }
@@ -60,12 +61,12 @@ private:
 
 private:
 	// Para crear una nueva capa añadir un elemento nuevo a esta lista y modificar loadLevel() + prepareArrays() + render()
-	GLuint vaoMap, vaoFront;
-	GLuint vboMap, vboFront;
-	GLint posLocationMap, posLocationFront;
-	GLint texCoordLocationMap, texCoordLocationFront;
-	int nTilesMap, nTilesFront;
-	int *map, *front;
+	GLuint vaoMap, vaoFront, vaoFront2;
+	GLuint vboMap, vboFront, vboFront2;
+	GLint posLocationMap, posLocationFront, posLocationFront2;
+	GLint texCoordLocationMap, texCoordLocationFront, texCoordLocationFront2;
+	int nTilesMap, nTilesFront, nTilesFront2;
+	int *map, *front, *front2 = nullptr;
 
 
 	glm::ivec2 position, mapSize, tilesheetSize;	// Posición del mapa, tamaño del mapa (en bloques) y tamaño del tilesheet (en bloques)
@@ -159,13 +160,13 @@ private:
 		{ 54, TILE_SOLID },
 		{ 55, TILE_SOLID },
 		{ 56, TILE_EMPTY },
-		{ 57, TILE_EMPTY },
-		{ 58, TILE_EMPTY },
-		{ 59, TILE_EMPTY },
-		{ 60, TILE_EMPTY },
-		{ 61, TILE_EMPTY },
-		{ 62, TILE_EMPTY },
-		{ 63, TILE_EMPTY },
+		{ 57, TILE_GROUND },
+		{ 58, TILE_GROUND },
+		{ 59, TILE_GROUND },
+		{ 60, TILE_GROUND },
+		{ 61, TILE_GROUND },
+		{ 62, TILE_GROUND },
+		{ 63, TILE_GROUND },
 		{ 64, TILE_EMPTY },
 		// Fila 5
 		{ 65, TILE_EMPTY },

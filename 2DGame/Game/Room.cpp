@@ -96,6 +96,7 @@ void Room::render(Camera* camera, glm::mat4& projection)
     // Los assets actualizan la modelview así que devolvemos la modelview original para renderizar el tilemap front
     texProgram.setUniformMatrix4f("modelview", modelview);
     map->renderFront();
+    map->renderFront2();
 
     for (size_t i = 0; i < entities.size(); ++i)
     {
