@@ -8,7 +8,7 @@
 #define MAX_FALL_SPEED 12.f
 
 #define EXPLOSION_DURATION 1000.f // ms
-#define PUSH_SPEED 3.f
+#define PUSH_SPEED 4.f
 
 enum BarrelAnims
 {
@@ -78,7 +78,6 @@ void Barrel::update(int deltaTime)
 		bool collided = false;
 		if (pushDirection > 0) collided = !incrRight((int)PUSH_SPEED);
 		else collided = !incrLeft((int)PUSH_SPEED);
-
 
 		// Parar movimiento
 		if (collided) {

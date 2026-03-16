@@ -34,7 +34,7 @@ private:
 	float fallSpeed;				    // Para controlar la velocidad de ca�da del barril, ahora que hay aceleraci�n
 	// Interacciones con el jugador
 	float pushAccumulator = 0.f;
-	const float PUSH_THRESHOLD = 30.f; // Tiempo necesario para que el jugador ewmpuje el barril
+	const float PUSH_THRESHOLD = 30.f; // Tiempo necesario para que el jugador empuje el barril
 	bool beingTouchedThisFrame = false;
 };
 
