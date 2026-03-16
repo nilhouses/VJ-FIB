@@ -15,10 +15,8 @@ void Game::init()
 	// Estado inicial del juego
     currentLevel = 1;
 	currentScene = nullptr;
-	changeState(MAIN_MENU);
     SoundManager::instance().init();
-    // Reproducir música de fondo
-    SoundManager::instance().playMusic();
+	changeState(MAIN_MENU);
 }
 
 bool Game::update(int deltaTime)
@@ -100,9 +98,13 @@ void Game::changeState(GameState newState, int levelNumber)
     switch (newState) {
     case MAIN_MENU:
         currentScene = new MainMenu();
+        SoundManager::instance().playMusic("menu", true);
         break;
     case PLAYING:
         currentScene = new Level(currentLevel, numLives);
+        if (currentLevel <= 2) SoundManager::instance().playMusic("levels1&2", true);
+        else if (currentLevel <= 4) SoundManager::instance().playMusic("levels3&4", true);
+        else SoundManager::instance().playMusic("level5", true);
         break;
     case INSTRUCTIONS:
         currentScene = new Instructions();

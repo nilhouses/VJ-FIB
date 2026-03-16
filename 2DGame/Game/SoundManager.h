@@ -22,7 +22,7 @@ public:
     void playSound(const std::string& sound, float volume);
 
     // Para música de fondo (en bucle)
-    void playMusic(bool loop = true);
+    void playMusic(const std::string& musicKey, bool loop = true);
     void stopMusic();
 
     // Ajusta el volumen de TODO el motor (0.0 a 1.0)
@@ -38,8 +38,9 @@ private:
     ma_sound bgm; // Objeto específico para la música actual
     bool initialized;
     bool musicPlaying = false;
+    std::string currentMusicKey = "";
 
-    float musicVolume = 0.f;
+    float musicVolume = 0.1f;
     std::list<ma_sound*> activeSounds; // Lista de sonidos en reproducción
 };
 

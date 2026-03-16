@@ -4,8 +4,11 @@
 
 // Sonidos predefinidos
 std::unordered_map<std::string, std::string> sounds = {
+    { "menu", "sounds/ost/intro.mp3"},
+    { "levels1&2", "sounds/ost/desierto.mp3"},
+    { "levels3&4", "sounds/ost/cueva.mp3"},
+    { "level5", "sounds/ost/gusano.mp3"},
     { "horse", "sounds/caballoMVP.mp3"},
-    { "background", "sounds/intro.mp3"}, //    bonprofit_remix.mp3" }
     { "life", "sounds/life.mp3"},
     { "key", "sounds/key.mp3"},
     { "explosion", "sounds/explosion.mp3"},
@@ -53,19 +56,26 @@ void SoundManager::playSound(const std::string& sound, float volume) {
     }
 }
 
-void SoundManager::playMusic(bool loop) {
+void SoundManager::playMusic(const std::string& musicKey, bool loop) {
     if (!initialized) return;
 
-    if (musicPlaying) stopMusic();
-
+    if (musicPlaying) {
+        if (currentMusicKey == musicKey) return; // Ja sona, no reiniciar
+        stopMusic();
+    }
     // Cargamos la música como "Stream" (para que no ocupe mucha RAM)
-    auto it = sounds.find("background");
+    auto it = sounds.find(musicKey);
+    if (it == sounds.end()) {
+        std::cout << "Error: Música '" << musicKey << "' no trobada." << std::endl;
+        return;
+    }
     ma_result result = ma_sound_init_from_file(&engine, it->second.c_str(), MA_SOUND_FLAG_STREAM, NULL, NULL, &bgm);
     if (result == MA_SUCCESS) {
         ma_sound_set_looping(&bgm, loop ? MA_TRUE : MA_FALSE);
         ma_sound_set_volume(&bgm, musicVolume);
         ma_sound_start(&bgm);
         musicPlaying = true;
+        currentMusicKey = musicKey;
     }
 }
 
