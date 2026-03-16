@@ -1,9 +1,11 @@
 2
 images/fondo_desierto.png
-2
+4
 832 448
 0 0 0
 1 0 0
+2 0 0
+3 0 0
 
 images/casa_1.png
 1

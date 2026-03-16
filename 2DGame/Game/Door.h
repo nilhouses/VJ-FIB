@@ -18,14 +18,12 @@ public:
 	void setToVisited();
 	bool getVisited() { return visited; }
 
-	void setIsFinalDoor(bool isFinal);
-	bool getIsFinalDoor() { return isFinalDoor; }
+	bool getIsFinalDoor() { return getConnectedTo() == nullptr; }
 
 	void openingAnim();
 
 private:
 	bool visited;
-	bool isFinalDoor;
 	int spriteRow;
 };
 

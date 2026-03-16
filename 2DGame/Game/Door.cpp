@@ -54,7 +54,6 @@ void Door::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Came
 
 void Door::openingAnim() {
 	sprite->changeAnimation(OPENING);
-	
 	// Si es una puerta metálica
 	if (spriteRow == 1)
 		SoundManager::instance().playSound("clothDoorOpen", 0.3f);
@@ -67,9 +66,4 @@ void Door::setToVisited()
 {
 	visited = true;
 	sprite->changeAnimation(OPENED);
-}
-
-void Door::setIsFinalDoor(bool isFinal)
-{
-	this->isFinalDoor = isFinal;
 }

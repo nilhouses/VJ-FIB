@@ -206,33 +206,30 @@ void Level::loadEntities()
 			if (type == "DOOR" || type == "TUNNEL") {
                 int indexRoom2, tileX2, tileY2, spriteRow;
                 fin >> indexRoom2 >> tileX2 >> tileY2 >> spriteRow;
+                bool isFinalDoor = (indexRoom1 == indexRoom2) && (tileX1 == tileX2) && (tileY1 == tileY2); // Si la puerta conecta consigo misma, es la puerta final
 
                 vector<glm::ivec2> segments;
-                Entity* e1 = createEntity(type, tileX1, tileY1, indexRoom1, false, 0, 0, 0, segments, spriteRow);
-                Entity* e2 = createEntity(type, tileX2, tileY2, indexRoom2, false, 0, 0, 0, segments, spriteRow);
+                Entity *e1, *e2;
+				Enter* enter1, * enter2;
+                
+                e1 = createEntity(type, tileX1, tileY1, indexRoom1, false, 0, 0, 0, segments, spriteRow);
+				enter1 = static_cast<Enter*>(e1);
+                if (!isFinalDoor) {
+                    e2 = createEntity(type, tileX2, tileY2, indexRoom2, false, 0, 0, 0, segments, spriteRow);
+                    enter2 = static_cast<Enter*>(e2);
 
-				Enter* enter1 = static_cast<Enter*>(e1);
-				Enter* enter2 = static_cast<Enter*>(e2);
+				    // Conecto el túnel o puerta con su contraparte para poder acceder a ella desde la lógica del juego
+				    enter1->setConnectedTo(enter2);
+				    enter2->setConnectedTo(enter1);
 
-				// Conecto el túnel o puerta con su contraparte para poder acceder a ella desde la lógica del juego
-				enter1->setConnectedTo(enter2);
-				enter2->setConnectedTo(enter1);
+                    // Añado la información extra de la puerta
+                    if (type == "TUNNEL") {
+					    Tunnel* t1 = static_cast<Tunnel*>(e1);
+					    Tunnel* t2 = static_cast<Tunnel*>(e2);
 
-                // Añado la información extra de la puerta
-                if (type == "DOOR") {
-                    Door* d1 = static_cast<Door*>(e1);
-                    Door* d2 = static_cast<Door*>(e2);
-
-				    bool isFinalDoor = (indexRoom1 == indexRoom2) && (tileX1 == tileX2) && (tileY1 == tileY2); // Si la puerta conecta consigo misma, es la puerta final
-				    d1->setIsFinalDoor(isFinalDoor);
-				    d2->setIsFinalDoor(isFinalDoor);
-                }
-                else {
-					Tunnel* t1 = static_cast<Tunnel*>(e1);
-					Tunnel* t2 = static_cast<Tunnel*>(e2);
-
-					t1->setDown();
-					t2->setUp();
+					    t1->setDown();
+					    t2->setUp();
+                    }
                 }
             }
             else if (type == "DUMMY" || type == "CLEVER" || type == "SHOOTER") {
@@ -417,7 +414,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
     {
         case Type::KEY:
             player->pickItem();
-            collectedKeys++;
+            collectedKeys = std::min(collectedKeys + 1, allKeys);
             // Transición de estado
             state = PICKING_OBJECT;
             transitionTimer = 300.f;
@@ -904,10 +901,13 @@ void Level::update(int deltaTime)
 
     rooms[currentRoom]->update(deltaTime);
     player->update(deltaTime);
-    if(state == NORMAL) checkCollisions();
-
+  
     switch (state)
     {
+    case NORMAL:
+        checkCollisions();
+		break;
+
     case ENTERING_DOOR:
         transitionTimer = std::max(0.f, transitionTimer - deltaTime);
 
