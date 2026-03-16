@@ -41,8 +41,6 @@ glm::vec4 Entity::getBoundingBox() const
 	return glm::vec4(pos.x, pos.y, size.x, size.y);
 }
 
-
-
 void Entity::printDebugInfo() const
 {
 	cout << "===============================" << endl;

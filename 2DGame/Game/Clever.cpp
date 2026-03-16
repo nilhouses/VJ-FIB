@@ -98,7 +98,39 @@ void Clever::update(int deltaTime)
         return;
     }
 
-    // A media transición
+    // Transición túnel
+    if (inTunnel) {
+        tunnelTimer -= deltaTime;
+
+        // Tp a la salida (Ya se ha terminado la animación de entrada      
+        if (tunnelTimer <= TUNNEL_DURATION/2.0f && !tunnelTeleported) {
+            // Tp a la salida
+            Tunnel* exitTunnel = static_cast<Tunnel*>(currentTunnel->getConnectedTo());
+            glm::vec2 exitPos = exitTunnel->getPosition();
+            pos = glm::ivec2((int)exitPos.x, (int)exitPos.y);
+            lastUsedTunnel = exitTunnel;
+            tunnelTeleported = true;
+            setVisible(true);
+			// [TODO]
+            // if (currentTunnel->getUp())
+            //      if (sprite->animation() != TUNNEL_LEAVE_TOP) sprite->changeAnimation(TUNNEL_LEAVE_TOP);
+            // else
+            //      if (sprite->animation() != TUNNEL_LEAVE_BOTTOM) sprite->changeAnimation(TUNNEL_LEAVE_BOTTOM);
+        }
+        if (tunnelTimer <= 0.f) {
+            hurts = true;
+            inTunnel = false;
+            tunnelTeleported = false;
+            currentTunnel = nullptr;
+            movingRight = (playerTarget->getPosition().x > pos.x);
+            sprite->changeAnimation(movingRight ? MOVE_RIGHT : MOVE_LEFT);
+		}
+
+        sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
+        return;
+    }
+
+    // Transición tubo
     if (inPipe) {
         if (currentPipe->isTransitComplete()) {
             glm::vec2 exitPos = currentPipe->getExitPosition(size.y);
@@ -143,6 +175,7 @@ void Clever::update(int deltaTime)
     if (playerBottomY != cleverBottomY) {
         if (playerBottomY < cleverBottomY) {   // Subir
             if (canClimbUp) {
+                center();
                 pos.y -= speed;
                 isClimbing = true;  
                 if (sprite->animation() != CLIMB) sprite->changeAnimation(CLIMB);
@@ -158,6 +191,7 @@ void Clever::update(int deltaTime)
         }
         else if (playerBottomY > cleverBottomY) {   // Bajar
             if (canClimbDown) {
+                center();
                 pos.y += speed;
                 isClimbing = true;
                 if (sprite->animation() != CLIMB) sprite->changeAnimation(CLIMB);
@@ -222,6 +256,49 @@ void Clever::changeDirection() {
     else sprite->changeAnimation(MOVE_LEFT);
 }
 
+void Clever::notifyTunnelEntry(Tunnel * t)
+{  
+    if (inTunnel) return;
+
+	// Ignora el túnel hasta que se haya alejado lo suficiente del último túnel usado,
+    if (lastUsedTunnel != nullptr) {
+        glm::vec2 exitPos = lastUsedTunnel->getPosition();
+        float dx = pos.x - exitPos.x;
+        float dy = pos.y - exitPos.y;
+        float dist = std::sqrt(dx * dx + dy * dy);
+		if (dist < TUNNEL_CLEAR_DISTANCE) return; // Usamos distancia euclidiana para evitar que el clever tenga que alejarse exactamente en horizontal o vertical del túnel
+        else lastUsedTunnel = nullptr;
+    }
+
+    Tunnel* exit = static_cast<Tunnel*>(t->getConnectedTo());
+    if (!exit) return;
+    bool shouldEnter = false;
+
+	// Tiene que subir si el túnel va hacia arriba y el jugador está más arriba
+    if (!t->getUp()) {
+        int playerBottomY = playerTarget->getPosition().y + playerTarget->getSize().y;
+        int cleverBottomY = pos.y + size.y;
+        shouldEnter = (playerBottomY < cleverBottomY);
+    } else { // o bajar si el túnel va hacia abajo y el jugador está más abajo
+        int playerBottomY = playerTarget->getPosition().y + playerTarget->getSize().y;
+        int cleverBottomY = pos.y + size.y;
+        shouldEnter = (playerBottomY > cleverBottomY);
+    }
+
+    if (!shouldEnter) return;
+    hurts = false;
+    currentTunnel = t;
+    inTunnel = true;
+    tunnelTimer = TUNNEL_DURATION;
+    setVisible(false);
+    // [TODO] Animación de entrada
+    // if (currentTunnel->getUp())
+    //      if (sprite->animation() != TUNNEL_ENTER_TOP) sprite->changeAnimation(TUNNEL_ENTER_TOP);
+    // else
+    //      if (sprite->animation() != TUNNEL_ENTER_BOTTOM) sprite->changeAnimation(TUNNEL_ENTER_BOTTOM);
+
+}
+
 void Clever::die()
 {
     if (isDying()) return;
@@ -230,3 +307,4 @@ void Clever::die()
     std::cout << "RIP Clever" << std::endl;
     // En el update se desactivar� la entidad cuando acabe la animaci�n de explosi�n
 }
+

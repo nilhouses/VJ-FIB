@@ -13,3 +13,7 @@ void Enemy::incrLeft() { pos.x -= speed; }
 // Los hijos las sobreescriben
 void Enemy::changeDirection() {}
 void Enemy::die() {}
+
+void Enemy::center() {
+	pos.x = ((pos.x + map->getBlockSize() / 2) / map->getBlockSize()) * map->getBlockSize();
+}

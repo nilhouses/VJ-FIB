@@ -36,10 +36,13 @@ public:
 	// Funciones comunes a todos los enemigos
     void incrRight();
     void incrLeft();
+    bool canHurt() const { return hurts; }
+    void center();
 
 protected:
     EnemyType eType;                                    // Tipos de enemigo
     bool dying = false;                                 // Para poder desactivar colisiones con otras entidades
+	bool hurts = true;                                  // Para poder controlar si el enemigo hace daño (por ejemplo, el Clever no hace daño mientras está saliendo de un túnel)
     float deathTimer;                                   // Para controlar el tiempo que dura la animaci�n de muerte antes del deactivate
 	int speed = 1;                                      // Todo enemigo tiene una velocidad de movimiento en px. (Por Defecto 1)
 	int fallStep = 6;                                   // Px por ca�da (Por defecto 6)

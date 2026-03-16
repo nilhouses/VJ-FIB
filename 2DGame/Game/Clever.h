@@ -4,6 +4,7 @@
 #include "Enemy.h"
 #include "Player.h"
 #include "Pipe.h"
+#include "Tunnel.h"
 
 class Clever : public Enemy
 {
@@ -17,6 +18,8 @@ public:
 	void die() override;
 	void changeDirection() override;
 	void render() override;
+	void notifyTunnelEntry(Tunnel* t);
+	bool isInTunnel() const { return inTunnel; }
 
 	// Funciones del Clever
 	void setPlayerTarget(Player* p) { playerTarget = p; }
@@ -31,12 +34,23 @@ private:
 	bool isClimbing = false;
 	bool wasInAir = false;
 	bool wasClimbing = false;
+	// Escalera
+	static const int VERTICAL_COOLDOWN = 1000; // 1 segundo, para evitar que el clever suba y baje por la misma escalera o pipe repetidamente
+	// Pipes
 	vector<Pipe*> pipes;
 	Pipe* currentPipe = nullptr;
 	bool inPipe = false;
 	bool visible = true;
 	int verticalCooldown = 0;
-	static const int VERTICAL_COOLDOWN = 1000; // 1 segundo
+	// Túneles
+	Tunnel* currentTunnel = nullptr;
+	Tunnel* lastUsedTunnel = nullptr;   
+	bool inTunnel = false;
+	float tunnelTimer = 0.f;
+	bool tunnelTeleported = false;
+	static constexpr float TUNNEL_DURATION = 1000.f; // ms, igual que el player
+	static constexpr float TUNNEL_CLEAR_DISTANCE = 32.f; // Númeor de px que hace falta recorrer para no volver a usar el mismo túnel, evita el típico bucle de entrar y salir del túnel constantemente, que no se usará casi nunca pero depende del nivel
+
 };
 
 

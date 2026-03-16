@@ -693,6 +693,20 @@ void Level::handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollid
             b->explode();
             break;
         }
+        case Type::ENTER:
+        {
+            Enter* enter = static_cast<Enter*>(e);
+            if (enter->getEnterType() != EnterType::TUNNEL) break;
+            if (enemy->getEnemyType() != EnemyType::CLEVER) break;
+
+            Clever* clever = static_cast<Clever*>(enemy);
+            if (clever->isInTunnel() || !clever->isVisible()) break;
+
+            Tunnel* tunnel = static_cast<Tunnel*>(enter);
+            glm::vec4 tBox = tunnel->getBoundingBox();
+            if (clever->centeredOn(tBox)) clever->notifyTunnelEntry(tunnel);
+            break;
+        }
         default:
             break;
     }
