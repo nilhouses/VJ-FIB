@@ -572,7 +572,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                 }
 
                 // Cambiar estado visual
-                if (!door->getVisited()) {
+                if (!door->getVisited() && !door->isCave()) {
                     // SONIDO de abrir puerta
                     door->openingAnim();
                     player->setAnimation("OPEN_AND_ENTER");
