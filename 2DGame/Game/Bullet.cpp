@@ -61,6 +61,12 @@ void Bullet::update(int deltaTime)
     if (movingRight) pos.x += static_cast<int>(speed);
     else pos.x -= static_cast<int>(speed);
 
+    distanceTraveled += static_cast<int>(speed);
+    if (distanceTraveled >= 640) { // Límite de distancia para la bala
+        explode();
+        return;
+	}
+
     bool collision = false;
 
     if (movingRight) {

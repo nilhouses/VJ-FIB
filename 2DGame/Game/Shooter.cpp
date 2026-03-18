@@ -69,20 +69,22 @@ void Shooter::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, C
 	changeState(WALKING);
 }
 
+
 void Shooter::setStay(bool s) {
     stay = s;
 	if (stay) changeState(IDLING);
 }
 
+
 void Shooter::changeState(EnemyState newState) {
     currentState = newState;
     switch (currentState) {
     case WALKING:
-        stateTimer = 7000.f + (float)(rand() % 3000); // Cada (7-10) segundos dispara
+        stateTimer = 3000.f + (float)(rand() % 3000); // Cada (3-6) segundos dispara
         sprite->changeAnimation(movingRight ? MOVE_RIGHT : MOVE_LEFT);
         break;
     case IDLING:
-        stateTimer = 7000.f + (float)(rand() % 3000); // Cada (7-10) segundos dispara
+        stateTimer = 3000.f + (float)(rand() % 3000); // Cada (3-6) segundos dispara
         sprite->changeAnimation(movingRight ? IDLE_RIGHT : IDLE_LEFT);
         break;
     case RELOAD:

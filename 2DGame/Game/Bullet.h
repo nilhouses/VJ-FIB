@@ -21,6 +21,7 @@ private:
     float speed;
     bool exploding;
     float explosionTimer;
+	int distanceTraveled = 0;
 };
 
 #endif // _BULLET_INCLUDE

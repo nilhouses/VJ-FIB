@@ -353,9 +353,9 @@ private:
 		{ 253, TILE_EMPTY },
 		{ 254, TILE_EMPTY },
 		{ 255, TILE_EMPTY },
+		{ 256, TILE_EMPTY },
 		// Fila 17
-		{ 256, TILE_LADDER },
-		{ 257, TILE_EMPTY },
+		{ 257, TILE_LADDER },
 		{ 258, TILE_EMPTY },
 		{ 259, TILE_EMPTY },
 		{ 260, TILE_EMPTY },
@@ -368,8 +368,9 @@ private:
 		{ 267, TILE_EMPTY },
 		{ 268, TILE_EMPTY },
 		{ 269, TILE_EMPTY },
-		{ 270, TILE_EMPTY }
-
+		{ 270, TILE_EMPTY },
+		{ 271, TILE_EMPTY },
+		{ 272, TILE_EMPTY },
 	};
 
 };
