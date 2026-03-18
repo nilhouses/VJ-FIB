@@ -1,6 +1,8 @@
 #include "Platform.h"
 
 #define PLATFORM_SPEED 1.5f
+#define PAUSE_TIME 0.5f
+
 
 Platform::Platform() : Entity(Type::PLATFORM) {}
 
@@ -36,16 +38,24 @@ void Platform::update(int deltaTime)
     sprite->update(deltaTime);
     glm::vec2 prevPos = pos;
 
-	// Usamos los p�xeles recorridos para calcular la posici�n, de esta forma el movimiento es independiente de los fps
-    distanceCounter += PLATFORM_SPEED * (deltaTime / 16.0f);
+    float moveTime = (float)rangePixels / 80.0f; // 80px/s
+    float totalHalfCycle = moveTime + PAUSE_TIME;
+    float angularFrequency = 3.14159f / totalHalfCycle;
 
-    float totalCycle = rangePixels * 2.0f;
-    float currentOffset = fmod(distanceCounter, totalCycle);
+    distanceCounter += (deltaTime / 1000.0f) * angularFrequency;
 
-    if (currentOffset > rangePixels) currentOffset = totalCycle - currentOffset;
+    float amp = 1.0f / cos(angularFrequency * PAUSE_TIME * 0.5f);
 
-    if (axis == 0) pos.x = (int) (origin.x + (currentOffset * direction));
-    else           pos.y = (int) (origin.y + (currentOffset * direction));
+    float wave = cos(distanceCounter) * amp;
+
+    if (wave > 1.0f) wave = 1.0f;
+    else if (wave < -1.0f) wave = -1.0f;
+
+    float multiplier = (1.0f - wave) * 0.5f;
+    float offset = (float)rangePixels * multiplier;
+
+    if (axis == 0) pos.x = (int)(origin.x + (offset * direction));
+    else pos.y = (int)(origin.y + (offset * direction));
 
     deltaMovement = glm::vec2(pos.x - prevPos.x, pos.y - prevPos.y);
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));

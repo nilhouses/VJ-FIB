@@ -930,6 +930,7 @@ void Level::update(int deltaTime)
             // Si se ha entrado por cualquier ENTER diferente a la puerta final
             Enter* targetEnter = interactedEnter->getConnectedTo();
             currentRoom = targetEnter->getRoom();
+
             glm::vec2 targetSpawnPosition = targetEnter->getPosition();
 
             player->setPosition(glm::vec2(targetSpawnPosition.x, targetSpawnPosition.y));
