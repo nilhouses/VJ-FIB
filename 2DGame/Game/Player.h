@@ -17,7 +17,7 @@ public:
 public:
 	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c);
 	void update(int deltaTime) override;
-	
+
 	void setAnimation(const string& anim);
 	string getCurrentAnimationName() const;
 	void incrRight();
