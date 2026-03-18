@@ -496,21 +496,17 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                 if (pPos.x < bPos.x) {
                     player->setPosition(glm::vec2(pPos.x - rangeCollided.x, pPos.y));
 
-                    if (Game::instance().getKey(GLFW_KEY_RIGHT)) player->handlePush(1, b->tryPush(1, 1.0f));
-                    else {
-                       // Hay contacto pero no se está empujando
-                        if (player->getCurrentAnimationName() == "PUSH_RIGHT")
-                            (player->hasBullets()) ? player->setAnimation("WEAPON_IDLE") : player->setAnimation("IDLE");
+                    if (Game::instance().getKey(GLFW_KEY_RIGHT)) {
+                        player->handlePush(1, b->tryPush(1, 1.0f));
+                        player->setWasPushing(true);
                     }
                 }
                 else {
                     player->setPosition(glm::vec2(pPos.x + rangeCollided.x, pPos.y));
 
-                    if (Game::instance().getKey(GLFW_KEY_LEFT)) player->handlePush(-1, b->tryPush(-1, 1.0f));
-                    else {
-                        // Hay contacto pero no se está empujando
-                        if (player->getCurrentAnimationName() == "PUSH_LEFT")
-                            (player->hasBullets()) ? player->setAnimation("WEAPON_IDLE") : player->setAnimation("IDLE");
+                    if (Game::instance().getKey(GLFW_KEY_LEFT)) {
+                        player->handlePush(-1, b->tryPush(-1, 1.0f));
+                        player->setWasPushing(true);
                     }
                 }
             }
@@ -771,6 +767,8 @@ void Level::checkCollisions()
     vector<Entity*>& entities = rooms[currentRoom]->getEntities();
 
     auto playerBox = player->getBoundingBox();
+    // Para que no empuje el barril si ha dejado de estar en contacto con él 
+    player->setWasPushing(false);
 
     for (Entity* e : entities)
     {
@@ -860,6 +858,11 @@ void Level::checkCollisions()
                 }
             }
         }
+    }
+    if (!player->getWasPushing()) {
+        auto anim = player->getCurrentAnimationName();
+        if (anim == "PUSH_LEFT" || anim == "PUSH_RIGHT")
+            player->setAnimation(player->hasBullets() ? "WEAPON_IDLE" : "IDLE");
     }
 
     // 3. Comprobar colisiones entre los enemigos y las distintas entidades del nivel actual
