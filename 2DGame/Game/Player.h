@@ -17,7 +17,7 @@ public:
 public:
 	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c);
 	void update(int deltaTime) override;
-	
+
 	void setAnimation(const string& anim);
 	string getCurrentAnimationName() const;
 	void incrRight();
@@ -33,6 +33,8 @@ public:
 	bool hasSpeedBoost() { return speedBoostTimer > 0; }
 	void addBullet() { numBullets++; }
 	int  getBullets() { return numBullets; }
+	bool getWasPushing() { return wasPushing; }
+	void setWasPushing(bool b) { wasPushing = b; }
 	bool hasBullets() { return numBullets > 0; }
 	void shoot();
 	void setRoom(Room* room) { currentRoom = room; }
@@ -45,6 +47,7 @@ private:
 	int jumpAngle, startY;				// Ángulo de salto y posición inicial en Y para el salto
 	bool onGround = false;
 	bool blockedInput;
+	bool wasPushing = false;				// Indica si el jugador estaba empujando un barril en el frame anterior
 	// Atributos necesarios para items
 	int itemPickTimer;
 	// Atributos necesarios para el SpeedBoost
