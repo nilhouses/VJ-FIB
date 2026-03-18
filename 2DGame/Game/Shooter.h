@@ -8,8 +8,9 @@ class Room; // Forward declaration de Room que sino peta porque Room incluye Sho
 
 enum EnemyState {
 	WALKING,
-	IDLING,
-	SHOOTER
+	RELOAD,
+	SHOOTING,
+	IDLING
 };
 
 class Shooter : public Enemy
@@ -23,6 +24,7 @@ public:
 	void die() override;
 	void changeDirection() override;
 	void setRoom(Room* room) { currentRoom = room; }
+	void setStay(bool s);
 
 private:
 	EnemyState currentState;
@@ -31,6 +33,8 @@ private:
 	void shoot();
 
 	// Atributos necesarios para crear una bala
+	bool movingRight;
+	bool stay;
 	Room* currentRoom = nullptr;
 	ShaderProgram* shaderProgram = nullptr;
 	Camera* cameraPtr = nullptr;

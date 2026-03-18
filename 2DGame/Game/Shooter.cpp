@@ -32,9 +32,6 @@ void Shooter::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, C
     dying = false;
     deathTimer = 0.f;
 
-    currentState = WALKING;
-    stateTimer = 3000.f;
-
     // Configuraci�n de animaciones
     sprite->setNumberAnimations(NUM_ANIMS);
 
@@ -67,8 +64,14 @@ void Shooter::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, C
     sprite->addKeyframe(DIE, glm::vec2(0.50f, 0.75f));
     sprite->addKeyframe(DIE, glm::vec2(0.75f, 0.75f));
 
+
     this->movingRight = movingRight;
-    sprite->changeAnimation(movingRight ? MOVE_RIGHT : MOVE_LEFT);
+	changeState(WALKING);
+}
+
+void Shooter::setStay(bool s) {
+    stay = s;
+	if (stay) changeState(IDLING);
 }
 
 void Shooter::changeState(EnemyState newState) {
@@ -79,10 +82,14 @@ void Shooter::changeState(EnemyState newState) {
         sprite->changeAnimation(movingRight ? MOVE_RIGHT : MOVE_LEFT);
         break;
     case IDLING:
+        stateTimer = 7000.f + (float)(rand() % 3000); // Cada (7-10) segundos dispara
+        sprite->changeAnimation(movingRight ? IDLE_RIGHT : IDLE_LEFT);
+        break;
+    case RELOAD:
         stateTimer = 500.f; // 0.5 segundos preparando el disparo
         sprite->changeAnimation(movingRight ? IDLE_RIGHT : IDLE_LEFT);
         break;
-    case SHOOTER:
+    case SHOOTING:
         stateTimer = 1500.f;  // Disparo de 1 segundo y medio
         sprite->changeAnimation(movingRight ? SHOOT_RIGHT : SHOOT_LEFT);
         shoot();
@@ -135,14 +142,20 @@ void Shooter::update(int deltaTime)
         }
 
         if (shouldTurn && onGround) changeDirection();
-        if (stateTimer <= 0) changeState(IDLING);
+        if (stateTimer <= 0) changeState(RELOAD);
 
     }
     else if (currentState == IDLING) {
-        if (stateTimer <= 0) changeState(SHOOTER);
+        if (stateTimer <= 0) changeState(RELOAD);
+	}
+    else if (currentState == RELOAD) {
+        if (stateTimer <= 0) changeState(SHOOTING);
     }
-    else if (currentState == SHOOTER) {
-        if (stateTimer <= 0) changeState(WALKING);
+    else if (currentState == SHOOTING) {
+        if (stateTimer <= 0) {
+            if (stay) changeState(IDLING);
+			else changeState(WALKING);
+        }
     }
     // Gravedad
     int prevY = pos.y;

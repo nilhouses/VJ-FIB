@@ -71,7 +71,7 @@ void Level::initShaders()
     fShader.free();
 }
 
-Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, bool movingRight, int rangePixels, int axis, int dir, const vector<glm::ivec2>& segments, int sr)
+Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, bool movingRight, bool stay, int rangePixels, int axis, int dir, const vector<glm::ivec2>& segments, int sr)
 {
     Entity* entity = nullptr;
 	TileMap* map = rooms[indexRoom]->getMap();
@@ -116,13 +116,16 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, b
         Enemy* enemy = nullptr;
         if (type == "DUMMY") enemy = new Dummy();
         else if (type == "CLEVER") enemy = new Clever();
-        else if (type == "SHOOTER") {
-            enemy = new Shooter();
-            static_cast<Shooter*>(enemy)->setRoom(rooms[indexRoom]);
-        }
+        else if (type == "SHOOTER") enemy = new Shooter();
 
         enemy->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera, movingRight);
         enemy->setTileMap(map);
+
+        if (type == "SHOOTER") {
+            Shooter* s = static_cast<Shooter*>(enemy);
+            s->setRoom(rooms[indexRoom]);
+            s->setStay(stay);
+        }
 
         // Añado al vector de enemigos
         rooms[indexRoom]->addEnemy(enemy);
@@ -197,7 +200,7 @@ void Level::loadEntities()
                     fin >> indexRoom1 >> tileX1 >> tileY1;
                     segments.push_back(glm::ivec2(tileX1, tileY1));
                 }
-                createEntity(type, tileX1, tileY1, indexRoom1, false, 0, 0, 0, segments);
+                createEntity(type, tileX1, tileY1, indexRoom1, false, false, 0, 0, 0, segments);
                 continue;
             }
 
@@ -212,10 +215,10 @@ void Level::loadEntities()
                 Entity *e1, *e2;
 				Enter* enter1, * enter2;
                 
-                e1 = createEntity(type, tileX1, tileY1, indexRoom1, false, 0, 0, 0, segments, spriteRow);
+                e1 = createEntity(type, tileX1, tileY1, indexRoom1, false, false, 0, 0, 0, segments, spriteRow);
 				enter1 = static_cast<Enter*>(e1);
                 if (!isFinalDoor) {
-                    e2 = createEntity(type, tileX2, tileY2, indexRoom2, false, 0, 0, 0, segments, spriteRow);
+                    e2 = createEntity(type, tileX2, tileY2, indexRoom2, false, false, 0, 0, 0, segments, spriteRow);
                     enter2 = static_cast<Enter*>(e2);
 
 				    // Conecto el túnel o puerta con su contraparte para poder acceder a ella desde la lógica del juego
@@ -233,15 +236,20 @@ void Level::loadEntities()
                 }
             }
             else if (type == "DUMMY" || type == "CLEVER" || type == "SHOOTER") {
-                int dir;
+                int dir, stay;
                 fin >> dir;
 				movingRight = (dir == 1);
-                createEntity(type, tileX1, tileY1, indexRoom1, movingRight);
+                if (type == "SHOOTER") {
+                    fin >> stay;
+                    createEntity(type, tileX1, tileY1, indexRoom1, movingRight, stay);
+                }
+				else createEntity(type, tileX1, tileY1, indexRoom1, movingRight);
+                
             }
             else if (type == "PLATFORM") {
                 int rangePixels, axis, dir;
                 fin >> rangePixels >> axis >> dir;
-                createEntity(type, tileX1, tileY1, indexRoom1, false, rangePixels, axis, dir);
+                createEntity(type, tileX1, tileY1, indexRoom1, false, false, rangePixels, axis, dir);
             }
             else 
                 createEntity(type, tileX1, tileY1, indexRoom1);
@@ -407,6 +415,20 @@ CollisionInfo Level::overlap(const glm::vec4& a, const glm::vec4& b, const glm::
     return info;
 }
 
+void Level::killPlayer() {
+    // Configurar transición a la nueva habitación
+    state = DYING;
+    transitionTimer = 1000.f;
+    rooms[currentRoom]->setTransitioning(true);
+
+    // Cambiar estado visual
+    player->setAnimation("DIE");
+    player->blockInput(); // Bloquear input del jugador durante la transición
+
+    // Reproducir sonido de muerte
+    SoundManager::instance().playSound("horse", 0.1f);
+}
+
 
 void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2& offset, int end = -1)
 {
@@ -466,15 +488,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             Barrel* b = static_cast<Barrel*>(e);
             if (b->isExploding()) {
                 if (!godMode) {
-                    // Configurar transición a la nueva habitación
-                    state = DYING;
-                    transitionTimer = 1000.f;
-                    rooms[currentRoom]->setTransitioning(true);
-
-                    // Cambiar estado visual
-                    player->setAnimation("DIE");
-                    player->blockInput(); // Bloquear input del jugador durante la transición
-                    SoundManager::instance().playSound("horse", 0.1f);
+					killPlayer();
                 }
                 break;
             }
@@ -611,18 +625,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             Enemy* enemy = static_cast<Enemy*>(e);
             // Si el enemigo se està muriendo no puede matar a nadie
             if (!enemy->isDying() && !godMode) {
-
-                // Configurar transición a la nueva habitación
-                state = DYING;
-                transitionTimer = 1000.f;
-                rooms[currentRoom]->setTransitioning(true);
-
-                // Cambiar estado visual
-                player->setAnimation("DIE");
-                player->blockInput(); // Bloquear input del jugador durante la transición
-
-				// Reproducir sonido de muerte
-				SoundManager::instance().playSound("horse", 0.1f);
+                killPlayer();
             }
             break;
         }
@@ -630,17 +633,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
         {
             Bullet* b = static_cast<Bullet*>(e);
             if (!godMode && !b->isExploding()) {
-                // Configurar transición a la nueva habitación
-                state = DYING;
-                transitionTimer = 1000.f;
-                rooms[currentRoom]->setTransitioning(true);
-
-                // Cambiar estado visual
-                player->setAnimation("DIE");
-                player->blockInput(); // Bloquear input del jugador durante la transición
-
-                // Reproducir sonido de muerte
-                SoundManager::instance().playSound("horse", 0.1f);
+				killPlayer();
                 b->explode();
             }
             break;
@@ -905,6 +898,7 @@ void Level::update(int deltaTime)
     switch (state)
     {
     case NORMAL:
+		if (player->getDeathByMap()) killPlayer();
         checkCollisions();
 		break;
 

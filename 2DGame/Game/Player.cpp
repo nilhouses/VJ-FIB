@@ -373,6 +373,10 @@ void Player::update(int deltaTime)
 		}
 	}
 	onGround = false;
+
+	// Si el personaje se sale del mapa por abajo o por los lados, muere
+	if (map->isOutOfMap(pos, size)) deathByMap = true;
+
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
 }
 
