@@ -20,7 +20,7 @@
 #define BOTTOM_RIGHT       glm::vec2(0.f/NCols, 0.f/NRows)
 #define FAT_BOTTOM_RIGHT   glm::vec2(4.f/NCols, 0.f/NRows)
 #define BOTTOM_LEFT        glm::vec2(2.f/NCols, 0.f/NRows)
-#define FAT_BOTTOM_LEFT        glm::vec2(6.f/NCols, 0.f/NRows)
+#define FAT_BOTTOM_LEFT    glm::vec2(6.f/NCols, 0.f/NRows)
 
 Pipe::Pipe() : Entity(Type::PIPE) {}
 
