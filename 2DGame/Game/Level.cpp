@@ -691,22 +691,6 @@ void Level::handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollid
     }
     case Type::PLATFORM:
     {
-        Platform* p = static_cast<Platform*>(e);
-
-        glm::ivec2 enemySize = enemy->getSize();
-        glm::vec2 enemyPos = enemy->getPosition();
-        glm::vec2 pPos = p->getPosition();
-        glm::ivec2 pSize = p->getSize();
-
-        float enemyFeet = enemyPos.y + enemySize.y;
-        bool isAbove = enemyFeet <= (pPos.y + 8.0f);
-
-        // Colisión vertical
-        if (rangeCollided.y < rangeCollided.x && isAbove) {
-            enemy->setOnGround(true);
-            glm::vec2 plaformOffset = p->getDeltaMovement();
-            enemy->setPosition(glm::vec2(enemyPos.x + plaformOffset.x, enemyPos.y + plaformOffset.y));
-        }
         break;
     }
     case Type::BULLET:

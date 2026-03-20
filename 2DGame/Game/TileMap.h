@@ -15,7 +15,8 @@ enum TileType {
 	TILE_GROUND,
 	TILE_LADDER_GROUND,
 	TILE_LADDER,
-	TILE_SOLID
+	TILE_SOLID,
+	TILE_SOLID_FOR_ENEMY
 };
 
 
@@ -43,6 +44,8 @@ public:
 	// Devuelve si el bloque que se encuentra en la posición dada es sólido
 	bool collisionMoveLeft(const glm::ivec2& pos, const glm::ivec2& size);
 	bool collisionMoveRight(const glm::ivec2& pos, const glm::ivec2& size);
+	bool collisionMoveLeftEnemy(const glm::ivec2& pos, const glm::ivec2& size);
+	bool collisionMoveRightEnemy(const glm::ivec2& pos, const glm::ivec2& size);
 	bool collisionLadderUp(const glm::vec2& pos, const glm::ivec2& size);
 	bool collisionLadderDown(const glm::vec2& pos, const glm::ivec2& size);
 	bool collisionDown(const glm::ivec2& pos, const glm::ivec2& size, float offsetY);
@@ -60,6 +63,7 @@ private:
 	bool isGround(int x, int y);
 	bool isSolid(int x, int y);
 	bool isLadder(int x, int y);
+	bool isSolidForEnemy(int x, int y);
 
 private:
 	// Para crear una nueva capa añadir un elemento nuevo a esta lista y modificar loadLevel() + prepareArrays() + render()
@@ -130,7 +134,7 @@ private:
 		{ 43, TILE_EMPTY },
 		{ 44, TILE_LADDER },
 		{ 45, TILE_EMPTY },
-		{ 46, TILE_EMPTY },
+		{ 46, TILE_SOLID_FOR_ENEMY },
 		{ 47, TILE_EMPTY },
 		{ 48, TILE_EMPTY },
 		// Fila 4

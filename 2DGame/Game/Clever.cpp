@@ -56,6 +56,7 @@ void Clever::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 
     this->movingRight = movingRight;
     sprite->changeAnimation(movingRight ? MOVE_RIGHT : MOVE_LEFT);
+    setSpeed(2.f);
 }
 
 void Clever::render()
@@ -213,14 +214,14 @@ void Clever::update(int deltaTime)
         if (movingRight) {
             if (sprite->animation() != MOVE_RIGHT) sprite->changeAnimation(MOVE_RIGHT);
             glm::ivec2 nextPos(pos.x + speed, pos.y);
-            if (!map->collisionMoveRight(nextPos, size) && nextPos.x + size.x < mapWidth)
+            if (!map->collisionMoveRightEnemy(nextPos, size) && nextPos.x + size.x < mapWidth)
                 pos.x += speed;
             else changeDirection();
         }
         else {
             if (sprite->animation() != MOVE_LEFT) sprite->changeAnimation(MOVE_LEFT);
             glm::ivec2 nextPos(pos.x - speed, pos.y);
-            if (!map->collisionMoveLeft(nextPos, size) && nextPos.x > 0)
+            if (!map->collisionMoveLeftEnemy(nextPos, size) && nextPos.x > 0)
                 pos.x -= speed;
             else changeDirection();
         }

@@ -1,8 +1,11 @@
-2
-images/fondo_desierto.png
 6
-832 448
+images/fondo_desierto_alto.png
+1
+832 576
 0 0 0
+images/fondo_habitacion.png
+5
+1280 960
 1 0 0
 2 0 0
 3 0 0

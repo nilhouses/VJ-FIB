@@ -264,6 +264,37 @@ bool TileMap::collisionMoveRight(const glm::ivec2& pos, const glm::ivec2& size)
 	return false;
 }
 
+bool TileMap::collisionMoveLeftEnemy(const glm::ivec2& pos, const glm::ivec2& size)
+{
+	int x, y0, y1;
+
+	x = pos.x / tileSize;
+	y0 = pos.y / tileSize;
+	y1 = (pos.y + size.y - 1) / tileSize;
+	for (int y = y0; y <= y1; y++)
+	{
+		if (isSolidForEnemy(x, y))
+			return true;
+	}
+
+	return false;
+}
+
+bool TileMap::collisionMoveRightEnemy(const glm::ivec2& pos, const glm::ivec2& size)
+{
+	int x, y0, y1;
+
+	x = (pos.x + size.x - 1) / tileSize;
+	y0 = pos.y / tileSize;
+	y1 = (pos.y + size.y - 1) / tileSize;
+	for (int y = y0; y <= y1; y++)
+	{
+		if (isSolidForEnemy(x, y))
+			return true;
+	}
+
+	return false;
+}
 
 bool TileMap::collisionLadderUp(const glm::vec2& pos, const glm::ivec2& size)
 {
@@ -378,10 +409,25 @@ bool TileMap::isSolid(int x, int y)
 	int tileBase = map[y * mapSize.x + x];
 	int tileFront = front[y * mapSize.x + x];
 	bool b = getTileType(tileBase) == TILE_SOLID || getTileType(tileFront) == TILE_SOLID;
-	
+
 	if (front2 != nullptr) {
 		int tileFront2 = front2[y * mapSize.x + x];
 		b = b || getTileType(tileFront2) == TILE_SOLID;
+	}
+
+	return b;
+}
+
+// Devuelve si el bloque del índice x,y es sólido para enemigos
+bool TileMap::isSolidForEnemy(int x, int y)
+{
+	int tileBase = map[y * mapSize.x + x];
+	int tileFront = front[y * mapSize.x + x];
+	bool b = getTileType(tileBase) == TILE_SOLID || getTileType(tileFront) == TILE_SOLID || getTileType(tileBase) == TILE_SOLID_FOR_ENEMY || getTileType(tileFront) == TILE_SOLID_FOR_ENEMY;
+
+	if (front2 != nullptr) {
+		int tileFront2 = front2[y * mapSize.x + x];
+		b = b || getTileType(tileFront2) == TILE_SOLID || getTileType(tileFront2) == TILE_SOLID_FOR_ENEMY;
 	}
 
 	return b;
