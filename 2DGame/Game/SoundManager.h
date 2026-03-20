@@ -40,7 +40,7 @@ private:
     bool musicPlaying = false;
     std::string currentMusicKey = "";
 
-    float musicVolume = 0.00f;
+    float musicVolume = 0.f;//0.2f;
     std::list<ma_sound*> activeSounds; // Lista de sonidos en reproducción
 };
 

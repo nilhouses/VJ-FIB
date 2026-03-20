@@ -17,7 +17,7 @@ public:
 	void render();
 	void setPosition(const glm::vec2& pos);
 
-	void setParrallax(int f) { sprite->setParallax(f); }
+	void setParrallax(float f) { sprite->setParallax(f); }
 
 protected:
 	glm::ivec2 tileMapDispl, pos;			// Posición de la entidad en el mapa de tiles

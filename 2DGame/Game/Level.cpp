@@ -577,7 +577,8 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                     door->openingAnim();
                     player->setAnimation("OPEN_AND_ENTER");
                 }
-                else player->setAnimation("ENTER");
+                else { player->setAnimation("ENTER"); }
+				if (door->isCave()) SoundManager::instance().playSound("caveDoor", 0.8f);
                 break;
             }
             case EnterType::TUNNEL: // Si es un túnel la animación del jugador es ENTER_TUNNEL
@@ -585,7 +586,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                 cout << "Interacting with tunnel" << endl;
 
                 Tunnel* tunnel = static_cast<Tunnel*>(enter);
-
+                SoundManager::instance().playSound("tunnelSteps", 0.8f);
                 if (tunnel->getUp()) player->setAnimation("TUNNEL_ENTER_TOP");
                 else player->setAnimation("TUNNEL_ENTER_BOTTOM");
 

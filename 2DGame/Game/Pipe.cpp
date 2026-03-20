@@ -4,16 +4,23 @@
 #include <iostream>
 
 // Coordenadas de textura de cada tile del spritesheet pipe.png, (En función de donde tiene los agujeros)
-#define ENTRY_DOWN         glm::vec2(0.00f, 0.00f)
-#define ENTRY_UP           glm::vec2(0.25f, 0.00f)
-#define VERTICAL           glm::vec2(0.50f, 0.00f)
-#define HORIZONTAL         glm::vec2(0.75f, 0.00f)
-#define FAT_VERTICAL       glm::vec2(0.50f, 0.55f)
-#define FAT_HORIZONTAL     glm::vec2(0.75f, 0.50f)
-#define TOP_RIGHT          glm::vec2(0.00f, 0.50f)
-#define TOP_LEFT           glm::vec2(0.75f, 0.25f)
-#define BOTTOM_RIGHT       glm::vec2(0.00f, 0.25f)
-#define BOTTOM_LEFT        glm::vec2(0.25f, 0.25f)
+#define NRows 3
+#define NCols 7
+
+#define ENTRY_DOWN         glm::vec2(3.f/NCols, 0.f/NRows)
+#define ENTRY_UP           glm::vec2(3.f/NCols, 1.f/NRows)
+#define VERTICAL           glm::vec2(0.f/NCols, 1.f/NRows)
+#define FAT_VERTICAL       glm::vec2(4.f/NCols, 1.f/NRows)
+#define HORIZONTAL         glm::vec2(1.f/NCols, 0.f/NRows)
+#define FAT_HORIZONTAL     glm::vec2(5.f/NCols, 0.f/NRows)
+#define TOP_RIGHT          glm::vec2(0.f/NCols, 2.f/NRows)
+#define FAT_TOP_RIGHT      glm::vec2(4.f/NCols, 2.f/NRows)
+#define TOP_LEFT           glm::vec2(2.f/NCols, 2.f/NRows)
+#define FAT_TOP_LEFT       glm::vec2(6.f/NCols, 2.f/NRows)
+#define BOTTOM_RIGHT       glm::vec2(0.f/NCols, 0.f/NRows)
+#define FAT_BOTTOM_RIGHT   glm::vec2(4.f/NCols, 0.f/NRows)
+#define BOTTOM_LEFT        glm::vec2(2.f/NCols, 0.f/NRows)
+#define FAT_BOTTOM_LEFT        glm::vec2(6.f/NCols, 0.f/NRows)
 
 Pipe::Pipe() : Entity(Type::PIPE) {}
 
@@ -64,10 +71,14 @@ glm::vec2 Pipe::inferTexCoords(const vector<glm::ivec2>& tiles, int i) const
 glm::vec2 Pipe::busyTexCoords(const glm::vec2& idleTexCoords) const
 {
     if (idleTexCoords == VERTICAL)   return FAT_VERTICAL;
-    if (idleTexCoords == HORIZONTAL) return FAT_HORIZONTAL;
+    else if (idleTexCoords == HORIZONTAL) return FAT_HORIZONTAL;
+    else if (idleTexCoords == TOP_RIGHT) return FAT_TOP_RIGHT;
+    else if (idleTexCoords == TOP_LEFT) return FAT_TOP_LEFT;
+    else if (idleTexCoords == TOP_LEFT) return FAT_TOP_LEFT;
+    else if (idleTexCoords == BOTTOM_RIGHT) return FAT_BOTTOM_RIGHT;
+	else if (idleTexCoords == BOTTOM_LEFT) return FAT_BOTTOM_LEFT;
     return idleTexCoords; // Los demás segmentos no cambian
 }
-
 
 // ------------------------------------------------------- Init -------------------------------------------------------
 
@@ -76,15 +87,14 @@ void Pipe::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Came
     shaderProg = &shaderProgram;
     cam = c;
 
-    Entity::init(tileMapPos, shaderProgram, "images/pipe.png",
-        glm::ivec2(tileSize, tileSize), glm::vec2(0.25f, 0.25f), c);
+    Entity::init(tileMapPos, shaderProgram, "images/pipe.png", glm::ivec2(tileSize, tileSize), glm::vec2(1.f/NCols, 1.f/NRows), c);
 
     for (int i = 0; i < (int)tileSegments.size(); ++i)
     {
         glm::vec2 tilePos = glm::vec2(tileSegments[i].x * tileSize, tileSegments[i].y * tileSize);
         Sprite* s;
         if (i == 0) s = sprite;
-        else s = Sprite::createSprite(glm::ivec2(tileSize, tileSize), glm::vec2(0.25f, 0.25f), &spritesheet, shaderProg, cam);
+        else s = Sprite::createSprite(glm::ivec2(tileSize, tileSize), glm::vec2(1.f / NCols, 1.f / NRows), &spritesheet, shaderProg, cam);
         s->setPosition(glm::vec2(tileMapPos.x + tilePos.x, tileMapPos.y + tilePos.y));
 
 
