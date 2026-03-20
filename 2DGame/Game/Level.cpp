@@ -915,13 +915,13 @@ void Level::update(int deltaTime)
 
     rooms[currentRoom]->update(deltaTime);
     player->update(deltaTime);
+    // Actualizar la posición de la cámara para que siga al jugador
+    camera->update(player->getPosition(), rooms[currentRoom]->getMap()->getMapSize() * rooms[currentRoom]->getMap()->getTileSize());
 
     switch (state)
     {
         case NORMAL:
         {
-            // Actualizar la posición de la cámara para que siga al jugador
-            camera->update(player->getPosition(), rooms[currentRoom]->getMap()->getMapSize() * rooms[currentRoom]->getMap()->getTileSize());
 
             if (player->getDeathByMap()) killPlayer();
             checkCollisions();
