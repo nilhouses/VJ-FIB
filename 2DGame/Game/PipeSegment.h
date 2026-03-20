@@ -17,11 +17,12 @@ public:
 
     glm::vec2 getTilePos() const { return tilePos; }
     Sprite* getSprite() const { return sprite; }
-
+    int getKeyFramesPerSecond() { return busyKeyFramesPerSecond;}
 private:
     Sprite* sprite = nullptr;
     glm::vec2 tilePos;
     glm::vec2 idleTexCoords;
+	int busyKeyFramesPerSecond = 16;
 };
 
 #endif

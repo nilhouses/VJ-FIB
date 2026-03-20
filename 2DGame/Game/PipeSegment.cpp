@@ -8,7 +8,7 @@ void PipeSegment::init(Sprite* s, const glm::vec2& idleTexCoords, const glm::vec
     sprite->setNumberAnimations(PIPE_NUM_ANIMS);
     sprite->setAnimationSpeed(PIPE_IDLE, 1);
     sprite->addKeyframe(PIPE_IDLE, idleTexCoords);
-    sprite->setAnimationSpeed(PIPE_BUSY, 8);
+    sprite->setAnimationSpeed(PIPE_BUSY, busyKeyFramesPerSecond);
     sprite->addKeyframe(PIPE_BUSY, busyTexCoords);
     sprite->addKeyframe(PIPE_BUSY, idleTexCoords);
     sprite->changeAnimation(PIPE_IDLE);

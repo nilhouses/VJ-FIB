@@ -616,6 +616,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
         {
             if (state != NORMAL) break;
             Pipe* pipe = static_cast<Pipe*>(e);
+            if (pipe->isOccupied()) break;
             if (pipe->getEntryKey(end)) {
                 interactedPipe = pipe;
                 player->deactivate();

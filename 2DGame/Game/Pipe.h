@@ -22,6 +22,7 @@ public:
     glm::vec4 getBoundingBox() const override;
     glm::vec2 getEndDirection(int end) const;
 
+    bool isOccupied() const { return someoneInside; }
     void startTransit(int entryEnd);
     bool isTransitComplete() const { return transitComplete; }
     bool isExitingUp() const {
@@ -44,8 +45,8 @@ private:
     bool  someoneInside = false;
     bool  transitComplete = false;
     float transitProgress = 0.f;
-    float transitDuration = 800.f;
-    int   activeSegment = 0;
+    float transitDuration; // se calcula en init()
+    int activeSegment = 0;
 
     int tileSize;
 

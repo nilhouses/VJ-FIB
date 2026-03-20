@@ -64,7 +64,7 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	sprite->addKeyframe(WALK_RIGHT, glm::vec2(10.f / 16.f, 0.f));
 	sprite->addKeyframe(WALK_RIGHT, glm::vec2(11.f / 16.f, 0.f));
 
-	sprite->setAnimationSpeed(WEAPON_IDLE, 8);
+	sprite->setAnimationSpeed(WEAPON_IDLE, 4);
 	sprite->addKeyframe(WEAPON_IDLE, glm::vec2(0.f, 1.f / 12.f));
 	sprite->addKeyframe(WEAPON_IDLE, glm::vec2(1.f / 16.f, 1.f / 12.f));
 

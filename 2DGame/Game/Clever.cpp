@@ -56,7 +56,7 @@ void Clever::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 
     this->movingRight = movingRight;
     sprite->changeAnimation(movingRight ? MOVE_RIGHT : MOVE_LEFT);
-    setSpeed(2.f);
+    setSpeed(2);
 }
 
 void Clever::render()
@@ -167,8 +167,8 @@ void Clever::update(int deltaTime)
         glm::vec2 exitPos = foundPipe->getExitPosition(size.y, pipeEnd);
         float currentY = (float)(pos.y + size.y);
         float exitY = exitPos.y + size.y;
-        canPipeUp = (exitY < currentY);
-        canPipeDown = (exitY > currentY);
+        canPipeUp = (exitY < currentY) && !foundPipe->isOccupied();
+        canPipeDown = (exitY > currentY) && !foundPipe->isOccupied();
     }
 
     // 1. Movimiento vertical

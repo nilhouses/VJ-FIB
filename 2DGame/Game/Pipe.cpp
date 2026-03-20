@@ -89,6 +89,7 @@ void Pipe::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Came
 
     Entity::init(tileMapPos, shaderProgram, "images/pipe.png", glm::ivec2(tileSize, tileSize), glm::vec2(1.f/NCols, 1.f/NRows), c);
 
+	int keyframesPerSecond = 1;
     for (int i = 0; i < (int)tileSegments.size(); ++i)
     {
         glm::vec2 tilePos = glm::vec2(tileSegments[i].x * tileSize, tileSegments[i].y * tileSize);
@@ -104,11 +105,15 @@ void Pipe::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Came
         PipeSegment seg;
         seg.init(s, texCoords, busyCoords, tilePos);
         segments.push_back(seg);
+
+        keyframesPerSecond = seg.getKeyFramesPerSecond();
     }
 
     pos = glm::vec2(tileSegments[0].x * tileSize, tileSegments[0].y * tileSize);
     size = glm::ivec2(tileSize, tileSize);
 	this->tileSize = tileSize;
+    float animMs = 1000.f/(float)keyframesPerSecond;
+    transitDuration = (float)segments.size() * animMs;
 }
 
 // ------------------------------------------------------- Update -------------------------------------------------------
@@ -191,7 +196,7 @@ bool Pipe::getEntryKey(int end) const
     int idx = (end == 0) ? 0 : (int)segments.size() - 1;
     int nextIdx = (end == 0) ? 1 : (int)segments.size() - 2;
 
-    // La direcció cap a l'interior del tub
+    // La dirección hacia el interior del tubo
     glm::vec2 dir = segments[nextIdx].getTilePos() - segments[idx].getTilePos();
 
     if (dir.y > 0) return Game::instance().getKey(GLFW_KEY_DOWN);

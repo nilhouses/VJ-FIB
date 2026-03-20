@@ -84,7 +84,6 @@ private:
 	// Lista de tipos de bloque, indexada por el número de bloque en el mapa
 	std::unordered_map<int, TileType> tileTypes = {
 
-		// Tileset definitivo
 		{ 0, TILE_EMPTY },
 		// Fila 1
 		{ 1, TILE_GROUND },
@@ -295,8 +294,8 @@ private:
 		{ 194, TILE_EMPTY },
 		{ 195, TILE_EMPTY },
 		{ 196, TILE_EMPTY },
-		{ 197, TILE_EMPTY },
-		{ 198, TILE_EMPTY },
+		{ 197, TILE_GROUND },
+		{ 198, TILE_GROUND },
 		{ 199, TILE_EMPTY },
 		{ 200, TILE_EMPTY },
 		{ 201, TILE_EMPTY },
