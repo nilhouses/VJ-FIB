@@ -13,8 +13,7 @@ public:
     Pipe();
     ~Pipe();
 
-    void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c,
-        const vector<glm::ivec2>& tileSegments, int tileSize = 32);
+    void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, const vector<glm::ivec2>& tileSegments, int tileSize = 32);
 
     void update(int deltaTime) override;
     void render()              override;
