@@ -108,6 +108,7 @@ void Pipe::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Came
 
     pos = glm::vec2(tileSegments[0].x * tileSize, tileSegments[0].y * tileSize);
     size = glm::ivec2(tileSize, tileSize);
+	this->tileSize = tileSize;
 }
 
 // ------------------------------------------------------- Update -------------------------------------------------------

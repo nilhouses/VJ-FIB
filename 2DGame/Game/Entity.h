@@ -58,7 +58,7 @@ public:
 	
 protected:
 	TileMap* map;					    	// Mapa de tiles para detectar colisiones
-	glm::ivec2 tileMapDispl, pos;			// Posición de la entidad en el mapa de tiles
+	glm::ivec2 tileMapDispl, pos;			// Posición de la entidad en el mapa de tiles (px)
 	Texture spritesheet;
 	Sprite *sprite;
 	bool active;							// Indica si la entidad está activa (visible y actualizable) o no

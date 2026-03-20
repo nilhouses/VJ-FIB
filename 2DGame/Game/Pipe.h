@@ -32,6 +32,8 @@ public:
     glm::vec2 getExitPosition(int playerHeight) const;              // usa entryEnd
     glm::vec2 getExitPosition(int playerHeight, int fromEnd) const; // usa fromEnd
 
+    float calculateTotalTime() { return transitDuration; }
+
 private:
     glm::vec2 endTexCoords(const glm::ivec2& dirToAdjacent) const;
     glm::vec2 inferTexCoords(const vector<glm::ivec2>& tiles, int i) const;
@@ -44,6 +46,8 @@ private:
     float transitProgress = 0.f;
     float transitDuration = 800.f;
     int   activeSegment = 0;
+
+    int tileSize;
 
     ShaderProgram* shaderProg = nullptr;
     Camera* cam = nullptr;

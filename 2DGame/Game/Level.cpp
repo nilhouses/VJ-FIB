@@ -171,7 +171,6 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, b
     return entity;
 }
 
-
 void Level::loadEntities()
 {
     string entityPath = "levels/level0" + std::to_string(level) + "/entities.txt";
@@ -183,6 +182,7 @@ void Level::loadEntities()
 
     while (fin >> type)
     {
+		cout << "Loading entity type: " << type << endl;
         fin >> count;
 
         if (type == "KEY") allKeys = count;
@@ -257,7 +257,6 @@ void Level::loadEntities()
     }
 }
 
-
 void Level::createAsset(const string& spriteDir, glm::vec2& pos, glm::vec2& size, int indexRoom, bool bg)
 {
     Asset* asset = new Asset();
@@ -268,7 +267,6 @@ void Level::createAsset(const string& spriteDir, glm::vec2& pos, glm::vec2& size
     if (bg) rooms[indexRoom]->setBackground(asset);
     else rooms[indexRoom]->addAsset(asset);
 }
-
 
 void Level::loadAssets()
 {
@@ -310,7 +308,6 @@ void Level::loadAssets()
     }
 }
 
-
 void Level::loadMaps(vector<TileMap*>& maps, int totalMaps)
 {
     for (int i = 0; i < totalMaps; ++i)
@@ -319,7 +316,6 @@ void Level::loadMaps(vector<TileMap*>& maps, int totalMaps)
         maps[i] = TileMap::createTileMap(mapPath, glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
     }
 }
-
 
 void Level::createRooms()
 {
@@ -362,7 +358,6 @@ void Level::createRooms()
         }
     }
 }
-
 
 void Level::init()
 {
@@ -430,46 +425,48 @@ void Level::killPlayer() {
     SoundManager::instance().playSound("horse", 0.1f);
 }
 
-
-void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2& offset, int end = -1)
-{
+void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2& offset, int end = -1) {
     switch (e->getType())
     {
-    case Type::KEY:
-        player->pickItem();
-        collectedKeys = std::min(collectedKeys + 1, allKeys);
-        // Transición de estado
-        state = PICKING_OBJECT;
-        transitionTimer = 300.f;
-        interactedEntity = e;
-        cout << "collectedKeys: " << collectedKeys << "/" << allKeys << endl;
-        SoundManager::instance().playSound("key", 0.7f);
-        break;
+        case Type::KEY:
+        {
+            player->pickItem();
+            collectedKeys = std::min(collectedKeys + 1, allKeys);
+            // Transición de estado
+            state = PICKING_OBJECT;
+            transitionTimer = 300.f;
+            interactedEntity = e;
+            cout << "collectedKeys: " << collectedKeys << "/" << allKeys << endl;
+            SoundManager::instance().playSound("key", 0.7f);
+            break;
+        }
 
-    case Type::LIFE:
-        player->pickItem();
-        numLives++;
-        // Configurar transición a la nueva habitación
-        state = PICKING_OBJECT;
-        transitionTimer = 300.f;
-        interactedEntity = e;
-        cout << "numLives: " << numLives << endl;
-        SoundManager::instance().playSound("life", 0.1f);
-        break;
+        case Type::LIFE:
+        {
+            player->pickItem();
+            numLives++;
+            // Configurar transición a la nueva habitación
+            state = PICKING_OBJECT;
+            transitionTimer = 300.f;
+            interactedEntity = e;
+            cout << "numLives: " << numLives << endl;
+            SoundManager::instance().playSound("life", 0.1f);
+            break;
+        }
 
-    case Type::SPEEDBOOST:
-    {
-        player->pickItem();
-        SpeedBoost* sb = static_cast<SpeedBoost*>(e);
-        player->activateSpeedBoost(sb->getMultiplier(), sb->getTimeActive());
-        sb->collect();
-        // Configurar transición a la nueva habitación
-        state = PICKING_OBJECT;
-        transitionTimer = 300.f;
-        interactedEntity = e;
-        SoundManager::instance().playSound("kachow", 0.1f);
-        break;
-    }
+        case Type::SPEEDBOOST:
+        {
+            player->pickItem();
+            SpeedBoost* sb = static_cast<SpeedBoost*>(e);
+            player->activateSpeedBoost(sb->getMultiplier(), sb->getTimeActive());
+            sb->collect();
+            // Configurar transición a la nueva habitación
+            state = PICKING_OBJECT;
+            transitionTimer = 300.f;
+            interactedEntity = e;
+            SoundManager::instance().playSound("kachow", 0.1f);
+            break;
+        }
 
         case Type::GUN:
         {
@@ -484,6 +481,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             SoundManager::instance().playSound("gun", 0.3f);
             break;
         }
+
         case Type::BARREL:
         {
             Barrel* b = static_cast<Barrel*>(e);
@@ -500,111 +498,120 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             glm::vec2 bPos = b->getPosition();
             glm::ivec2 bSize = b->getSize();
 
-        float playerBottom = pPos.y + pSize.y;
-        float barrelTop = bPos.y;
+            float playerBottom = pPos.y + pSize.y;
+            float barrelTop = bPos.y;
 
-        // Colisión vertical
-        if (rangeCollided.y < rangeCollided.x && pPos.y < bPos.y) player->setOnGround(true);
-        else
-        {
-            // Colisión horizontal, lógica de empuje
-            if (pPos.x < bPos.x) {
-                player->setPosition(glm::vec2(pPos.x - rangeCollided.x, pPos.y));
-
-                if (Game::instance().getKey(GLFW_KEY_RIGHT)) {
-                    player->handlePush(1, b->tryPush(1, 1.0f));
-                    player->setWasPushing(true);
-                }
-            }
-            else {
-                player->setPosition(glm::vec2(pPos.x + rangeCollided.x, pPos.y));
-
-                if (Game::instance().getKey(GLFW_KEY_LEFT)) {
-                    player->handlePush(-1, b->tryPush(-1, 1.0f));
-                    player->setWasPushing(true);
-                }
-            }
-        }
-        break;
-    }
-    case Type::PLATFORM:
-    {
-        Platform* p = static_cast<Platform*>(e);
-
-        glm::ivec2 playerSize = player->getSize();
-        glm::vec2 playerPos = player->getPosition();
-        glm::vec2 pPos = p->getPosition();
-        glm::ivec2 pSize = p->getSize();
-
-        float playerFeet = playerPos.y + playerSize.y;
-        bool isAbove = playerFeet <= (pPos.y + 8.0f);
-
-        // Colisión vertical
-        if (rangeCollided.y < rangeCollided.x && isAbove) {
-            player->setOnGround(true);
-            glm::vec2 plaformOffset = p->getDeltaMovement();
-            player->setPosition(glm::vec2(playerPos.x + plaformOffset.x, playerPos.y + plaformOffset.y));
-        }
-        break;
-    }
-    case Type::ENTER:
-    {
-        int centerX = (int)(player->getPosition().x + 16.0f);
-        if (Game::instance().getKey(GLFW_KEY_UP) && state == NORMAL && rangeCollided.x > 24) {
-
-            Enter* enter = static_cast<Door*>(e);
-            player->center();
-            // Según el tipo de entrada
-            switch (enter->getEnterType())
+            // Colisión vertical
+            if (rangeCollided.y < rangeCollided.x && pPos.y < bPos.y) player->setOnGround(true);
+            else
             {
-            case EnterType::DOOR:   // Si es una puerta entonces miramos si la puerta es final y además la animación del jugador es ENTER
-            {
-                cout << "Interacting with door" << endl;
+                // Colisión horizontal, lógica de empuje
+                if (pPos.x < bPos.x) {
+                    player->setPosition(glm::vec2(pPos.x - rangeCollided.x, pPos.y));
 
-                Door* door = static_cast<Door*>(enter);
-
-                if (door->getIsFinalDoor()) {
-                    if (collectedKeys < allKeys) {
-                        cout << "You need to collect all keys to enter the final door!" << endl;
-                        // SONIDO DE BLOQUEO [TODO LEVEL]
-                        return;
+                    if (Game::instance().getKey(GLFW_KEY_RIGHT)) {
+                        player->handlePush(1, b->tryPush(1, 1.0f));
+                        player->setWasPushing(true);
                     }
                 }
+                else {
+                    player->setPosition(glm::vec2(pPos.x + rangeCollided.x, pPos.y));
 
-                // Cambiar estado visual
-                if (!door->getVisited() && !door->isCave()) {
-                    // SONIDO de abrir puerta
-                    door->openingAnim();
-                    player->setAnimation("OPEN_AND_ENTER");
-                }
-                else { player->setAnimation("ENTER"); }
-				if (door->isCave()) SoundManager::instance().playSound("caveDoor", 0.8f);
-                break;
-            }
-            case EnterType::TUNNEL: // Si es un túnel la animación del jugador es ENTER_TUNNEL
-            {
-                cout << "Interacting with tunnel" << endl;
-
-                Tunnel* tunnel = static_cast<Tunnel*>(enter);
-                SoundManager::instance().playSound("tunnelSteps", 0.8f);
-                if (tunnel->getUp()) player->setAnimation("TUNNEL_ENTER_TOP");
-                else player->setAnimation("TUNNEL_ENTER_BOTTOM");
-
-                        break;
+                    if (Game::instance().getKey(GLFW_KEY_LEFT)) {
+                        player->handlePush(-1, b->tryPush(-1, 1.0f));
+                        player->setWasPushing(true);
                     }
-                    default:
-						break;
-				}
-                
-                // Configurar transición a la nueva habitación
-                state = ENTERING_DOOR;
-                transitionTimer = 1000.f;
-                interactedEnter = enter;
-                rooms[currentRoom]->setTransitioning(true);
-                player->blockInput(); // Bloquear input del jugador durante la transición
+                }
             }
             break;
         }
+
+        case Type::PLATFORM:
+        {
+            Platform* p = static_cast<Platform*>(e);
+
+            glm::ivec2 playerSize = player->getSize();
+            glm::vec2 playerPos = player->getPosition();
+            glm::vec2 pPos = p->getPosition();
+            glm::ivec2 pSize = p->getSize();
+
+            float playerFeet = playerPos.y + playerSize.y;
+            bool isAbove = playerFeet <= (pPos.y + 8.0f);
+
+            // Colisión vertical
+            if (rangeCollided.y < rangeCollided.x && isAbove) {
+                player->setOnGround(true);
+                glm::vec2 plaformOffset = p->getDeltaMovement();
+                player->setPosition(glm::vec2(playerPos.x + plaformOffset.x, playerPos.y + plaformOffset.y));
+            }
+            break;
+        }
+
+        case Type::ENTER:
+        {
+            int centerX = (int)(player->getPosition().x + 16.0f);
+            if (Game::instance().getKey(GLFW_KEY_UP) && state == NORMAL && rangeCollided.x > 24) {
+
+                Enter* enter = static_cast<Door*>(e);
+                player->center();
+                transitionTimer = 1000.f;
+
+                // Según el tipo de entrada
+                switch (enter->getEnterType())
+                {
+                    case EnterType::DOOR:   // Si es una puerta entonces miramos si la puerta es final y además la animación del jugador es ENTER
+                    {
+                        cout << "Interacting with door" << endl;
+
+                        Door* door = static_cast<Door*>(enter);
+
+                        if (door->getIsFinalDoor()) {
+                            if (collectedKeys < allKeys) {
+                                cout << "You need to collect all keys to enter the final door!" << endl;
+                                // SONIDO DE BLOQUEO [TODO LEVEL]
+                                return;
+                            }
+                        }
+
+                        // Cambiar estado visual
+                        if (!door->getVisited() && !door->isCave()) {
+                            // SONIDO de abrir puerta
+                            door->openingAnim();
+                            player->setAnimation("OPEN_AND_ENTER");
+                        }
+                        else { player->setAnimation("ENTER"); }
+                        if (door->isCave()) SoundManager::instance().playSound("caveDoor", 0.8f);
+                        break;
+                    }
+                    case EnterType::TUNNEL: // Si es un túnel la animación del jugador es ENTER_TUNNEL
+                    {
+                        cout << "Interacting with tunnel" << endl;
+
+                        Tunnel* tunnel = static_cast<Tunnel*>(enter);
+                        SoundManager::instance().playSound("tunnelSteps", 0.8f);
+                        if (tunnel->getUp()) player->setAnimation("TUNNEL_ENTER_TOP");
+                        else player->setAnimation("TUNNEL_ENTER_BOTTOM");
+
+                        // Configurar cámara para la transición
+                        camera->setTotalTimer(transitionTimer);
+                        camera->setStartPos(player->getPosition());
+                        camera->setEndPos(tunnel->getConnectedTo()->getPosition());
+
+                        camera->printTransitionInfo();
+                    }
+                }
+
+                // Configurar transición a la nueva habitación
+                state = ENTERING_DOOR;
+                interactedEnter = enter;
+                rooms[currentRoom]->setTransitioning(true);
+                player->blockInput(); // Bloquear input del jugador durante la transición
+
+                break;
+            }
+            break;
+        }
+
         case Type::PIPE:
         {
             if (state != NORMAL) break;
@@ -615,9 +622,18 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                 player->blockInput();
                 pipe->startTransit(end);
                 state = ENTERING_PIPE;
+
+				// Configurar cámara para la transición
+				transitionTimer = pipe->calculateTotalTime();
+                camera->setTotalTimer(transitionTimer);
+                camera->setStartPos(player->getPosition());
+                camera->setEndPos(interactedPipe->getExitPosition((int)player->getSize().y, end));
+
+				camera->printTransitionInfo();
             }
             break;
         }
+
         case Type::ENEMY:
         {
             Enemy* enemy = static_cast<Enemy*>(e);
@@ -627,6 +643,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             }
             break;
         }
+
         case Type::BULLET:
         {
             Bullet* b = static_cast<Bullet*>(e);
@@ -636,6 +653,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             }
             break;
         }
+
         default:
 			break;
     }
@@ -754,7 +772,6 @@ void Level::handleBarrelCollision(Barrel* b, Entity* e, glm::vec2& rangeCollided
         break;
     }
 }
-
 
 void Level::checkCollisions()
 {
@@ -892,7 +909,6 @@ void Level::checkCollisions()
     }
 }
 
-
 void Level::update(int deltaTime)
 {
     currentTime += deltaTime;
@@ -902,110 +918,138 @@ void Level::update(int deltaTime)
 
     switch (state)
     {
-    case NORMAL:
-		if (player->getDeathByMap()) killPlayer();
-        checkCollisions();
-        break;
+        case NORMAL:
+        {
+            // Actualizar la posición de la cámara para que siga al jugador
+            camera->update(player->getPosition(), rooms[currentRoom]->getMap()->getMapSize() * rooms[currentRoom]->getMap()->getTileSize());
 
-    case ENTERING_DOOR:
-        transitionTimer = std::max(0.f, transitionTimer - deltaTime);
+            if (player->getDeathByMap()) killPlayer();
+            checkCollisions();
 
-        if (transitionTimer == 0.f) {
+            break;
+        }
 
-            // Si se ha entrado por la puerta final se completa el nivel
-            if (interactedEnter->getEnterType() == EnterType::DOOR) {
-                Door* interactedDoor = static_cast<Door*>(interactedEnter);
-                interactedDoor->setToVisited();
-                if (collectedKeys >= allKeys && interactedDoor->getIsFinalDoor()) {
-                    levelCompleted = true;
+        case ENTERING_DOOR:
+        {
+            transitionTimer = std::max(0.f, transitionTimer - deltaTime);
+            // Gestión de cámara (de inicio a fin)
+            if (interactedEnter->getEnterType() == EnterType::TUNNEL) camera->updateTransition(transitionTimer, rooms[currentRoom]->getMap()->getMapSize() * rooms[currentRoom]->getMap()->getTileSize());
+
+            if (transitionTimer == 0.f) {
+
+                // Si se ha entrado por la puerta final se completa el nivel
+                if (interactedEnter->getEnterType() == EnterType::DOOR) {
+                    Door* interactedDoor = static_cast<Door*>(interactedEnter);
+                    interactedDoor->setToVisited();
+                    if (collectedKeys >= allKeys && interactedDoor->getIsFinalDoor()) {
+                        levelCompleted = true;
+                        break;
+                    }
+                }
+
+                // Si se ha entrado por cualquier ENTER diferente a la puerta final
+                Enter* targetEnter = interactedEnter->getConnectedTo();
+                currentRoom = targetEnter->getRoom();
+
+                glm::vec2 targetSpawnPosition = targetEnter->getPosition();
+
+                player->setPosition(glm::vec2(targetSpawnPosition.x, targetSpawnPosition.y));
+                player->setTileMap(rooms[currentRoom]->getMap());
+                player->blockInput();
+                rooms[currentRoom]->setTransitioning(true);
+
+                // Según el tipo de entrada, se configura la animación del jugador
+                switch (interactedEnter->getEnterType())
+                {
+                case EnterType::DOOR:
+                    (player->hasBullets()) ? player->setAnimation("WEAPON_IDLE") : player->setAnimation("IDLE");
                     break;
+                case EnterType::TUNNEL:
+                {
+                    Tunnel* tunnel = static_cast<Tunnel*>(interactedEnter);
+                    if (tunnel->getUp()) player->setAnimation("TUNNEL_LEAVE_TOP");
+                    else player->setAnimation("TUNNEL_LEAVE_BOTTOM");
+                    break;
+                }
+                default:
+                    break;
+                }
+
+                // Cambio de estado a EXITING_DOOR
+                state = EXITING_DOOR;
+                transitionTimer = 1000.f;
+            }
+
+            break;
+        }
+
+        case EXITING_DOOR:
+        {
+            transitionTimer = std::max(0.f, transitionTimer - deltaTime);
+
+            if (transitionTimer == 0.f) {
+                if (player->getCurrentAnimationName() != "IDLE" && player->getCurrentAnimationName() != "WEAPON_IDLE")
+                    (player->hasBullets()) ? player->setAnimation("WEAPON_IDLE") : player->setAnimation("IDLE");
+                player->unblockInput();
+                rooms[currentRoom]->setTransitioning(false);
+                state = NORMAL;
+            }
+
+            break;
+        }
+
+        case ENTERING_PIPE:
+        {
+            transitionTimer = std::max(0.f, transitionTimer - deltaTime);
+            // Gestión de cámara (de inicio a fin)
+            camera->updateTransition(transitionTimer, rooms[currentRoom]->getMap()->getMapSize() * rooms[currentRoom]->getMap()->getTileSize());
+
+            if (interactedPipe->isTransitComplete()) {
+                glm::vec2 exitPos = interactedPipe->getExitPosition((int)player->getSize().y);
+                player->setPosition(exitPos);
+                player->activate();
+                player->unblockInput();
+                state = NORMAL;
+                player->exitPipe(interactedPipe->isExitingUp());
+                interactedPipe = nullptr;
+            }
+
+            break;
+        }
+
+        case DYING:
+        {
+            transitionTimer = std::max(0.f, transitionTimer - deltaTime);
+            if (transitionTimer == 0.f) {
+                // Animación acabada
+                player->unblockInput();
+                if (numLives > 0) {
+                    numLives--;
+                    cout << "numLives: " << numLives << endl;
+                    init(); // Temporal, el init vuelve a leer todos los ficheros. Necesitaremos un reset()
                 }
             }
 
-            // Si se ha entrado por cualquier ENTER diferente a la puerta final
-            Enter* targetEnter = interactedEnter->getConnectedTo();
-            currentRoom = targetEnter->getRoom();
+            break;
+        }
 
-            glm::vec2 targetSpawnPosition = targetEnter->getPosition();
-
-            player->setPosition(glm::vec2(targetSpawnPosition.x, targetSpawnPosition.y));
-            player->setTileMap(rooms[currentRoom]->getMap());
-            player->blockInput();
-            rooms[currentRoom]->setTransitioning(true);
-
-            // Según el tipo de entrada, se configura la animación del jugador
-            switch (interactedEnter->getEnterType())
-            {
-            case EnterType::DOOR:
-                (player->hasBullets()) ? player->setAnimation("WEAPON_IDLE") : player->setAnimation("IDLE");
-                break;
-            case EnterType::TUNNEL:
-            {
-                Tunnel* tunnel = static_cast<Tunnel*>(interactedEnter);
-                if (tunnel->getUp()) player->setAnimation("TUNNEL_LEAVE_TOP");
-                else player->setAnimation("TUNNEL_LEAVE_BOTTOM");
-                break;
-            }
-            default:
-                break;
+        case PICKING_OBJECT:
+        {
+            transitionTimer = std::max(0.f, transitionTimer - deltaTime);
+            if (transitionTimer == 0.f) {
+                // Animación acabada
+                player->unblockInput();
+                interactedEntity->deactivate();
+                state = NORMAL;
             }
 
-            // Cambio de estado a EXITING_DOOR
-            state = EXITING_DOOR;
-            transitionTimer = 1000.f;
+            break;
         }
 
-        break;
-
-    case EXITING_DOOR:
-        transitionTimer = std::max(0.f, transitionTimer - deltaTime);
-
-        if (transitionTimer == 0.f) {
-            if (player->getCurrentAnimationName() != "IDLE" && player->getCurrentAnimationName() != "WEAPON_IDLE")
-                (player->hasBullets()) ? player->setAnimation("WEAPON_IDLE") : player->setAnimation("IDLE");
-            player->unblockInput();
-            rooms[currentRoom]->setTransitioning(false);
-            state = NORMAL;
-        }
-
-        break;
-    case ENTERING_PIPE:
-        if (interactedPipe->isTransitComplete()) {
-            glm::vec2 exitPos = interactedPipe->getExitPosition((int)player->getSize().y);
-            player->setPosition(exitPos);
-            player->activate();
-            player->unblockInput();
-            state = NORMAL;
-            player->exitPipe(interactedPipe->isExitingUp());
-            interactedPipe = nullptr;
-        }
-        break;
-    case DYING:
-        transitionTimer = std::max(0.f, transitionTimer - deltaTime);
-        if (transitionTimer == 0.f) {
-            // Animación acabada
-            player->unblockInput();
-            if (numLives > 0) {
-                numLives--;
-                cout << "numLives: " << numLives << endl;
-                init(); // Temporal, el init vuelve a leer todos los ficheros. Necesitaremos un reset()
-            }
-        }
-        break;
-    case PICKING_OBJECT:
-        transitionTimer = std::max(0.f, transitionTimer - deltaTime);
-        if (transitionTimer == 0.f) {
-            // Animación acabada
-            player->unblockInput();
-            interactedEntity->deactivate();
-            state = NORMAL;
-        }
-        break;
-    default:
-        break;
+        default:
+            break;
     }
 
-    camera->update(player->getPosition(), rooms[currentRoom]->getMap()->getMapSize() * rooms[currentRoom]->getMap()->getTileSize());
 
     // Skip content
     if (Game::instance().getKey(GLFW_KEY_G) && releasedG) {
@@ -1033,6 +1077,7 @@ void Level::render()
 }
 
 bool Level::gameOver() { return (numLives == 0); }
+
 bool Level::getLevelCompleted() { return levelCompleted; } // Se deberá poner que se haya entrado en la última puerta, con todas las llaves recogidas
 
 bool Level::playerCenteredOn(const glm::vec4& bbox) const {

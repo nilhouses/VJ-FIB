@@ -1,5 +1,7 @@
 #include "Camera.h"
+#include <iostream>
 #include <algorithm>
+using namespace std;
 
 Camera::Camera(int screenWidth, int screenHeight, int hudHeight)
     : screenWidth(screenWidth), screenHeight(screenHeight), hudHeight(hudHeight)
@@ -20,4 +22,27 @@ void Camera::update(const glm::vec2& targetPos, const glm::vec2& mapSize)
 
     // Para evitar subpixel rendering
     position = glm::floor(position);
+}
+
+
+/* Se deben inicializar transitionStartPos, transitionEndPos y totalTransitionTime con los setters correspondientes */
+void Camera::updateTransition(float time, const glm::vec2& mapSize)
+{
+	float timeElapsed = totalTransitionTime - time;
+
+	// Calcular el target position usando interpolación lineal entre initPos y finPos
+	glm::vec2 targetPos = transitionStartPos + (transitionEndPos - transitionStartPos) * (timeElapsed / totalTransitionTime);
+
+	// Actualizar la posición de la cámara para seguir el target position
+    update(targetPos, mapSize);
+}
+
+
+
+
+void Camera::printTransitionInfo() const
+{
+	cout << "Start Pos: (" << transitionStartPos.x << ", " << transitionStartPos.y << ")" << endl;
+	cout << "End Pos: (" << transitionEndPos.x << ", " << transitionEndPos.y << ")" << endl;
+	cout << "Total Transition Time: " << totalTransitionTime << endl;
 }
