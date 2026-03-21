@@ -73,7 +73,7 @@ bool Clever::centeredOn(const glm::vec4& bbox) const
         centerY >= bbox.y && centerY <= bbox.y + bbox.w;
 }
 
-bool overlaps(const glm::vec4& a, const glm::vec4& b) {
+bool static overlaps(const glm::vec4& a, const glm::vec4& b) {
     return !(a.x + a.z < b.x || b.x + b.z < a.x || a.y + a.w < b.y || b.y + b.w < a.y);
 }
 
@@ -314,6 +314,12 @@ void Clever::notifyTunnelEntry(Tunnel * t)
     inTunnel = true;
     tunnelTimer = TUNNEL_DURATION;
     setVisible(false);
+
+    // Sonido de entrada
+    glm::vec4 b = t->getBoundingBox();
+    glm::vec2 entryCenter(b.x + b.z * 0.5f, b.y + b.w * 0.5f);
+    if (cam->isVisible(entryCenter)) SoundManager::instance().playSound("tunnelSteps", 0.2f); // Más flojo que el player para quitarle algo de importancia
+
     // [TODO] Animación de entrada
     // if (currentTunnel->getUp())
     //      if (sprite->animation() != TUNNEL_ENTER_TOP) sprite->changeAnimation(TUNNEL_ENTER_TOP);

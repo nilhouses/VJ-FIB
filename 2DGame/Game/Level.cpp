@@ -173,7 +173,7 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, b
 
 void Level::loadEntities()
 {
-    string entityPath = "levels/level0" + std::to_string(level) + "/entities.txt";
+    string entityPath = "levels/level0" + to_string(level) + "/entities.txt";
     ifstream fin(entityPath);
 
     string type;
@@ -270,7 +270,7 @@ void Level::createAsset(const string& spriteDir, glm::vec2& pos, glm::vec2& size
 
 void Level::loadAssets()
 {
-    string assetPath = "levels/level0" + std::to_string(level) + "/assets.txt";
+    string assetPath = "levels/level0" + to_string(level) + "/assets.txt";
     ifstream fin(assetPath);
 
     string path;
@@ -312,14 +312,14 @@ void Level::loadMaps(vector<TileMap*>& maps, int totalMaps)
 {
     for (int i = 0; i < totalMaps; ++i)
     {
-        string mapPath = "levels/level0" + std::to_string(level) + "/maps/map" + std::to_string(i) + ".txt";
+        string mapPath = "levels/level0" + to_string(level) + "/maps/map" + to_string(i) + ".txt";
         maps[i] = TileMap::createTileMap(mapPath, glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
     }
 }
 
 void Level::createRooms()
 {
-    string indexPath = "levels/level0" + std::to_string(level) + "/indexMapToRoom.txt";
+    string indexPath = "levels/level0" + to_string(level) + "/indexMapToRoom.txt";
     ifstream fin(indexPath);
 
     int totalRooms, totalMaps;
@@ -365,7 +365,7 @@ void Level::init()
 
     // Atributos globales del nivel
     collectedKeys = 0;
-    string globalInfoPath = "levels/level0" + std::to_string(level) + "/globalInfo.txt";
+    string globalInfoPath = "levels/level0" + to_string(level) + "/globalInfo.txt";
     levelCompleted = false;
     rooms = vector<Room*>();
     currentRoom = 0;
@@ -393,13 +393,13 @@ CollisionInfo Level::overlap(const glm::vec4& a, const glm::vec4& b, const glm::
 
     if (colliding) {
         // Calcular rango horizontal de colisión
-        float leftMax = std::max(a.x + offset.x, b.x + offset.x);
-        float rightMin = std::min(a.x + a.z, b.x + b.z);
+        float leftMax = max(a.x + offset.x, b.x + offset.x);
+        float rightMin = min(a.x + a.z, b.x + b.z);
         float horizontalOverlap = rightMin - leftMax;
 
         // Calcular rango vertical de colisión
-        float topMax = std::max(a.y + offset.y, b.y + offset.y);
-        float bottomMin = std::min(a.y + a.w, b.y + b.w);
+        float topMax = max(a.y + offset.y, b.y + offset.y);
+        float bottomMin = min(a.y + a.w, b.y + b.w);
         float verticalOverlap = bottomMin - topMax;
 
         info.rangeColision = glm::vec2(horizontalOverlap, verticalOverlap);
@@ -422,7 +422,8 @@ void Level::killPlayer() {
     player->blockInput(); // Bloquear input del jugador durante la transición
 
     // Reproducir sonido de muerte
-    SoundManager::instance().playSound("horse", 0.1f);
+    if (numLives > 1) SoundManager::instance().playSound("death", 0.2f);
+    else SoundManager::instance().playSound("gameOver", 0.2f);
 }
 
 void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2& offset, int end = -1) {
@@ -431,7 +432,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
         case Type::KEY:
         {
             player->pickItem();
-            collectedKeys = std::min(collectedKeys + 1, allKeys);
+            collectedKeys = min(collectedKeys + 1, allKeys);
             // Transición de estado
             state = PICKING_OBJECT;
             transitionTimer = 300.f;
@@ -550,8 +551,11 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
         case Type::ENTER:
         {
             int centerX = (int)(player->getPosition().x + 16.0f);
-            if (Game::instance().getKey(GLFW_KEY_UP) && state == NORMAL && rangeCollided.x > 24) {
+            
+            bool isUpPressed = Game::instance().getKey(GLFW_KEY_UP);
 
+            if (isUpPressed && releasedUp && state == NORMAL && rangeCollided.x > 24) {
+                releasedUp = false;
                 Enter* enter = static_cast<Door*>(e);
                 player->center();
                 transitionTimer = 1000.f;
@@ -561,26 +565,31 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                 {
                     case EnterType::DOOR:   // Si es una puerta entonces miramos si la puerta es final y además la animación del jugador es ENTER
                     {
-                        cout << "Interacting with door" << endl;
-
                         Door* door = static_cast<Door*>(enter);
 
+                        bool sound = true;
                         if (door->getIsFinalDoor()) {
                             if (collectedKeys < allKeys) {
                                 cout << "You need to collect all keys to enter the final door!" << endl;
+                                SoundManager::instance().playSound("doorLocked", 0.3f);
+
                                 // SONIDO DE BLOQUEO [TODO LEVEL]
                                 return;
                             }
+                            else {
+								cout << "Level completed!" << endl;
+                                SoundManager::instance().playSound("openLockedDoor", 0.5f);
+								sound = false;
+                            }
                         }
-
-                        // Cambiar estado visual
+                        // Cambiar estado visual + sonido (si hace falta)
                         if (!door->getVisited() && !door->isCave()) {
                             // SONIDO de abrir puerta
-                            door->openingAnim();
+                            door->openingAnim(sound);
                             player->setAnimation("OPEN_AND_ENTER");
                         }
                         else { player->setAnimation("ENTER"); }
-                        if (door->isCave()) SoundManager::instance().playSound("caveDoor", 0.8f);
+                        if (door->isCave()) SoundManager::instance().playSound("caveDoor", 0.3f);
                         break;
                     }
                     case EnterType::TUNNEL: // Si es un túnel la animación del jugador es ENTER_TUNNEL
@@ -588,7 +597,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                         cout << "Interacting with tunnel" << endl;
 
                         Tunnel* tunnel = static_cast<Tunnel*>(enter);
-                        SoundManager::instance().playSound("tunnelSteps", 0.8f);
+                        SoundManager::instance().playSound("tunnelSteps", 0.4f);
                         if (tunnel->getUp()) player->setAnimation("TUNNEL_ENTER_TOP");
                         else player->setAnimation("TUNNEL_ENTER_BOTTOM");
 
@@ -616,7 +625,10 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
         {
             if (state != NORMAL) break;
             Pipe* pipe = static_cast<Pipe*>(e);
-            if (pipe->isOccupied()) break;
+            if (pipe->isOccupied()) {
+                if (pipe->getEntryKey(end)) SoundManager::instance().playSound("invalidAction", 0.2f);
+                break;
+            }
             if (pipe->getEntryKey(end)) {
                 interactedPipe = pipe;
                 player->deactivate();
@@ -920,7 +932,7 @@ void Level::update(int deltaTime)
 
         case ENTERING_DOOR:
         {
-            transitionTimer = std::max(0.f, transitionTimer - deltaTime);
+            transitionTimer = max(0.f, transitionTimer - deltaTime);
             // Gestión de cámara (de inicio a fin)
             if (interactedEnter->getEnterType() == EnterType::TUNNEL) camera->updateTransition(transitionTimer, rooms[currentRoom]->getMap()->getMapSize() * rooms[currentRoom]->getMap()->getTileSize());
 
@@ -974,7 +986,7 @@ void Level::update(int deltaTime)
 
         case EXITING_DOOR:
         {
-            transitionTimer = std::max(0.f, transitionTimer - deltaTime);
+            transitionTimer = max(0.f, transitionTimer - deltaTime);
 
             if (transitionTimer == 0.f) {
                 if (player->getCurrentAnimationName() != "IDLE" && player->getCurrentAnimationName() != "WEAPON_IDLE")
@@ -989,7 +1001,7 @@ void Level::update(int deltaTime)
 
         case ENTERING_PIPE:
         {
-            transitionTimer = std::max(0.f, transitionTimer - deltaTime);
+            transitionTimer = max(0.f, transitionTimer - deltaTime);
             // Gestión de cámara (de inicio a fin)
             camera->updateTransition(transitionTimer, rooms[currentRoom]->getMap()->getMapSize() * rooms[currentRoom]->getMap()->getTileSize());
 
@@ -1008,7 +1020,7 @@ void Level::update(int deltaTime)
 
         case DYING:
         {
-            transitionTimer = std::max(0.f, transitionTimer - deltaTime);
+            transitionTimer = max(0.f, transitionTimer - deltaTime);
             if (transitionTimer == 0.f) {
                 // Animación acabada
                 player->unblockInput();
@@ -1024,7 +1036,7 @@ void Level::update(int deltaTime)
 
         case PICKING_OBJECT:
         {
-            transitionTimer = std::max(0.f, transitionTimer - deltaTime);
+            transitionTimer = max(0.f, transitionTimer - deltaTime);
             if (transitionTimer == 0.f) {
                 // Animación acabada
                 player->unblockInput();
@@ -1052,6 +1064,9 @@ void Level::update(int deltaTime)
     if (Game::instance().getKey(GLFW_KEY_K)) {
         collectedKeys = allKeys;
         cout << "collectedKeys: " << collectedKeys << "/" << allKeys << endl;
+    }
+    if (!Game::instance().getKey(GLFW_KEY_UP)) {
+        releasedUp = true;
     }
 }
 

@@ -8,7 +8,8 @@ std::unordered_map<std::string, std::string> sounds = {
     { "levels1&2", "sounds/ost/desierto.mp3"},
     { "levels3&4", "sounds/ost/cueva.mp3"},
     { "level5", "sounds/ost/gusano.mp3"},
-    { "horse", "sounds/caballoMVP.mp3"},
+    { "death", "sounds/death.mp3"},
+    { "gameOver", "sounds/gameOver.mp3"},
     { "life", "sounds/life.mp3"},
     { "key", "sounds/key.mp3"},
     { "explosion", "sounds/explosion.mp3"},
@@ -22,6 +23,9 @@ std::unordered_map<std::string, std::string> sounds = {
     { "tunnelSteps", "sounds/tunnelSteps.mp3"},
     { "pipe_in", "sounds/pipe_in.mp3"},
     { "pipe_out", "sounds/pipe_out.mp3"},
+    { "doorLocked", "sounds/doorLocked.mp3"},
+    { "invalidAction", "sounds/invalidAction.mp3"},
+    { "openLockedDoor", "sounds/openLockedDoor.mp3"},
 };
 
 

@@ -17,7 +17,7 @@ public:
 	void setToVisited();
 	bool getVisited() { return visited; }
 	bool getIsFinalDoor() { return getConnectedTo() == nullptr; }
-	void openingAnim();
+	void openingAnim(bool sound);
 	bool isCave() { return spriteRow == 4 || spriteRow == 6; }
 private:
 	bool visited;

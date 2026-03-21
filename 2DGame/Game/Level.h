@@ -76,6 +76,7 @@ private:
 	// Para saltar contenido
 	bool godMode = false;
 	bool releasedG = true;
+	bool releasedUp = true;
 };
 
 #endif // _LEVEL_INCLUDE
