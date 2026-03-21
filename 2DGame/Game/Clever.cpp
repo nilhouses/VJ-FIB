@@ -136,6 +136,12 @@ void Clever::update(int deltaTime)
         if (currentPipe->isTransitComplete()) {
             glm::vec2 exitPos = currentPipe->getExitPosition(size.y);
             pos = glm::ivec2(exitPos.x, exitPos.y);
+
+            float tileSize = (float)map->getTileSize();
+            glm::vec2 endCenter(exitPos.x + tileSize * 0.5f, exitPos.y + tileSize * 0.5f);
+            glm::vec2 pPos = playerTarget->getPosition();
+            if (abs(pPos.x - endCenter.x) < PLAYER_SOUND_RANGE_X && abs(pPos.y - endCenter.y) < PLAYER_SOUND_RANGE_Y) SoundManager::instance().playSound("pipe_out", 0.05f);
+
             setVisible(true);
             inPipe = false;
             currentPipe = nullptr;               
@@ -185,7 +191,14 @@ void Clever::update(int deltaTime)
                 currentPipe = foundPipe;
                 inPipe = true;
                 setVisible(false);
-                foundPipe->startTransit(pipeEnd);
+                foundPipe->startTransit(pipeEnd,false);
+
+				// Sonido de entrada en la pipe si está cerca del jugador
+                glm::vec2 pPos = playerTarget->getPosition();
+                glm::vec4 b = foundPipe->getEndBoundingBox(pipeEnd);
+                glm::vec2 endCenter(b.x + b.z * 0.5f, b.y + b.w * 0.5f);
+                if (abs(pPos.x - endCenter.x) < PLAYER_SOUND_RANGE_X && abs(pPos.y - endCenter.y) < PLAYER_SOUND_RANGE_Y) SoundManager::instance().playSound("pipe_in", 0.05f);
+
                 sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
                 return;
             }
@@ -201,7 +214,14 @@ void Clever::update(int deltaTime)
                 currentPipe = foundPipe;
                 inPipe = true;
                 setVisible(false);
-                foundPipe->startTransit(pipeEnd);
+                foundPipe->startTransit(pipeEnd, false);
+                // Sonido de entrada en la pipe si está cerca del jugador
+                glm::vec2 pPos = playerTarget->getPosition();
+                glm::vec4 b = foundPipe->getEndBoundingBox(pipeEnd);
+                glm::vec2 endCenter(b.x + b.z * 0.5f, b.y + b.w * 0.5f);
+                
+                if (abs(pPos.x - endCenter.x) < PLAYER_SOUND_RANGE_X && abs(pPos.y - endCenter.y) < PLAYER_SOUND_RANGE_Y) SoundManager::instance().playSound("pipe_in", 0.05f);
+
                 sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
                 return;
             }

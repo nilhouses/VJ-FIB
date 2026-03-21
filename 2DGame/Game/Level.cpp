@@ -621,7 +621,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                 interactedPipe = pipe;
                 player->deactivate();
                 player->blockInput();
-                pipe->startTransit(end);
+                pipe->startTransit(end,true);
                 state = ENTERING_PIPE;
 
 				// Configurar cámara para la transición

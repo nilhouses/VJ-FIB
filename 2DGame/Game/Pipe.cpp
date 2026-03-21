@@ -144,6 +144,7 @@ void Pipe::update(int deltaTime)
         segments[activeSegment].setActive(false);
         someoneInside = false;
         transitComplete = true;
+        if (soundEnabled) { SoundManager::instance().playSound("pipe_out", 0.05f); soundEnabled = false; }
     }
 }
 
@@ -155,14 +156,17 @@ void Pipe::render()
 
 // ------------------------------------------------------- Tráfico -------------------------------------------------------
 
-void Pipe::startTransit(int end)
+void Pipe::startTransit(int end, bool withSound)
 {
+    soundEnabled = withSound;
     entryEnd = end;
     someoneInside = true;
     transitComplete = false;
     transitProgress = 0.f;
     activeSegment = (end == 0) ? 0 : (int)segments.size() - 1;
     segments[activeSegment].setActive(true);
+
+    if (withSound) SoundManager::instance().playSound("pipe_in", 0.05f);
 }
 
 glm::vec2 Pipe::getExitPosition(int playerHeight) const { return getExitPosition(playerHeight, entryEnd); }

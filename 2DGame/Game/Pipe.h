@@ -5,6 +5,7 @@
 #include "Entity.h"
 #include "Camera.h"
 #include "PipeSegment.h"
+#include "SoundManager.h"
 #include <vector>
 
 class Pipe : public Entity
@@ -23,7 +24,7 @@ public:
     glm::vec2 getEndDirection(int end) const;
 
     bool isOccupied() const { return someoneInside; }
-    void startTransit(int entryEnd);
+    void startTransit(int entryEnd, bool withSound);
     bool isTransitComplete() const { return transitComplete; }
     bool isExitingUp() const {
         int exitEnd = (entryEnd == 0) ? 1 : 0;
@@ -47,7 +48,7 @@ private:
     float transitProgress = 0.f;
     float transitDuration; // se calcula en init()
     int activeSegment = 0;
-
+    bool soundEnabled = false;
     int tileSize;
 
     ShaderProgram* shaderProg = nullptr;
