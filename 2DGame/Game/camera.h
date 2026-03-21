@@ -22,6 +22,10 @@ public:
     glm::vec2 getOffset() const { return -position + glm::vec2(0.f, hudHeight); }
 
     void printTransitionInfo() const;
+    bool isVisible(const glm::vec2& worldPos) const {
+        return worldPos.x >= position.x && worldPos.x <= position.x + screenWidth &&
+            worldPos.y >= position.y && worldPos.y <= position.y + screenHeight;
+    }
 
 private:
     glm::vec2 position;  // Posición de la cámara en el mundo

@@ -640,6 +640,10 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             Enemy* enemy = static_cast<Enemy*>(e);
             // Si el enemigo se està muriendo no puede matar a nadie
             if (!enemy->isDying() && !godMode) {
+                if (enemy->getEnemyType() == EnemyType::CLEVER) {
+                    Clever* clever = static_cast<Clever*>(enemy);
+                    if (!clever->isVisible()) break;
+                }
                 killPlayer();
             }
             break;
