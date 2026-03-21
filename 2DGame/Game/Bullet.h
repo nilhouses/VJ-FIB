@@ -15,13 +15,16 @@ public:
     void setDirection(bool right);
     void explode();
     bool isExploding() const { return exploding; }
+    void setPosition(const glm::vec2& pos) override;
 
 private:
+    Camera* cam = nullptr;
     bool movingRight = true;
     float speed;
     bool exploding;
     float explosionTimer;
 	int distanceTraveled = 0;
+    static constexpr float MAX_DISTANCE= 640.f; // px
 };
 
 #endif // _BULLET_INCLUDE

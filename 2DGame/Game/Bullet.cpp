@@ -45,7 +45,7 @@ void Bullet::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
     sprite->addKeyframe(EXPLODE, glm::vec2(0.75f, 0.5f));
 
     sprite->changeAnimation(RIGHT);
-    SoundManager::instance().playSound("shot", (float)0.05);
+    cam = c;
 }
 
 void Bullet::update(int deltaTime)
@@ -62,7 +62,7 @@ void Bullet::update(int deltaTime)
     else pos.x -= static_cast<int>(speed);
 
     distanceTraveled += static_cast<int>(speed);
-    if (distanceTraveled >= 640) { // Límite de distancia para la bala
+    if (distanceTraveled >= MAX_DISTANCE) { // Límite de distancia para la bala
         explode();
         return;
 	}
@@ -84,6 +84,14 @@ void Bullet::update(int deltaTime)
     }
 
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
+}
+
+void Bullet::setPosition(const glm::vec2& pos) {
+    Entity::setPosition(pos);
+	if (cam->isVisible(pos) ||
+        cam->isVisible(pos + glm::vec2(MAX_DISTANCE, 0)) ||
+        cam->isVisible(pos - glm::vec2(MAX_DISTANCE, 0))) // Si la bala puede llegar al jugador se debería escuchar
+        SoundManager::instance().playSound("shot", 0.03f);
 }
 
 void Bullet::explode() {

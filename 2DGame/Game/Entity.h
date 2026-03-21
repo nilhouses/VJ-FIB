@@ -16,7 +16,8 @@ enum class Type {
 	GUN,
 	PLATFORM,
 	PIPE,
-	ENTER
+	ENTER,
+	CHECKPOINT
 };
 
 class Entity

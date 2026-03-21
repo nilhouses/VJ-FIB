@@ -56,6 +56,7 @@ void Barrel::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	sprite->addKeyframe(EXPLOSION, glm::vec2(0.75f, 0.75f));
 
 	sprite->changeAnimation(IDLE);
+	cam = c;
 }
 
 
@@ -166,7 +167,10 @@ void Barrel::explode() {
 	// No explotar varias veces
 	if (exploding) return;
 	exploding = true;
-	SoundManager::instance().playSound("explosion", 0.4f);
+	if (cam->isVisible(pos) ||
+		cam->isVisible(pos + glm::ivec2(200, 0)) ||
+		cam->isVisible(pos - glm::ivec2(200, 0))) // Si el barril está relativamente cerca al campo de visión (200px) de la cámare se debe escuchar
+		SoundManager::instance().playSound("explosion", 0.4f);
 	sprite->changeAnimation(EXPLOSION);
 	cout << "Barrel explosion!" << endl;
 	// En el update se desactivará la entidad cuando acabe la animación de explosión

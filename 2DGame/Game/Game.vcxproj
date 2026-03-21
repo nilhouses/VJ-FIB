@@ -15,6 +15,7 @@
     <ClInclude Include="Asset.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Checkpoint.h" />
     <ClInclude Include="Clever.h" />
     <ClInclude Include="Credits.h" />
     <ClInclude Include="Door.h" />
@@ -50,6 +51,7 @@
     <ClInclude Include="Barrel.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Checkpoint.cpp" />
     <ClCompile Include="Enter.cpp" />
     <ClCompile Include="Gun.cpp" />
     <ClCompile Include="Life.cpp" />

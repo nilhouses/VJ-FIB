@@ -26,6 +26,7 @@ public:
 	bool tryPush(int dir, float amount);
 
 private:
+	Camera* cam = nullptr;
 	glm::vec2 prevPos;			        // Para trackear ca�das(y) y movimiento(x) del barril
 	bool exploding;						// Para evitar que un barril explote varias veces
 	float explosionTimer;				// Para controlar el tiempo que dura la animaci�n de explosi�n antes del 
