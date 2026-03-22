@@ -182,7 +182,7 @@ void Level::loadEntities()
 
     while (fin >> type)
     {
-		cout << "Loading entity type: " << type << endl;
+		//cout << "Loading entity type: " << type << endl;
         fin >> count;
 
         if (type == "KEY") allKeys = count;
@@ -577,7 +577,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                                 return;
                             }
                             else {
-								cout << "Level completed!" << endl;
+								//cout << "Level completed!" << endl;
                                 SoundManager::instance().playSound("openLockedDoor", 0.5f);
 								sound = false;
                             }
