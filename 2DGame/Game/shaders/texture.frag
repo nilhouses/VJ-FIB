@@ -8,10 +8,10 @@ out vec4 outColor;
 
 void main()
 {
-	// Discard fragment if texture sample has alpha < 0.5
+	// Discard fragment if texture sample has alpha < 0.01
 	// otherwise compose the texture sample with the fragment's interpolated color
 	vec4 texColor = texture(tex, texCoordFrag);
-	if(texColor.a < 0.5f)
+	if(texColor.a < 0.01f)
 		discard;
 	outColor = color * texColor;
 }

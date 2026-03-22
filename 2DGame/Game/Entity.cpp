@@ -38,7 +38,19 @@ void Entity::update(int deltaTime)
 
 void Entity::render()
 {
-	if (active) sprite->render();
+	if (active) {
+
+		if (type == Type::ACID) {
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			sprite->render();
+			glDisable(GL_BLEND);
+		}
+		else {
+			sprite->render();
+		}
+
+	}
 }
 
 void Entity::setPosition(const glm::vec2& pos)

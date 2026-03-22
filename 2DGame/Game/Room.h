@@ -21,6 +21,7 @@
 #include "Game.h"
 #include "Asset.h"
 #include "Tunnel.h"
+#include "Acid.h"
 
 class Room {
 public:

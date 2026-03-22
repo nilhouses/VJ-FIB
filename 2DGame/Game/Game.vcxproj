@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Acid.h" />
     <ClInclude Include="AnimKeyframes.h" />
     <ClInclude Include="Asset.h" />
     <ClInclude Include="Bullet.h" />
@@ -54,6 +55,7 @@
     <ClInclude Include="Barrel.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Acid.cpp" />
     <ClCompile Include="Checkpoint.cpp" />
     <ClCompile Include="Enter.cpp" />
     <ClCompile Include="FadeTransition.cpp" />
