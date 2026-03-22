@@ -82,12 +82,19 @@ glm::vec2 Pipe::busyTexCoords(const glm::vec2& idleTexCoords) const
 
 // ------------------------------------------------------- Init -------------------------------------------------------
 
-void Pipe::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, const vector<glm::ivec2>& tileSegments, int tileSize)
+void Pipe::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, const vector<glm::ivec2>& tileSegments, int tileSize, int sr)
 {
     shaderProg = &shaderProgram;
     cam = c;
 
-    Entity::init(tileMapPos, shaderProgram, "images/pipe.png", glm::ivec2(tileSize, tileSize), glm::vec2(1.f/NCols, 1.f/NRows), c);
+    string path;
+    switch (sr) {
+        case 0: path = "images/pipe.png"; break;
+        case 1: path = "images/pipe2.png"; break;
+		default: break;
+    }
+
+    Entity::init(tileMapPos, shaderProgram, path, glm::ivec2(tileSize, tileSize), glm::vec2(1.f/NCols, 1.f/NRows), c);
 
 	int keyframesPerSecond = 1;
     for (int i = 0; i < (int)tileSegments.size(); ++i)

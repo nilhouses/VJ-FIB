@@ -9,7 +9,7 @@ public:
     Platform();
     ~Platform();
 
-	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, int rangePixels, int axis, int direction); // axis: 0=horizontal, 1=vertical, dirección: 1 o -1
+	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, int rangePixels, int axis, int direction, int sr); // axis: 0=horizontal, 1=vertical, dirección: 1 o -1
     void update(int deltaTime) override;
     glm::vec2 getDeltaMovement() const { return deltaMovement; }
     
