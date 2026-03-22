@@ -25,7 +25,7 @@ Gun::~Gun()
 void Gun::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c)
 {
 	// Inicializar los atributos de la Entity
-	Entity::init(tileMapPos, shaderProgram, "images/items.png", glm::ivec2(32, 32), glm::vec2(0.25f, 0.25f), c);
+	Entity::init(tileMapPos, shaderProgram, "images/items.png", glm::ivec2(32, 32), glm::vec2(0.25f, 1.f / 5.f), c);
 
 	// Atributos de la vida
 	collectTimer = 0.0f;
@@ -34,7 +34,7 @@ void Gun::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camer
 	sprite->setNumberAnimations(1);
 
 	sprite->setAnimationSpeed(IDLE, 1);
-	sprite->addKeyframe(IDLE, glm::vec2(0.25f, 0.25f));
+	sprite->addKeyframe(IDLE, glm::vec2(0.25f, 1.f/5.f));
 	sprite->changeAnimation(IDLE);
 }
 

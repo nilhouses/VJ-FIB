@@ -40,6 +40,7 @@ public:
 	void setPaused(bool paused) { isPaused = paused; }
 	
 	void setParallax(float f) { fParallax = f; }
+	bool isLastKeyframe() const { return currentKeyframe == (int)animations[currentAnimation].keyframeDispl.size() - 1; }
 
 private:
 	Texture *texture;
