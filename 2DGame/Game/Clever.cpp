@@ -56,7 +56,7 @@ void Clever::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 
     this->movingRight = movingRight;
     sprite->changeAnimation(movingRight ? MOVE_RIGHT : MOVE_LEFT);
-    setSpeed(2);
+    setSpeed(1);
     cam = c;
 }
 
