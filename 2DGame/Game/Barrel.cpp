@@ -12,7 +12,7 @@
 
 enum BarrelAnims
 {
-	IDLE, ROLLING, EXPLOSION, NUM_ANIMS
+	IDLE, START_ROLLING, ROLLING, EXPLOSION, NUM_ANIMS
 };
 
 Barrel::Barrel() : Entity(Type::BARREL) {}
@@ -27,7 +27,7 @@ Barrel::~Barrel()
 void Barrel::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, glm::vec2 prevPos)
 {
 	// Inicializar los atributos de la Entity
-	Entity::init(tileMapPos, shaderProgram, "images/barrel.png", glm::ivec2(32, 32), glm::vec2(0.25f, 0.25f), c);
+	Entity::init(tileMapPos, shaderProgram, "images/items.png", glm::ivec2(32, 32), glm::vec2(0.25f, 1.f / 5.f), c);
 
 	// Atributos del barril
 	this->prevPos = prevPos;
@@ -41,19 +41,25 @@ void Barrel::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	sprite->setNumberAnimations(NUM_ANIMS);
 
 	sprite->setAnimationSpeed(IDLE, 1);
-	sprite->addKeyframe(IDLE, glm::vec2(0.f, 0.f));
+	sprite->addKeyframe(IDLE, glm::vec2(0.f, 1.f/5.f));
 	
-	sprite->setAnimationSpeed(ROLLING, 15);
-	sprite->addKeyframe(ROLLING, glm::vec2(0.00f, 0.f));
-	sprite->addKeyframe(ROLLING, glm::vec2(0.25f, 0.f));
-	sprite->addKeyframe(ROLLING, glm::vec2(0.50f, 0.f));
-	sprite->addKeyframe(ROLLING, glm::vec2(0.75f, 0.f));
+	sprite->setAnimationSpeed(START_ROLLING, 16);
+	sprite->addKeyframe(START_ROLLING, glm::vec2(0.00f, 3.f/5.f));
+	sprite->addKeyframe(START_ROLLING, glm::vec2(0.25f, 3.f/5.f));
+	sprite->addKeyframe(START_ROLLING, glm::vec2(0.50f, 3.f/5.f));
+	sprite->addKeyframe(START_ROLLING, glm::vec2(0.75f, 3.f/5.f));
 
-	sprite->setAnimationSpeed(EXPLOSION, 8);
-	sprite->addKeyframe(EXPLOSION, glm::vec2(0.00f, 0.75f));
-	sprite->addKeyframe(EXPLOSION, glm::vec2(0.25f, 0.75f));
-	sprite->addKeyframe(EXPLOSION, glm::vec2(0.50f, 0.75f));
-	sprite->addKeyframe(EXPLOSION, glm::vec2(0.75f, 0.75f));
+	sprite->setAnimationSpeed(ROLLING, 4);
+	sprite->addKeyframe(ROLLING, glm::vec2(0.00f, 2.f/5.f));
+	sprite->addKeyframe(ROLLING, glm::vec2(0.25f, 2.f/5.f));
+	sprite->addKeyframe(ROLLING, glm::vec2(0.50f, 2.f/5.f));
+	sprite->addKeyframe(ROLLING, glm::vec2(0.75f, 2.f/5.f));
+
+	sprite->setAnimationSpeed(EXPLOSION, 4);
+	sprite->addKeyframe(EXPLOSION, glm::vec2(0.00f, 4.f/5.f));
+	sprite->addKeyframe(EXPLOSION, glm::vec2(0.25f, 4.f/5.f));
+	sprite->addKeyframe(EXPLOSION, glm::vec2(0.50f, 4.f/5.f));
+	sprite->addKeyframe(EXPLOSION, glm::vec2(0.75f, 4.f/5.f));
 
 	sprite->changeAnimation(IDLE);
 	cam = c;
@@ -74,7 +80,19 @@ void Barrel::update(int deltaTime)
 	glm::vec2 frameStartPos = pos;
 
 	if (isBeingPushed) {
-		if (sprite->animation() != ROLLING) sprite->changeAnimation(ROLLING);
+		if (startingRoll) {
+			// Esperem que acabi START_ROLLING
+			if (sprite->animation() != START_ROLLING)
+				sprite->changeAnimation(START_ROLLING);
+			if (sprite->isLastKeyframe()) {
+				startingRoll = false;
+				sprite->changeAnimation(ROLLING);
+			}
+		}
+		else {
+			if (sprite->animation() != ROLLING)
+				sprite->changeAnimation(ROLLING);
+		}
 
 		bool collided = false;
 		if (pushDirection > 0) collided = !incrRight((int)PUSH_SPEED);
@@ -156,6 +174,7 @@ bool Barrel::incrLeft(int units)
 void Barrel::startPush(int dir) {
 	if (isBeingPushed) return;
 	isBeingPushed = true;
+	startingRoll = true;
 	pushDirection = dir;
 }
 

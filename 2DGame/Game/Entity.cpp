@@ -25,6 +25,17 @@ void Entity::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, co
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
 }
 
+void Entity::update(int deltaTime)
+{
+	if (active) sprite->update(deltaTime);
+	if (type == Type::LIFE || type == Type::GUN || type == Type::SPEEDBOOST || type == Type::KEY) {
+		itemTimer += deltaTime;
+		float offsetY = sin(itemTimer * 0.003f) * 4.f;
+		sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y) + offsetY));
+	}
+
+}
+
 void Entity::render()
 {
 	if (active) sprite->render();

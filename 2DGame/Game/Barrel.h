@@ -31,6 +31,7 @@ private:
 	bool exploding;						// Para evitar que un barril explote varias veces
 	float explosionTimer;				// Para controlar el tiempo que dura la animaci�n de explosi�n antes del 
 	bool isBeingPushed;					// Si el barril est� siendo empujado
+	bool startingRoll = false;			// Para poner la animación intermedia
 	int pushDirection;					// 1 derecha, -1 izquierda
 	float fallSpeed;				    // Para controlar la velocidad de ca�da del barril, ahora que hay aceleraci�n
 	// Interacciones con el jugador
