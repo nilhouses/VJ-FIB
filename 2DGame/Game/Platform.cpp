@@ -12,9 +12,16 @@ Platform::~Platform()
         delete sprite;
 }
 
-void Platform::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, int rangePixels, int axis, int direction)
+void Platform::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, int rangePixels, int axis, int direction, int sr)
 {
-    Entity::init(tileMapPos, shaderProgram, "images/platform.png", glm::ivec2(64, 16), glm::vec2(1.f, 1.f), c);
+    string path;
+    switch (sr) {
+        case 0: path = "images/platform1.png"; break;
+        case 1: path = "images/platform2.png"; break;
+        default: path = "images/platform.png"; break;
+	}
+
+    Entity::init(tileMapPos, shaderProgram, path, glm::ivec2(64, 32), glm::vec2(1.f, 1.f), c);
 
     this->rangePixels = rangePixels;
     this->axis = axis;

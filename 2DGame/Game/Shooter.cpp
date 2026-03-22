@@ -80,11 +80,11 @@ void Shooter::changeState(EnemyState newState) {
     currentState = newState;
     switch (currentState) {
     case WALKING:
-        stateTimer = 3000.f + (float)(rand() % 3000); // Cada (3-6) segundos dispara
+        stateTimer = 2000.f + (float)(rand() % 2000); // Cada (2-4) segundos dispara
         sprite->changeAnimation(movingRight ? MOVE_RIGHT : MOVE_LEFT);
         break;
     case IDLING:
-        stateTimer = 3000.f + (float)(rand() % 3000); // Cada (3-6) segundos dispara
+        stateTimer = 2000.f + (float)(rand() % 2000); // Cada (2-4) segundos dispara
         sprite->changeAnimation(movingRight ? IDLE_RIGHT : IDLE_LEFT);
         break;
     case RELOAD:

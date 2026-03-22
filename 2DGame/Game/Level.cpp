@@ -151,12 +151,12 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, b
     }
     else if (type == "PLATFORM") {
         Platform* p = new Platform();
-        p->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera, rangePixels, axis, dir);
+        p->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera, rangePixels, axis, dir, sr);
         entity = p;
     }
     else if (type == "PIPE") {
         Pipe* pipe = new Pipe();
-        pipe->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera, segments, map->getTileSize());
+        pipe->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera, segments, map->getTileSize(), sr);
         entity = pipe;
     }
     // Común para todas las entidades
@@ -192,15 +192,15 @@ void Level::loadEntities()
             int indexRoom1, tileX1, tileY1;
 
             if (type == "PIPE") {
-                int nSegments;
-                fin >> nSegments;
+                int nSegments, sprite;
+                fin >> nSegments >> sprite;
                 vector<glm::ivec2> segments;
                 for (int i = 0; i < nSegments; ++i)
                 {
                     fin >> indexRoom1 >> tileX1 >> tileY1;
                     segments.push_back(glm::ivec2(tileX1, tileY1));
                 }
-                createEntity(type, tileX1, tileY1, indexRoom1, false, false, 0, 0, 0, segments);
+                createEntity(type, tileX1, tileY1, indexRoom1, false, false, 0, 0, 0, segments, sprite);
                 continue;
             }
 
@@ -247,9 +247,11 @@ void Level::loadEntities()
                 
             }
             else if (type == "PLATFORM") {
-                int rangePixels, axis, dir;
-                fin >> rangePixels >> axis >> dir;
-                createEntity(type, tileX1, tileY1, indexRoom1, false, false, rangePixels, axis, dir);
+                int rangePixels, axis, dir, sprite;
+                vector<glm::ivec2> segments;
+
+                fin >> rangePixels >> axis >> dir >> sprite;
+                createEntity(type, tileX1, tileY1, indexRoom1, false, false, rangePixels, axis, dir, segments, sprite);
             }
             else
                 createEntity(type, tileX1, tileY1, indexRoom1);
@@ -1067,6 +1069,10 @@ void Level::update(int deltaTime)
     }
     if (!Game::instance().getKey(GLFW_KEY_UP)) {
         releasedUp = true;
+    }
+
+    if (Game::instance().getKey(GLFW_KEY_F)) {
+        player->activateSpeedBoost(2.f, 600000.f);
     }
 }
 
