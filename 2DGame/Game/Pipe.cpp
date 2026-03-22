@@ -183,10 +183,10 @@ glm::vec2 Pipe::getExitPosition(int playerHeight, int fromEnd) const
     int idx = (exitEnd == 0) ? 0 : (int)segments.size() - 1;
     glm::vec2 tp = segments[idx].getTilePos();
     glm::vec2 dir = getEndDirection(exitEnd);
-    glm::vec2 off = -dir * float(size.x);
-    glm::vec2 base = glm::vec2(tileMapDispl.x + tp.x + off.x,
-        tileMapDispl.y + tp.y + off.y);
-    base.y = base.y + size.y - playerHeight;
+
+    glm::vec2 base;
+    if (dir.y > 0)  base = glm::vec2(tileMapDispl.x + tp.x, tileMapDispl.y + tp.y - playerHeight);
+    else base = glm::vec2(tileMapDispl.x + tp.x, tileMapDispl.y + tp.y + tileSize);
     return base;
 }
 

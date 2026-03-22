@@ -559,7 +559,11 @@ void Player::exitPipe(bool exitingUp) {
 		sprite->changeAnimation(START);
 		blockInput();
 	}
-	// Sino ya tiene animación de caer
+	else {
+		startAnimTimer = 375.0f;
+		sprite->changeAnimation(FALL);
+		blockInput();
+	}
 }
 
 void Player::center() {
