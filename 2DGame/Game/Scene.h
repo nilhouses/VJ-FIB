@@ -11,7 +11,8 @@ enum class SceneType {
     MAINMENU,
     LEVEL,
     INSTRUCTIONS,
-    CREDITS
+    CREDITS,
+	LOADING
 };
 
 // Scene contains all the entities of our game.

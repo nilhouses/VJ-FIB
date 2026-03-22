@@ -52,7 +52,7 @@ void MainMenu::update(int deltaTime) {
         }
 
         if (Game::instance().getKey(GLFW_KEY_ENTER)) {
-            if (selectedOption == 0) Game::instance().changeState(PLAYING, 1);
+            if (selectedOption == 0) Game::instance().changeState(LOADING, 1);          // Pantalla de carga, habrá que poner animación intro
             else if (selectedOption == 1) Game::instance().changeState(INSTRUCTIONS);
             else if (selectedOption == 2) Game::instance().changeState(CREDITS);
             timeSinceLastKey = 0;
