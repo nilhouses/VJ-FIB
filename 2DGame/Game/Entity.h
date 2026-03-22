@@ -65,6 +65,7 @@ protected:
 	bool active;							// Indica si la entidad está activa (visible y actualizable) o no
 	Type type;								// Aquí guardamos qué es (Player, Key, etc.)
 	int room;
+	float itemTimer = 0.f;
 	glm::ivec2 size = glm::ivec2(32, 32);   // Tamaño del bounding box por defecto (se asume que es un cuadrado de 32x32 píxeles, pero cada entidad puede sobreescribir esta función para devolver un bounding box diferente
 };
 
