@@ -697,7 +697,6 @@ void Level::handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollid
         if (b->isMoving() || b->isExploding()) {
             // El barril explota en la misma posición del dummy, NO al lado
             glm::vec2 enemyPos = enemy->getPosition();
-            b->setPosition(enemyPos);
             enemy->die();
             b->stopPush();
             b->explode();
@@ -807,11 +806,11 @@ void Level::checkCollisions()
             // Custom BoundingBox Dummy
             Enemy* enemy = static_cast<Enemy*>(e);
             switch (enemy->getEnemyType()) {
-            case EnemyType::DUMMY:
-                offset = glm::vec2(5.f, 9.f);
-                break;
-            default:
-                break;
+                case EnemyType::DUMMY:
+                    offset = glm::vec2(5.f, 12.f);
+                    break;
+                default:
+                    break;
             }
         }
         else if (e->getType() == Type::PLATFORM)
@@ -909,8 +908,8 @@ void Level::checkCollisions()
         {
             if (!e->isActive()) continue;
 
-            // Offset según cada entity
-            glm::vec2 offset(0.f, 0.f);
+            // Offset de un enemigo con otras entidades (excepto el jugador)
+            glm::vec2 offset = glm::vec2(8.f, 18.f);
             CollisionInfo collision = overlap(enemyBox, e->getBoundingBox(), offset);
 
             if ((e->getType() != enemy->getType()) && collision.colliding)

@@ -26,7 +26,7 @@ void Shooter::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, C
     this->cameraPtr = c;
 
     // Inicializar los atributos de la Entity
-    Entity::init(tileMapPos, shaderProgram, "images/shooting.png", glm::ivec2(32, 32), glm::vec2(0.25f, 0.25f), c);
+    Entity::init(tileMapPos, shaderProgram, "images/ShooterEnemy.png", glm::ivec2(32, 64), glm::vec2(0.25f, 1.f/5.f), c);
 
     // Atributos caracter�sticos deShooterng
     dying = false;
@@ -35,34 +35,41 @@ void Shooter::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, C
     // Configuraci�n de animaciones
     sprite->setNumberAnimations(NUM_ANIMS);
 
-    sprite->setAnimationSpeed(MOVE_LEFT, 20);
-    sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.50f, 0.f));
-    sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.75f, 0.f));
+    sprite->setAnimationSpeed(MOVE_LEFT, 4);
+    sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.00f, 1.f/5.f));
+    sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.25f, 1.f/5.f));
+    sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.50f, 1.f/5.f));
+    sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.75f, 1.f/5.f));
 
-    sprite->setAnimationSpeed(MOVE_RIGHT, 20);
+    sprite->setAnimationSpeed(MOVE_RIGHT, 4);
     sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.f, 0.f));
     sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25f, 0.f));
+    sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.50f, 0.f));
+    sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.75f, 0.f));
 
-    sprite->setAnimationSpeed(IDLE_LEFT, 20);
-    sprite->addKeyframe(IDLE_LEFT, glm::vec2(0.50f, 0.25f));
-    sprite->addKeyframe(IDLE_LEFT, glm::vec2(0.75f, 0.25f));
+    sprite->setAnimationSpeed(SHOOT_LEFT, 4);
+    sprite->addKeyframe(SHOOT_LEFT, glm::vec2(0.00f, 4.f/5.f));
+    sprite->addKeyframe(SHOOT_LEFT, glm::vec2(0.25f, 4.f/5.f));
+    sprite->addKeyframe(SHOOT_LEFT, glm::vec2(0.50f, 4.f/5.f));
+    sprite->addKeyframe(SHOOT_LEFT, glm::vec2(0.75f, 4.f/5.f));
 
-    sprite->setAnimationSpeed(IDLE_RIGHT, 20);
-    sprite->addKeyframe(IDLE_RIGHT, glm::vec2(0.f, 0.25f));
-    sprite->addKeyframe(IDLE_RIGHT, glm::vec2(0.25f, 0.25f));
+    sprite->setAnimationSpeed(IDLE_LEFT, 1);
+    sprite->addKeyframe(IDLE_LEFT, glm::vec2(0.00f, 4.f/5.f));
 
-    sprite->setAnimationSpeed(SHOOT_LEFT, 20);
-    sprite->addKeyframe(SHOOT_LEFT, glm::vec2(0.5f, 0.5f));
+    sprite->setAnimationSpeed(IDLE_RIGHT, 1);
+    sprite->addKeyframe(IDLE_RIGHT, glm::vec2(0.f, 0.f));
 
-    sprite->setAnimationSpeed(SHOOT_RIGHT, 20);
-    sprite->addKeyframe(SHOOT_RIGHT, glm::vec2(0.25f, 0.5f));
-    sprite->addKeyframe(SHOOT_RIGHT, glm::vec2(0.75f, 0.5f));
+    sprite->setAnimationSpeed(SHOOT_RIGHT, 4);
+    sprite->addKeyframe(SHOOT_RIGHT, glm::vec2(0.00f, 3.f/5.f));
+    sprite->addKeyframe(SHOOT_RIGHT, glm::vec2(0.25f, 3.f/5.f));
+    sprite->addKeyframe(SHOOT_RIGHT, glm::vec2(0.50f, 3.f/5.f));
+    sprite->addKeyframe(SHOOT_RIGHT, glm::vec2(0.75f, 3.f/5.f));
 
-    sprite->setAnimationSpeed(DIE, 3);
-    sprite->addKeyframe(DIE, glm::vec2(0.f, 0.75f));
-    sprite->addKeyframe(DIE, glm::vec2(0.25f, 0.75f));
-    sprite->addKeyframe(DIE, glm::vec2(0.50f, 0.75f));
-    sprite->addKeyframe(DIE, glm::vec2(0.75f, 0.75f));
+    sprite->setAnimationSpeed(DIE, 8);
+    sprite->addKeyframe(DIE, glm::vec2(0.f, 2.f/5.f));
+    sprite->addKeyframe(DIE, glm::vec2(0.25f, 2.f/5.f));
+    sprite->addKeyframe(DIE, glm::vec2(0.50f, 2.f/5.f));
+    sprite->addKeyframe(DIE, glm::vec2(0.75f, 2.f/5.f));
 
 
     this->movingRight = movingRight;
