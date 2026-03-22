@@ -537,15 +537,24 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             glm::vec2 playerPos = player->getPosition();
             glm::vec2 pPos = p->getPosition();
             glm::ivec2 pSize = p->getSize();
+            glm::vec2 platformOffset = p->getDeltaMovement();
 
             float playerFeet = playerPos.y + playerSize.y;
-            bool isAbove = playerFeet <= (pPos.y + 8.0f);
+            float platformTop = pPos.y;
+            bool isAbove = playerFeet <= (pPos.y + 16.0f);
 
             // Colisión vertical
-            if (rangeCollided.y < rangeCollided.x && isAbove) {
+            if (isAbove) {
+                // Marcar que está en el suelo para evitar que la gravedad lo acelere
                 player->setOnGround(true);
-                glm::vec2 plaformOffset = p->getDeltaMovement();
-                player->setPosition(glm::vec2(playerPos.x + plaformOffset.x, playerPos.y + plaformOffset.y));
+
+                // Forzamos la Y del jugador a: (Posición de la plataforma - Altura del jugador)
+                float snappedY = platformTop - playerSize.y;
+
+                // Sumamos el delta X para que el jugador se mueva lateralmente con ella
+                float movedX = playerPos.x + platformOffset.x;
+
+                player->setPosition(glm::vec2(movedX, snappedY));
             }
             break;
         }
@@ -806,7 +815,7 @@ void Level::checkCollisions()
             }
         }
         else if (e->getType() == Type::PLATFORM)
-            offset = glm::vec2(0.f, 0.f);
+            offset = glm::vec2(0.f, -8.f);
         else if (e->getType() == Type::PIPE) { // Se maneja distinto porque una pipe tiene dos zonas de colisión
             Pipe* pipe = static_cast<Pipe*>(e);
 
