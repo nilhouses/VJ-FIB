@@ -55,7 +55,7 @@ private:
 	float speedMultiplier = 1.f;
 	// Atributos necesarios para disparar
 	bool isShooting = false;
-	float shootAnimTimer;
+	float shootAnimTimer = 0;
 	float shootCooldown = 0;
 	int  numBullets = 0;
 	bool facingRight = true;        // Dirección disparo

@@ -15,7 +15,7 @@
 // Definimos tipos de animaciones para el jugador
 enum PlayerAnims
 {
-	IDLE, WALK_LEFT, WALK_RIGHT, WEAPON_IDLE, GUN_WALK_LEFT, GUN_WALK_RIGHT, FALL, PUSH_LEFT, PUSH_RIGHT, DIE, START, CLIMB, OPEN_AND_ENTER, PICK_ITEM, ENTER, TUNNEL_ENTER_BOTTOM, TUNNEL_ENTER_TOP, TUNNEL_LEAVE_TOP, TUNNEL_LEAVE_BOTTOM, NUM_ANIMS
+	IDLE, WALK_LEFT, WALK_RIGHT, WEAPON_IDLE, GUN_WALK_LEFT, GUN_WALK_RIGHT, SHOOT_LEFT, SHOOT_RIGHT, FALL, PUSH_LEFT, PUSH_RIGHT, DIE, START, CLIMB, OPEN_AND_ENTER, PICK_ITEM, ENTER, TUNNEL_ENTER_BOTTOM, TUNNEL_ENTER_TOP, TUNNEL_LEAVE_TOP, TUNNEL_LEAVE_BOTTOM, NUM_ANIMS
 };
 
 
@@ -79,6 +79,14 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	sprite->addKeyframe(GUN_WALK_RIGHT, glm::vec2(9.f / 16.f, 1.f / 12.f));
 	sprite->addKeyframe(GUN_WALK_RIGHT, glm::vec2(10.f / 16.f, 1.f / 12.f));
 	sprite->addKeyframe(GUN_WALK_RIGHT, glm::vec2(11.f / 16.f, 1.f / 12.f));
+
+	sprite->setAnimationSpeed(SHOOT_LEFT, 8);
+	sprite->addKeyframe(SHOOT_LEFT, glm::vec2(12.f / 16.f, 1.f / 12.f));
+	sprite->addKeyframe(SHOOT_LEFT, glm::vec2(13.f / 16.f, 1.f / 12.f));
+
+	sprite->setAnimationSpeed(SHOOT_RIGHT, 8);
+	sprite->addKeyframe(SHOOT_RIGHT, glm::vec2(14.f / 16.f, 1.f / 12.f));
+	sprite->addKeyframe(SHOOT_RIGHT, glm::vec2(15.f / 16.f, 1.f / 12.f));
 
 	sprite->setAnimationSpeed(FALL, 8);
 	sprite->addKeyframe(FALL, glm::vec2(0.f, 2.f / 12.f));
