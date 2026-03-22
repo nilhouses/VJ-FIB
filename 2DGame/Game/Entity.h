@@ -17,6 +17,7 @@ enum class Type {
 	PLATFORM,
 	PIPE,
 	ENTER,
+	ACID,
 	CHECKPOINT
 };
 

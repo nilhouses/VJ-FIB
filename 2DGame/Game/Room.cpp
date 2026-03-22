@@ -49,8 +49,6 @@ void Room::init()
 
 void Room::update(int deltaTime)
 {
-    // Solo actualizo la animación del jugador durante la transición y se mantiene bloqueada su entrada
-    
     // Actualizar entidades
     for (size_t i = 0; i < entities.size(); ++i)
     {

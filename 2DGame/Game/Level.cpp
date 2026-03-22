@@ -159,6 +159,12 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, b
         pipe->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera, segments, map->getTileSize(), sr);
         entity = pipe;
     }
+    else if (type == "ACID") {
+		Acid* acid = new Acid();
+		acid->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera);
+		entity = acid;
+    }
+
     // Común para todas las entidades
     if (entity != nullptr)
     {
@@ -682,6 +688,12 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             break;
         }
 
+        case Type::ACID:
+        {
+            if (!godMode) killPlayer();
+            break;
+        }
+
         default:
 			break;
     }
@@ -803,6 +815,8 @@ void Level::checkCollisions()
             offset = glm::vec2(8.f, 8.f);
         else if (e->getType() == Type::BARREL)
             offset = glm::vec2(8.f, 4.f); // Ajustar la X en función de la anchura del sprite definitivo
+        else if (e->getType() == Type::ACID)
+			offset = glm::vec2(8.f, 8.f);
         else if (e->getType() == Type::ENEMY) {
             // Custom BoundingBox Dummy
             Enemy* enemy = static_cast<Enemy*>(e);
@@ -927,6 +941,7 @@ void Level::update(int deltaTime)
 
     rooms[currentRoom]->update(deltaTime);
     player->update(deltaTime);
+    
     // Actualizar la posición de la cámara para que siga al jugador
     camera->update(player->getPosition(), rooms[currentRoom]->getMap()->getMapSize() * rooms[currentRoom]->getMap()->getTileSize());
 
@@ -934,7 +949,6 @@ void Level::update(int deltaTime)
     {
         case NORMAL:
         {
-
             if (player->getDeathByMap()) killPlayer();
             checkCollisions();
 
