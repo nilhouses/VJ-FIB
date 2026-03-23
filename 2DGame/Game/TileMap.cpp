@@ -410,12 +410,12 @@ bool TileMap::isGround(int x, int y)
 {
 	int tileBase = map[y * mapSize.x + x];
 	int tileFront = front[y * mapSize.x + x];
-	bool b = (getTileType(tileBase) != TILE_EMPTY && getTileType(tileBase) != TILE_LADDER) ||
-		(getTileType(tileFront) != TILE_EMPTY && getTileType(tileFront) != TILE_LADDER);
+	bool b = (getTileType(tileBase) != TILE_EMPTY && getTileType(tileBase) != TILE_LADDER) && getTileType(tileBase) != TILE_SOLID_FOR_ENEMY ||
+		(getTileType(tileFront) != TILE_EMPTY && getTileType(tileFront) != TILE_LADDER) && getTileType(tileFront) != TILE_SOLID_FOR_ENEMY;
 
 	if (front2 != nullptr) {
 		int tileFront2 = front2[y * mapSize.x + x];
-		b = b || (getTileType(tileFront2) != TILE_EMPTY && getTileType(tileFront2) != TILE_LADDER);
+		b = b || (getTileType(tileFront2) != TILE_EMPTY && getTileType(tileFront2) != TILE_LADDER && getTileType(tileFront2) != TILE_SOLID_FOR_ENEMY);
 	}
 
 	return b;

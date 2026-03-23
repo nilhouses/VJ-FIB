@@ -108,5 +108,5 @@ void Room::render(Camera* camera, glm::mat4& projection)
 void Room::setBackground(Asset* b)
 {
     background = b;
-	background->setParrallax(10.0f);
+	background->setParrallax(25.0f);
 }
