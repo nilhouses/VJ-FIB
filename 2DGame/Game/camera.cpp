@@ -3,23 +3,22 @@
 #include <algorithm>
 using namespace std;
 
-Camera::Camera(int screenWidth, int screenHeight, int hudHeight)    // 640, 384, 96
+Camera::Camera(int screenWidth, int screenHeight, int hudHeight)
     : screenWidth(screenWidth), screenHeight(screenHeight), hudHeight(hudHeight)
 {
     position = glm::vec2(0.f, 0.f);
-    target = glm::vec2(screenWidth / 2.f, screenHeight / 2.f);      // 320, 192
+    target = glm::vec2(screenWidth / 2.f, screenHeight / 2.f);
 }
 
 // Actualiza la cámara para seguir al jugador u otro objetivo
 void Camera::update(const glm::vec2& targetPos, const glm::vec2& mapSize)
 {
     position.x = targetPos.x - target.x;
-    position.y = targetPos.y - target.y;
+    position.y = targetPos.y - target.y + 32.0f;
 
     // Ajuste de límites (Clamping)
     position.x = std::max(0.f, std::min(position.x, mapSize.x - screenWidth));
-
-    // mapSize.y - 384. 
+ 
     // Si el mapa es de 384 o menos, position.y será 0
     position.y = std::max(0.f, std::min(position.y, mapSize.y - screenHeight));
 

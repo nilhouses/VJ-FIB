@@ -1,24 +1,27 @@
-4
+3
 images/fondo_desierto_ancho_ajustado.png
 1
 666 358
 0 0 0
 images/fondo_habitacion.png
-3
+2
 1280 960
 1 0 0
 2 0 0
-3 0 0
 
 images/casa_1.png
 1
 128 96
-0 5 5
-images/casa_2.png
-1
-128 128
-0 15 6
+0 19 5
 images/casa_3.png
 1
 192 96
-0 14 3
+0 31 5
+images/large_stone.png
+1
+64 64
+0 38 0
+images/metal_banner.png
+1
+32 96
+0 33 2

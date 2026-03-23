@@ -36,9 +36,11 @@ void Hud::render()
 
 	glUseProgram(0);
 
-	// Vidas a la izquierda
-	text.render(livesStr, glm::vec2(40, 60), 24, glm::vec4(1, 1, 1, 1), hudProj);
+	float textY = 45.f;
 
-	// Llaves a la derecha (ajustado para que no se salga)
-	text.render(keysStr, glm::vec2(400, 60), 24, glm::vec4(1, 1, 0.2f, 1), hudProj);
+	// Vidas a la izquierda
+	text.render(livesStr, glm::vec2(40, textY), 24, glm::vec4(1, 1, 1, 1), hudProj);
+
+	// Llaves a la derecha
+	text.render(keysStr, glm::vec2(390, textY), 24, glm::vec4(1, 1, 0.2f, 1), hudProj);
 }
