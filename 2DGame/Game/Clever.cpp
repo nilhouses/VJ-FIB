@@ -131,7 +131,6 @@ void Clever::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
     this->movingRight = movingRight;
     startAnimTimer = 1000.0f;
     sprite->changeAnimation(START);
-    setSpeed(1);
     cam = c;
 }
 
@@ -279,7 +278,7 @@ void Clever::update(int deltaTime)
         if (playerBottomY < cleverBottomY) {   // Subir
             if (canClimbUp) {
                 centerX();
-                pos.y -= speed;
+                pos.y -= static_cast<int>(std::round(velocity));
                 isClimbing = true;
                 if (sprite->animation() != CLIMB) sprite->changeAnimation(CLIMB);
             }
@@ -302,7 +301,7 @@ void Clever::update(int deltaTime)
         else if (playerBottomY > cleverBottomY) {   // Bajar
             if (canClimbDown) {
                 centerX();
-                pos.y += speed;
+                pos.y += static_cast<int>(std::round(velocity));
                 isClimbing = true;
                 if (sprite->animation() != CLIMB) sprite->changeAnimation(CLIMB);
             }
@@ -328,16 +327,16 @@ void Clever::update(int deltaTime)
         int mapWidth = map->getMapSize().x * map->getTileSize();
         if (movingRight) {
             if (sprite->animation() != WALK_RIGHT) sprite->changeAnimation(WALK_RIGHT);
-            glm::ivec2 nextPos(pos.x + speed, pos.y);
+            glm::ivec2 nextPos(pos.x + static_cast<int>(std::round(velocity)), pos.y);
             if (!map->collisionMoveRightEnemy(nextPos, size) && nextPos.x + size.x < mapWidth)
-                pos.x += speed;
+                pos.x += static_cast<int>(std::round(velocity));
             else changeDirection();
         }
         else {
             if (sprite->animation() != WALK_LEFT) sprite->changeAnimation(WALK_LEFT);
-            glm::ivec2 nextPos(pos.x - speed, pos.y);
+            glm::ivec2 nextPos(pos.x - static_cast<int>(std::round(velocity)), pos.y);
             if (!map->collisionMoveLeftEnemy(nextPos, size) && nextPos.x > 0)
-                pos.x -= speed;
+                pos.x -= static_cast<int>(std::round(velocity));
             else changeDirection();
         }
     }
