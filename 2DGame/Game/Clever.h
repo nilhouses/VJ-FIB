@@ -49,8 +49,9 @@ private:
 	float tunnelTimer = 0.f;
 	bool tunnelTeleported = false;
 	static constexpr float TUNNEL_DURATION = 1000.f; // ms, igual que el player
-	static constexpr float TUNNEL_CLEAR_DISTANCE = 32.f; // Númeor de px que hace falta recorrer para no volver a usar el mismo túnel, evita el típico bucle de entrar y salir del túnel constantemente, que no se usará casi nunca pero depende del nivel
+	static constexpr float TUNNEL_CLEAR_DISTANCE = 32.f; // Número de px que hace falta recorrer para no volver a usar el mismo túnel, evita el típico bucle de entrar y salir del túnel constantemente, que no se usará casi nunca pero depende del nivel
 	Camera* cam = nullptr;
+	float startAnimTimer;
 };
 
 
