@@ -64,6 +64,16 @@ void Door::openingAnim(bool sound) {
 	}
 }
 
+void Door::lockedDoorSound() {
+	if (spriteRow == 8) SoundManager::instance().playSound("chainDoorLocked", 0.3f);
+	else SoundManager::instance().playSound("doorLocked", 0.3f);
+}
+
+void Door::openLockedDoorSound() {
+	if (spriteRow == 8) SoundManager::instance().playSound("openChainedDoor", 0.5f);
+	else SoundManager::instance().playSound("openLockedDoor", 0.5f);
+}
+
 void Door::setToVisited()
 {
 	visited = true;

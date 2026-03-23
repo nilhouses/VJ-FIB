@@ -588,25 +588,23 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                         if (door->getIsFinalDoor()) {
                             if (collectedKeys < allKeys) {
                                 cout << "You need to collect all keys to enter the final door!" << endl;
-                                SoundManager::instance().playSound("doorLocked", 0.3f);
-
-                                // SONIDO DE BLOQUEO [TODO LEVEL]
+                                door->lockedDoorSound();
                                 return;
                             }
                             else {
 								//cout << "Level completed!" << endl;
-                                SoundManager::instance().playSound("openLockedDoor", 0.5f);
-								sound = false;
+                                door->openLockedDoorSound();
+                                sound = false;
+                                return;
                             }
                         }
                         // Cambiar estado visual + sonido (si hace falta)
-                        if (!door->getVisited() && !door->isCave()) {
-                            // SONIDO de abrir puerta
+                        if (!door->getVisited() && !door->isCave() && !door->isWorm()) {
                             door->openingAnim(sound);
                             player->setAnimation("OPEN_AND_ENTER");
                         }
                         else { player->setAnimation("ENTER"); }
-                        if (door->isCave()) SoundManager::instance().playSound("caveDoor", 0.3f);
+                        if (door->isCave() || door->isWorm()) SoundManager::instance().playSound("caveDoor", 0.3f);
                         break;
                     }
                     case EnterType::TUNNEL: // Si es un túnel la animación del jugador es ENTER_TUNNEL
