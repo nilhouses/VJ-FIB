@@ -14,6 +14,10 @@ void Enemy::incrLeft() { pos.x -= speed; }
 void Enemy::changeDirection() {}
 void Enemy::die() {}
 
-void Enemy::center() {
+void Enemy::centerX() {
 	pos.x = ((pos.x + map->getBlockSize() / 2) / map->getBlockSize()) * map->getBlockSize();
+}
+
+void Enemy::centerY() {
+    pos.y = ((pos.y + map->getBlockSize() / 2) / map->getBlockSize()) * map->getBlockSize();
 }

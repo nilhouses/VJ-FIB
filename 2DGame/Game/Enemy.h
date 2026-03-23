@@ -37,7 +37,8 @@ public:
     void incrRight();
     void incrLeft();
     bool canHurt() const { return hurts; }
-    void center();
+    void centerX();
+    void centerY();
 
 protected:
     EnemyType eType;                                    // Tipos de enemigo

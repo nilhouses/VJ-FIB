@@ -264,9 +264,8 @@ void Player::update(int deltaTime)
 
 	if (!blockedInput || isShooting) { // Quiero que se caiga el jugador al disparar en el aire
 
-		if (Game::instance().getKey(GLFW_KEY_Q) && hasBullets()) {
+		if (Game::instance().getKey(GLFW_KEY_Q)) {
 			shoot();
-			numBullets--;
 		}
 
 		// Con la flecha hacia arriba el personaje subirá si existe una escalera en esa posición
@@ -503,8 +502,9 @@ void Player::shoot()
 		cout << "Player doesn't have a room assigned" << endl;
 		return;
 	}
-
-	cout << "Shots fired! Remaining bullets: " << numBullets - 1 << endl;
+	if (isShooting || !hasBullets() || shootCooldown > 0) return;
+	
+	cout << "Shots fired! Remaining bullets: " << numBullets-- << endl;
 	
 	// Creación de la bala
 	Bullet* bullet = new Bullet();
