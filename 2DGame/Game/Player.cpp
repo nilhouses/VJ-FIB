@@ -221,17 +221,18 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	blockInput();
 }
 
-
-// Esta función solo calcula la posición actual y carga en el sprite la animación correspondiente en cada caso
+// Calcular posición actual + cargar en el sprite la animación correspondiente en cada caso
 void Player::update(int deltaTime)
 {
 	sprite->update(deltaTime);
 
 	if (startAnimTimer > 0) {
+		if (sprite->animation() == DIE) { startAnimTimer = 0; return; }
 		startAnimTimer -= deltaTime;
 		if (startAnimTimer <= 0) unblockInput();
 		return;
 	}
+
 	// Animación de recoger un item no permite hacer nada más
 	if (sprite->animation() == PICK_ITEM) {
 		itemPickTimer -= deltaTime;
@@ -244,12 +245,9 @@ void Player::update(int deltaTime)
 	// SpeedBoost
 	if (speedBoostTimer > 0) {
 		speedBoostTimer -= deltaTime;
-		if (speedBoostTimer <= 0) {
-			speedBoostTimer = 0;
-			speedMultiplier = 1.f;
-		}
+		if (speedBoostTimer <= 0) { speedBoostTimer = 0; speedMultiplier = 1.f; }
 	}
-	
+
 	// Disparos
 	if (shootCooldown > 0) shootCooldown -= deltaTime;
 	if (isShooting) {
@@ -257,129 +255,113 @@ void Player::update(int deltaTime)
 		if (shootAnimTimer <= 0) {
 			isShooting = false;
 			unblockInput();
-			(numBullets > 0) ? sprite->changeAnimation(WEAPON_IDLE) : sprite->changeAnimation(IDLE);
+			if (onGroundLastFrame) 
+				(numBullets > 0) ? sprite->changeAnimation(WEAPON_IDLE) : sprite->changeAnimation(IDLE);
 		}
 	}
 
 	bool inputDetected = true;
-	
-	if (!blockedInput) {
+
+	if (!blockedInput || isShooting) { // Quiero que se caiga el jugador al disparar en el aire
 
 		if (Game::instance().getKey(GLFW_KEY_Q) && hasBullets()) {
 			shoot();
 			numBullets--;
-			// [TODO] Animación de disparo y/o bloquear input temporalmente
-			// blockInput();
-			// sprite->changeAnimation(facingRight ? SHOOT_RIGHT : SHOOT_LEFT);
 		}
 
 		// Con la flecha hacia arriba el personaje subirá si existe una escalera en esa posición
 		if (Game::instance().getKey(GLFW_KEY_UP)) {
 			if (map->collisionLadderUp(pos, getSize())) {
 				center();
-				if (sprite->animation() != CLIMB)
-					sprite->changeAnimation(CLIMB);
+				if (sprite->animation() != CLIMB) sprite->changeAnimation(CLIMB);
 				sprite->setPaused(false);
 				pos.y -= (int)(SPEED * speedMultiplier);
 				bJumping = false;
 			}
-			else if (sprite->animation() != IDLE && sprite->animation() != WEAPON_IDLE)
+			else if (!isShooting && sprite->animation() != IDLE && sprite->animation() != WEAPON_IDLE && sprite->animation() != FALL)
 				(numBullets > 0) ? sprite->changeAnimation(WEAPON_IDLE) : sprite->changeAnimation(IDLE);
 		}
 		// Con la flecha hacia abajo el personaje bajará si existe una escalera en esa posición
 		else if (Game::instance().getKey(GLFW_KEY_DOWN)) {
 			if (map->collisionLadderDown(pos, getSize())) {
 				center();
-				if (sprite->animation() != CLIMB)
-					sprite->changeAnimation(CLIMB);
-
+				if (sprite->animation() != CLIMB) sprite->changeAnimation(CLIMB);
 				sprite->setPaused(false);
 				pos.y += (int)(SPEED * speedMultiplier);
 				bJumping = false;
 			}
-			else if (sprite->animation() != IDLE && sprite->animation() != WEAPON_IDLE)
+			else if (!isShooting && sprite->animation() != IDLE && sprite->animation() != WEAPON_IDLE && sprite->animation() != FALL)
 				(numBullets > 0) ? sprite->changeAnimation(WEAPON_IDLE) : sprite->changeAnimation(IDLE);
 		}
 		// Si la flecha izquierda está pulsada
-		else if (Game::instance().getKey(GLFW_KEY_LEFT))
-		{
+		else if (Game::instance().getKey(GLFW_KEY_LEFT)) {
 			facingRight = false;
-			if (sprite->animation() == CLIMB && !map->collisionDown(pos, getSize(), 12.f)) {}	// Prohibido salir de la escalera a medias
+			if (sprite->animation() == CLIMB && !map->collisionDown(pos, getSize(), 12.f)) {}
 			else {
 				auto targetAnim = hasBullets() ? GUN_WALK_LEFT : WALK_LEFT;
-				if (sprite->animation() != targetAnim && sprite->animation() != PUSH_LEFT) sprite->changeAnimation(targetAnim);
+				bool canChangeToWalk = (sprite->animation() != FALL || onGroundLastFrame) && (!isShooting);
+				if (canChangeToWalk && sprite->animation() != targetAnim && sprite->animation() != PUSH_LEFT)
+					sprite->changeAnimation(targetAnim);
 				incrLeft();
 				// Si detecto colisión o se sale del mapa
 				if (map->collisionMoveLeft(pos, getSize()) || pos.x < 0.f) incrRight();
 			}
-			// Si la animación actual no es moverse a la izquierda, cambio la animación a mover a la izquierda y le sumo desplazamiento
 		}
 		// Con la flecha derecha hago exactamente lo mismo
-		else if (Game::instance().getKey(GLFW_KEY_RIGHT))
-		{
+		else if (Game::instance().getKey(GLFW_KEY_RIGHT)) {
 			facingRight = true;
-			if (sprite->animation() == CLIMB && !map->collisionDown(pos, getSize(), 12.f)) {}	// Prohibido salir de la escalera a medias
+			if (sprite->animation() == CLIMB && !map->collisionDown(pos, getSize(), 12.f)) {}
 			else {
 				auto targetAnim = hasBullets() ? GUN_WALK_RIGHT : WALK_RIGHT;
-				if (sprite->animation() != targetAnim && sprite->animation() != PUSH_RIGHT) sprite->changeAnimation(targetAnim);
+				bool canChangeToWalk = (sprite->animation() != FALL || onGroundLastFrame) && (!isShooting);
+				if (canChangeToWalk && sprite->animation() != targetAnim && sprite->animation() != PUSH_RIGHT)
+					sprite->changeAnimation(targetAnim);
 				incrRight();
 				// Si detecto colisión o se sale del mapa
 				if (map->collisionMoveRight(pos, getSize()) || pos.x > ((map->getMapSize().x - 1) * map->getTileSize()))
-				{
 					incrLeft();
-				}			
 			}
 		}
 		else inputDetected = false;
 		// Si ninguna de las flechas está pulsada entonces dejo el personaje quieto mirando hacia el lado que corresponda
 
 		if (!inputDetected) {
-			if(sprite->animation() == CLIMB)
+			if (sprite->animation() == CLIMB)
 				sprite->setPaused(true);
-			else if (sprite->animation() != IDLE && sprite->animation() != WEAPON_IDLE)
-				(numBullets > 0) ? sprite->changeAnimation(WEAPON_IDLE) : sprite->changeAnimation(IDLE);
+			else if (!isShooting && sprite->animation() != IDLE && sprite->animation() != WEAPON_IDLE)
+				if (sprite->animation() != FALL || onGroundLastFrame)
+					(numBullets > 0) ? sprite->changeAnimation(WEAPON_IDLE) : sprite->changeAnimation(IDLE);
 		}
 
-		// Si está saltando
-		if(bJumping)
-		{
+		// Gravedad
+		if (bJumping) {
 			jumpAngle += JUMP_ANGLE_STEP;
-			if(jumpAngle == 180) {
-				bJumping = false;
-				pos.y = startY;
-			}
-			else
-			{
+			if (jumpAngle == 180) { bJumping = false; pos.y = startY; }
+			else {
 				pos.y = int(startY - 96 * sin(3.14159f * jumpAngle / 180.f));
 				if (jumpAngle > 90) {
 					int jumpY = int(pos.y);
 					if (map->collisionMoveDown(pos, getSize(), &jumpY, FALL_STEP) || onGround) {
-						bJumping = false;
-						pos.y = jumpY;
+						bJumping = false; pos.y = jumpY;
 					}
 				}
 			}
 		}
-		else if (!map->collisionLadderUp(pos, getSize()) && !map->collisionLadderDown(pos, getSize()))
-		{
+		else if (!map->collisionLadderUp(pos, getSize()) && !map->collisionLadderDown(pos, getSize())) {
 			if (!onGround) pos.y += FALL_STEP;
-			if(map->collisionMoveDown(pos, getSize(), &pos.y, FALL_STEP) || onGround)
-			{
+			if (map->collisionMoveDown(pos, getSize(), &pos.y, FALL_STEP) || onGround) {
 				onGround = true;
-
-				if(Game::instance().getKey(GLFW_KEY_SPACE))
-				{
-					bJumping = true;
-					jumpAngle = 0;
-					startY = pos.y;
+				if (Game::instance().getKey(GLFW_KEY_SPACE)) {
+					bJumping = true; jumpAngle = 0; startY = pos.y;
 				}
 			}
 			else {
-				if (sprite->animation() != FALL)
-					sprite->changeAnimation(FALL);
+				if (sprite->animation() != FALL && !isShooting) sprite->changeAnimation(FALL);
 			}
 		}
 	}
+
+	onGroundLastFrame = onGround; // Habría que refactorizar el código y poner gravedad antes que input para hacerlo más limpio, pero poniendo esto se evita el único bug que hace que el personaje esté en FALL si mantienes las flechas laterales al tocar el suelo
 	onGround = false;
 
 	// Si el personaje se sale del mapa por abajo o por los lados, muere
@@ -387,7 +369,6 @@ void Player::update(int deltaTime)
 
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
 }
-
 
 void Player::setAnimation(const string& anim)
 {
@@ -527,7 +508,7 @@ void Player::shoot()
 	
 	// Creación de la bala
 	Bullet* bullet = new Bullet();
-	bullet->init(glm::ivec2(tileMapDispl.x, tileMapDispl.y), *shaderProgram, cameraPtr);
+	bullet->init(glm::ivec2(tileMapDispl.x, tileMapDispl.y), *shaderProgram, cameraPtr, BulletType::PLAYER);
 	bullet->setDirection(facingRight);
 
 	glm::ivec2 playerSize = this->getSize();
@@ -545,12 +526,10 @@ void Player::shoot()
 	currentRoom->addEntity(bullet);
 
 	// Animación de disparo
-	shootAnimTimer = 300;
+	shootAnimTimer = 300.f;
 	isShooting = true;
 	blockInput();
-
-	// [TODO] añadir sprite disparo 
-	// sprite->changeAnimation(facingRight ? SHOOT_RIGHT : SHOOT_LEFT);
+	sprite->changeAnimation(facingRight ? SHOOT_RIGHT : SHOOT_LEFT);
 }
 
 void Player::exitPipe(bool exitingUp) {

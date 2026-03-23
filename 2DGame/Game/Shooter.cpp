@@ -187,7 +187,7 @@ void Shooter::shoot() {
     }
 
     Bullet* bullet = new Bullet();
-    bullet->init(glm::ivec2(tileMapDispl.x, tileMapDispl.y), *shaderProgram, cameraPtr);
+    bullet->init(glm::ivec2(tileMapDispl.x, tileMapDispl.y), *shaderProgram, cameraPtr, BulletType::ENEMY);
 	bullet->setDirection(movingRight);
     
     glm::ivec2 enemySize = this->getSize();
@@ -200,14 +200,11 @@ void Shooter::shoot() {
     if (movingRight) bulletPos.x = this->pos.x + enemySize.x + gap;
     else bulletPos.x = this->pos.x - bulletSize.x - gap;
     
-    // Y, la bala sale a 1/4 de altura desde la cabeza del enemigo
-    bulletPos.y = float(this->pos.y + (0.25f * enemySize.y));
+    bulletPos.y = float(this->pos.y + (5.f/16.f * enemySize.y));
 
     bullet->setPosition(bulletPos);
     bullet->setTileMap(map);
     bullet->setDirection(movingRight);
-
-    // A�adir bala a Room
     currentRoom->addEntity(bullet);
 }
 

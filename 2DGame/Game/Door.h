@@ -18,7 +18,11 @@ public:
 	bool getVisited() { return visited; }
 	bool getIsFinalDoor() { return getConnectedTo() == nullptr; }
 	void openingAnim(bool sound);
-	bool isCave() { return spriteRow == 4 || spriteRow == 6; }
+	bool isCave() { return spriteRow == 4 || spriteRow == 6; } // La 8 no la pongo para que haga OPEN_AND_ENTER
+	bool isWorm() { return spriteRow == 9; }
+	void lockedDoorSound();
+	void openLockedDoorSound();
+
 private:
 	bool visited;
 	int spriteRow;

@@ -434,7 +434,7 @@ void Level::killPlayer() {
 
     // Reproducir sonido de muerte
     if (numLives > 1) SoundManager::instance().playSound("death", 0.2f);
-    else SoundManager::instance().playSound("gameOver", 0.2f);
+    else { SoundManager::instance().playSound("gameOver", 0.2f); };
 }
 
 void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2& offset, int end = -1) {
@@ -591,25 +591,23 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                         if (door->getIsFinalDoor()) {
                             if (collectedKeys < allKeys) {
                                 cout << "You need to collect all keys to enter the final door!" << endl;
-                                SoundManager::instance().playSound("doorLocked", 0.3f);
-
-                                // SONIDO DE BLOQUEO [TODO LEVEL]
+                                door->lockedDoorSound();
                                 return;
                             }
                             else {
 								//cout << "Level completed!" << endl;
-                                SoundManager::instance().playSound("openLockedDoor", 0.5f);
-								sound = false;
+                                door->openLockedDoorSound();
+                                sound = false;
+                                return;
                             }
                         }
                         // Cambiar estado visual + sonido (si hace falta)
-                        if (!door->getVisited() && !door->isCave()) {
-                            // SONIDO de abrir puerta
+                        if (!door->getVisited() && !door->isCave() && !door->isWorm()) {
                             door->openingAnim(sound);
                             player->setAnimation("OPEN_AND_ENTER");
                         }
                         else { player->setAnimation("ENTER"); }
-                        if (door->isCave()) SoundManager::instance().playSound("caveDoor", 0.3f);
+                        if (door->isCave() || door->isWorm()) SoundManager::instance().playSound("caveDoor", 0.3f);
                         break;
                     }
                     case EnterType::TUNNEL: // Si es un túnel la animación del jugador es ENTER_TUNNEL
@@ -738,8 +736,11 @@ void Level::handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollid
     case Type::BULLET:
     {
         Bullet* b = static_cast<Bullet*>(e);
-        enemy->die();
-        b->explode();
+        BulletType t = b->getBulletType();
+        if (t == BulletType::PLAYER) {
+            enemy->die();
+            b->explode();
+		}
         break;
     }
     case Type::ENTER:
@@ -801,6 +802,7 @@ void Level::handleBarrelCollision(Barrel* b, Entity* e, glm::vec2& rangeCollided
 
 void Level::checkCollisions()
 {
+    if (!player->isActive()) return;
     // 1. Comprobar colisiones entre el jugador y las entidades del nivel actual
     vector<Entity*>& entities = rooms[currentRoom]->getEntities();
 
@@ -955,6 +957,7 @@ void Level::update(int deltaTime)
         case NORMAL:
         {
             if (player->getDeathByMap()) killPlayer();
+            
             checkCollisions();
 
             break;
@@ -1036,15 +1039,15 @@ void Level::update(int deltaTime)
             camera->updateTransition(transitionTimer, rooms[currentRoom]->getMap()->getMapSize() * rooms[currentRoom]->getMap()->getTileSize());
 
             if (interactedPipe->isTransitComplete()) {
+                bool exitingUp = interactedPipe->isExitingUp();
                 glm::vec2 exitPos = interactedPipe->getExitPosition((int)player->getSize().y);
+                interactedPipe = nullptr;
+
                 player->setPosition(exitPos);
                 player->activate();
-                player->unblockInput();
+                player->exitPipe(exitingUp); // bloquea input y pone startAnimTimer
                 state = NORMAL;
-                player->exitPipe(interactedPipe->isExitingUp());
-                interactedPipe = nullptr;
             }
-
             break;
         }
 
