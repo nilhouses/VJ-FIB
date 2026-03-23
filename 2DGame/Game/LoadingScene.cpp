@@ -29,11 +29,17 @@ void LoadingScene::init() {
 
 
 void LoadingScene::setupTips() {
-	// TODO: Agregar tips reales del juego
-    tips.push_back("TIP: USE UP ARROW TO ENTER DOORS");
-    tips.push_back("TIP: COLLECT ALL KEYS TO UNLOCK THE EXIT");
-    tips.push_back("TIP: BLOCKS CAN BE PUSHED TO ACTIVATE SWITCHES");
-    tips.push_back("TIP: BEWARE OF THE SPIKES, THEY HURT!");
+	// Agregar tips reales del juego
+    tips.push_back("TIP: COLLECT ALL SPACESHIP PARTS TO UNLOCK THE FINAL DOOR");
+    tips.push_back("TIP: PUSH BARRELS TO CRUSH ENEMIES IN YOUR PATH");
+    tips.push_back("TIP: PRESS [Q] TO FIRE YOUR GUN AT DANGEROUS FOES");
+    tips.push_back("TIP: WATCH THE GEOMETRIC SIGNS, THEY LINK TUNNEL ENTRANCES");
+    tips.push_back("TIP: PIPES CAN TRANSPORT YOU ACROSS THE ENTIRE LEVEL");
+    tips.push_back("TIP: ACID IS LETHAL, ONE TOUCH AND IT'S GAME OVER!");
+    tips.push_back("TIP: THE SPEEDBOOST IS FAST BUT MUCH HARDER TO CONTROL");
+    tips.push_back("TIP: SOME ENEMIES PATROL, OTHERS HUNT, AND SOME SHOOT BACK");
+    tips.push_back("TIP: SEARCH EVERY DOOR, SOME LEAD TO SECRET ROOMS");
+    tips.push_back("TIP: USE LADDERS TO FLANK ENEMIES AND AVOID THEIR FIRE");
 
     // Mezclar tips
     currentTipIndex = rand() % tips.size();
@@ -44,14 +50,14 @@ void LoadingScene::update(int deltaTime) {
     currentTime += deltaTime;
     totalTimeElapsed += deltaTime;
 
-    // Animación de los puntos (cada 500ms cambia)
+    // Animación de los puntos
     dotTimer += deltaTime;
     if (dotTimer > 500.f) {
         dotCount = (dotCount + 1) % 4; // Cicla entre 0, 1, 2, 3
         dotTimer = 0;
     }
 
-    // Rotación de Pro-tips (cada 2 segundos cambia)
+    // Rotación de Pro-tips
     tipTimer += deltaTime;
     if (tipTimer > 2000.f || Game::instance().getKey(GLFW_KEY_ENTER) && enterReleased) {
         currentTipIndex = (currentTipIndex + 1) % tips.size();
@@ -80,12 +86,17 @@ void LoadingScene::render() {
     glUseProgram(0); // Usamos la función de texto que maneja sus propios shaders
 
     // Render "LOADING..." centrado
+    
     text.render(loadingStr, glm::vec2(200, 220), 32, glm::vec4(1, 1, 1, 1), projection);
 
     // Render del Pro-tip
     // Centrado aproximado, restamos longitud del texto por tamaño de fuente/2
-    float tipPosX = 320.f - (tips[currentTipIndex].length() * 12.f / 2.f);
-    text.render(tips[currentTipIndex], glm::vec2(tipPosX, 400), 12, glm::vec4(0.8f, 0.8f, 0.3f, 1), projection);
+	int size = 12;
+	if (tips[currentTipIndex].size() >= 58) size = 10;
+    else if (tips[currentTipIndex].size() >= 53) size = 11;
+
+    float tipPosX = 320.f - (tips[currentTipIndex].length() * size / 2.f);
+    text.render(tips[currentTipIndex], glm::vec2(tipPosX, 400), size, glm::vec4(0.8f, 0.8f, 0.3f, 1), projection);
 }
 
 

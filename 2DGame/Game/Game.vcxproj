@@ -27,6 +27,7 @@
     <ClInclude Include="FadeTransition.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Gun.h" />
+    <ClInclude Include="Hud.h" />
     <ClInclude Include="Instructions.h" />
     <ClInclude Include="Key.h" />
     <ClInclude Include="Life.h" />
@@ -60,6 +61,7 @@
     <ClCompile Include="Enter.cpp" />
     <ClCompile Include="FadeTransition.cpp" />
     <ClCompile Include="Gun.cpp" />
+    <ClCompile Include="Hud.cpp" />
     <ClCompile Include="Life.cpp" />
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="Bullet.cpp" />
@@ -82,6 +84,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Room.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="Shooter.cpp" />
@@ -110,13 +113,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>

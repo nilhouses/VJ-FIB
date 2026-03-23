@@ -26,7 +26,7 @@ class Scene
 {
 
 public:
-    Scene(SceneType t) { this->t = t; }
+    Scene(SceneType t) : t(t) {}
 	virtual ~Scene() {} // El destructor es virtual porque vamos a usar punteros a Scene para manejar las diferentes pantallas del juego (menú, juego, créditos...)
 	
 	// Estas funciones son virtuales puras, lo que obliga a que cualquier clase que herede de Scene tenga que implementarlas. De esta forma, cada pantalla del juego (menú, juego, créditos...) implementa su propia versión de estas funciones.
@@ -39,18 +39,19 @@ public:
     // Resize se hará tanto en menús como en partidas para conservar la RA, por lo que se define aquí mismo.
     virtual void resize(int width, int height, int raW, int raH) {
         float scale = std::min(width / (float)raW, height / (float)raH);
-        int viewWidth = (int)(raW * scale);
-        int viewHeight = (int)(raH * scale);
-        int viewX = (width - viewWidth) / 2;
-        int viewY = (height - viewHeight) / 2;
+        viewWidth = (int)(raW * scale);
+        viewHeight = (int)(raH * scale);
+        viewX = (width - viewWidth) / 2;
+        viewY = (height - viewHeight) / 2;
         glViewport(viewX, viewY, viewWidth, viewHeight);
         projection = glm::ortho(0.f, float(raW), float(raH), 0.f);
     }
 protected:
     glm::mat4 projection;
 	SceneType t;
-};
 
+    static int viewX, viewY, viewWidth, viewHeight;
+};
 
 #endif // _SCENE_INCLUDE
 

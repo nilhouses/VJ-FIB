@@ -27,6 +27,8 @@ void Credits::init() {
 }
 
 void Credits::update(int deltaTime) {
+	timer += deltaTime;
+
     if (Game::instance().getKey(GLFW_KEY_ESCAPE) || Game::instance().getKey(GLFW_KEY_B)) {
         Game::instance().changeState(MAIN_MENU);
     }
@@ -39,22 +41,28 @@ void Credits::render() {
     texProgram.setUniformMatrix4f("projection", projection);
     texProgram.setUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
 
-    // 1. Fondo
+    // Fondo
     modelview = glm::mat4(1.0f);
     texProgram.setUniformMatrix4f("modelview", modelview);
     background->render(texBackground);
 
-    // 2. Texto
-    text.render("CREDITS", glm::vec2(200, 80), 40, glm::vec4(0, 0, 0, 1), projection); // Verde claro
+    // Texto
+    glm::vec4 yellow = glm::vec4(1, 1, 0, 1);
+    glm::vec4 lightBlue = glm::vec4(0.4f, 0.8f, 1.0f, 1);
+    glm::vec4 black = glm::vec4(0, 0, 0, 1);
+    glm::vec4 red = glm::vec4(1.0f, 0.4f, 0.4f, 1);
 
-    text.render("DEVELOPERS:", glm::vec2(100, 180), 20, glm::vec4(0, 0, 0, 1), projection);
-    text.render("Alejandro Ruiz Patn", glm::vec2(100, 230), 25, glm::vec4(0, 0, 0, 1), projection);
-    text.render("Nil Casas Duatis", glm::vec2(100, 280), 25, glm::vec4(0, 0, 0, 1), projection);
+    text.render("CREDITS", glm::vec2(185, 80), 40, yellow, projection); // Verde claro
+
+    text.render("DEVELOPERS:", glm::vec2(100, 180), 20, black, projection);
+    text.render("Alejandro Ruiz Patn", glm::vec2(100, 230), 25, black, projection);
+    text.render("Nil Casas Duatis", glm::vec2(100, 280), 25, black, projection);
     
-    text.render("ART DESIGN:", glm::vec2(100, 350), 20, glm::vec4(0, 0, 0, 1), projection);
-    text.render("Adragong3", glm::vec2(100, 390), 20, glm::vec4(0, 0, 0, 1), projection);
+    text.render("ART DESIGN:", glm::vec2(100, 350), 20, black, projection);
+    text.render("Adragong3", glm::vec2(100, 390), 20, black, projection);
 
-    text.render("PRESS 'B' TO GO BACK", glm::vec2(150, 475), 18, glm::vec4(1.f, 1.f, 1.f, 1), projection);
+    float animY = 440.0f + 5.0f * sin(timer / 300.f);
+    text.render("PRESS 'B' TO GO BACK", glm::vec2(165, animY), 16, black, projection);
 }
 
 void Credits::initShaders() {

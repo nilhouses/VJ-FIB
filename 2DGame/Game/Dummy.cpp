@@ -72,7 +72,7 @@ void Dummy::update(int deltaTime)
 
     if (movingRight) {
         glm::ivec2 nextPos = glm::ivec2(pos.x + speed, pos.y);
-        bool wallAhead = map->collisionMoveRight(nextPos, size);
+        bool wallAhead = map->collisionMoveRightEnemy(nextPos, size);
         bool outOfMap = nextPos.x + size.x >= mapWidth;
 
         // Pie delantero derecho, 1px de ancho justo debajo del pie
@@ -86,7 +86,7 @@ void Dummy::update(int deltaTime)
     }
     else {
         glm::ivec2 nextPos = glm::ivec2(pos.x - speed, pos.y);
-        bool wallAhead = map->collisionMoveLeft(nextPos, size);
+        bool wallAhead = map->collisionMoveLeftEnemy(nextPos, size);
         bool outOfMap = nextPos.x <= 0;
 
         // Pie delantero izquierdo, 1px de ancho justo debajo del pie

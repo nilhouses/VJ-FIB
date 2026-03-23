@@ -25,6 +25,8 @@ private:
     Text text;
     ShaderProgram texProgram;
     glm::mat4 projection;
+
+    int timer = 0;
 };
 
 #endif // _INSTRUCTIONS_INCLUDE

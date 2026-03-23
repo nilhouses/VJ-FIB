@@ -6,8 +6,12 @@
 #include "Transition.h"
 
 
+#define LEVEL_WIDTH 640
+#define LEVEL_HEIGHT 384
+#define HUD_WIDTH 640
+#define HUD_HEIGHT 96
 #define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
+#define SCREEN_HEIGHT (LEVEL_HEIGHT + HUD_HEIGHT) // 480
 
 
 // Game is a singleton (a class with a single instance) that represents our whole application
