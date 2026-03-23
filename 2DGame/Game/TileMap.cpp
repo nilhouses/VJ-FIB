@@ -178,11 +178,15 @@ bool TileMap::loadLevel(const string& levelFile)
 void TileMap::prepareLayerArray(const glm::vec2& minCoords, ShaderProgram& program, int* layer, GLuint& vao, GLuint& vbo, int& nTiles, GLint& posLocation, GLint& texCoordLocation)
 {
 	int tile;
-	glm::vec2 posTile, texCoordTile[2], halfTexel;
+	glm::vec2 posTile, texCoordTile[2];
 	vector<float> vertices;
 
 	nTiles = 0;
-	halfTexel = glm::vec2(0.5f / tilesheet.width(), 0.5f / tilesheet.height());
+
+	// El epsilon es un margen de seguridad para evitar problemas de bleeding
+	float epsilonX = 0.005f / tilesheet.width();
+	float epsilonY = 0.005f / tilesheet.height();
+
 	for (int j = 0; j < mapSize.y; j++)
 	{
 		for (int i = 0; i < mapSize.x; i++)
@@ -192,15 +196,29 @@ void TileMap::prepareLayerArray(const glm::vec2& minCoords, ShaderProgram& progr
 			{
 				nTiles++;
 				posTile = glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize);
-				texCoordTile[0] = glm::vec2(float((tile - 1) % tilesheetSize.x) / tilesheetSize.x, float((tile - 1) / tilesheetSize.x) / tilesheetSize.y);
+
+				// Coordenada de inicio
+				texCoordTile[0].x = float((tile - 1) % tilesheetSize.x) / tilesheetSize.x;
+				texCoordTile[0].y = float((tile - 1) / tilesheetSize.x) / tilesheetSize.y;
+
+				// Coordenada de fin
 				texCoordTile[1] = texCoordTile[0] + tileTexSize;
-				texCoordTile[1] -= halfTexel;
+
+				// Aplicamos epsilon
+				texCoordTile[0].x += epsilonX;
+				texCoordTile[0].y += epsilonY;
+				texCoordTile[1].x -= epsilonX;
+				texCoordTile[1].y -= epsilonY;
+
+				// Triángulo 1
 				vertices.push_back(posTile.x); vertices.push_back(posTile.y);
 				vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[0].y);
 				vertices.push_back(posTile.x + blockSize); vertices.push_back(posTile.y);
 				vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[0].y);
 				vertices.push_back(posTile.x + blockSize); vertices.push_back(posTile.y + blockSize);
 				vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[1].y);
+
+				// Triángulo 2
 				vertices.push_back(posTile.x); vertices.push_back(posTile.y);
 				vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[0].y);
 				vertices.push_back(posTile.x + blockSize); vertices.push_back(posTile.y + blockSize);

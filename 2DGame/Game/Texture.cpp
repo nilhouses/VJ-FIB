@@ -7,10 +7,10 @@ using namespace std;
 
 Texture::Texture()
 {
-	wrapS = GL_REPEAT;
-	wrapT = GL_REPEAT;
-	minFilter = GL_LINEAR_MIPMAP_LINEAR;
-	magFilter = GL_LINEAR_MIPMAP_LINEAR;
+	wrapS = GL_CLAMP_TO_EDGE;
+	wrapT = GL_CLAMP_TO_EDGE;
+	minFilter = GL_NEAREST;
+	magFilter = GL_NEAREST;
 }
 
 Texture::~Texture()
@@ -45,7 +45,7 @@ bool Texture::loadFromFile(const string &filename, PixelFormat format)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthTex, heightTex, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 		break;
 	}
-	glGenerateMipmap(GL_TEXTURE_2D);
+
 	delete[] image;
 	
 	return true;

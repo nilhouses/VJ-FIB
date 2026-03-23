@@ -10,11 +10,6 @@
 #define SCREEN_X 0
 #define SCREEN_Y 0
 
-// Tamaño de cámara
-#define CAMERA_WIDTH 640
-#define CAMERA_HEIGHT 480
-#define HUD_HEIGHT 0
-
 
 enum LevelState { NORMAL, ENTERING_DOOR, EXITING_DOOR, DYING, PICKING_OBJECT, ENTERING_PIPE };
 
@@ -191,7 +186,10 @@ void Level::loadEntities()
 		//cout << "Loading entity type: " << type << endl;
         fin >> count;
 
-        if (type == "KEY") allKeys = count;
+        if (type == "KEY") {
+            allKeys = count;
+			hud->setAllKeys(allKeys);
+        }
 
         for (int i = 0; i < count; ++i)
         {
@@ -378,11 +376,16 @@ void Level::init()
     rooms = vector<Room*>();
     currentRoom = 0;
     state = NORMAL;
-    camera = new Camera(CAMERA_WIDTH, CAMERA_HEIGHT, HUD_HEIGHT);
-    projection = glm::ortho(0.f, float(CAMERA_WIDTH), float(CAMERA_HEIGHT), 0.f);
+
+    // Ajustamos la cámara y proyección al tamaño del área de JUEGO (384 de alto)
+    camera = new Camera(LEVEL_WIDTH, LEVEL_HEIGHT);
+    projection = glm::ortho(0.f, float(LEVEL_WIDTH), float(LEVEL_HEIGHT), 0.f);
+
+    // Inicializamos el HUD
+	hud = new Hud();
+    hud->init(numLives, allKeys);
 
     createRooms();
-
     currentTime = 0.0f;
 }
 
@@ -938,6 +941,9 @@ void Level::update(int deltaTime)
 {
     currentTime += deltaTime;
 
+	// Update del Hud con datos actuales
+    hud->update(deltaTime, numLives, collectedKeys);
+
     rooms[currentRoom]->update(deltaTime);
     player->update(deltaTime);
     
@@ -1103,9 +1109,24 @@ void Level::update(int deltaTime)
 
 void Level::render()
 {
-    // Se renderiza solo la habitación actual en su estado actual
+    // calculamos cuánto mide el HUD y el nivel proporcionalmente al tamaño actual de la ventana
+    float hudRatio = (float)HUD_HEIGHT / (float)SCREEN_HEIGHT;
+    int scaledHudHeight = (int)(viewHeight * hudRatio);
+    int scaledLevelHeight = viewHeight - scaledHudHeight;
+
+    // HUD
+    // Empezamos en la Y base del contenedor (viewY)
+    glViewport(viewX, viewY, viewWidth, scaledHudHeight);
+    hud->render();
+
+    // LEVEL
+    // Empezamos donde termina el HUD (viewY + scaledHudHeight)
+    glViewport(viewX, viewY + scaledHudHeight, viewWidth, scaledLevelHeight);
     rooms[currentRoom]->render(camera, projection);
     player->render();
+
+    // RESET
+    glViewport(viewX, viewY, viewWidth, viewHeight);
 }
 
 bool Level::gameOver() { return (numLives == 0); }

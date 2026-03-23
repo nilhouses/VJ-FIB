@@ -8,6 +8,8 @@
 #include "Room.h"
 #include "Utils.h"
 #include "SoundManager.h"
+#include "Game.h"
+#include "Hud.h"
 
 struct CollisionInfo {
 	bool colliding;
@@ -71,7 +73,7 @@ private:
 
 	Camera* camera;
 	glm::mat4 projection;
-
+	Hud* hud;
 
 	// Para saltar contenido
 	bool godMode = false;

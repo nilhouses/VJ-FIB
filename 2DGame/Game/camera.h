@@ -6,7 +6,7 @@
 class Camera
 {
 public:
-    Camera(int screenWidth, int screenHeight, int hudHeight = 0);
+    Camera(int screenWidth, int screenHeight, int hudHeight = 96.f);
 
     // Actualiza la cámara para seguir al jugador u otro objetivo
     void update(const glm::vec2& targetPos, const glm::vec2& mapSize);
@@ -19,7 +19,7 @@ public:
     glm::vec2 getPosition() const { return position; }
 
     // Devuelve un offset para aplicar en modelview (para shaders)
-    glm::vec2 getOffset() const { return -position + glm::vec2(0.f, hudHeight); }
+    glm::vec2 getOffset() const { return -position; }
 
     void printTransitionInfo() const;
     bool isVisible(const glm::vec2& worldPos) const {

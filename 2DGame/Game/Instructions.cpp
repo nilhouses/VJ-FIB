@@ -26,6 +26,8 @@ void Instructions::init() {
 }
 
 void Instructions::update(int deltaTime) {
+	timer += deltaTime;
+
     // Si el jugador pulsa ESC o B, volvemos al men� principal
     if (Game::instance().getKey(GLFW_KEY_ESCAPE) || Game::instance().getKey(GLFW_KEY_B)) {
         Game::instance().changeState(MAIN_MENU);
@@ -39,21 +41,38 @@ void Instructions::render() {
     texProgram.setUniformMatrix4f("projection", projection);
     texProgram.setUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
 
-    // 1. Dibujar Fondo
+    // Dibujar Fondo
     modelview = glm::mat4(1.0f);
     texProgram.setUniformMatrix4f("modelview", modelview);
     background->render(texBackground);
 
-    // 2. Dibujar Textos de Instrucciones
-    text.render("HOW TO PLAY", glm::vec2(100, 80), 40, glm::vec4(0, 0, 0, 1), projection);
+    // Dibujar Textos de Instrucciones
+    // Colores claros para que se vean sobre fondo oscuro
+    glm::vec4 yellow = glm::vec4(1, 1, 0, 1);
+    glm::vec4 lightBlue = glm::vec4(0.4f, 0.8f, 1.0f, 1);
+    glm::vec4 black = glm::vec4(0, 0, 0, 1);
+    glm::vec4 red = glm::vec4(1.0f, 0.4f, 0.4f, 1);
 
-    text.render("ARROWS: Move player", glm::vec2(100, 180), 20, glm::vec4(0, 0, 0, 1), projection);
-    // [TODO]...
-    //
-    //
-    //
+    // TÍTULO PRINCIPAL
+    text.render("HOW TO PLAY", glm::vec2(150, 60), 32, yellow, projection);
 
-    text.render("PRESS 'B' TO GO BACK", glm::vec2(150, 475), 18, glm::vec4(1.f, 1.f, 1.f, 1), projection);
+    // CONTROLES
+    text.render("CONTROLS", glm::vec2(40, 130), 22, lightBlue, projection);
+
+    text.render("LEFT/RIGHT: Move & Push Barrels", glm::vec2(60, 175), 14, black, projection);
+    text.render("UP/DOWN: Climb Stairs & Enter Pipes", glm::vec2(60, 205), 14, black, projection);
+    text.render("UP: Enter Doors & Enter Tunnels", glm::vec2(60, 235), 14, black, projection);
+    text.render("Q: Fire Weapon", glm::vec2(60, 265), 14, black, projection);
+
+    // MISSION OBJECTIVE
+    text.render("MISSION OBJECTIVE", glm::vec2(40, 310), 22, lightBlue, projection);
+
+    text.render("Find all spaceship parts to", glm::vec2(60, 350), 16, black, projection);
+    text.render("advance to the next level.", glm::vec2(55, 375), 16, black, projection);
+
+    // VOLVER
+    float animY = 440.0f + 5.0f * sin(timer / 300.f);
+    text.render("PRESS 'B' TO GO BACK", glm::vec2(165, animY), 16, black, projection);
 }
 
 void Instructions::initShaders() {
