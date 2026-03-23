@@ -46,6 +46,8 @@ private:
 	bool bJumping;						// Indica si el jugador está saltando o no
 	int jumpAngle, startY;				// Ángulo de salto y posición inicial en Y para el salto
 	bool onGround = false;
+	bool onGroundLastFrame= false;
+
 	bool blockedInput;
 	bool wasPushing = false;				// Indica si el jugador estaba empujando un barril en el frame anterior
 	// Atributos necesarios para items
@@ -64,6 +66,8 @@ private:
 	Camera* cameraPtr = nullptr;
 	float startAnimTimer;
 	bool deathByMap = false; // Indica si el jugador ha muerto por un daño de mapa (caída, pinchos, etc.) para configurar la animación de muerte correspondiente
+
+	void Player::updateAnimation();
 };
 
 

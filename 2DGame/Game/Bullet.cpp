@@ -6,7 +6,7 @@
 
 enum BulletAnims
 {
-    LEFT, RIGHT, EXPLODE, NUM_ANIMS
+    STATIC_SPRITE, NUM_ANIMS
 };
 
 
@@ -14,13 +14,13 @@ Bullet::Bullet() : Entity(Type::BULLET) {}
 
 Bullet::~Bullet()
 {
-    if (sprite != NULL)
-        delete sprite;
+    if (explosionSprite != nullptr)
+        delete explosionSprite;
 }
 
-void Bullet::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c)
+void Bullet::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, BulletType t)
 {
-    Entity::init(tileMapPos, shaderProgram, "images/bullet.png", glm::ivec2(12, 12), glm::vec2(0.25f, 0.25f), c);
+    Entity::init(tileMapPos, shaderProgram, "images/items.png", glm::ivec2(32, 32), glm::vec2(0.25f, 1.f / 5.f), c);
 
     speed = 4.0f;
     explosionTimer = 0.0f;
@@ -28,24 +28,35 @@ void Bullet::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 
     // Configuraci�n de animaciones
     sprite->setNumberAnimations(NUM_ANIMS);
+    sprite->setAnimationSpeed(STATIC_SPRITE, 1);
 
-    sprite->setAnimationSpeed(LEFT, 20);
-    sprite->addKeyframe(LEFT, glm::vec2(0.f, 0.25f));
-    sprite->addKeyframe(LEFT, glm::vec2(0.5f, 0.25f));
-    sprite->addKeyframe(LEFT, glm::vec2(0.25f, 0.25f));
+    switch (t)  
+    {
+        case BulletType::PLAYER:
+            sprite->addKeyframe(STATIC_SPRITE, glm::vec2(0.5f, 1.f/5.f));
 
-    sprite->setAnimationSpeed(RIGHT, 20);
-    sprite->addKeyframe(RIGHT, glm::vec2(0.f, 0.f));
-    sprite->addKeyframe(RIGHT, glm::vec2(0.5f, 0.f));
-    sprite->addKeyframe(RIGHT, glm::vec2(0.75f, 0.25f));
+            break;
+        case BulletType::ENEMY:
+            sprite->addKeyframe(STATIC_SPRITE, glm::vec2(0.75f, 1.f/5.f));
 
-    sprite->setAnimationSpeed(EXPLODE, 20);
-    sprite->addKeyframe(EXPLODE, glm::vec2(0.25f, 0.5f));
-    sprite->addKeyframe(EXPLODE, glm::vec2(0.5f, 0.5f));
-    sprite->addKeyframe(EXPLODE, glm::vec2(0.75f, 0.5f));
+            break;
+        default:
+            break;
+    }
 
-    sprite->changeAnimation(RIGHT);
+    explosionSprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(0.25f, 1.f / 5.f), &spritesheet, &shaderProgram, c);
+    explosionSprite->setNumberAnimations(1);
+    explosionSprite->setAnimationSpeed(0, 16);
+    explosionSprite->addKeyframe(0, glm::vec2(0.00f, 4.f / 5.f));
+    explosionSprite->addKeyframe(0, glm::vec2(0.25f, 4.f / 5.f));
+    explosionSprite->addKeyframe(0, glm::vec2(0.50f, 4.f / 5.f));
+    explosionSprite->addKeyframe(0, glm::vec2(0.75f, 4.f / 5.f));
+    explosionSprite->changeAnimation(0);
+    
+
+    sprite->changeAnimation(STATIC_SPRITE);
     cam = c;
+    this->t = t;
 }
 
 void Bullet::update(int deltaTime)
@@ -53,6 +64,7 @@ void Bullet::update(int deltaTime)
 
     sprite->update(deltaTime);
     if (exploding) {
+        explosionSprite->update(deltaTime);
         explosionTimer += deltaTime;
         if (explosionTimer >= EXPLOSION_DURATION) this->deactivate();
         return;
@@ -70,11 +82,9 @@ void Bullet::update(int deltaTime)
     bool collision = false;
 
     if (movingRight) {
-        sprite->changeAnimation(RIGHT);
         collision = map->collisionMoveRight(pos, size);
     }
     else {
-        sprite->changeAnimation(LEFT);
         collision = map->collisionMoveLeft(pos, size);
     }
     
@@ -94,17 +104,27 @@ void Bullet::setPosition(const glm::vec2& pos) {
         SoundManager::instance().playSound("shot", 0.03f);
 }
 
+void Bullet::render() {
+    if (!active) return;
+    if (exploding) explosionSprite->render();
+    else Entity::render();
+}
+
 void Bullet::explode() {
     // No explotar varias veces
     if (exploding) return;
     exploding = true;
-    sprite->changeAnimation(EXPLODE);
+    glm::vec2 centeredPos = glm::vec2(
+        tileMapDispl.x + pos.x + 8,  // (32-16)/2
+        tileMapDispl.y + pos.y + 8
+    );
+    explosionSprite->setPosition(centeredPos);
+    explosionSprite->changeAnimation(0);
+
     cout << "Bullet explosion!" << endl;
     // En el update se desactivar� la entidad cuando acabe la animaci�n de explosi�n
 }
 
 void Bullet::setDirection(bool right) {
 	movingRight = right;
-    auto anim = (movingRight) ? RIGHT : LEFT;
-    sprite->changeAnimation(anim);
 }

@@ -66,6 +66,7 @@ bool Game::update(int deltaTime)
             Level* level = static_cast<Level*>(currentScene);
 
             if (level->gameOver()) {
+                numLives = 3;
                 changeState(MAIN_MENU);
             }
             else {
