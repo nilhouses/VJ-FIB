@@ -10,3 +10,7 @@ images/fondo_cueva.png
 2 0 0
 3 0 0
 4 0 0
+images/nave.png
+1
+160 96
+0 19 14

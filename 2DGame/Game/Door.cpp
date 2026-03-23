@@ -31,7 +31,7 @@ void Door::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Came
 	sprite->setAnimationSpeed(CLOSED, 1);
 	sprite->addKeyframe(CLOSED, glm::vec2(0.f, sr / 13.f));
 	
-	if (sr < 5 || sr == 6 || sr == 8 || sr == 11) {
+	if (sr <= 4 || sr == 6 || sr == 8 || sr >= 11) {
 		sprite->setAnimationSpeed(OPENING, 4);
 		sprite->addKeyframe(OPENING, glm::vec2(0.f, sr / 13.f));
 		sprite->addKeyframe(OPENING, glm::vec2(0.25f, sr / 13.f));

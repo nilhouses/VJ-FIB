@@ -598,7 +598,6 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
 								//cout << "Level completed!" << endl;
                                 door->openLockedDoorSound();
                                 sound = false;
-                                return;
                             }
                         }
                         // Cambiar estado visual + sonido (si hace falta)
