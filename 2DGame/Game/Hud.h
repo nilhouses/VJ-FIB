@@ -15,7 +15,7 @@ public:
 	~Hud();
 
 	void init(int numLives, int numKeys);
-	void update(int deltaTime, int numLives, int numBullets, float speedBoostDuration, float boostTimeLeft, int collectedKeys);
+	void update(int deltaTime, int numLives, int numBullets, float speedBoostDuration, float boostTimeLeft, int collectedKeys, bool godMode);
 	void render();
 
 	void setAllKeys(int allKeys) { this->allKeys = allKeys; }
@@ -27,6 +27,7 @@ private:
 	int numBullets;
 	float speedBoostDuration;
 	float boostTimeLeft;
+	bool godMode;
 
 	glm::mat4 hudProj;
 	Text text;

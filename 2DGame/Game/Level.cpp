@@ -577,9 +577,8 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             if (isUpPressed && releasedUp && state == NORMAL && rangeCollided.x > 24 && rangeCollided.y > 50) {
                 releasedUp = false;
                 Enter* enter = static_cast<Door*>(e);
-                player->center();
-                transitionTimer = 1000.f;
 
+                transitionTimer = 1000.f;
                 // Según el tipo de entrada
                 switch (enter->getEnterType())
                 {
@@ -607,7 +606,8 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                             player->setAnimation("OPEN_AND_ENTER");
                         }
                         else { player->setAnimation("ENTER"); }
-                        if (door->isCave() || door->isWorm()) SoundManager::instance().playSound("caveDoor", 0.3f);
+                        //if (door->isCave() || door->isWorm() || door->getVisited()) Cualquier puerta 
+                        SoundManager::instance().playSound("stepIn", 0.3f);
                         break;
                     }
                     case EnterType::TUNNEL: // Si es un túnel la animación del jugador es ENTER_TUNNEL
@@ -624,7 +624,10 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
 
                         //camera->printTransitionInfo();
                     }
+                    default:
+                        break;
                 }
+                player->center();
 
                 // Configurar transición a la nueva habitación
                 state = ENTERING_DOOR;
@@ -673,7 +676,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                     Clever* clever = static_cast<Clever*>(enemy);
                     if (!clever->isVisible()) break;
                 }
-                killPlayer();
+                if (enemy->canHurt()) killPlayer();
             }
             break;
         }
@@ -968,7 +971,7 @@ void Level::update(int deltaTime)
 	// Update del Hud con datos actuales
     SpeedBoost* sb = new SpeedBoost();
     float speedBoostDuration = sb->getDuration();
-    hud->update(deltaTime, numLives, player->getBullets(), speedBoostDuration, player->getRemainingBoostTime(), collectedKeys);
+    hud->update(deltaTime, numLives, player->getBullets(), speedBoostDuration, player->getRemainingBoostTime(), collectedKeys, godMode);
 
     rooms[currentRoom]->update(deltaTime);
     player->update(deltaTime);

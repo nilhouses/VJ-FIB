@@ -39,13 +39,14 @@ void Hud::init(int numLives, int numKeys)
 
 }
 
-void Hud::update(int deltaTime, int numLives, int numBullets, float speedBoostDuration, float boostTimeLeft, int collectedKeys)
+void Hud::update(int deltaTime, int numLives, int numBullets, float speedBoostDuration, float boostTimeLeft, int collectedKeys, bool godMode)
 {
 	this->numLives = numLives;
 	this->numKeys = collectedKeys;
 	this->numBullets = numBullets;
 	this->speedBoostDuration = speedBoostDuration;
 	this->boostTimeLeft = boostTimeLeft;
+	this->godMode = godMode;
 }
 
 void Hud::render()
@@ -66,10 +67,11 @@ void Hud::render()
     // Llaves
     float keysGroupX = HUD_WIDTH - 120.f;
     keyIcon.render(glm::vec2(keysGroupX, iconsY), hudProj, 0.f);
-    text.render(keysStr, glm::vec2(keysGroupX + 40.f, textY), 24, glm::vec4(1, 1, 0.2f, 1), hudProj);
+    if (numKeys == allKeys) text.render(keysStr, glm::vec2(keysGroupX + 40.f, textY), 24, glm::vec4(1, 1, 0.2f, 1), hudProj);
+    else text.render(keysStr, glm::vec2(keysGroupX + 40.f, textY), 24, glm::vec4(1, 1, 1, 1), hudProj);
 
     // Speedboost   
-    float boostGroupX = keysGroupX - 80.f;
+    float boostGroupX = keysGroupX - 60.f;
     if (boostTimeLeft > 0.0f) {
         float fill = glm::clamp(boostTimeLeft / SpeedBoost::getMaxTime(), 0.0f, 1.0f);
         boostIcon.render(glm::vec2(boostGroupX, iconsY), hudProj, fill);
@@ -85,4 +87,9 @@ void Hud::render()
     float livesGroupX = gunGroupX - 120.f;
     lifeIcon.render(glm::vec2(livesGroupX, iconsY), hudProj, 0.f);
     text.render(livesStr, glm::vec2(livesGroupX + 40.f, textY), 24, glm::vec4(1, 1, 1, 1), hudProj);
+
+    // GodMode (opcional)
+    float godModeGroupX = livesGroupX - 120.f;
+    if (godMode) text.render("GOD MODE", glm::vec2(godMode, textY), 24, glm::vec4(1, 0.5f, 0.5f, 1), hudProj);
+
 }
