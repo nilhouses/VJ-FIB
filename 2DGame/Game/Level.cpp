@@ -441,7 +441,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
     switch (e->getType())
     {
         case Type::KEY:
-        {
+        {   
             player->pickItem();
             collectedKeys = min(collectedKeys + 1, allKeys);
             // Transición de estado
@@ -457,7 +457,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
         {
             player->pickItem();
             numLives++;
-            // Configurar transición a la nueva habitación
+            // Configurar transición de cambio de estado
             state = PICKING_OBJECT;
             transitionTimer = 300.f;
             interactedEntity = e;
@@ -472,7 +472,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             SpeedBoost* sb = static_cast<SpeedBoost*>(e);
             player->activateSpeedBoost(sb->getMultiplier(), sb->getTimeActive());
             sb->collect();
-            // Configurar transición a la nueva habitación
+            // Configurar transición de cambio de estado
             state = PICKING_OBJECT;
             transitionTimer = 300.f;
             interactedEntity = e;
@@ -486,7 +486,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             player->addBullet();
             Gun* gun = static_cast<Gun*>(e);
             gun->collect();
-            // Configurar transición a la nueva habitación
+            // Configurar transición de cambio de estado
             state = PICKING_OBJECT;
             transitionTimer = 300.f;
             interactedEntity = e;
@@ -590,7 +590,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                         bool sound = true;
                         if (door->getIsFinalDoor()) {
                             if (collectedKeys < allKeys) {
-                                cout << "You need to collect all keys to enter the final door!" << endl;
+                                cout << "You need to collect all keys to use the final door!" << endl;
                                 door->lockedDoorSound();
                                 return;
                             }
@@ -611,8 +611,6 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                     }
                     case EnterType::TUNNEL: // Si es un túnel la animación del jugador es ENTER_TUNNEL
                     {
-                        cout << "Interacting with tunnel" << endl;
-
                         Tunnel* tunnel = static_cast<Tunnel*>(enter);
                         SoundManager::instance().playSound("tunnelSteps", 0.4f);
                         if (tunnel->getUp()) player->setAnimation("TUNNEL_ENTER_TOP");
@@ -623,7 +621,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                         camera->setStartPos(player->getPosition());
                         camera->setEndPos(tunnel->getConnectedTo()->getPosition());
 
-                        camera->printTransitionInfo();
+                        //camera->printTransitionInfo();
                     }
                 }
 
@@ -643,6 +641,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             if (state != NORMAL) break;
             Pipe* pipe = static_cast<Pipe*>(e);
             if (pipe->isOccupied()) {
+                cout << "This pipe is already being used!" << endl;
                 if (pipe->getEntryKey(end)) SoundManager::instance().playSound("invalidAction", 0.2f);
                 break;
             }
@@ -680,9 +679,10 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
 
         case Type::BULLET:
         {
+			cout << "Player just got shot!" << endl;
             Bullet* b = static_cast<Bullet*>(e);
             if (!godMode && !b->isExploding()) {
-				killPlayer();
+				// [TODO]killPlayer();
                 b->explode();
             }
             break;
@@ -727,11 +727,7 @@ void Level::handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollid
             }
         }
         break;
-    }
-    case Type::PLATFORM:
-    {
-        break;
-    }
+    }   
     case Type::BULLET:
     {
         Bullet* b = static_cast<Bullet*>(e);
@@ -791,19 +787,19 @@ void Level::handleBarrelCollision(Barrel* b, Entity* e, glm::vec2& rangeCollided
 {
     switch (e->getType())
     {
-    case Type::PLATFORM:
-        if (b->isMoving()) b->explode();
-        break;
-    case Type::BARREL:
-    {
-        Barrel* barrel = static_cast<Barrel*>(e);
-        if (barrel->isMoving() || b->isMoving() || barrel->isExploding() || b->isExploding()) {
-            barrel->explode(); b->explode();
+        case Type::PLATFORM:
+            if (b->isMoving()) b->explode();
+            break;
+        case Type::BARREL:
+        {
+            Barrel* barrel = static_cast<Barrel*>(e);
+            if (barrel->isMoving() || b->isMoving() || barrel->isExploding() || b->isExploding()) {
+                barrel->explode(); b->explode();
+            }
+            break;
         }
-        break;
-    }
-    default:
-        break;
+        default:
+            break;
     }
 }
 
@@ -822,10 +818,12 @@ void Level::checkCollisions()
         if (!e->isActive()) continue;
 
         glm::vec2 offset(2.f, 6.f);
-        if (e->getType() == Type::KEY || e->getType() == Type::LIFE || e->getType() == Type::SPEEDBOOST)
-            offset = glm::vec2(8.f, 8.f);
+        if (e->getType() == Type::KEY || e->getType() == Type::LIFE || e->getType() == Type::SPEEDBOOST || e->getType() == Type::GUN)
+            offset = glm::vec2(16.f, 31.9f);
         else if (e->getType() == Type::BARREL)
-            offset = glm::vec2(8.f, 4.f); // Ajustar la X en función de la anchura del sprite definitivo
+            offset = glm::vec2(6.f, 4.f);
+        else if (e->getType() == Type::BULLET)
+            offset = glm::vec2(24.f, 24.f);
         else if (e->getType() == Type::ACID)
 			offset = glm::vec2(8.f, 8.f);
         else if (e->getType() == Type::ENEMY) {
@@ -833,7 +831,13 @@ void Level::checkCollisions()
             Enemy* enemy = static_cast<Enemy*>(e);
             switch (enemy->getEnemyType()) {
                 case EnemyType::DUMMY:
-                    offset = glm::vec2(5.f, 12.f);
+                    offset = glm::vec2(8.f, 24.f);
+                    break;
+                case EnemyType::CLEVER:
+                    offset = glm::vec2(8.f, 12.f);
+                    break;
+                case EnemyType::SHOOTER:
+                    offset = glm::vec2(8.f, 16.f);
                     break;
                 default:
                     break;
@@ -847,8 +851,8 @@ void Level::checkCollisions()
             glm::vec4 b0 = pipe->getEndBoundingBox(0);
             glm::vec4 b1 = pipe->getEndBoundingBox(1);
 
-            CollisionInfo c0 = overlap(playerBox, b0, glm::vec2(0.f));
-            CollisionInfo c1 = overlap(playerBox, b1, glm::vec2(0.f));
+            CollisionInfo c0 = overlap(playerBox, b0, glm::vec2(24.f));
+            CollisionInfo c1 = overlap(playerBox, b1, glm::vec2(24.f));
 
             if (c0.colliding && playerCenteredOn(b0))
                 handlePlayerCollision(e, c0.rangeColision, glm::vec2(0.f), 0);
@@ -877,7 +881,8 @@ void Level::checkCollisions()
             for (Entity* e1 : entities) {
                 if (!e1->isActive() || e1 == e) continue;
 
-                glm::vec2 offset(0.f, 0.f);
+                offset = glm::vec2(16.f, 16.f);
+                
                 CollisionInfo collisionBullet = overlap(b->getBoundingBox(), e1->getBoundingBox(), offset);
 
                 if (collisionBullet.colliding) {
@@ -935,7 +940,16 @@ void Level::checkCollisions()
             if (!e->isActive()) continue;
 
             // Offset de un enemigo con otras entidades (excepto el jugador)
-            glm::vec2 offset = glm::vec2(8.f, 18.f);
+            glm::vec2 offset;
+            switch (enemy->getEnemyType()) {
+                case EnemyType::DUMMY:
+                    offset = glm::vec2(8.f, 28.f);
+                    break;
+                default:
+                    offset = glm::vec2(8.f, 24.f);
+                    break;
+            }
+
             CollisionInfo collision = overlap(enemyBox, e->getBoundingBox(), offset);
 
             if ((e->getType() != enemy->getType()) && collision.colliding)

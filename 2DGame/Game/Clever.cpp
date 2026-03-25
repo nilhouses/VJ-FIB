@@ -131,6 +131,7 @@ void Clever::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
     this->movingRight = movingRight;
     startAnimTimer = 1000.0f;
     sprite->changeAnimation(START);
+    setSpeed(1);
     cam = c;
 }
 
@@ -228,7 +229,7 @@ void Clever::update(int deltaTime)
             glm::vec2 endCenter = glm::vec2(exitPos.x + map->getTileSize() * 0.5f, exitPos.y + map->getTileSize() * 0.5f);
             bool exitingUp = currentPipe->isExitingUp();
 
-            
+
             if (cam->isVisible(endCenter)) SoundManager::instance().playSound("pipe_out", 0.05f);
 
             setVisible(true);
@@ -278,7 +279,7 @@ void Clever::update(int deltaTime)
         if (playerBottomY < cleverBottomY) {   // Subir
             if (canClimbUp) {
                 centerX();
-                pos.y -= static_cast<int>(std::round(velocity));
+                pos.y -= speed;
                 isClimbing = true;
                 if (sprite->animation() != CLIMB) sprite->changeAnimation(CLIMB);
             }
@@ -301,7 +302,7 @@ void Clever::update(int deltaTime)
         else if (playerBottomY > cleverBottomY) {   // Bajar
             if (canClimbDown) {
                 centerX();
-                pos.y += static_cast<int>(std::round(velocity));
+                pos.y += speed;
                 isClimbing = true;
                 if (sprite->animation() != CLIMB) sprite->changeAnimation(CLIMB);
             }
@@ -327,16 +328,16 @@ void Clever::update(int deltaTime)
         int mapWidth = map->getMapSize().x * map->getTileSize();
         if (movingRight) {
             if (sprite->animation() != WALK_RIGHT) sprite->changeAnimation(WALK_RIGHT);
-            glm::ivec2 nextPos(pos.x + static_cast<int>(std::round(velocity)), pos.y);
+            glm::ivec2 nextPos(pos.x + speed, pos.y);
             if (!map->collisionMoveRightEnemy(nextPos, size) && nextPos.x + size.x < mapWidth)
-                pos.x += static_cast<int>(std::round(velocity));
+                pos.x += speed;
             else changeDirection();
         }
         else {
             if (sprite->animation() != WALK_LEFT) sprite->changeAnimation(WALK_LEFT);
-            glm::ivec2 nextPos(pos.x - static_cast<int>(std::round(velocity)), pos.y);
+            glm::ivec2 nextPos(pos.x - speed, pos.y);
             if (!map->collisionMoveLeftEnemy(nextPos, size) && nextPos.x > 0)
-                pos.x -= static_cast<int>(std::round(velocity));
+                pos.x -= speed;
             else changeDirection();
         }
     }
@@ -399,7 +400,8 @@ void Clever::notifyTunnelEntry(Tunnel* t)
         int playerBottomY = playerTarget->getPosition().y + playerTarget->getSize().y;
         int cleverBottomY = pos.y + size.y;
         shouldEnter = (playerBottomY < cleverBottomY);
-    } else { // o bajar si el túnel va hacia abajo y el jugador está más abajo
+    }
+    else { // o bajar si el túnel va hacia abajo y el jugador está más abajo
         int playerBottomY = playerTarget->getPosition().y + playerTarget->getSize().y;
         int cleverBottomY = pos.y + size.y;
         shouldEnter = (playerBottomY > cleverBottomY);
@@ -430,4 +432,3 @@ void Clever::die()
     std::cout << "RIP Clever" << std::endl;
     // En el update se desactivar� la entidad cuando acabe la animaci�n de explosi�n
 }
-

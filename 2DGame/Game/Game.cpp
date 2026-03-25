@@ -108,6 +108,7 @@ void Game::keyPressed(int key)
     bool levelChanged = false;
     if (key >= GLFW_KEY_1 && key <= GLFW_KEY_5) {
         currentLevel = key - GLFW_KEY_0;    // Atajo para cargar niveles directamente
+        cout << "Loading level " << currentLevel << endl;
         levelChanged = true;
     }
     if (levelChanged) {
