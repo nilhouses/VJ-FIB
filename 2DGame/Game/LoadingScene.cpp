@@ -40,6 +40,7 @@ void LoadingScene::setupTips() {
     tips.push_back("TIP: SOME ENEMIES PATROL, OTHERS HUNT, AND SOME SHOOT BACK");
     tips.push_back("TIP: SEARCH EVERY DOOR, SOME LEAD TO SECRET ROOMS");
     tips.push_back("TIP: USE LADDERS TO FLANK ENEMIES AND AVOID THEIR FIRE");
+    tips.push_back("TIP: BEWARE! THE FIRE LEFT BY EXPLODING BARRELS DEALS DAMAGE");
 
     // Mezclar tips
     currentTipIndex = rand() % tips.size();
