@@ -6,7 +6,6 @@
 #include "Texture.h"
 #include "Text.h"
 
-// Clase para la pantalla del menú principal
 class MainMenu : public Scene
 {
 public:

@@ -41,7 +41,7 @@ void MainMenu::update(int deltaTime) {
     currentTime += deltaTime;
     timeSinceLastKey += deltaTime;
 
-	if (timeSinceLastKey > 200) { // Para que la flecha no se salte opciones al pulsar una tecla
+	if (timeSinceLastKey > 125) { // Para que la flecha no se salte opciones al pulsar una tecla
         if (Game::instance().getKey(GLFW_KEY_UP)) {
             selectedOption = (selectedOption - 1 + 3) % 3;
             timeSinceLastKey = 0;

@@ -118,6 +118,9 @@ void Game::keyPressed(int key)
 		}
         changeState(PLAYING, currentLevel);
 	}
+    if (key == GLFW_KEY_B) {
+        changeState(MAIN_MENU, currentLevel);
+    }
 }
 
 void Game::keyReleased(int key)

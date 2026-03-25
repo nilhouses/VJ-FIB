@@ -15,7 +15,7 @@
 // Definimos tipos de animaciones para el jugador
 enum PlayerAnims
 {
-	IDLE, WALK_LEFT, WALK_RIGHT, WEAPON_IDLE, GUN_WALK_LEFT, GUN_WALK_RIGHT, SHOOT_LEFT, SHOOT_RIGHT, FALL, PUSH_LEFT, PUSH_RIGHT, DIE, START, CLIMB, OPEN_AND_ENTER, PICK_ITEM, ENTER, TUNNEL_ENTER_BOTTOM, TUNNEL_ENTER_TOP, TUNNEL_LEAVE_TOP, TUNNEL_LEAVE_BOTTOM, NUM_ANIMS
+	IDLE, WALK_LEFT, WALK_RIGHT, WEAPON_IDLE, GUN_WALK_LEFT, GUN_WALK_RIGHT, SHOOT_LEFT, SHOOT_RIGHT, FALL, PUSH_LEFT, PUSH_RIGHT, DIE, START, CLIMB, OPEN_AND_ENTER, LOCKED_DOOR, PICK_ITEM, ENTER, TUNNEL_ENTER_BOTTOM, TUNNEL_ENTER_TOP, TUNNEL_LEAVE_TOP, TUNNEL_LEAVE_BOTTOM, NUM_ANIMS
 };
 
 
@@ -125,6 +125,38 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 	sprite->addKeyframe(CLIMB, glm::vec2(2.f / 16.f, 4.f / 12.f));
 	sprite->addKeyframe(CLIMB, glm::vec2(3.f / 16.f, 4.f / 12.f));
 
+	sprite->setAnimationSpeed(OPEN_AND_ENTER, 17);
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(5.f / 16.f, 4.f / 12.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(6.f / 16.f, 4.f / 12.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(7.f / 16.f, 4.f / 12.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(8.f / 16.f, 4.f / 12.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(9.f / 16.f, 4.f / 12.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(10.f / 16.f, 4.f / 12.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(11.f / 16.f, 4.f / 12.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(12.f / 16.f, 4.f / 12.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(13.f / 16.f, 4.f / 12.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(14.f / 16.f, 4.f / 12.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(15.f / 16.f, 4.f / 12.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(0.f, 5.f / 12.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(1.f / 16.f, 5.f / 12.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(2.f / 16.f, 5.f / 12.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(3.f / 16.f, 5.f / 12.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(4.f / 16.f, 5.f / 12.f));
+	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(5.f / 16.f, 5.f / 12.f));
+
+	sprite->setAnimationSpeed(LOCKED_DOOR, 11);
+	sprite->addKeyframe(LOCKED_DOOR, glm::vec2(5.f / 16.f, 4.f / 12.f));
+	sprite->addKeyframe(LOCKED_DOOR, glm::vec2(6.f / 16.f, 4.f / 12.f));
+	sprite->addKeyframe(LOCKED_DOOR, glm::vec2(7.f / 16.f, 4.f / 12.f));
+	sprite->addKeyframe(LOCKED_DOOR, glm::vec2(8.f / 16.f, 4.f / 12.f));
+	sprite->addKeyframe(LOCKED_DOOR, glm::vec2(9.f / 16.f, 4.f / 12.f));
+	sprite->addKeyframe(LOCKED_DOOR, glm::vec2(10.f / 16.f, 4.f / 12.f));
+	sprite->addKeyframe(LOCKED_DOOR, glm::vec2(11.f / 16.f, 4.f / 12.f));
+	sprite->addKeyframe(LOCKED_DOOR, glm::vec2(12.f / 16.f, 4.f / 12.f));
+	sprite->addKeyframe(LOCKED_DOOR, glm::vec2(13.f / 16.f, 4.f / 12.f));
+	sprite->addKeyframe(LOCKED_DOOR, glm::vec2(14.f / 16.f, 4.f / 12.f));
+	sprite->addKeyframe(LOCKED_DOOR, glm::vec2(15.f / 16.f, 4.f / 12.f));
+	
 	sprite->setAnimationSpeed(OPEN_AND_ENTER, 17);
 	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(5.f / 16.f, 4.f / 12.f));
 	sprite->addKeyframe(OPEN_AND_ENTER, glm::vec2(6.f / 16.f, 4.f / 12.f));
@@ -377,14 +409,39 @@ void Player::setAnimation(const string& anim)
 		sprite->changeAnimation(WALK_LEFT);
 	else if (anim == "WALK_RIGHT")
 		sprite->changeAnimation(WALK_RIGHT);
-	else if (anim == "DIE")
-		sprite->changeAnimation(DIE);
+	else if (anim == "WEAPON_IDLE")
+		sprite->changeAnimation(WEAPON_IDLE);
+	else if (anim == "GUN_WALK_LEFT")
+		sprite->changeAnimation(GUN_WALK_LEFT);
+	else if (anim == "GUN_WALK_RIGHT")
+		sprite->changeAnimation(GUN_WALK_RIGHT);
+	else if (anim == "SHOOT_LEFT")
+		sprite->changeAnimation(SHOOT_LEFT);
+	else if (anim == "SHOOT_RIGHT")
+		sprite->changeAnimation(SHOOT_RIGHT);
+	else if (anim == "WALK_RIGHT")
+		sprite->changeAnimation(WALK_RIGHT);
 	else if (anim == "FALL")
 		sprite->changeAnimation(FALL);
+	else if (anim == "PUSH_LEFT")
+		sprite->changeAnimation(PUSH_LEFT);
+	else if (anim == "PUSH_RIGHT")
+		sprite->changeAnimation(PUSH_RIGHT);
+	else if (anim == "DIE")
+		sprite->changeAnimation(DIE);
+	else if (anim == "START")
+		sprite->changeAnimation(START);
 	else if (anim == "CLIMB")
 		sprite->changeAnimation(CLIMB);
 	else if (anim == "OPEN_AND_ENTER")
 		sprite->changeAnimation(OPEN_AND_ENTER);
+	else if (anim == "LOCKED_DOOR") {
+		startAnimTimer = 850.0f;
+		sprite->changeAnimation(LOCKED_DOOR);
+		blockInput();
+	}
+	else if (anim == "PICK_ITEM")
+		sprite->changeAnimation(PICK_ITEM);
 	else if (anim == "ENTER")
 		sprite->changeAnimation(ENTER);
 	else if (anim == "TUNNEL_ENTER_BOTTOM")
@@ -395,20 +452,6 @@ void Player::setAnimation(const string& anim)
 		sprite->changeAnimation(TUNNEL_ENTER_TOP);
 	else if (anim == "TUNNEL_LEAVE_TOP")
 		sprite->changeAnimation(TUNNEL_LEAVE_TOP);
-	else if (anim == "PICK_ITEM")
-		sprite->changeAnimation(PICK_ITEM);
-	else if (anim == "PUSH_LEFT")
-		sprite->changeAnimation(PUSH_LEFT);
-	else if (anim == "PUSH_RIGHT")
-		sprite->changeAnimation(PUSH_RIGHT);
-	else if (anim == "GUN_WALK_LEFT")
-		sprite->changeAnimation(GUN_WALK_LEFT);
-	else if (anim == "GUN_WALK_RIGHT")
-		sprite->changeAnimation(GUN_WALK_RIGHT);
-	else if (anim == "WEAPON_IDLE")
-		sprite->changeAnimation(WEAPON_IDLE);
-	else if (anim == "START")
-		sprite->changeAnimation(START);
 	else
 		cout << "Unknown animation: " << anim << endl;
 }
@@ -417,28 +460,30 @@ void Player::setAnimation(const string& anim)
 string Player::getCurrentAnimationName() const {
 
 	int currentAnimId = sprite->animation();
-
 	switch (currentAnimId) {
-	case IDLE:					return "IDLE";
-	case WALK_LEFT:				return "WALK_LEFT";
-	case WALK_RIGHT:			return "WALK_RIGHT";
-	case DIE:					return "DIE";
-	case FALL:					return "FALL";
-	case CLIMB:					return "CLIMB";
-	case OPEN_AND_ENTER:		return "OPEN_AND_ENTER";
-	case ENTER:					return "ENTER";
-	case TUNNEL_ENTER_BOTTOM:	return "TUNNEL_ENTER_BOTTOM";
-	case TUNNEL_LEAVE_BOTTOM:	return "TUNNEL_LEAVE_BOTTOM";
-	case TUNNEL_ENTER_TOP:		return "TUNNEL_ENTER_TOP";
-	case TUNNEL_LEAVE_TOP:		return "TUNNEL_LEAVE_TOP";
-	case PICK_ITEM:				return "PICK_ITEM";
-	case PUSH_LEFT:				return "PUSH_LEFT";
-	case PUSH_RIGHT:			return "PUSH_RIGHT";
-	case GUN_WALK_LEFT:			return "GUN_WALK_LEFT";
-	case GUN_WALK_RIGHT:		return "GUN_WALK_RIGHT";
-	case WEAPON_IDLE:			return "WEAPON_IDLE";
-	case START:					return "START";
-	default:					return "UNKNOWN";
+		case IDLE:					return "IDLE";
+		case WALK_LEFT:				return "WALK_LEFT";
+		case WEAPON_IDLE:			return "WEAPON_IDLE";
+		case GUN_WALK_LEFT:			return "GUN_WALK_LEFT";
+		case GUN_WALK_RIGHT:		return "GUN_WALK_RIGHT";
+		case SHOOT_LEFT:			return "SHOOT_LEFT";
+		case SHOOT_RIGHT:			return "SHOOT_RIGHT";
+		case WALK_RIGHT:			return "WALK_RIGHT";
+		case FALL:					return "FALL";
+		case PUSH_LEFT:				return "PUSH_LEFT";
+		case PUSH_RIGHT:			return "PUSH_RIGHT";
+		case DIE:					return "DIE";
+		case START:					return "START";
+		case CLIMB:					return "CLIMB";
+		case OPEN_AND_ENTER:		return "OPEN_AND_ENTER";
+		case LOCKED_DOOR:			return "LOCKED_DOOR";
+		case PICK_ITEM:				return "PICK_ITEM";
+		case ENTER:					return "ENTER";
+		case TUNNEL_ENTER_BOTTOM:	return "TUNNEL_ENTER_BOTTOM";
+		case TUNNEL_LEAVE_BOTTOM:	return "TUNNEL_LEAVE_BOTTOM";
+		case TUNNEL_ENTER_TOP:		return "TUNNEL_ENTER_TOP";
+		case TUNNEL_LEAVE_TOP:		return "TUNNEL_LEAVE_TOP";
+		default:					return "UNKNOWN";
 	}
 }
 

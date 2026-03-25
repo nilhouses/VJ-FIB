@@ -592,6 +592,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                             if (collectedKeys < allKeys) {
                                 cout << "You need to collect all keys to use the final door!" << endl;
                                 door->lockedDoorSound();
+								player->setAnimation("LOCKED_DOOR");
                                 return;
                             }
                             else {
