@@ -117,6 +117,14 @@ void Game::keyPressed(int key)
 		}
         changeState(PLAYING, currentLevel);
 	}
+
+    // Variar volumen música
+    if (key == GLFW_KEY_KP_ADD) {
+        SoundManager::instance().increaseMusicVolume(0.05);
+    }
+    else if (key == GLFW_KEY_KP_SUBTRACT) {
+        SoundManager::instance().decreaseMusicVolume(0.05);
+    }
 }
 
 void Game::keyReleased(int key)
