@@ -31,6 +31,7 @@ public:
 	void pickItem();
 	void activateSpeedBoost(float multiplier, float duration);
 	bool hasSpeedBoost() { return speedBoostTimer > 0; }
+	float getRemainingBoostTime() { return speedBoostTimer; }
 	void addBullet() { numBullets++; }
 	int  getBullets() { return numBullets; }
 	bool getWasPushing() { return wasPushing; }
@@ -52,6 +53,7 @@ private:
 	bool wasPushing = false;				// Indica si el jugador estaba empujando un barril en el frame anterior
 	// Atributos necesarios para items
 	int itemPickTimer;
+	int lockedDoorTimer;
 	// Atributos necesarios para el SpeedBoost
 	float speedBoostTimer;
 	float speedMultiplier = 1.f;

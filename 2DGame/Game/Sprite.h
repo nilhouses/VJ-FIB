@@ -28,6 +28,7 @@ public:
 
 	void update(int deltaTime);
 	void render() const;
+	void render(const glm::mat4& proj) const;
 	void free();
 
 	void setNumberAnimations(int nAnimations);

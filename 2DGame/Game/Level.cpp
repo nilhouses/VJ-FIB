@@ -470,7 +470,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
         {
             player->pickItem();
             SpeedBoost* sb = static_cast<SpeedBoost*>(e);
-            player->activateSpeedBoost(sb->getMultiplier(), sb->getTimeActive());
+            player->activateSpeedBoost(sb->getMultiplier(), sb->getDuration());
             sb->collect();
             // Configurar transición de cambio de estado
             state = PICKING_OBJECT;
@@ -590,13 +590,13 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                         bool sound = true;
                         if (door->getIsFinalDoor()) {
                             if (collectedKeys < allKeys) {
-                                cout << "You need to collect all keys to use the final door!" << endl;
-                                door->lockedDoorSound();
-								player->setAnimation("LOCKED_DOOR");
+                                if (player->getCurrentAnimationName() != "LOCKED_DOOR") {
+                                    cout << "You need to collect all keys to use the final door!" << endl;
+                                    door->lockedDoorSound();
+								    player->setAnimation("LOCKED_DOOR");
+                                }
                                 return;
-                            }
-                            else {
-								//cout << "Level completed!" << endl;
+                            } else {
                                 door->openLockedDoorSound();
                                 sound = false;
                             }
@@ -966,7 +966,9 @@ void Level::update(int deltaTime)
     currentTime += deltaTime;
 
 	// Update del Hud con datos actuales
-    hud->update(deltaTime, numLives, collectedKeys);
+    SpeedBoost* sb = new SpeedBoost();
+    float speedBoostDuration = sb->getDuration();
+    hud->update(deltaTime, numLives, player->getBullets(), speedBoostDuration, player->getRemainingBoostTime(), collectedKeys);
 
     rooms[currentRoom]->update(deltaTime);
     player->update(deltaTime);

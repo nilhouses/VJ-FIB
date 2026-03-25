@@ -28,6 +28,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Gun.h" />
     <ClInclude Include="Hud.h" />
+    <ClInclude Include="HudIcon.h" />
     <ClInclude Include="Instructions.h" />
     <ClInclude Include="Key.h" />
     <ClInclude Include="Life.h" />
@@ -62,6 +63,7 @@
     <ClCompile Include="FadeTransition.cpp" />
     <ClCompile Include="Gun.cpp" />
     <ClCompile Include="Hud.cpp" />
+    <ClCompile Include="HudIcon.cpp" />
     <ClCompile Include="Life.cpp" />
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="Bullet.cpp" />

@@ -17,14 +17,14 @@ public:
 	void collect();
 	bool isCollected() const { return collecting; }
 	float getMultiplier() const { return multiplier; }
-	float getTimeActive() const { return timeActive; }
+	float getDuration() const { return duration; }
+	static float getMaxTime() { return 12500.f; }
 
 private:
 	bool collecting = false;
 	float collectTimer;
-	float multiplier = 2.f; // Valor por defecto, yo haría que todos los boosts tuviesen el mismo multiplicador y duracion
-	float timeActive = 12500.f; // 12.5 segundos 
-
+	static constexpr float multiplier = 2.f;
+	static constexpr float duration = 12500.f; 
 };
 
 

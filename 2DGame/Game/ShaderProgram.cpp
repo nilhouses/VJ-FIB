@@ -96,3 +96,16 @@ void ShaderProgram::setUniformMatrix4f(const string &uniformName, const glm::mat
 	glUniformMatrix4fv(location, 1, GL_FALSE, &mat[0][0]);
 }
 
+void ShaderProgram::setUniform1i(const string& uniformName, int v)
+{
+	GLint location = glGetUniformLocation(programId, uniformName.c_str());
+	if (location != -1)
+		glUniform1i(location, v);
+}
+
+void ShaderProgram::setUniform1f(const string& uniformName, float v)
+{
+	GLint location = glGetUniformLocation(programId, uniformName.c_str());
+	if (location != -1)
+		glUniform1f(location, v);
+}
