@@ -52,6 +52,7 @@ private:
 	static constexpr float TUNNEL_CLEAR_DISTANCE = 32.f; // Número de px que hace falta recorrer para no volver a usar el mismo túnel, evita el típico bucle de entrar y salir del túnel constantemente, que no se usará casi nunca pero depende del nivel
 	Camera* cam = nullptr;
 	float startAnimTimer;
+	float velocity = 1.8f;
 };
 
 
