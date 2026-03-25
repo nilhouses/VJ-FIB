@@ -295,6 +295,8 @@ void Player::update(int deltaTime)
 	bool inputDetected = true;
 
 	if (!blockedInput || isShooting) { // Quiero que se caiga el jugador al disparar en el aire
+		if (map->collisionLadderUp(pos, getSize()) || map->collisionLadderDown(pos, getSize()))
+			Game::instance().showTutorial("HOLD [UP] OR [DOWN] TO CLIMB A LADDER");
 
 		if (Game::instance().getKey(GLFW_KEY_Q)) {
 			shoot();

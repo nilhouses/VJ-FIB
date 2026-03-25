@@ -442,6 +442,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
     {
         case Type::KEY:
         {   
+            Game::instance().showTutorial("WALK OVER A SPACESHIP PART TO COLLECT IT");
             player->pickItem();
             collectedKeys = min(collectedKeys + 1, allKeys);
             // Transición de estado
@@ -455,6 +456,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
 
         case Type::LIFE:
         {
+            Game::instance().showTutorial("HEARTS KEEP YOU ALIVE LONGER");
             player->pickItem();
             numLives++;
             // Configurar transición de cambio de estado
@@ -468,6 +470,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
 
         case Type::SPEEDBOOST:
         {
+            Game::instance().showTutorial("A BOOST WILL MAKE YOU FASTER TEMPORARILY");
             player->pickItem();
             SpeedBoost* sb = static_cast<SpeedBoost*>(e);
             player->activateSpeedBoost(sb->getMultiplier(), sb->getDuration());
@@ -482,6 +485,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
 
         case Type::GUN:
         {
+            Game::instance().showTutorial("PRESS [SPACE] TO FIRE YOUR WEAPON");
             player->pickItem();
             player->addBullet();
             Gun* gun = static_cast<Gun*>(e);
@@ -499,10 +503,11 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             Barrel* b = static_cast<Barrel*>(e);
             if (b->isExploding()) {
                 if (!godMode) {
-					killPlayer();
+                    killPlayer();
                 }
                 break;
             }
+            else Game::instance().showTutorial("HOLD [LEFT] OR [RIGHT] ALONGSIDE A BARREL TO PUSH IT");
             
             // Colisiones
             glm::ivec2 pSize = player->getSize();
@@ -540,6 +545,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
 
         case Type::PLATFORM:
         {
+            Game::instance().showTutorial("RIDE THE MOVING PLATFORMS");
             Platform* p = static_cast<Platform*>(e);
 
             glm::ivec2 playerSize = player->getSize();
@@ -572,8 +578,12 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
         {
             int centerX = (int)(player->getPosition().x + 16.0f);
             
-            bool isUpPressed = Game::instance().getKey(GLFW_KEY_UP);
+			Enter* enter = static_cast<Enter*>(e);
 
+            if (enter->getEnterType() == EnterType::DOOR) Game::instance().showTutorial("PRESS [UP] TO  ENTER A DOOR");
+			else if (enter->getEnterType() == EnterType::TUNNEL) Game::instance().showTutorial("PRESS [UP] OR [DOWN] TO TRAVEL THROUGH A TUNNEL");
+            
+            bool isUpPressed = Game::instance().getKey(GLFW_KEY_UP);
             if (isUpPressed && releasedUp && state == NORMAL && rangeCollided.x > 24 && rangeCollided.y > 50) {
                 releasedUp = false;
                 Enter* enter = static_cast<Door*>(e);
@@ -590,7 +600,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                         if (door->getIsFinalDoor()) {
                             if (collectedKeys < allKeys) {
                                 if (player->getCurrentAnimationName() != "LOCKED_DOOR") {
-                                    cout << "You need to collect all keys to use the final door!" << endl;
+                                    Game::instance().showTutorial("YOU MUST COLLECT ALL SPACESHIP PARTS TO USE A FINAL DOOR!");
                                     door->lockedDoorSound();
 								    player->setAnimation("LOCKED_DOOR");
                                 }
@@ -645,10 +655,12 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             if (state != NORMAL) break;
             Pipe* pipe = static_cast<Pipe*>(e);
             if (pipe->isOccupied()) {
+                Game::instance().showTutorial("YOU CAN'T ENTER A PIPE WHEN IT'S OCCUPIED");
                 cout << "This pipe is already being used!" << endl;
                 if (pipe->getEntryKey(end)) SoundManager::instance().playSound("invalidAction", 0.2f);
                 break;
             }
+            else Game::instance().showTutorial("USE [UP] OR [DOWN] TO TRAVEL THROUGH A PIPE");
             if (pipe->getEntryKey(end)) {
                 interactedPipe = pipe;
                 player->deactivate();
@@ -686,7 +698,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
 			cout << "Player just got shot!" << endl;
             Bullet* b = static_cast<Bullet*>(e);
             if (!godMode && !b->isExploding()) {
-				// [TODO]killPlayer();
+				killPlayer();
                 b->explode();
             }
             break;

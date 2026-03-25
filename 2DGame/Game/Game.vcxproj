@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Acid.h" />
+    <ClInclude Include="ActionMessage.h" />
     <ClInclude Include="AnimKeyframes.h" />
     <ClInclude Include="Asset.h" />
     <ClInclude Include="Bullet.h" />
@@ -58,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Acid.cpp" />
+    <ClCompile Include="ActionMessage.cpp" />
     <ClCompile Include="Checkpoint.cpp" />
     <ClCompile Include="Enter.cpp" />
     <ClCompile Include="FadeTransition.cpp" />

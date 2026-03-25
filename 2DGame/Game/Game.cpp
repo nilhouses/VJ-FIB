@@ -27,7 +27,13 @@ void Game::init()
     currentLevel = 1;
 	currentScene = nullptr;
     SoundManager::instance().init();
-	changeState(MAIN_MENU);
+    changeState(MAIN_MENU);
+
+	// Texto para los mensajes de info
+    if (!tutorialText.init("fonts/PressStart2P.ttf"))
+        cout << "Could not load tutorial font!!!" << endl;
+    actionMsg.init(&tutorialText);
+    uiProjection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 }
 
 bool Game::update(int deltaTime)
@@ -58,6 +64,7 @@ bool Game::update(int deltaTime)
     }
     */
 
+
     // Actualizar escena actual
     if (currentScene != nullptr) {
         currentScene->update(deltaTime);
@@ -80,6 +87,7 @@ bool Game::update(int deltaTime)
     }
 
 	SoundManager::instance().update(); // Limpiar sonidos que ya han terminado
+    actionMsg.update(deltaTime);
 
 	return bPlay;
 }
@@ -98,6 +106,10 @@ void Game::render()
         currentTransition->render();
 	}
     */
+
+    // Mensajes de tutorial
+    glUseProgram(0);
+    actionMsg.render(uiProjection);
 }
 
 void Game::keyPressed(int key)
@@ -122,10 +134,10 @@ void Game::keyPressed(int key)
 
     // Variar volumen música
     if (key == GLFW_KEY_KP_ADD) {
-        SoundManager::instance().increaseMusicVolume(0.05);
+        SoundManager::instance().increaseMusicVolume(0.05f);
     }
     else if (key == GLFW_KEY_KP_SUBTRACT) {
-        SoundManager::instance().decreaseMusicVolume(0.05);
+        SoundManager::instance().decreaseMusicVolume(0.05f);
     }
 }
 
@@ -180,5 +192,13 @@ void Game::changeState(GameState newState, int levelNumber)
     currentScene->init();
 }
 
+void Game::showTutorial(const string& msg)
+{
+    if (actionMsg.isActive()) return;
+    if (messagesSeen.find(msg) == messagesSeen.end()) {
+        actionMsg.show(msg);
+        messagesSeen.insert(msg);
+    }
+}
 
 

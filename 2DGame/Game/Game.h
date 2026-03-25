@@ -1,10 +1,13 @@
 #ifndef _GAME_INCLUDE
 #define _GAME_INCLUDE
 
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include "Scene.h"
 #include "Transition.h"
-
+#include <set>
+#include "Scene.h"
+#include "Text.h"
+#include "ActionMessage.h"
 
 #define LEVEL_WIDTH 640
 #define LEVEL_HEIGHT 384
@@ -55,6 +58,9 @@ public:
 
 	// Cambia el estado del juego a newState. Si el nuevo estado es PLAYING, se carga el nivel indicado por levelNumber (por defecto el 1)
 	void changeState(GameState newState, int levelNumber = 1);
+	
+	void showTutorial(const string& msg);
+
 private:
 	bool bPlay;					 // Guarda si el juego debe seguir ejecutandose o no
 	bool keys[GLFW_KEY_LAST+1];  // Guarda por cada tecla si está pulsada o no
@@ -67,6 +73,13 @@ private:
 	GameState pendingState;         // El estado al que se cambiará una vez termine la transición
 	int pendingLevel;				// El nivel que se cargará al cambiar a PLAYING después de la transición
 	bool isTransitioning;			// Indica si estamos en medio de una transición
+	
+	// Textos de información
+	Text tutorialText;
+	ActionMessage actionMsg;
+	set<string> messagesSeen; // Mensajes ya mostrados al usuario en esta ejecución del juego
+	glm::mat4 uiProjection;
+
 };
 
 

@@ -32,7 +32,7 @@ void LoadingScene::setupTips() {
 	// Agregar tips reales del juego
     tips.push_back("TIP: COLLECT ALL SPACESHIP PARTS TO UNLOCK THE FINAL DOOR");
     tips.push_back("TIP: PUSH BARRELS TO CRUSH ENEMIES IN YOUR PATH");
-    tips.push_back("TIP: PRESS [Q] TO FIRE YOUR GUN AT DANGEROUS FOES");
+    tips.push_back("TIP: PRESS [SPACE] TO FIRE YOUR GUN AT DANGEROUS FOES");
     tips.push_back("TIP: WATCH THE GEOMETRIC SIGNS, THEY LINK TUNNEL ENTRANCES");
     tips.push_back("TIP: PIPES CAN TRANSPORT YOU ACROSS THE ENTIRE LEVEL");
     tips.push_back("TIP: ACID IS LETHAL, ONE TOUCH AND IT'S GAME OVER!");
