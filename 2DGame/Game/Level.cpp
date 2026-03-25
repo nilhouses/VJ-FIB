@@ -550,7 +550,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
 
             float playerFeet = playerPos.y + playerSize.y;
             float platformTop = pPos.y;
-            bool isAbove = playerFeet <= (pPos.y + 16.0f);
+            bool isAbove = playerFeet <= (pPos.y + 2.0f);
 
             // Colisión vertical
             if (isAbove) {
@@ -574,7 +574,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             
             bool isUpPressed = Game::instance().getKey(GLFW_KEY_UP);
 
-            if (isUpPressed && releasedUp && state == NORMAL && rangeCollided.x > 24) {
+            if (isUpPressed && releasedUp && state == NORMAL && rangeCollided.x > 24 && rangeCollided.y > 50) {
                 releasedUp = false;
                 Enter* enter = static_cast<Door*>(e);
                 player->center();

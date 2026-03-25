@@ -5,6 +5,7 @@
 #include <string>
 #include <unordered_map>
 #include <map>
+#include <cmath>
 
 class SoundManager {
 public:
@@ -30,6 +31,9 @@ public:
 
     // Ajusta el volumen de la música actual
     void setMusicVolume(float volume);
+
+    void increaseMusicVolume(float delta);
+    void decreaseMusicVolume(float delta);
 
 
 private:

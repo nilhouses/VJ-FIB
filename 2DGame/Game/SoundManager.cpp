@@ -1,6 +1,7 @@
 #define MINIAUDIO_IMPLEMENTATION
 #include "SoundManager.h"
 #include <iostream>
+using namespace std;
 
 // Sonidos predefinidos
 std::unordered_map<std::string, std::string> sounds = {
@@ -134,4 +135,13 @@ void SoundManager::update() {
             ++it;
         }
     }
+}
+
+
+void SoundManager::increaseMusicVolume(float delta) {
+    setMusicVolume(min(musicVolume + delta, 1.0f));
+}
+
+void SoundManager::decreaseMusicVolume(float delta) {
+    setMusicVolume(max(musicVolume - delta, 0.0f));
 }
