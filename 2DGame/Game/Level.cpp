@@ -545,7 +545,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
 
         case Type::PLATFORM:
         {
-            Game::instance().showTutorial("RIDE THE MOVING PLATFORMS");
+            Game::instance().showTutorial("STEP ON A MOVING PLATFORMS TO RIDE ALONG WITH THEM");
             Platform* p = static_cast<Platform*>(e);
 
             glm::ivec2 playerSize = player->getSize();
@@ -581,7 +581,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
 			Enter* enter = static_cast<Enter*>(e);
 
             if (enter->getEnterType() == EnterType::DOOR) Game::instance().showTutorial("PRESS [UP] TO  ENTER A DOOR");
-			else if (enter->getEnterType() == EnterType::TUNNEL) Game::instance().showTutorial("PRESS [UP] OR [DOWN] TO TRAVEL THROUGH A TUNNEL");
+			else if (enter->getEnterType() == EnterType::TUNNEL) Game::instance().showTutorial("PRESS [UP] TO TRAVEL THROUGH A TUNNEL");
             
             bool isUpPressed = Game::instance().getKey(GLFW_KEY_UP);
             if (isUpPressed && releasedUp && state == NORMAL && rangeCollided.x > 24 && rangeCollided.y > 50) {
