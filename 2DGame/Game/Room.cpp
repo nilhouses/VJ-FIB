@@ -83,7 +83,7 @@ void Room::render(Camera* camera, glm::mat4& projection)
         5. Entidades
         6. HUD
     */
-	background->render();
+    background->render();
 
     map->renderBase();
 
@@ -108,4 +108,7 @@ void Room::setBackground(Asset* b)
 {
     background = b;
 	background->setParrallax(25.0f);
+	Texture* tex = background->getTexture();
+	tex->setMagFilter(GL_LINEAR);
+    tex->setMinFilter(GL_LINEAR);
 }

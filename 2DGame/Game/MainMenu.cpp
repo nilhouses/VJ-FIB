@@ -20,7 +20,7 @@ void MainMenu::init() {
 
     // 1. Cargar Texturas
     texBackground.loadFromFile("images/mainMenu.png", TEXTURE_PIXEL_FORMAT_RGBA);
-    texSprite.loadFromFile("images/arrow.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    texSprite.loadFromFile("images/flecha.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
     // 2. Crear Quads
     glm::vec2 geomBG[2] = { glm::vec2(0.f, 0.f), glm::vec2(float(SCREEN_WIDTH), float(SCREEN_HEIGHT)) };
@@ -41,7 +41,7 @@ void MainMenu::update(int deltaTime) {
     currentTime += deltaTime;
     timeSinceLastKey += deltaTime;
 
-	if (timeSinceLastKey > 125) { // Para que la flecha no se salte opciones al pulsar una tecla
+	if (timeSinceLastKey > 200) { // Para que la flecha no se salte opciones al pulsar una tecla
         if (Game::instance().getKey(GLFW_KEY_UP)) {
             selectedOption = (selectedOption - 1 + 3) % 3;
             timeSinceLastKey = 0;
@@ -74,30 +74,25 @@ void MainMenu::render() {
     background->render(texBackground);
 
     // Flecha
-    float arrowY = 310.f + (selectedOption * 45.f);
-    modelview = glm::translate(glm::mat4(1.0f), glm::vec3(375.f + 5*sin(currentTime / 200.f), arrowY, 0.f));
+    float arrowY = 315.f + (selectedOption * 45.f);
+    modelview = glm::translate(glm::mat4(1.0f), glm::vec3(20.f + 5*sin(currentTime / 200.f), arrowY, 0.f));
     texProgram.setUniformMatrix4f("modelview", modelview);
     cursor->render(texSprite);
 
     // 2. Textos
     glUseProgram(0);
+
+    int sizeS = 26;
+    int sizeH = 26;
+    int sizeC = 26;
     switch (selectedOption) {
-    case 0:
-        text.render("START", glm::vec2(20, 350), 32, glm::vec4(.9f, .9f, .9f, 1), projection);
-        text.render("HOW TO PLAY", glm::vec2(20, 395), 26, glm::vec4(.9f, .9f, .9f, 1), projection);
-        text.render("CREDITS", glm::vec2(20, 440), 26, glm::vec4(.9f, .9f, .9f, 1), projection);
-        break;
-    case 1:
-        text.render("START", glm::vec2(20, 350), 26, glm::vec4(.9f, .9f, .9f, 1), projection);
-        text.render("HOW TO PLAY", glm::vec2(20, 395), 32, glm::vec4(.9f, .9f, .9f, 1), projection);
-        text.render("CREDITS", glm::vec2(20, 440), 26, glm::vec4(.9f, .9f, .9f, 1), projection);
-        break;
-    case 2:
-        text.render("START", glm::vec2(20, 350), 26, glm::vec4(.9f, .9f, .9f, 1), projection);
-        text.render("HOW TO PLAY", glm::vec2(20, 395), 26, glm::vec4(.9f, .9f, .9f, 1), projection);
-        text.render("CREDITS", glm::vec2(20, 440), 32, glm::vec4(.9f, .9f, .9f, 1), projection);
-        break;
-    }
+        case 0: sizeS = 32; break;
+        case 1: sizeH = 32; break;
+        case 2: sizeC = 32; break;
+	}
+    text.render("START", glm::vec2(70, 350), sizeS, glm::vec4(.9f, .9f, .9f, 1), projection);
+    text.render("HOW TO PLAY", glm::vec2(70, 395), sizeH, glm::vec4(.9f, .9f, .9f, 1), projection);
+    text.render("CREDITS", glm::vec2(70, 440), sizeC, glm::vec4(.9f, .9f, .9f, 1), projection);
 }
 
 void MainMenu::initShaders() {

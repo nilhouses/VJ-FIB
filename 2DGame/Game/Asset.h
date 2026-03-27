@@ -17,6 +17,8 @@ public:
 	void render();
 	void setPosition(const glm::vec2& pos);
 
+	Texture* getTexture() { return &spritesheet; }
+
 	void setParrallax(float f) { sprite->setParallax(f); }
 
 protected:

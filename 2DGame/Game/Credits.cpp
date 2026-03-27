@@ -7,7 +7,8 @@ using namespace std;
 // Colores y constantes
 static const glm::vec4 COL_YELLOW = { 1.f,  1.f,  0.f,  1.f };
 static const glm::vec4 COL_BLACK = { 0.f,  0.f,  0.f,  1.f };
-static const glm::vec4 COL_LIGHT_BLUE = { 0.4f, 0.8f, 1.0f, 1.f };
+static const glm::vec4 COL_LIGHT_BLUE = { 0.289f, 0.504f, 9.922f, 1.f };
+static const glm::vec4 COL_WHITE = { 1.f,  1.f,  1.f,  1.f };
 
 static const int   TITLE_SIZE = 40;
 static const int   SECTION_SIZE = 20;
@@ -34,7 +35,7 @@ CreditEntry Credits::makeSection(const string& label) {
     return { label, SECTION_SIZE, COL_LIGHT_BLUE, SECTION_MARGIN };
 }
 CreditEntry Credits::makeName(const string& label) {
-    return { label, NAME_SIZE, COL_BLACK, NAME_MARGIN };
+    return { label, NAME_SIZE, COL_WHITE, NAME_MARGIN };
 }
 
 void Credits::buildCredits() {
@@ -46,21 +47,19 @@ void Credits::buildCredits() {
         makeName("Nil Casas Duatis"),
 
         makeSection("ART DESIGN"),
-        makeName("Adragong3"),
+        makeName("@AdrAgonGG3"),
 
         makeSection("SOUNDTRACK"),
         makeName("Alejandro Ruiz Paton"),
 
-        makeSection("SOUND EFFECTS:"),
+        makeSection("SOUND EFFECTS"),
         makeName("Nil Casas Duatis"),
-        makeName("pixabay.com"),
-        makeName("freesound.org"),
 
         makeSection("LEVEL DESIGN"),
         makeName("Alejandro Ruiz Paton"),
         makeName("Nil Casas Duatis"),
 
-        makeSection("MADE WITH OpenGL"),
+        makeSection("MADE WITH OpenGL & C++"),
 
         makeSection("THANKS FOR PLAYING!"),
     };
@@ -80,7 +79,7 @@ void Credits::buildCredits() {
 void Credits::init() {
     initShaders();
 
-    texBackground.loadFromFile("images/menu_bg.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    texBackground.loadFromFile("images/fondo_menu.png", TEXTURE_PIXEL_FORMAT_RGBA);
     glm::vec2 geomBG[2] = { {0.f, 0.f}, {float(SCREEN_WIDTH), float(SCREEN_HEIGHT)} };
     glm::vec2 texCoords[2] = { {0.f, 0.f}, {1.f, 1.f} };
     background = TexturedQuad::createTexturedQuad(geomBG, texCoords, texProgram);
@@ -136,7 +135,7 @@ void Credits::render() {
     // Volver atrás
     if (scrollDone) {
         float animY = float(SCREEN_HEIGHT) - 60.f + 5.f * sin(timer / 300.f);
-        text.render("PRESS 'B' TO GO BACK", glm::vec2(165, animY), 16, glm::vec4(0.f, 0.f, 0.f, fadeAlpha), projection);
+        text.render("PRESS 'B' TO GO BACK", glm::vec2(165, animY), 16, glm::vec4(1.f, 1.f, 1.f, fadeAlpha), projection);
     }
 }
 

@@ -383,7 +383,7 @@ void Level::init()
 
     // Inicializamos el HUD
 	hud = new Hud();
-    hud->init(numLives, allKeys);
+    hud->init(numLives, allKeys, level);
 
     createRooms();
     currentTime = 0.0f;

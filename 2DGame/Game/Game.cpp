@@ -98,10 +98,10 @@ void Game::keyPressed(int key)
     if (key == GLFW_KEY_B) changeState(MAIN_MENU, currentLevel);
 
     // Variar volumen música
-    if (key == GLFW_KEY_KP_ADD) {
+    if (key == GLFW_KEY_KP_ADD || key == GLFW_KEY_O) {
         SoundManager::instance().increaseMusicVolume(0.05f);
     }
-    else if (key == GLFW_KEY_KP_SUBTRACT) {
+    else if (key == GLFW_KEY_KP_SUBTRACT || key == GLFW_KEY_P) {
         SoundManager::instance().decreaseMusicVolume(0.05f);
     }
 }

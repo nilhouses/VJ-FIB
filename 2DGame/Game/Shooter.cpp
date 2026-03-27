@@ -99,7 +99,7 @@ void Shooter::changeState(EnemyState newState) {
         sprite->changeAnimation(movingRight ? IDLE_RIGHT : IDLE_LEFT);
         break;
     case SHOOTING:
-        stateTimer = 1500.f;  // Disparo de 1 segundo y medio
+        stateTimer = 1000.f;  // Disparo de 1 segundo y medio
         sprite->changeAnimation(movingRight ? SHOOT_RIGHT : SHOOT_LEFT);
         shoot();
         break;
