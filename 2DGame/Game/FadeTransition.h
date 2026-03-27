@@ -3,13 +3,14 @@
 
 #include "Transition.h"
 #include "ShaderProgram.h"
+#include "TexturedQuad.h"
 #include <glm/glm.hpp>
 
 class FadeTransition : public Transition {
 public:
     // durationMs: tiempo en milisegundos
     // type: FADE_IN (negro -> invisible) o FADE_OUT (invisible -> negro)
-    FadeTransition(FadeType type, float durationMs);
+    FadeTransition(bool toDark, float durationMs);
     virtual ~FadeTransition();
 
     void update(int deltaTime) override;
@@ -17,18 +18,17 @@ public:
     bool isFinished() const override { return finished; }
 
 private:
-    void initShader();
-    void initQuad();
+    void initShaders();
 
 private:
-    FadeType type;
+    bool toDark;
     float currentTime = 0;
     float duration;
     float alpha = 0;
     bool finished = false;
 
-    ShaderProgram shaderProgram;
-    unsigned int vao, vbo;
+    TexturedQuad* background;
+    ShaderProgram texProgram;
     glm::mat4 projection;
 };
 

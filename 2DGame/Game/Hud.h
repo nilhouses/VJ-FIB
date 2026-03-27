@@ -14,13 +14,15 @@ public:
 	Hud();
 	~Hud();
 
-	void init(int numLives, int numKeys);
+	void init(int numLives, int numKeys, int level);
 	void update(int deltaTime, int numLives, int numBullets, float speedBoostDuration, float boostTimeLeft, int collectedKeys, bool godMode);
 	void render();
 
 	void setAllKeys(int allKeys) { this->allKeys = allKeys; }
 
 private:
+	void initShaders();
+
 	int numLives;
 	int numKeys;
 	int allKeys; // Número total de llaves del nivel, para mostrar el contador de llaves como numKeys/allKeys
@@ -33,7 +35,10 @@ private:
 	Text text;
 
 	// Iconos
-	ShaderProgram hudProgram;
+	ShaderProgram hudProgram, texProgram;
+
+	Texture texBackground;
+	TexturedQuad* background;
 
 	HudIcon keyIcon;
 	HudIcon lifeIcon;

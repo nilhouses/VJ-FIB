@@ -8,17 +8,6 @@
 #include "Credits.h"
 #include "LoadingScene.h"
 #include "SoundManager.h"
-#include "FadeTransition.h"
-#include "GameOver.h"
-
-
-void Game::startTransition(FadeType type, GameState newState, int levelNumber) {
-    if (isTransitioning) return; // Si ya estamos en una transición, no hacemos nada
-	currentTransition = new FadeTransition(type, 1000.f);   // 1 segundo de duración para la transición
-    pendingState = newState;
-    pendingLevel = levelNumber;
-    isTransitioning = true;
-}
 
 
 void Game::init()
@@ -40,33 +29,6 @@ void Game::init()
 
 bool Game::update(int deltaTime)
 {
-    /*
-    // Actualizar la transición si existe
-    if (currentTransition != nullptr) {
-        currentTransition->update(deltaTime);
-
-        // Si la transición ha terminado...
-        if (currentTransition->isFinished()) {
-
-            // Si estábamos fundiendo a NEGRO (FADE_OUT), es el momento de cambiar la escena
-            if (isTransitioning) {
-                changeState(pendingState, pendingLevel);    // Pasamos a la pantalla de carga, ella actualizará al nivel cuando le toque
-                isTransitioning = false;
-
-                // lanzamos automáticamente un FADE_IN (negro a transparente)
-                delete currentTransition;
-                currentTransition = new FadeTransition(FADE_IN, 1000.0f);
-            }
-            else {
-                // Si terminó un FADE_IN, simplemente limpiamos
-                delete currentTransition;
-                currentTransition = nullptr;
-            }
-        }
-    }
-    */
-
-
     // Actualizar escena actual
     if (currentScene != nullptr) {
         currentScene->update(deltaTime);
@@ -90,7 +52,7 @@ bool Game::update(int deltaTime)
                 if (level->getLevelCompleted()) {
                     currentLevel++;
                     if (currentLevel == 6) changeState(CREDITS); // FINAL_COMIC
-                    else changeState(LOADING, currentLevel);    //startTransition(FADE_OUT, LOADING, currentLevel);
+                    else changeState(LOADING, currentLevel);
                 }
             }
         }
@@ -114,13 +76,6 @@ void Game::render()
     if (currentScene != nullptr) {
         currentScene->render();
     }
-
-    /*
-	// Renderizar la transición por encima de la escena actual
-    if (currentTransition != nullptr) {
-        currentTransition->render();
-	}
-    */
 
     // Mensajes de tutorial
     glUseProgram(0);
@@ -148,10 +103,10 @@ void Game::keyPressed(int key)
     if (key == GLFW_KEY_B) changeState(MAIN_MENU, currentLevel);
 
     // Variar volumen música
-    if (key == GLFW_KEY_KP_ADD) {
+    if (key == GLFW_KEY_KP_ADD || key == GLFW_KEY_O) {
         SoundManager::instance().increaseMusicVolume(0.05f);
     }
-    else if (key == GLFW_KEY_KP_SUBTRACT) {
+    else if (key == GLFW_KEY_KP_SUBTRACT || key == GLFW_KEY_P) {
         SoundManager::instance().decreaseMusicVolume(0.05f);
     }
 }

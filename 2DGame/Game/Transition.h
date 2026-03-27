@@ -4,8 +4,6 @@
 #include <glm/glm.hpp>
 #include "ShaderProgram.h"
 
-enum FadeType { FADE_IN, FADE_OUT };
-
 class Transition {
 public:
     virtual ~Transition() {}
