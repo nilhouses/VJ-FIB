@@ -1151,7 +1151,7 @@ void Level::update(int deltaTime)
 
 void Level::render()
 {
-    // calculamos cuánto mide el HUD y el nivel proporcionalmente al tamaño actual de la ventana
+    // Calculamos cuánto mide el HUD y el nivel proporcionalmente al tamaño actual de la ventana
     float hudRatio = (float)HUD_HEIGHT / (float)SCREEN_HEIGHT;
     int scaledHudHeight = (int)(viewHeight * hudRatio);
     int scaledLevelHeight = viewHeight - scaledHudHeight;

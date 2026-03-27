@@ -3,7 +3,6 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include "Transition.h"
 #include <set>
 #include "Scene.h"
 #include "Text.h"
@@ -54,7 +53,6 @@ public:
 	void mousePress(int button);
 	void mouseRelease(int button);
 	void resize(int width, int height);
-	void startTransition(FadeType type, GameState newState, int levelNumber); // Inicia una transición a newState, cargando el nivel indicado por levelNumber si el nuevo estado es PLAYING
 
 	bool getKey(int key) const;
 
@@ -69,12 +67,6 @@ private:
 	Scene* currentScene;         // Puntero a la pantalla a la que estamos
 	int currentLevel;            // Nivel actual
 	int numLives = 3;            // Número de vidas del jugador en la partida actual, se mantiene al cambiar de nivel  
-
-	// Gestión de la transición entre escenas
-	Transition* currentTransition;
-	GameState pendingState;         // El estado al que se cambiará una vez termine la transición
-	int pendingLevel;				// El nivel que se cargará al cambiar a PLAYING después de la transición
-	bool isTransitioning;			// Indica si estamos en medio de una transición
 	
 	// Textos de información
 	Text tutorialText;

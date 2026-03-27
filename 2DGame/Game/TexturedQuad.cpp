@@ -40,6 +40,17 @@ void TexturedQuad::render(const Texture &tex) const
 	glDisable(GL_TEXTURE_2D);
 }
 
+void TexturedQuad::render() const
+{
+	glBindVertexArray(vao);
+	glEnableVertexAttribArray(posLocation);
+	glEnableVertexAttribArray(texCoordLocation);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glDisableVertexAttribArray(posLocation);
+	glDisableVertexAttribArray(texCoordLocation);
+	glBindVertexArray(0);
+}
+
 void TexturedQuad::free()
 {
 	glDeleteBuffers(1, &vbo);

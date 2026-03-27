@@ -26,7 +26,6 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Enter.h" />
     <ClInclude Include="Entity.h" />
-    <ClInclude Include="FadeTransition.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Gun.h" />
     <ClInclude Include="Hud.h" />
@@ -53,7 +52,6 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TexturedQuad.h" />
     <ClInclude Include="TileMap.h" />
-    <ClInclude Include="Transition.h" />
     <ClInclude Include="Tunnel.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Barrel.h" />
@@ -64,7 +62,6 @@
     <ClCompile Include="Checkpoint.cpp" />
     <ClCompile Include="Comic.cpp" />
     <ClCompile Include="Enter.cpp" />
-    <ClCompile Include="FadeTransition.cpp" />
     <ClCompile Include="Gun.cpp" />
     <ClCompile Include="Hud.cpp" />
     <ClCompile Include="HudIcon.cpp" />
@@ -119,13 +116,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
