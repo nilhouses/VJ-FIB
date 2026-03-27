@@ -21,6 +21,7 @@ public:
 
     // Para efectos cortos (saltos, llaves, explosiones)
     void playSound(const std::string& sound, float volume);
+	void playSoundForce(const std::string& sound, float volume);
 
     // Para música de fondo (en bucle)
     void playMusic(const std::string& musicKey, bool loop = true);
@@ -35,6 +36,7 @@ public:
     void increaseMusicVolume(float delta);
     void decreaseMusicVolume(float delta);
 
+	bool thereIsSoundPlaying() const { return musicPlaying || !activeSounds.empty(); }
 
 private:
     SoundManager() : initialized(false) {} // Constructor privado

@@ -19,7 +19,7 @@ void MainMenu::init() {
     initShaders();
 
     // 1. Cargar Texturas
-    texBackground.loadFromFile("images/menu_bg.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    texBackground.loadFromFile("images/mainMenu.png", TEXTURE_PIXEL_FORMAT_RGBA);
     texSprite.loadFromFile("images/arrow.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
     // 2. Crear Quads
@@ -74,16 +74,30 @@ void MainMenu::render() {
     background->render(texBackground);
 
     // Flecha
-    float arrowY = 165.f + (selectedOption * 45.f);
-    modelview = glm::translate(glm::mat4(1.0f), glm::vec3(205.f + 5*sin(currentTime / 200.f), arrowY, 0.f));
+    float arrowY = 310.f + (selectedOption * 45.f);
+    modelview = glm::translate(glm::mat4(1.0f), glm::vec3(375.f + 5*sin(currentTime / 200.f), arrowY, 0.f));
     texProgram.setUniformMatrix4f("modelview", modelview);
     cursor->render(texSprite);
 
     // 2. Textos
     glUseProgram(0);
-    text.render("START", glm::vec2(250, 200), 32, glm::vec4(0, 0, 0, 1), projection);
-    text.render("INSTRUCTIONS", glm::vec2(250, 245), 32, glm::vec4(0, 0, 0, 1), projection);
-    text.render("CREDITS", glm::vec2(250, 290), 32, glm::vec4(0, 0, 0, 1), projection);
+    switch (selectedOption) {
+    case 0:
+        text.render("START", glm::vec2(20, 350), 32, glm::vec4(.9f, .9f, .9f, 1), projection);
+        text.render("HOW TO PLAY", glm::vec2(20, 395), 26, glm::vec4(.9f, .9f, .9f, 1), projection);
+        text.render("CREDITS", glm::vec2(20, 440), 26, glm::vec4(.9f, .9f, .9f, 1), projection);
+        break;
+    case 1:
+        text.render("START", glm::vec2(20, 350), 26, glm::vec4(.9f, .9f, .9f, 1), projection);
+        text.render("HOW TO PLAY", glm::vec2(20, 395), 32, glm::vec4(.9f, .9f, .9f, 1), projection);
+        text.render("CREDITS", glm::vec2(20, 440), 26, glm::vec4(.9f, .9f, .9f, 1), projection);
+        break;
+    case 2:
+        text.render("START", glm::vec2(20, 350), 26, glm::vec4(.9f, .9f, .9f, 1), projection);
+        text.render("HOW TO PLAY", glm::vec2(20, 395), 26, glm::vec4(.9f, .9f, .9f, 1), projection);
+        text.render("CREDITS", glm::vec2(20, 440), 32, glm::vec4(.9f, .9f, .9f, 1), projection);
+        break;
+    }
 }
 
 void MainMenu::initShaders() {

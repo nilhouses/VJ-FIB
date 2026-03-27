@@ -1,5 +1,6 @@
 #include "Comic.h"
 #include "Game.h"
+#include "SoundManager.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
@@ -20,8 +21,11 @@ void Comic::init() {
     else initOutro();
 
     float panelH = 1.f / float(numRows);
+    float yTop = float(currentFrame) * panelH; 
+
     glm::vec2 geom[2] = { {0.f, 0.f}, {float(SCREEN_WIDTH), float(SCREEN_HEIGHT)} };
-    glm::vec2 texCoords[2] = { {0.f, 0.f}, {1.f, panelH} };
+    glm::vec2 texCoords[2] = { {0.f, yTop}, {1.f, yTop + panelH} };
+
     strip = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
 
     if (!text.init("fonts/PressStart2P.ttf"))
@@ -31,6 +35,8 @@ void Comic::init() {
 }
 
 void Comic::initIntro() {
+    currentFrame = 1;
+    SoundManager::instance().playSound("nave", 0.09f);
     texStrip.loadFromFile("images/comic_inicio.png", TEXTURE_PIXEL_FORMAT_RGBA);
     numRows = 10;
 }
@@ -50,7 +56,7 @@ void Comic::update(int deltaTime) {
 
     if (onLastFrame) {
         fadeTimer += deltaTime;
-        fadeAlpha = glm::min(1.f, fadeTimer / 1000.f);
+        fadeAlpha = min(1.f, fadeTimer / 1000.f);
 
         if (anyDown && !autoSkip) {
             finished = true;
@@ -75,6 +81,36 @@ void Comic::update(int deltaTime) {
     else if (!anyDown) autoSkip = false;
 }
 
+void Comic::soundInitialComic() {
+    switch (currentFrame) {
+        case 2:
+            SoundManager::instance().playSoundForce("turnPage2", 0.2f);
+            break;
+        case 3:
+            SoundManager::instance().playSound("crash", 0.2f);
+            SoundManager::instance().playSound("distracted", 1.f);
+            break;
+        case 4:
+            SoundManager::instance().playSoundForce("alarm", 0.2f);
+            break;
+        case 6:
+            SoundManager::instance().playSoundForce("spaceShipFalling", 0.2f);
+            break;
+        case 9:
+            SoundManager::instance().playSoundForce("jump", 0.1f);
+            SoundManager::instance().playSound("parachute", 0.1f);
+            break;
+        default:
+            break;
+    }
+}
+void Comic::soundFinalComic() {
+    switch (currentFrame) {
+        //[TODO] tuerca ñic - soplete - golpe - botón - encendido - pared intestinal rota - fiummm - sonido estrella al horizonte (klin!)
+        default:
+            break;
+    }
+}
 void Comic::advanceFrame() {
     currentFrame++;
 
@@ -86,6 +122,8 @@ void Comic::advanceFrame() {
         return;
     }
 
+    if (version == 0) soundInitialComic();
+    else soundFinalComic();
     float panelH = 1.f / float(numRows);
     float yTop = float(currentFrame) * panelH;
 

@@ -100,8 +100,11 @@ void Bullet::setPosition(const glm::vec2& pos) {
     Entity::setPosition(pos);
 	if (cam->isVisible(pos) ||
         cam->isVisible(pos + glm::vec2(MAX_DISTANCE, 0)) ||
-        cam->isVisible(pos - glm::vec2(MAX_DISTANCE, 0))) // Si la bala puede llegar al jugador se debería escuchar
-        SoundManager::instance().playSound("shot", 0.03f);
+        cam->isVisible(pos - glm::vec2(MAX_DISTANCE, 0))) // Si la bala puede llegar al jugador se debería escuchar 
+    {   
+        if (t == BulletType::PLAYER) SoundManager::instance().playSound("playerShot", 0.03f);
+        else SoundManager::instance().playSound("enemyShot", 0.3f);
+    }
 }
 
 void Bullet::render() {
