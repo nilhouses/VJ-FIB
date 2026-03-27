@@ -442,5 +442,6 @@ void Clever::die()
     dying = true;
     sprite->changeAnimation(DIE);
     std::cout << "RIP Clever" << std::endl;
+	SoundManager::instance().playSound("pigDeath", 0.1f);
     // En el update se desactivar� la entidad cuando acabe la animaci�n de explosi�n
 }

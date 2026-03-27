@@ -443,7 +443,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
     {
         case Type::KEY:
         {   
-            Game::instance().showTutorial("WALK OVER A SPACESHIP PART TO COLLECT IT");
+            Game::instance().showTutorial("WALK OVER SPACESHIP PARTS TO COLLECT THEM");
             player->pickItem();
             collectedKeys = min(collectedKeys + 1, allKeys);
             // Transición de estado
@@ -471,7 +471,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
 
         case Type::SPEEDBOOST:
         {
-            Game::instance().showTutorial("A BOOST WILL MAKE YOU FASTER TEMPORARILY");
+            Game::instance().showTutorial("BOOSTS WILL MAKE YOU FASTER TEMPORARILY");
             player->pickItem();
             SpeedBoost* sb = static_cast<SpeedBoost*>(e);
             player->activateSpeedBoost(sb->getMultiplier(), sb->getDuration());
@@ -508,7 +508,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                 }
                 break;
             }
-            else Game::instance().showTutorial("HOLD [LEFT] OR [RIGHT] ALONGSIDE A BARREL TO PUSH IT");
+            else Game::instance().showTutorial("HOLD [LEFT] OR [RIGHT] NEXT TO A BARREL TO PUSH IT");
             
             // Colisiones
             glm::ivec2 pSize = player->getSize();
@@ -602,7 +602,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                             if (door->getIsFinalDoor()) {
                                 if (collectedKeys < allKeys) {
                                     if (player->getCurrentAnimationName() != "LOCKED_DOOR") {
-                                        Game::instance().showTutorial("YOU MUST COLLECT ALL SPACESHIP PARTS TO USE A FINAL DOOR!");
+                                        Game::instance().showTutorial("YOU MUST COLLECT ALL SPACESHIP PARTS TO COMPLETE THE MISSION!");
                                         door->lockedDoorSound();
 								        player->setAnimation("LOCKED_DOOR");
                                     }

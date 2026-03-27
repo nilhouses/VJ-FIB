@@ -37,7 +37,10 @@ bool Game::update(int deltaTime)
             Comic* c = static_cast<Comic*>(currentScene);
             if (c->hasFinished()) {
                 if (c->isInitial()) changeState(LOADING, 1);
-                else changeState(CREDITS);
+                else {
+                    SoundManager::instance().setMusicVolume(0.1f);
+                    changeState(CREDITS); // Acabamos con la música de rock alta
+                }
             }
         }
 
@@ -51,7 +54,10 @@ bool Game::update(int deltaTime)
             else {
                 if (level->getLevelCompleted()) {
                     currentLevel++;
-                    if (currentLevel == 6) changeState(CREDITS); // FINAL_COMIC
+                    if (currentLevel == 6) {
+                        SoundManager::instance().setMusicVolume(0.00f); // Cinemática
+                        changeState(CREDITS); // [TODO] FINAL_COMIC
+                    }
                     else changeState(LOADING, currentLevel);
                 }
             }

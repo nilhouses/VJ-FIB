@@ -2,8 +2,7 @@
 #include <iostream>
 #include <GL/glew.h>
 #include "Dummy.h"
-#include "Game.h"
-
+#include "SoundManager.h"
 // Definimos 4 tipos de animaciones para el dummy
 enum DummyAnims
 {
@@ -119,5 +118,6 @@ void Dummy::die()
     dying = true;
     sprite->changeAnimation(DIE);
     cout << "RIP Dummy" << endl;
+    SoundManager::instance().playSound("birdDeath", 0.1f);
     // En el update se desactivar� la entidad cuando acabe la animaci�n de explosi�n
 }

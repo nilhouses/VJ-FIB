@@ -41,6 +41,18 @@ std::unordered_map<std::string, std::string> sounds = {
     { "jump", "sounds/jump.mp3" },
     { "parachute", "sounds/parachute.mp3" },
     { "nave", "sounds/nave.mp3" },
+    { "pigDeath", "sounds/pigDeath.wav" },
+    { "birdDeath", "sounds/birdDeath.mp3" },
+    { "shooterDeath", "sounds/shooterDeath.mp3" },
+    { "tuerca", "sounds/tuerca.mp3" },
+    { "soplete", "sounds/soplete.mp3" },
+    { "golpeMetal", "sounds/golpeMetal.mp3" },
+    { "button", "sounds/button.mp3" },
+    { "motorEncendiendose", "sounds/motorEncendiendose.mp3" },
+    { "button", "sounds/button.mp3" },
+    { "desgarroGusano", "sounds/desgarroGusano.mp3" },
+    { "nosFuimos", "sounds/nosFuimos.mp3" },
+    { "shootingStar", "sounds/shootingStar.mp3" },
 };
 
 

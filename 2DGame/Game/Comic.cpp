@@ -106,7 +106,14 @@ void Comic::soundInitialComic() {
 }
 void Comic::soundFinalComic() {
     switch (currentFrame) {
-        //[TODO] tuerca ñic - soplete - golpe - botón - encendido - pared intestinal rota - fiummm - sonido estrella al horizonte (klin!)
+        // SoundManager::instance().playSound("tuerca", 0.1f); 
+        // SoundManager::instance().playSound("soplete", 0.1f); 
+        // SoundManager::instance().playSound("golpeMetal", 0.1f); 
+        // SoundManager::instance().playSound("button", 0.1f); 
+        // SoundManager::instance().playSound("motorEncendiendose", 0.1f); 
+        // SoundManager::instance().playSound("desgarroGusano", 0.1f); 
+        // SoundManager::instance().playSound("nosFuimos", 0.1f); 
+        // SoundManager::instance().playSound("shootingStar", 0.1f); 
         default:
             break;
     }

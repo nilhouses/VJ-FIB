@@ -65,7 +65,7 @@ void Shooter::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, C
     sprite->addKeyframe(SHOOT_RIGHT, glm::vec2(0.50f, 3.f/5.f));
     sprite->addKeyframe(SHOOT_RIGHT, glm::vec2(0.75f, 3.f/5.f));
 
-    sprite->setAnimationSpeed(DIE, 8);
+    sprite->setAnimationSpeed(DIE, 4);
     sprite->addKeyframe(DIE, glm::vec2(0.f, 2.f/5.f));
     sprite->addKeyframe(DIE, glm::vec2(0.25f, 2.f/5.f));
     sprite->addKeyframe(DIE, glm::vec2(0.50f, 2.f/5.f));
@@ -211,8 +211,10 @@ void Shooter::shoot() {
 void Shooter::die()
 {
     if (isDying()) return;
+	deathDuration = 1000;
     dying = true;
     sprite->changeAnimation(DIE);
     cout << "RIP Shooter" << endl;
+    SoundManager::instance().playSound("shooterDeath", 0.1f);
     // En el update se desactivar� la entidad cuando acabe la animaci�n de explosi�n
 }
