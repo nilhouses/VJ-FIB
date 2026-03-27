@@ -18,6 +18,8 @@ public:
 
     bool isInitial() { return version == 0; }
     bool hasFinished() { return finished; }
+	void soundInitialComic();
+	void soundFinalComic();
 
 private:
     void initShaders();

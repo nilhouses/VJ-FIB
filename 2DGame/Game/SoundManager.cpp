@@ -14,9 +14,11 @@ std::unordered_map<std::string, std::string> sounds = {
     { "life", "sounds/life.mp3"},
     { "key", "sounds/key.mp3"},
     { "explosion", "sounds/explosion.mp3"},
+    { "hugeExplosion", "sounds/hugeExplosion.mp3" },
     { "kachow", "sounds/kachow.mp3"},
     { "gun", "sounds/gun.mp3"},
-    { "shot", "sounds/shot.mp3"},
+    { "playerShot", "sounds/playerShot.mp3"},
+    { "enemyShot", "sounds/shooterShot.mp3"},
     { "doorOpen", "sounds/doorOpen.mp3"},
     { "clothDoorOpen", "sounds/clothDoorOpen.mp3"},
     { "cowboyDoorOpen", "sounds/cowboyDoorOpen.mp3"},
@@ -29,7 +31,16 @@ std::unordered_map<std::string, std::string> sounds = {
     { "openLockedDoor", "sounds/openLockedDoor.mp3"},
     { "openChainedDoor", "sounds/chainDoor.mp3"},
     { "openSpaceShipDoor", "sounds/spaceShipDoor.mp3"},
-    { "chainDoorLocked", "sounds/chainLockedDoor.mp3"}
+    { "chainDoorLocked", "sounds/chainLockedDoor.mp3"},
+    { "turnPage1", "sounds/turnPage1.mp3" },
+    { "turnPage2", "sounds/turnPage2.mp3" },
+    { "distracted", "sounds/distracted.mp3" },
+    { "alarm", "sounds/alarm.mp3" },
+    { "crash", "sounds/crash.mp3" },
+    { "spaceShipFalling", "sounds/spaceShipFalling.mp3" },
+    { "jump", "sounds/jump.mp3" },
+    { "parachute", "sounds/parachute.mp3" },
+    { "nave", "sounds/nave.mp3" },
 };
 
 
@@ -67,6 +78,34 @@ void SoundManager::playSound(const std::string& sound, float volume) {
     else {
         delete sfx; // Limpieza si falla la carga
     }
+}
+
+void SoundManager::playSoundForce(const std::string& sound, float volume) {
+    if (!initialized) return;
+
+    auto it = sounds.find(sound);
+    if (it == sounds.end()) {
+        std::cout << "Error: Sonido '" << sound << "' no encontrado en el mapa." << std::endl;
+        return;
+    }
+
+	// Eliminar sonidos activos para forzar el nuevo (si es que hay alguno)
+    for (ma_sound* s : activeSounds) {
+        ma_sound_stop(s);
+        ma_sound_uninit(s);
+        delete s;
+    }
+    activeSounds.clear();
+
+    // Nuevo sonido
+    ma_sound* sfx = new ma_sound();
+    ma_result result = ma_sound_init_from_file(&engine, it->second.c_str(), 0, NULL, NULL, sfx);
+    if (result == MA_SUCCESS) {
+        ma_sound_set_volume(sfx, volume);
+        ma_sound_start(sfx);
+        activeSounds.push_back(sfx);
+    }
+    else delete sfx;
 }
 
 void SoundManager::playMusic(const std::string& musicKey, bool loop) {
