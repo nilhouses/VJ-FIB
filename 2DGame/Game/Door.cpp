@@ -22,6 +22,9 @@ void Door::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Came
 {
 	// Inicializar los atributos de la Entity
 	Entity::init(tileMapPos, shaderProgram, "images/puertas.png", glm::ivec2(32, 64), glm::vec2(1.f / 4.f, 1.f / 13.f), c);
+	
+	this->arrow = new EnterArrow();
+	arrow->init(tileMapPos + glm::ivec2(0.0f, map->getTileSize()*2), shaderProgram, c);
 
 	visited = false;
 

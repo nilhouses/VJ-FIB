@@ -18,7 +18,7 @@ enum class Type {
 	PIPE,
 	ENTER,
 	ACID,
-	CHECKPOINT
+	ENTERARROW
 };
 
 class Entity
@@ -53,7 +53,7 @@ public:
 	const glm::ivec2& getSize() const { return size; }
 
 	int getRoom() const { return room; }
-	void setRoom(int r) { room = r; }
+	virtual void setRoom(int r) { room = r; }
 	virtual bool isEnemy() const { return false; }
 
 	void printDebugInfo() const; // Función para imprimir información de depuración sobre la entidad (posición, tipo, estado, etc.)

@@ -11,6 +11,7 @@ class Door : public Enter
 public:
 	Door();
 	~Door();
+	void showArrow() { arrow->activate(); }
 
 public:
 	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, int sr);

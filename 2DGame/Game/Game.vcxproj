@@ -17,7 +17,6 @@
     <ClInclude Include="Asset.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="Checkpoint.h" />
     <ClInclude Include="Clever.h" />
     <ClInclude Include="Comic.h" />
     <ClInclude Include="Credits.h" />
@@ -25,6 +24,7 @@
     <ClInclude Include="Dummy.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Enter.h" />
+    <ClInclude Include="EnterArrow.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="FadeTransition.h" />
     <ClInclude Include="Game.h" />
@@ -62,9 +62,9 @@
   <ItemGroup>
     <ClCompile Include="Acid.cpp" />
     <ClCompile Include="ActionMessage.cpp" />
-    <ClCompile Include="Checkpoint.cpp" />
     <ClCompile Include="Comic.cpp" />
     <ClCompile Include="Enter.cpp" />
+    <ClCompile Include="EnterArrow.cpp" />
     <ClCompile Include="FadeTransition.cpp" />
     <ClCompile Include="GameOver.cpp" />
     <ClCompile Include="Gun.cpp" />

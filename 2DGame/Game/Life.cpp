@@ -5,7 +5,7 @@
 #include "Game.h"
 
 
-#define PICK_DURATION 450.f // 
+#define PICK_DURATION 450.f
 
 enum LifeAnims
 {

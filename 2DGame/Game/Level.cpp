@@ -95,6 +95,7 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, b
     else if (type == "DOOR")
     {
         Door* door = new Door();
+        door->setTileMap(map);
         door->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera, sr);
         if (indexRoom != 0)
             door->setToVisited();
@@ -103,6 +104,7 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, b
     else if (type == "TUNNEL")
     {
         Tunnel* tunnel = new Tunnel();
+        tunnel->setTileMap(map);
         tunnel->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, camera, sr);
         entity = tunnel;
     }
@@ -582,69 +584,71 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             if (enter->getEnterType() == EnterType::DOOR) Game::instance().showTutorial("PRESS [UP] TO  ENTER A DOOR");
 			else if (enter->getEnterType() == EnterType::TUNNEL) Game::instance().showTutorial("PRESS [UP] TO TRAVEL THROUGH A TUNNEL");
             
-            bool isUpPressed = Game::instance().getKey(GLFW_KEY_UP);
-            if (isUpPressed && releasedUp && state == NORMAL && rangeCollided.x > 24 && rangeCollided.y > 50) {
-                releasedUp = false;
+            if (rangeCollided.x > 24 && rangeCollided.y > 50) {
                 Enter* enter = static_cast<Door*>(e);
-
-                transitionTimer = 1000.f;
-                // Según el tipo de entrada
-                switch (enter->getEnterType())
-                {
-                    case EnterType::DOOR:   // Si es una puerta entonces miramos si la puerta es final y además la animación del jugador es ENTER
+                enter->activateArrow();
+                bool isUpPressed = Game::instance().getKey(GLFW_KEY_UP);
+                if (isUpPressed && releasedUp && state == NORMAL) {
+                    releasedUp = false;
+                    transitionTimer = 1000.f;
+                    // Según el tipo de entrada
+                    switch (enter->getEnterType())
                     {
-                        Door* door = static_cast<Door*>(enter);
+                        case EnterType::DOOR:   // Si es una puerta entonces miramos si la puerta es final y además la animación del jugador es ENTER
+                        {
+                            Door* door = static_cast<Door*>(enter);
 
-                        bool sound = true;
-                        if (door->getIsFinalDoor()) {
-                            if (collectedKeys < allKeys) {
-                                if (player->getCurrentAnimationName() != "LOCKED_DOOR") {
-                                    Game::instance().showTutorial("YOU MUST COLLECT ALL SPACESHIP PARTS TO USE A FINAL DOOR!");
-                                    door->lockedDoorSound();
-								    player->setAnimation("LOCKED_DOOR");
+                            bool sound = true;
+                            if (door->getIsFinalDoor()) {
+                                if (collectedKeys < allKeys) {
+                                    if (player->getCurrentAnimationName() != "LOCKED_DOOR") {
+                                        Game::instance().showTutorial("YOU MUST COLLECT ALL SPACESHIP PARTS TO USE A FINAL DOOR!");
+                                        door->lockedDoorSound();
+								        player->setAnimation("LOCKED_DOOR");
+                                    }
+                                    return;
+                                } else {
+                                    door->openLockedDoorSound();
+                                    sound = false;
                                 }
-                                return;
-                            } else {
-                                door->openLockedDoorSound();
-                                sound = false;
                             }
+                            // Cambiar estado visual + sonido (si hace falta)
+                            if (!door->getVisited() && !door->isCave() && !door->isWorm()) {
+                                door->openingAnim(sound);
+                                player->setAnimation("OPEN_AND_ENTER");
+                            }
+                            else { player->setAnimation("ENTER"); }
+                            //if (door->isCave() || door->isWorm() || door->getVisited()) Cualquier puerta 
+                            SoundManager::instance().playSound("stepIn", 0.3f);
+                            break;
                         }
-                        // Cambiar estado visual + sonido (si hace falta)
-                        if (!door->getVisited() && !door->isCave() && !door->isWorm()) {
-                            door->openingAnim(sound);
-                            player->setAnimation("OPEN_AND_ENTER");
+                        case EnterType::TUNNEL: // Si es un túnel la animación del jugador es ENTER_TUNNEL
+                        {
+                            Tunnel* tunnel = static_cast<Tunnel*>(enter);
+                            SoundManager::instance().playSound("tunnelSteps", 0.4f);
+                            if (tunnel->getUp()) player->setAnimation("TUNNEL_ENTER_TOP");
+                            else player->setAnimation("TUNNEL_ENTER_BOTTOM");
+
+                            // Configurar cámara para la transición
+                            camera->setTotalTimer(transitionTimer);
+                            camera->setStartPos(player->getPosition());
+                            camera->setEndPos(tunnel->getConnectedTo()->getPosition());
+
+                            //camera->printTransitionInfo();
                         }
-                        else { player->setAnimation("ENTER"); }
-                        //if (door->isCave() || door->isWorm() || door->getVisited()) Cualquier puerta 
-                        SoundManager::instance().playSound("stepIn", 0.3f);
-                        break;
+                        default:
+                            break;
                     }
-                    case EnterType::TUNNEL: // Si es un túnel la animación del jugador es ENTER_TUNNEL
-                    {
-                        Tunnel* tunnel = static_cast<Tunnel*>(enter);
-                        SoundManager::instance().playSound("tunnelSteps", 0.4f);
-                        if (tunnel->getUp()) player->setAnimation("TUNNEL_ENTER_TOP");
-                        else player->setAnimation("TUNNEL_ENTER_BOTTOM");
+                    player->center();
 
-                        // Configurar cámara para la transición
-                        camera->setTotalTimer(transitionTimer);
-                        camera->setStartPos(player->getPosition());
-                        camera->setEndPos(tunnel->getConnectedTo()->getPosition());
+                    // Configurar transición a la nueva habitación
+                    state = ENTERING_DOOR;
+                    interactedEnter = enter;
+                    rooms[currentRoom]->setTransitioning(true);
+                    player->blockInput(); // Bloquear input del jugador durante la transición
 
-                        //camera->printTransitionInfo();
-                    }
-                    default:
-                        break;
+                    break;
                 }
-                player->center();
-
-                // Configurar transición a la nueva habitación
-                state = ENTERING_DOOR;
-                interactedEnter = enter;
-                rooms[currentRoom]->setTransitioning(true);
-                player->blockInput(); // Bloquear input del jugador durante la transición
-
-                break;
             }
             break;
         }

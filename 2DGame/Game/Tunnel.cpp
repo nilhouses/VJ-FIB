@@ -21,6 +21,9 @@ void Tunnel::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ca
 {
 	// Inicializar los atributos de la Entity
 	Entity::init(tileMapPos, shaderProgram, "images/puertas.png", glm::ivec2(32, 64), glm::vec2(1.f / 4.f, 1.f / 13.f), c);
+	
+	arrow = new EnterArrow();
+	arrow->init(tileMapPos + glm::ivec2(0, 2*map->getTileSize()), shaderProgram, c);
 
 	// Configuración de animaciones
 	sprite->setNumberAnimations(NUM_ANIMS);
