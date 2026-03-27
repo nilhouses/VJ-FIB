@@ -12,10 +12,11 @@ EnterArrow::~EnterArrow()
 		delete sprite;
 }
 
-void EnterArrow::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c)
+void EnterArrow::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, bool pointsDown)
 {
 	// Inicializar los atributos de la Entity
-	Entity::init(tileMapPos, shaderProgram, "images/enterArrow.png", glm::ivec2(32, 32), glm::vec2(1.f, 1.f), c);
+	string path = pointsDown ? "images/EnterArrowUpsideDown.png" : "images/EnterArrow.png";
+	Entity::init(tileMapPos, shaderProgram, path, glm::ivec2(32, 32), glm::vec2(1.f, 1.f), c);
 
 	sprite->setNumberAnimations(1);
 

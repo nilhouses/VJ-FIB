@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "PipeSegment.h"
 #include "SoundManager.h"
+#include "EnterArrow.h"
 #include <vector>
 
 class Pipe : public Entity
@@ -18,6 +19,10 @@ public:
 
     void update(int deltaTime) override;
     void render()              override;
+    
+    void activateArrow(int end);
+    void setRoom(int r) override;
+    void setPosition(const glm::vec2& pos) override;
 
     glm::vec4 getEndBoundingBox(int end) const;
     glm::vec4 getBoundingBox() const override;
@@ -53,6 +58,7 @@ private:
 
     ShaderProgram* shaderProg = nullptr;
     Camera* cam = nullptr;
+    EnterArrow* arrows[2] = { nullptr, nullptr };
 };
 
 #endif // _PIPE_INCLUDE

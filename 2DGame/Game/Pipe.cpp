@@ -33,6 +33,8 @@ Pipe::~Pipe()
         Sprite* s = segments[i].getSprite();
         if (s) delete s;
     }
+    for (int i = 0; i < 2; i++)
+        if (arrows[i]) delete arrows[i];
 }
 
 // ------------------------------------------------------- Lògica para saber qué textura tiene cada segmento -------------------------------------------------------
@@ -121,6 +123,20 @@ void Pipe::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Came
 	this->tileSize = tileSize;
     float animMs = 1000.f/(float)keyframesPerSecond;
     transitDuration = (float)segments.size() * animMs;
+
+    for (int end = 0; end < 2; end++)
+    {
+        glm::vec2 dir = getEndDirection(end);
+        int idx = (end == 0) ? 0 : (int)segments.size() - 1;
+        glm::vec2 tp = segments[idx].getTilePos();
+        bool pointsDown = (dir.y >= 0);
+        arrows[end] = new EnterArrow();
+        arrows[end]->init(
+            glm::ivec2(tileMapPos.x + (int)tp.x, tileMapPos.y + (int)tp.y),
+            shaderProgram, c, pointsDown
+        );
+        arrows[end]->setTileMap(map);
+    }
 }
 
 // ------------------------------------------------------- Update -------------------------------------------------------
@@ -128,6 +144,7 @@ void Pipe::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Came
 void Pipe::update(int deltaTime)
 {
     for (auto& seg : segments) seg.update(deltaTime);
+    for (int i = 0; i < 2; i++) if (arrows[i]) arrows[i]->update(deltaTime);
 
     if (!someoneInside) return;
 
@@ -159,6 +176,34 @@ void Pipe::render()
 {
     if (!active) return;
     for (auto& seg : segments) seg.render();
+    for (int i = 0; i < 2; i++)
+        if (arrows[i]) arrows[i]->render();
+}
+
+void Pipe::activateArrow(int end)
+{
+    if (arrows[end]) arrows[end]->activate();
+}
+
+void Pipe::setRoom(int r)
+{
+    Entity::setRoom(r);
+    for (int i = 0; i < 2; i++)
+        if (arrows[i]) arrows[i]->setRoom(r);
+}
+
+void Pipe::setPosition(const glm::vec2& pos)
+{
+    Entity::setPosition(pos);
+    // Reposicionar cada fletxa relativa a la seva punta
+    for (int end = 0; end < 2; end++)
+    {
+        if (!arrows[end]) continue;
+        int idx = (end == 0) ? 0 : (int)segments.size() - 1;
+        glm::vec2 tp = segments[idx].getTilePos();
+        arrows[end]->setPosition(glm::vec2(pos.x + tp.x - segments[0].getTilePos().x,
+            pos.y + tp.y - segments[0].getTilePos().y));
+    }
 }
 
 // ------------------------------------------------------- Tráfico -------------------------------------------------------

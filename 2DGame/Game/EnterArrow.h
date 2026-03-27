@@ -6,8 +6,6 @@
 #include "Camera.h"
 
 
-// La llave contiene
-// Sprite, posici?n
 class EnterArrow: public Entity
 {
 public:
@@ -15,7 +13,7 @@ public:
 	~EnterArrow();
 
 public:
-	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c);
+	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, bool pointsDown = false);
 	void update(int deltaTime) override;
 
 private:

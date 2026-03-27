@@ -663,7 +663,10 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                 if (pipe->getEntryKey(end)) SoundManager::instance().playSound("invalidAction", 0.2f);
                 break;
             }
-            else Game::instance().showTutorial("USE [UP] OR [DOWN] TO TRAVEL THROUGH A PIPE");
+            else {
+                Game::instance().showTutorial("USE [UP] OR [DOWN] TO TRAVEL THROUGH A PIPE");
+                pipe->activateArrow(end);
+            }
             if (pipe->getEntryKey(end)) {
                 interactedPipe = pipe;
                 player->deactivate();
