@@ -62,12 +62,8 @@
     <ClCompile Include="ActionMessage.cpp" />
     <ClCompile Include="Comic.cpp" />
     <ClCompile Include="Enter.cpp" />
-<<<<<<< HEAD
     <ClCompile Include="EnterArrow.cpp" />
-    <ClCompile Include="FadeTransition.cpp" />
     <ClCompile Include="GameOver.cpp" />
-=======
->>>>>>> 7c78cb28a386e7dd8cbaf08b719972a3e915a216
     <ClCompile Include="Gun.cpp" />
     <ClCompile Include="Hud.cpp" />
     <ClCompile Include="HudIcon.cpp" />
@@ -122,13 +118,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v145</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v145</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>

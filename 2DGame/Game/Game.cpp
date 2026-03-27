@@ -8,7 +8,7 @@
 #include "Credits.h"
 #include "LoadingScene.h"
 #include "SoundManager.h"
-
+#include "GameOver.h"
 
 void Game::init()
 {
