@@ -26,7 +26,8 @@ enum GameState {
 	CREDITS,
 	LOADING,
 	INTIAL_COMIC,
-	FINAL_COMIC
+	FINAL_COMIC,
+	GAMEOVER
 };
 
 // Hay que entender la clase Game como el controlador global del juego. Es el encargado de cambiar entre escenas, actualizar el estado del juego...

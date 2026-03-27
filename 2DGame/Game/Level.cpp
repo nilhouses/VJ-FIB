@@ -433,8 +433,7 @@ void Level::killPlayer() {
     player->blockInput(); // Bloquear input del jugador durante la transición
 
     // Reproducir sonido de muerte
-    if (numLives > 1) SoundManager::instance().playSound("death", 0.2f);
-    else { SoundManager::instance().playSound("gameOver", 0.2f); };
+    SoundManager::instance().playSound("death", 0.2f);
 }
 
 void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2& offset, int end = -1) {

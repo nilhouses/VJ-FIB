@@ -9,6 +9,7 @@
 #include "LoadingScene.h"
 #include "SoundManager.h"
 #include "FadeTransition.h"
+#include "GameOver.h"
 
 
 void Game::startTransition(FadeType type, GameState newState, int levelNumber) {
@@ -83,7 +84,7 @@ bool Game::update(int deltaTime)
 
             if (level->gameOver()) {
                 numLives = 3;
-                changeState(MAIN_MENU);
+                changeState(GAMEOVER);
             }
             else {
                 if (level->getLevelCompleted()) {
@@ -93,6 +94,11 @@ bool Game::update(int deltaTime)
                 }
             }
         }
+
+        if (currentScene->getType() == SceneType::GAMEOVER) {
+            GameOver* go = static_cast<GameOver*>(currentScene);
+            if (go->hasFinished()) changeState(MAIN_MENU);
+		}
     }
 
 	SoundManager::instance().update(); // Limpiar sonidos que ya han terminado
@@ -180,9 +186,11 @@ void Game::changeState(GameState newState, int levelNumber)
             SoundManager::instance().playMusic("menu", true);
             break;
         case INTIAL_COMIC:
+			SoundManager::instance().stopMusic();
             currentScene = new Comic(0);
             break;
         case FINAL_COMIC:
+            SoundManager::instance().stopMusic();
             currentScene = new Comic(1);
             break;
         case PLAYING:
@@ -198,9 +206,14 @@ void Game::changeState(GameState newState, int levelNumber)
             currentScene = new Credits();
             break;
         case LOADING:
+            SoundManager::instance().stopMusic();
 		    cout << "Loading level " << levelNumber << "..." << endl;
             currentScene = new LoadingScene(levelNumber);
 		    break;
+        case GAMEOVER:
+            currentScene = new GameOver();
+            SoundManager::instance().playSound("gameOver", 0.2f);
+			break;
     }
 
     // Inicializamos la nueva escena

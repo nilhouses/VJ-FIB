@@ -13,7 +13,8 @@ enum class SceneType {
     INSTRUCTIONS,
     CREDITS,
 	LOADING,
-    COMIC
+    COMIC,
+    GAMEOVER
 };
 
 // Scene contains all the entities of our game.
