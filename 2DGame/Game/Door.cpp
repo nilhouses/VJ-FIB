@@ -71,6 +71,7 @@ void Door::lockedDoorSound() {
 
 void Door::openLockedDoorSound() {
 	if (spriteRow == 8) SoundManager::instance().playSound("openChainedDoor", 0.5f);
+	else if (spriteRow == 12) SoundManager::instance().playSound("openSpaceShipDoor", 0.5f);
 	else SoundManager::instance().playSound("openLockedDoor", 0.5f);
 }
 

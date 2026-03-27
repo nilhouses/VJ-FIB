@@ -545,7 +545,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
 
         case Type::PLATFORM:
         {
-            Game::instance().showTutorial("STEP ON A MOVING PLATFORMS TO RIDE ALONG WITH THEM");
+            Game::instance().showTutorial("STEP ON MOVING PLATFORMS TO RIDE ALONG WITH THEM");
             Platform* p = static_cast<Platform*>(e);
 
             glm::ivec2 playerSize = player->getSize();

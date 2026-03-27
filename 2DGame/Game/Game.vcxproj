@@ -19,6 +19,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Checkpoint.h" />
     <ClInclude Include="Clever.h" />
+    <ClInclude Include="Comic.h" />
     <ClInclude Include="Credits.h" />
     <ClInclude Include="Door.h" />
     <ClInclude Include="Dummy.h" />
@@ -61,6 +62,7 @@
     <ClCompile Include="Acid.cpp" />
     <ClCompile Include="ActionMessage.cpp" />
     <ClCompile Include="Checkpoint.cpp" />
+    <ClCompile Include="Comic.cpp" />
     <ClCompile Include="Enter.cpp" />
     <ClCompile Include="FadeTransition.cpp" />
     <ClCompile Include="Gun.cpp" />

@@ -88,7 +88,21 @@ void LoadingScene::render() {
 
     // Render "LOADING..." centrado
     
-    text.render(loadingStr, glm::vec2(200, 220), 32, glm::vec4(1, 1, 1, 1), projection);
+    text.render(loadingStr, glm::vec2(250, 300), 20, glm::vec4(0.8f, 0.8f, 0.8f, 1), projection);
+	
+    int fontSize = 22;
+    string levelStr;
+
+    switch (nextLevel) {
+	    case 1: levelStr = "LEVEL 1 - SANDY START"; break;
+        case 2: levelStr = "LEVEL 2 - DUSTY GATES"; break;
+        case 3: levelStr = "LEVEL 3 - UNDERGROUND CAVE"; break;
+        case 4: levelStr = "LEVEL 4 - PIPE MAZE"; break;
+        case 5: levelStr = "LEVEL 5 - GASTRIC GROOVE"; break;
+    }
+    float realWidth = levelStr.length() * (float)fontSize;
+    float posX = (float(SCREEN_WIDTH) - realWidth) * 0.5f;
+    text.render(levelStr, glm::vec2(posX, 220), fontSize, glm::vec4(1, 1, 1, 1), projection);
 
     // Render del Pro-tip
     // Centrado aproximado, restamos longitud del texto por tamaño de fuente/2

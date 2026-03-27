@@ -230,7 +230,11 @@ void Clever::update(int deltaTime)
             bool exitingUp = currentPipe->isExitingUp();
 
 
-            if (cam->isVisible(endCenter)) SoundManager::instance().playSound("pipe_out", 0.05f);
+            if (cam->isVisible(endCenter + glm::vec2(0, 200))||
+                    cam->isVisible(endCenter + glm::vec2(0, -200))||
+                    cam->isVisible(endCenter + glm::vec2(200, 0))||
+                    cam->isVisible(endCenter + glm::vec2(-200, 0))
+                ) SoundManager::instance().playSound("pipe_out", 0.05f);
 
             setVisible(true);
             inPipe = false;
@@ -293,7 +297,11 @@ void Clever::update(int deltaTime)
                 glm::vec2 pPos = playerTarget->getPosition();
                 glm::vec4 b = foundPipe->getEndBoundingBox(pipeEnd);
                 glm::vec2 endCenter(b.x + b.z * 0.5f, b.y + b.w * 0.5f);
-                if (cam->isVisible(endCenter)) SoundManager::instance().playSound("pipe_in", 0.05f);
+                if (cam->isVisible(endCenter + glm::vec2(0, 200))||
+                    cam->isVisible(endCenter + glm::vec2(0, -200))||
+                    cam->isVisible(endCenter + glm::vec2(200, 0))||
+                    cam->isVisible(endCenter + glm::vec2(-200, 0))
+                ) SoundManager::instance().playSound("pipe_in", 0.05f);
 
                 sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
                 return;
@@ -418,7 +426,11 @@ void Clever::notifyTunnelEntry(Tunnel* t)
     // Sonido de entrada
     glm::vec4 b = t->getBoundingBox();
     glm::vec2 entryCenter(b.x + b.z * 0.5f, b.y + b.w * 0.5f);
-    if (cam->isVisible(entryCenter)) SoundManager::instance().playSound("tunnelSteps", 0.2f); // Más flojo que el player para quitarle algo de importancia
+    if (cam->isVisible(entryCenter + glm::vec2(0, 200))||
+        cam->isVisible(entryCenter + glm::vec2(0, -200))||
+        cam->isVisible(entryCenter + glm::vec2(200, 0))||
+        cam->isVisible(entryCenter + glm::vec2(-200, 0))
+    ) SoundManager::instance().playSound("tunnelSteps", 0.2f); // Más flojo que el player para quitarle algo de importancia
 
     if (currentTunnel->getUp()) sprite->changeAnimation(TUNNEL_ENTER_TOP);
     else sprite->changeAnimation(TUNNEL_ENTER_BOTTOM);

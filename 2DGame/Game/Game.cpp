@@ -4,6 +4,7 @@
 #include "MainMenu.h"
 #include "Level.h"
 #include "Instructions.h"
+#include "Comic.h"
 #include "Credits.h"
 #include "LoadingScene.h"
 #include "SoundManager.h"
@@ -69,6 +70,14 @@ bool Game::update(int deltaTime)
     if (currentScene != nullptr) {
         currentScene->update(deltaTime);
 
+        if (currentScene->getType() == SceneType::COMIC) {
+            Comic* c = static_cast<Comic*>(currentScene);
+            if (c->hasFinished()) {
+                if (c->isInitial()) changeState(LOADING, 1);
+                else changeState(CREDITS);
+            }
+        }
+
         if (currentScene->getType() == SceneType::LEVEL) {
             Level* level = static_cast<Level*>(currentScene);
 
@@ -79,7 +88,7 @@ bool Game::update(int deltaTime)
             else {
                 if (level->getLevelCompleted()) {
                     currentLevel++;
-                    if (currentLevel == 6) changeState(CREDITS); // Ya haremos cinemática tope épica
+                    if (currentLevel == 6) changeState(CREDITS); // FINAL_COMIC
                     else changeState(LOADING, currentLevel);    //startTransition(FADE_OUT, LOADING, currentLevel);
                 }
             }
@@ -166,26 +175,32 @@ void Game::changeState(GameState newState, int levelNumber)
 
     // Instanciamos la nueva escena seg�n el estado
     switch (newState) {
-    case MAIN_MENU:
-        currentScene = new MainMenu();
-        SoundManager::instance().playMusic("menu", true);
-        break;
-    case PLAYING:
-        currentScene = new Level(currentLevel, numLives);
-        if (currentLevel <= 2) SoundManager::instance().playMusic("levels1&2", true);
-        else if (currentLevel <= 4) SoundManager::instance().playMusic("levels3&4", true);
-        else SoundManager::instance().playMusic("level5", true);
-        break;
-    case INSTRUCTIONS:
-        currentScene = new Instructions();
-        break;
-    case CREDITS:
-        currentScene = new Credits();
-        break;
-    case LOADING:
-		cout << "Loading level " << levelNumber << "..." << endl;
-        currentScene = new LoadingScene(levelNumber);
-		break;
+        case MAIN_MENU:
+            currentScene = new MainMenu();
+            SoundManager::instance().playMusic("menu", true);
+            break;
+        case INTIAL_COMIC:
+            currentScene = new Comic(0);
+            break;
+        case FINAL_COMIC:
+            currentScene = new Comic(1);
+            break;
+        case PLAYING:
+            currentScene = new Level(currentLevel, numLives);
+            if (currentLevel <= 2) SoundManager::instance().playMusic("levels1&2", true);
+            else if (currentLevel <= 4) SoundManager::instance().playMusic("levels3&4", true);
+            else SoundManager::instance().playMusic("level5", true);
+            break;
+        case INSTRUCTIONS:
+            currentScene = new Instructions();
+            break;
+        case CREDITS:
+            currentScene = new Credits();
+            break;
+        case LOADING:
+		    cout << "Loading level " << levelNumber << "..." << endl;
+            currentScene = new LoadingScene(levelNumber);
+		    break;
     }
 
     // Inicializamos la nueva escena

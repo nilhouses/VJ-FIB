@@ -130,15 +130,13 @@ void Credits::render() {
     for (int i = 0; i < (int)text_entries.size(); ++i) {
         float y = text_entryY[i] - scrollOffset;
         if (y < -50.f || y > float(SCREEN_HEIGHT) + 50.f) continue;
-        text.render(text_entries[i].label, glm::vec2(100.f, y),
-            text_entries[i].fontSize, text_entries[i].color, projection);
+        text.render(text_entries[i].label, glm::vec2(100.f, y), text_entries[i].fontSize, text_entries[i].color, projection);
     }
 
     // Volver atrás
     if (scrollDone) {
         float animY = float(SCREEN_HEIGHT) - 60.f + 5.f * sin(timer / 300.f);
-        text.render("PRESS 'B' TO GO BACK", glm::vec2(165, animY), 16,
-            glm::vec4(0.f, 0.f, 0.f, fadeAlpha), projection);
+        text.render("PRESS 'B' TO GO BACK", glm::vec2(165, animY), 16, glm::vec4(0.f, 0.f, 0.f, fadeAlpha), projection);
     }
 }
 
