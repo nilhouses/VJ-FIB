@@ -95,9 +95,6 @@ void Credits::init() {
 void Credits::update(int deltaTime) {
     timer += deltaTime;
 
-    if (Game::instance().getKey(GLFW_KEY_ESCAPE) || Game::instance().getKey(GLFW_KEY_B))
-        Game::instance().changeState(MAIN_MENU);
-    
     if (startDelay > 0.f) {
         startDelay -= deltaTime;
     } else if (!scrollDone) {
@@ -111,6 +108,8 @@ void Credits::update(int deltaTime) {
     if (scrollDone) {
         fadeTimer += deltaTime;
         fadeAlpha = min(1.f, fadeTimer / 1000.f);  // 1 segundo
+        if(Game::instance().getKey(GLFW_KEY_B))
+            Game::instance().changeState(MAIN_MENU);
     }
 }
 

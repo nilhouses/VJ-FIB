@@ -52,7 +52,7 @@ int main(void)
 		return -1;
 
 	/* Tamaño y nombre de la ventana */
-	window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Game", NULL, NULL);
+	window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Stranded in Alien Territory", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();

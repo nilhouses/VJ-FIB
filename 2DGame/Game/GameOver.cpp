@@ -31,7 +31,7 @@ void GameOver::init() {
     float startX = 3.f * frameW;
     float startY = 3.f * frameH;
 
-    glm::vec2 geomP[2] = { {0.f, 0.f}, {128.f, 128.f} };
+    glm::vec2 geomP[2] = { {0.f, 0.f}, {128.f, 256.f} };
     glm::vec2 texCoordsP[2] = {
         {startX, startY},                   // Top Left
         {startX + frameW, startY + frameH}  // Bottom Right
@@ -70,7 +70,7 @@ void GameOver::render() {
     background->render(texBackground);
 
     // Player
-    modelview = glm::translate(glm::mat4(1.f), glm::vec3((SCREEN_WIDTH - 128.f) / 2.f, (SCREEN_HEIGHT - 128.f) / 2.f - 5, 0.f));
+    modelview = glm::translate(glm::mat4(1.f), glm::vec3((SCREEN_WIDTH - 128.f) / 2.f, (SCREEN_HEIGHT - 420.f) / 2.f - 5, 0.f));
     texProgram.setUniformMatrix4f("modelview", modelview);
     playerDeadQuad->render(texPlayerDead);
 
@@ -78,7 +78,7 @@ void GameOver::render() {
     glUseProgram(0);
 
     string msg1 = "GAME OVER";
-    int size1 = 40;
+    int size1 = 50;
     float width1 = msg1.length() * (float)size1;
     float posX1 = (float(SCREEN_WIDTH) - width1) * 0.5f;
 

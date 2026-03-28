@@ -102,13 +102,18 @@ void Game::keyPressed(int key)
 		}
         changeState(PLAYING, currentLevel);
 	}
-    if ((key == GLFW_KEY_B) && (currentScene == nullptr || currentScene->getType() != SceneType::GAMEOVER || currentScene->getType() != SceneType::CREDITS)) changeState(MAIN_MENU, currentLevel);
+    if (key == GLFW_KEY_B) {
+        SceneType type = currentScene->getType();
+        if (type != SceneType::CREDITS && type != SceneType::GAMEOVER) {
+            changeState(MAIN_MENU, currentLevel);
+        }
+    }
 
     // Variar volumen música
-    if (key == GLFW_KEY_KP_ADD || key == GLFW_KEY_O) {
+    if (key == GLFW_KEY_KP_ADD || key == GLFW_KEY_P) {
         SoundManager::instance().increaseVolume(0.02f);
     }
-    else if (key == GLFW_KEY_KP_SUBTRACT || key == GLFW_KEY_P) {
+    else if (key == GLFW_KEY_KP_SUBTRACT || key == GLFW_KEY_O) {
         SoundManager::instance().decreaseVolume(0.02f);
     }
 }
