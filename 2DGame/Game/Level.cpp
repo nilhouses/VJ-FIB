@@ -486,7 +486,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
 
         case Type::GUN:
         {
-            Game::instance().showTutorial("PRESS [SPACE] TO FIRE YOUR WEAPON");
+            Game::instance().showTutorial("PRESS [Q] TO FIRE YOUR WEAPON");
             player->pickItem();
             player->addBullet();
             Gun* gun = static_cast<Gun*>(e);
@@ -588,9 +588,9 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                 Enter* enter = static_cast<Door*>(e);
                 enter->activateArrow();
                 bool isUpPressed = Game::instance().getKey(GLFW_KEY_UP);
+                transitionTimer = 1000.f;
                 if (isUpPressed && releasedUp && state == NORMAL) {
                     releasedUp = false;
-                    transitionTimer = 1000.f;
                     // Según el tipo de entrada
                     switch (enter->getEnterType())
                     {
@@ -602,7 +602,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                             if (door->getIsFinalDoor()) {
                                 if (collectedKeys < allKeys) {
                                     if (player->getCurrentAnimationName() != "LOCKED_DOOR") {
-                                        Game::instance().showTutorial("YOU MUST COLLECT ALL SPACESHIP PARTS TO COMPLETE THE MISSION!");
+                                        Game::instance().showTutorial("YOU MUST COLLECT ALL SPACESHIP PARTS TO REACH THE NEXT LEVEL!");
                                         door->lockedDoorSound();
 								        player->setAnimation("LOCKED_DOOR");
                                     }
@@ -612,6 +612,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                                     sound = false;
                                 }
                             }
+
                             // Cambiar estado visual + sonido (si hace falta)
                             if (!door->getVisited() && !door->isCave() && !door->isWorm()) {
                                 door->openingAnim(sound);
@@ -1042,10 +1043,12 @@ void Level::update(int deltaTime)
                 {
                 case EnterType::DOOR:
                     (player->hasBullets()) ? player->setAnimation("WEAPON_IDLE") : player->setAnimation("IDLE");
+                    transitionTimer = 200.f;
                     break;
                 case EnterType::TUNNEL:
                 {
                     Tunnel* tunnel = static_cast<Tunnel*>(interactedEnter);
+                    transitionTimer = 1000.f;
                     if (tunnel->getUp()) player->setAnimation("TUNNEL_LEAVE_TOP");
                     else player->setAnimation("TUNNEL_LEAVE_BOTTOM");
                     break;
@@ -1056,7 +1059,6 @@ void Level::update(int deltaTime)
 
                 // Cambio de estado a EXITING_DOOR
                 state = EXITING_DOOR;
-                transitionTimer = 1000.f;
             }
 
             break;
@@ -1147,9 +1149,9 @@ void Level::update(int deltaTime)
         releasedUp = true;
     }
 
-    if (Game::instance().getKey(GLFW_KEY_F)) {
+    /*if (Game::instance().getKey(GLFW_KEY_F)) {
         player->activateSpeedBoost(2.f, 600000.f);
-    }
+    }*/
 }
 
 

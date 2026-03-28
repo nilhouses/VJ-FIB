@@ -198,7 +198,7 @@ void Clever::update(int deltaTime)
                 lastUsedTunnel = exitTunnel;
                 tunnelTeleported = true;
                 setVisible(true); // visible a la sortida
-                if (currentTunnel->getUp()) sprite->changeAnimation(TUNNEL_LEAVE_TOP);
+                if (exitTunnel->getUp()) sprite->changeAnimation(TUNNEL_LEAVE_TOP);
                 else sprite->changeAnimation(TUNNEL_LEAVE_BOTTOM);
             }
             else {
@@ -416,6 +416,7 @@ void Clever::notifyTunnelEntry(Tunnel* t)
     }
 
     if (!shouldEnter) { inTunnel = false; return; }
+
     centerX();
     centerY();
     hurts = false;
@@ -426,6 +427,7 @@ void Clever::notifyTunnelEntry(Tunnel* t)
     // Sonido de entrada
     glm::vec4 b = t->getBoundingBox();
     glm::vec2 entryCenter(b.x + b.z * 0.5f, b.y + b.w * 0.5f);
+
     if (cam->isVisible(entryCenter + glm::vec2(0, 200))||
         cam->isVisible(entryCenter + glm::vec2(0, -200))||
         cam->isVisible(entryCenter + glm::vec2(200, 0))||

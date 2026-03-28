@@ -389,7 +389,7 @@ bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, i
 
 bool TileMap::isOutOfMap(const glm::vec2& pos, const glm::ivec2& size)
 {
-	return (pos.x < 0 || pos.x + size.x > mapSize.x * tileSize || pos.y < 0 || pos.y + size.y > mapSize.y * tileSize);
+	return (pos.x < 0 || pos.x + size.x > mapSize.x * tileSize || pos.y < 0 || pos.y + size.y > mapSize.y * tileSize - 2);
 }
 
 

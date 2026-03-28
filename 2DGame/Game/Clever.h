@@ -42,14 +42,14 @@ private:
 	bool inPipe = false;
 	bool visible = true;
 	int verticalCooldown = 0;
-	// T?neles
+	// Tuneles
 	Tunnel* currentTunnel = nullptr;
 	Tunnel* lastUsedTunnel = nullptr;
 	bool inTunnel = false;
 	float tunnelTimer = 0.f;
 	bool tunnelTeleported = false;
 	static constexpr float TUNNEL_DURATION = 1000.f; // ms, igual que el player
-	static constexpr float TUNNEL_CLEAR_DISTANCE = 32.f; // N?mero de px que hace falta recorrer para no volver a usar el mismo t?nel, evita el t?pico bucle de entrar y salir del t?nel constantemente, que no se usar? casi nunca pero depende del nivel
+	static constexpr float TUNNEL_CLEAR_DISTANCE = 16.f; // N?mero de px que hace falta recorrer para no volver a usar el mismo t?nel, evita el t?pico bucle de entrar y salir del t?nel constantemente, que no se usar? casi nunca pero depende del nivel
 	Camera* cam = nullptr;
 	float startAnimTimer;
 };

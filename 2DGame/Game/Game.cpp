@@ -53,6 +53,7 @@ bool Game::update(int deltaTime)
             }
             else {
                 if (level->getLevelCompleted()) {
+					numLives = level->getLives(); // Guardamos las vidas que le quedan al jugador para el siguiente nivel
                     currentLevel++;
                     if (currentLevel == 6) {
                         SoundManager::instance().setMusicVolume(0.00f); // Cinemática

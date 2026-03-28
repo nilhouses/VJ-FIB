@@ -384,9 +384,9 @@ void Player::update(int deltaTime)
 			if (!onGround) pos.y += FALL_STEP;
 			if (map->collisionMoveDown(pos, getSize(), &pos.y, FALL_STEP) || onGround) {
 				onGround = true;
-				if (Game::instance().getKey(GLFW_KEY_SPACE)) {
+				/*if (Game::instance().getKey(GLFW_KEY_SPACE)) {
 					bJumping = true; jumpAngle = 0; startY = pos.y;
-				}
+				}*/
 			}
 			else {
 				if (sprite->animation() != FALL && !isShooting) sprite->changeAnimation(FALL);
