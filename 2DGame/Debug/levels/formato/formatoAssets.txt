@@ -1,0 +1,9 @@
+images/doors.png		// fichero
+1				// número de prints de este asset (N)
+96 64				// tamaño en píxeles del asset
+0 10 3				// ROOM POS_X POS_Y (xN)
+images/varied.png
+2
+64 64
+0 0 0
+0 10 10

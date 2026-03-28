@@ -5,6 +5,7 @@
 #include <windows.h>
 #include "Game.h"
 #include "resource.h"
+#include <iostream>
 
 
 #define TARGET_FRAMERATE 60.0f

@@ -381,7 +381,7 @@ void Level::init()
 
     // Ajustamos la cámara y proyección al tamaño del área de JUEGO (384 de alto)
     camera = new Camera(LEVEL_WIDTH, LEVEL_HEIGHT);
-    projection = glm::ortho(0.f, float(LEVEL_WIDTH), float(LEVEL_HEIGHT), 0.f);
+    projection = glm::ortho(0.f, float(LEVEL_WIDTH), float(LEVEL_HEIGHT), 0.f, -100.f, 100.f);
 
     // Inicializamos el HUD
 	hud = new Hud();

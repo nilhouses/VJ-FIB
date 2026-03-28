@@ -1,0 +1,13 @@
+5
+images/fondo_cueva.png
+5
+832 846
+0 0 0
+1 0 0
+2 0 0
+3 0 0
+4 0 0
+images/worm.png
+1
+224 320
+0 123 13

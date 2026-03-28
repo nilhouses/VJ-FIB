@@ -6,6 +6,7 @@
 #include "ShaderProgram.h"
 #include <vector>
 #include <string>
+#include "SoundManager.h"
 
 class LoadingScene : public Scene
 {

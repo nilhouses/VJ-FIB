@@ -1,0 +1,16 @@
+5
+images/fondo_desierto_alto.png
+1
+832 576
+0 0 0
+images/fondo_cueva.png
+4
+832 846
+1 0 0
+2 0 0
+3 0 0
+4 0 0
+images/nave.png
+1
+160 96
+0 19 14

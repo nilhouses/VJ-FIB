@@ -25,6 +25,8 @@ void LoadingScene::init() {
         std::cout << "Could not load font for Loading Scene!" << std::endl;
 
     projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
+
+    SoundManager::instance().playSound("elevator", 0.2f);
 }
 
 
