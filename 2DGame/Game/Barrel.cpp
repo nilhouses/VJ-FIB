@@ -110,7 +110,7 @@ void Barrel::update(int deltaTime)
 	if (fallSpeed > MAX_FALL_SPEED) fallSpeed = MAX_FALL_SPEED;
 
 	pos.y += (int)(fallSpeed);
-	map->collisionMoveDown(pos, glm::ivec2(32, 32), &pos.y, (int)fallSpeed);
+	map->collisionMoveDown(pos, glm::ivec2(32, 32), &pos.y, (int)fallSpeed, 0);
 
 	// Si tras caer tocamos el suelo explosión
 	if (isFalling() && pos.y == frameStartPos.y) explode();

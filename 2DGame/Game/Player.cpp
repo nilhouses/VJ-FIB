@@ -374,7 +374,7 @@ void Player::update(int deltaTime)
 				pos.y = int(startY - 96 * sin(3.14159f * jumpAngle / 180.f));
 				if (jumpAngle > 90) {
 					int jumpY = int(pos.y);
-					if (map->collisionMoveDown(pos, getSize(), &jumpY, FALL_STEP) || onGround) {
+					if (map->collisionMoveDown(pos, getSize(), &jumpY, FALL_STEP, 8) || onGround) {
 						bJumping = false; pos.y = jumpY;
 					}
 				}
@@ -382,7 +382,7 @@ void Player::update(int deltaTime)
 		}
 		else if (!map->collisionLadderUp(pos, getSize()) && !map->collisionLadderDown(pos, getSize())) {
 			if (!onGround) pos.y += FALL_STEP;
-			if (map->collisionMoveDown(pos, getSize(), &pos.y, FALL_STEP) || onGround) {
+			if (map->collisionMoveDown(pos, getSize(), &pos.y, FALL_STEP, 8) || onGround) {
 				onGround = true;
 				/*if (Game::instance().getKey(GLFW_KEY_SPACE)) {
 					bJumping = true; jumpAngle = 0; startY = pos.y;

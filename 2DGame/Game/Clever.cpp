@@ -355,7 +355,7 @@ void Clever::update(int deltaTime)
         if (!onGround) {
             int oldY = pos.y;
             pos.y += fallStep;
-            map->collisionMoveDown(pos, size, &pos.y, fallStep);
+            map->collisionMoveDown(pos, size, &pos.y, fallStep, 6);
             onGround = (pos.y == oldY);
         }
         bool justLanded = (wasInAir && onGround) || (wasClimbing && !isClimbing);

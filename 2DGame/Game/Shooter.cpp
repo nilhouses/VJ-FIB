@@ -131,7 +131,7 @@ void Shooter::update(int deltaTime)
             // Pie delantero derecho, 1px de ancho justo debajo del pie
             glm::ivec2 floorCheck = glm::ivec2(nextPos.x + size.x - 1, pos.y + size.y);
             int tempY = floorCheck.y;
-            bool thereIsFloor = map->collisionMoveDown(floorCheck, glm::ivec2(1, 1), &tempY, 2);
+            bool thereIsFloor = map->collisionMoveDown(floorCheck, glm::ivec2(1, 1), &tempY, 2, 0);
 
             if (!wallAhead && !outOfMap && thereIsFloor) pos.x += speed;
             else shouldTurn = true;
@@ -144,7 +144,7 @@ void Shooter::update(int deltaTime)
             // Pie delantero izquierdo, 1px de ancho justo debajo del pie
             glm::ivec2 floorCheck = glm::ivec2(nextPos.x, pos.y + size.y);
             int tempY = floorCheck.y;
-            bool thereIsFloor = map->collisionMoveDown(floorCheck, glm::ivec2(1, 1), &tempY, 2);
+            bool thereIsFloor = map->collisionMoveDown(floorCheck, glm::ivec2(1, 1), &tempY, 2, 0);
 
             if (!wallAhead && !outOfMap && thereIsFloor) pos.x -= speed;
             else shouldTurn = true;
@@ -169,7 +169,7 @@ void Shooter::update(int deltaTime)
     // Gravedad
     int prevY = pos.y;
     pos.y += fallStep;
-    map->collisionMoveDown(pos, size, &pos.y, fallStep);
+    map->collisionMoveDown(pos, size, &pos.y, fallStep, 0);
     onGround = (pos.y < prevY + fallStep);
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
 }
