@@ -38,10 +38,7 @@ bool Game::update(int deltaTime)
             Comic* c = static_cast<Comic*>(currentScene);
             if (c->hasFinished()) {
                 if (c->isInitial()) changeState(LOADING, 1);
-                else {
-                    SoundManager::instance().setMusicVolume(0.1f);
-                    changeState(CREDITS); // Acabamos con la música de rock alta
-                }
+                else changeState(CREDITS);
             }
         }
 
@@ -54,12 +51,9 @@ bool Game::update(int deltaTime)
             }
             else {
                 if (level->getLevelCompleted()) {
-					numLives = level->getLives(); // Guardamos las vidas que le quedan al jugador para el siguiente nivel
+					numLives = level->getLives();
                     currentLevel++;
-                    if (currentLevel == 6) {
-                        SoundManager::instance().setMusicVolume(0.00f); // Cinemática
-                        changeState(CREDITS); // [TODO] FINAL_COMIC
-                    }
+                    if (currentLevel == 6) changeState(FINAL_COMIC);
                     else changeState(LOADING, currentLevel);
                 }
             }
@@ -108,13 +102,18 @@ void Game::keyPressed(int key)
 		}
         changeState(PLAYING, currentLevel);
 	}
-    if (key == GLFW_KEY_B) changeState(MAIN_MENU, currentLevel);
+    if (key == GLFW_KEY_B) {
+        SceneType type = currentScene->getType();
+        if (type != SceneType::CREDITS && type != SceneType::GAMEOVER) {
+            changeState(MAIN_MENU, currentLevel);
+        }
+    }
 
     // Variar volumen música
-    if (key == GLFW_KEY_KP_ADD || key == GLFW_KEY_O) {
+    if (key == GLFW_KEY_KP_ADD || key == GLFW_KEY_P) {
         SoundManager::instance().increaseVolume(0.02f);
     }
-    else if (key == GLFW_KEY_KP_SUBTRACT || key == GLFW_KEY_P) {
+    else if (key == GLFW_KEY_KP_SUBTRACT || key == GLFW_KEY_O) {
         SoundManager::instance().decreaseVolume(0.02f);
     }
 }
@@ -146,6 +145,7 @@ void Game::changeState(GameState newState, int levelNumber)
     switch (newState) {
         case MAIN_MENU:
             currentScene = new MainMenu();
+            SoundManager::instance().setMusicVolume(0.1f);
             SoundManager::instance().playMusic("menu", true);
             break;
         case INTIAL_COMIC:
@@ -153,7 +153,7 @@ void Game::changeState(GameState newState, int levelNumber)
             currentScene = new Comic(0);
             break;
         case FINAL_COMIC:
-            SoundManager::instance().stopMusic();
+            SoundManager::instance().setMusicVolume(0.02f); // Cinemática
             currentScene = new Comic(1);
             break;
         case PLAYING:
@@ -166,6 +166,7 @@ void Game::changeState(GameState newState, int levelNumber)
             currentScene = new Instructions();
             break;
         case CREDITS:
+            SoundManager::instance().setMusicVolume(0.15f);
             currentScene = new Credits();
             break;
         case LOADING:
@@ -175,6 +176,7 @@ void Game::changeState(GameState newState, int levelNumber)
 		    break;
         case GAMEOVER:
             currentScene = new GameOver();
+			SoundManager::instance().stopMusic();
             SoundManager::instance().playSound("gameOver", 0.2f);
 			break;
     }

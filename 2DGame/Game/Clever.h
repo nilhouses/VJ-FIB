@@ -32,6 +32,7 @@ public:
 private:
 	Player* playerTarget = nullptr;
 	bool isClimbing = false;
+	int ladderDirection = 0; // -1 arriba, +1 abajo
 	bool wasInAir = false;
 	bool wasClimbing = false;
 	// Escalera

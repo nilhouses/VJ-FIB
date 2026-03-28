@@ -188,8 +188,7 @@ void Clever::update(int deltaTime)
 
     // Transición túnel
     if (inTunnel) {
-        // Animación de entrada
-        if (!tunnelTeleported) {
+        if (!tunnelTeleported) { // Animación de entrada
             if (sprite->isLastKeyframe()) {
                 setVisible(false);
                 Tunnel* exitTunnel = static_cast<Tunnel*>(currentTunnel->getConnectedTo());
@@ -197,7 +196,7 @@ void Clever::update(int deltaTime)
                 pos = glm::ivec2((int)exitPos.x, (int)exitPos.y - 1);
                 lastUsedTunnel = exitTunnel;
                 tunnelTeleported = true;
-                setVisible(true); // visible a la sortida
+                setVisible(true);
                 if (exitTunnel->getUp()) sprite->changeAnimation(TUNNEL_LEAVE_TOP);
                 else sprite->changeAnimation(TUNNEL_LEAVE_BOTTOM);
             }
@@ -229,16 +228,16 @@ void Clever::update(int deltaTime)
             glm::vec2 endCenter = glm::vec2(exitPos.x + map->getTileSize() * 0.5f, exitPos.y + map->getTileSize() * 0.5f);
             bool exitingUp = currentPipe->isExitingUp();
 
-
-            if (cam->isVisible(endCenter + glm::vec2(0, 200))||
-                    cam->isVisible(endCenter + glm::vec2(0, -200))||
-                    cam->isVisible(endCenter + glm::vec2(200, 0))||
-                    cam->isVisible(endCenter + glm::vec2(-200, 0))
+            if (cam->isVisible(endCenter + glm::vec2(0, 200)) ||
+                cam->isVisible(endCenter + glm::vec2(0, -200)) ||
+                cam->isVisible(endCenter + glm::vec2(200, 0)) ||
+                cam->isVisible(endCenter + glm::vec2(-200, 0))
                 ) SoundManager::instance().playSound("pipe_out", 0.05f);
 
             setVisible(true);
             inPipe = false;
             currentPipe = nullptr;
+            verticalCooldown = VERTICAL_COOLDOWN;
             verticalCooldown = VERTICAL_COOLDOWN;
 
             if (exitingUp) { // Animación de salida del tubo (como START)
@@ -279,9 +278,25 @@ void Clever::update(int deltaTime)
 
     // 1. Movimiento vertical
     isClimbing = false;
-    if (playerBottomY != cleverBottomY) {
+
+    if (wasClimbing && ladderDirection != 0) {
+        bool canContinue = (ladderDirection < 0) ? canClimbUp : canClimbDown;
+        if (canContinue) {
+            centerX();
+            pos.y += ladderDirection * speed;
+            isClimbing = true;
+            if (sprite->animation() != CLIMB) sprite->changeAnimation(CLIMB);
+        }
+        else {
+            ladderDirection = 0;
+            verticalCooldown = VERTICAL_COOLDOWN;
+        }
+    }
+
+    if (!isClimbing && playerBottomY != cleverBottomY && verticalCooldown <= 0) {
         if (playerBottomY < cleverBottomY) {   // Subir
             if (canClimbUp) {
+                ladderDirection = -1;
                 centerX();
                 pos.y -= speed;
                 isClimbing = true;
@@ -297,11 +312,11 @@ void Clever::update(int deltaTime)
                 glm::vec2 pPos = playerTarget->getPosition();
                 glm::vec4 b = foundPipe->getEndBoundingBox(pipeEnd);
                 glm::vec2 endCenter(b.x + b.z * 0.5f, b.y + b.w * 0.5f);
-                if (cam->isVisible(endCenter + glm::vec2(0, 200))||
-                    cam->isVisible(endCenter + glm::vec2(0, -200))||
-                    cam->isVisible(endCenter + glm::vec2(200, 0))||
+                if (cam->isVisible(endCenter + glm::vec2(0, 200)) ||
+                    cam->isVisible(endCenter + glm::vec2(0, -200)) ||
+                    cam->isVisible(endCenter + glm::vec2(200, 0)) ||
                     cam->isVisible(endCenter + glm::vec2(-200, 0))
-                ) SoundManager::instance().playSound("pipe_in", 0.05f);
+                    ) SoundManager::instance().playSound("pipe_in", 0.05f);
 
                 sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
                 return;
@@ -309,6 +324,7 @@ void Clever::update(int deltaTime)
         }
         else if (playerBottomY > cleverBottomY) {   // Bajar
             if (canClimbDown) {
+                ladderDirection = +1;
                 centerX();
                 pos.y += speed;
                 isClimbing = true;
@@ -319,11 +335,16 @@ void Clever::update(int deltaTime)
                 inPipe = true;
                 setVisible(false);
                 foundPipe->startTransit(pipeEnd, false);
+
                 // Sonido de entrada en la pipe si está cerca del jugador
                 glm::vec2 pPos = playerTarget->getPosition();
                 glm::vec4 b = foundPipe->getEndBoundingBox(pipeEnd);
                 glm::vec2 endCenter(b.x + b.z * 0.5f, b.y + b.w * 0.5f);
-                if (cam->isVisible(endCenter)) SoundManager::instance().playSound("pipe_in", 0.05f);
+                if (cam->isVisible(endCenter + glm::vec2(0, 200)) ||
+                    cam->isVisible(endCenter + glm::vec2(0, -200)) ||
+                    cam->isVisible(endCenter + glm::vec2(200, 0)) ||
+                    cam->isVisible(endCenter + glm::vec2(-200, 0))
+                    ) SoundManager::instance().playSound("pipe_in", 0.05f);
 
                 sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
                 return;
