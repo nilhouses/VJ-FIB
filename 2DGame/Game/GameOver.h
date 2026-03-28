@@ -19,7 +19,7 @@ private:
     void initShaders();
 
     TexturedQuad* background;
-    TexturedQuad* playerDead; // Foto del player
+    TexturedQuad* playerDeadQuad;
     Texture texBackground;
     Texture texPlayerDead;
 
@@ -27,11 +27,12 @@ private:
     Text text;
 
     float timer = 0.f;
-	float delayBeforePressB = 3500.f; // 1.5 segundos de espera antes de mostrar al personaje muerto y el mensaje de "PRESS B"
+	float delayBeforePressB = 4500.f; // 1.5 segundos de espera antes de mostrar al personaje muerto y el mensaje de "PRESS B"
     float fadeTimer = 0.f;
     float fadeAlpha = 0.f;
     bool showPressB = false;
 	bool B_Pressed = false;
+
 };
 
 #endif

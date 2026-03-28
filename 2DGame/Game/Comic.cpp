@@ -42,8 +42,9 @@ void Comic::initIntro() {
 }
 
 void Comic::initOutro() {
+    SoundManager::instance().playSound("tuerca", 0.2f);
     texStrip.loadFromFile("images/comic_final.png", TEXTURE_PIXEL_FORMAT_RGBA);
-    numRows = 10;
+    numRows = 12;
 }
 
 void Comic::update(int deltaTime) {
@@ -106,14 +107,36 @@ void Comic::soundInitialComic() {
 }
 void Comic::soundFinalComic() {
     switch (currentFrame) {
-        // SoundManager::instance().playSound("tuerca", 0.1f); 
-        // SoundManager::instance().playSound("soplete", 0.1f); 
-        // SoundManager::instance().playSound("golpeMetal", 0.1f); 
-        // SoundManager::instance().playSound("button", 0.1f); 
-        // SoundManager::instance().playSound("motorEncendiendose", 0.1f); 
-        // SoundManager::instance().playSound("desgarroGusano", 0.1f); 
-        // SoundManager::instance().playSound("nosFuimos", 0.1f); 
-        // SoundManager::instance().playSound("shootingStar", 0.1f); 
+        case 1:
+            SoundManager::instance().playSound("tuerca", 0.1f); 
+            break;
+        case 2:
+            SoundManager::instance().playSoundForce("soplete", 0.3f);
+            break;
+        case 3:
+            SoundManager::instance().playSoundForce("turnPage2", 0.2f);
+            break;
+        case 4:
+            SoundManager::instance().playSoundForce("golpeMetal", 0.1f); 
+            break;
+        case 5:
+            SoundManager::instance().playSoundForce("turnPage2", 0.2f);
+            break;
+        case 6:
+            SoundManager::instance().playSoundForce("button", 0.3f);
+            break;
+        case 7:
+            SoundManager::instance().playSoundForce("motorEncendiendose", 0.2f); 
+            break;
+        case 9:
+            SoundManager::instance().playSoundForce("nosFuimos", 0.2f);
+            SoundManager::instance().playSound("desgarroGusano", 0.4f);
+            break;
+        case 11:
+            SoundManager::instance().playSound("shootingStar", 0.2f);
+            break;
+        case 12:
+            break;
         default:
             break;
     }

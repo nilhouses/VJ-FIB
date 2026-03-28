@@ -4,33 +4,41 @@
 
 GameOver::GameOver() : Scene(SceneType::GAMEOVER) {
     background = nullptr;
-    playerDead = nullptr;
+    playerDeadQuad = nullptr;
 }
+
 
 GameOver::~GameOver() {
     if (background != nullptr) delete background;
-    if (playerDead != nullptr) delete playerDead;
+    if (playerDeadQuad != nullptr) delete playerDeadQuad;
 }
 
 void GameOver::init() {
     initShaders();
 
-    // 1. Càrrega de Textures
-    texBackground.loadFromFile("images/items.png", TEXTURE_PIXEL_FORMAT_RGBA);
-    texPlayerDead.loadFromFile("images/playersheet.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    // Texturas
+    texBackground.loadFromFile("images/death_screen.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    texPlayerDead.loadFromFile("images/sprite_sheet_animations.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
-    // 2. Crear Quads
-    // Fons a pantalla completa
+    // Background
     glm::vec2 geomBG[2] = { {0.f, 0.f}, {float(SCREEN_WIDTH), float(SCREEN_HEIGHT)} };
-    glm::vec2 texCoords[2] = { {0.f, 0.f}, {1.f, 1.f} };
-    background = TexturedQuad::createTexturedQuad(geomBG, texCoords, texProgram);
+    glm::vec2 texCoordsBG[2] = { {0.f, 0.f}, {1.f, 1.f} };
+    background = TexturedQuad::createTexturedQuad(geomBG, texCoordsBG, texProgram);
 
     // Player
-    float pw = 128.f; float ph = 128.f;
-    float px = (SCREEN_WIDTH - pw) / 2.f;
-    float py = (SCREEN_HEIGHT - ph) / 2.f - 20.f;
-    glm::vec2 geomP[2] = { {0.f, 0.f}, {pw, ph} };
-    playerDead = TexturedQuad::createTexturedQuad(geomP, texCoords, texProgram);
+    float frameW = 1.f / 16.f;
+    float frameH = 1.f / 12.f;
+    float startX = 3.f * frameW;
+    float startY = 3.f * frameH;
+
+    glm::vec2 geomP[2] = { {0.f, 0.f}, {128.f, 128.f} };
+    glm::vec2 texCoordsP[2] = {
+        {startX, startY},                   // Top Left
+        {startX + frameW, startY + frameH}  // Bottom Right
+    };
+
+    playerDeadQuad = TexturedQuad::createTexturedQuad(geomP, texCoordsP, texProgram);
+    playerDeadQuad = TexturedQuad::createTexturedQuad(geomP, texCoordsP, texProgram);
 
     if (!text.init("fonts/PressStart2P.ttf"))
         std::cout << "Could not load pixel font!!!" << std::endl;
@@ -41,17 +49,13 @@ void GameOver::init() {
 void GameOver::update(int deltaTime) {
     timer += deltaTime;
 
-    // Lògica del retard per mostrar el "PRESS B"
     if (timer > delayBeforePressB) {
         showPressB = true;
         fadeTimer += deltaTime;
         fadeAlpha = std::min(1.f, fadeTimer / 1000.f);
     }
-
-    // Tornar al menú
-    if (showPressB && (Game::instance().getKey(GLFW_KEY_B) || Game::instance().getKey(GLFW_KEY_ENTER))) {
-        Game::instance().changeState(MAIN_MENU);
-    }
+    if (showPressB && Game::instance().getKey(GLFW_KEY_B))
+        B_Pressed = true;
 }
 
 void GameOver::render() {
@@ -60,23 +64,34 @@ void GameOver::render() {
     texProgram.setUniformMatrix4f("projection", projection);
     texProgram.setUniform4f("color", 1.f, 1.f, 1.f, 1.f);
 
-    // 1. Fondo
+    // Fondo
     modelview = glm::mat4(1.f);
     texProgram.setUniformMatrix4f("modelview", modelview);
     background->render(texBackground);
 
-    // 2. Foto Player
-    modelview = glm::translate(glm::mat4(1.f), glm::vec3((SCREEN_WIDTH - 128.f) / 2.f, (SCREEN_HEIGHT - 128.f) / 2.f + 5, 0.f));
+    // Player
+    modelview = glm::translate(glm::mat4(1.f), glm::vec3((SCREEN_WIDTH - 128.f) / 2.f, (SCREEN_HEIGHT - 128.f) / 2.f - 5, 0.f));
     texProgram.setUniformMatrix4f("modelview", modelview);
-    playerDead->render(texPlayerDead);
+    playerDeadQuad->render(texPlayerDead);
 
-    // 3. Textos
+    // Texto
     glUseProgram(0);
-    text.render("GAME OVER", glm::vec2(160, 100), 40, glm::vec4(1.f, 0.f, 0.f, 1.f), projection);
 
+    string msg1 = "GAME OVER";
+    int size1 = 40;
+    float width1 = msg1.length() * (float)size1;
+    float posX1 = (float(SCREEN_WIDTH) - width1) * 0.5f;
+
+    float redFade = std::min(1.f, timer / 3000.f);
+    text.render(msg1, glm::vec2(posX1, 100), size1, glm::vec4(redFade, 0.f, 0.f, 1.f), projection);
     if (showPressB) {
+        string msg2 = "PRESS 'B' TO RETURN TO THE MAIN MENU";
+        int size2 = 16;
+        float width2 = msg2.length() * (float)size2;
+        float posX2 = (float(SCREEN_WIDTH) - width2) * 0.5f;
+
         float animY = float(SCREEN_HEIGHT) - 80.f + 5.f * sin(timer / 300.f);
-        text.render("PRESS 'B' TO RETURN TO THE MENU", glm::vec2(65, animY), 16, glm::vec4(1.f, 1.f, 1.f, fadeAlpha), projection);
+        text.render(msg2, glm::vec2(posX2, animY), size2, glm::vec4(1.f, 1.f, 1.f, fadeAlpha), projection);
     }
 }
 
