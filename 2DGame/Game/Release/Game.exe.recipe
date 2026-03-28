@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>D:\Proyectos\UPC\Ingenieria-Informatica-UPC\VJ-FIB\2DGame\Debug\Game.exe</FullPath>
+      <FullPath>D:\Proyectos\UPC\Ingenieria-Informatica-UPC\VJ-FIB\2DGame\Release\Game.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />
