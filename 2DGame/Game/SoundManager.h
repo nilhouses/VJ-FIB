@@ -27,14 +27,14 @@ public:
     void playMusic(const std::string& musicKey, bool loop = true);
     void stopMusic();
 
-    // Ajusta el volumen de TODO el motor (0.0 a 1.0)
+    // Ajusta el volumen de todo el motor
     void setMasterVolume(float volume);
 
     // Ajusta el volumen de la música actual
     void setMusicVolume(float volume);
 
-    void increaseMusicVolume(float delta);
-    void decreaseMusicVolume(float delta);
+    void increaseVolume(float delta);
+    void decreaseVolume(float delta);
 
 	bool thereIsSoundPlaying() const { return musicPlaying || !activeSounds.empty(); }
 
@@ -45,8 +45,7 @@ private:
     bool initialized;
     bool musicPlaying = false;
     std::string currentMusicKey = "";
-
-    float musicVolume = 0.05f;
+    float musicVolume = 0.1f;
     std::list<ma_sound*> activeSounds; // Lista de sonidos en reproducción
 };
 

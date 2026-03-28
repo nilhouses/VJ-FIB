@@ -25,6 +25,7 @@ void Game::init()
         cout << "Could not load tutorial font!!!" << endl;
     actionMsg.init(&tutorialText);
     uiProjection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
+	SoundManager::instance().setMasterVolume(1.f);
 }
 
 bool Game::update(int deltaTime)
@@ -105,10 +106,10 @@ void Game::keyPressed(int key)
 
     // Variar volumen música
     if (key == GLFW_KEY_KP_ADD || key == GLFW_KEY_O) {
-        SoundManager::instance().increaseMusicVolume(0.05f);
+        SoundManager::instance().increaseVolume(0.02f);
     }
     else if (key == GLFW_KEY_KP_SUBTRACT || key == GLFW_KEY_P) {
-        SoundManager::instance().decreaseMusicVolume(0.05f);
+        SoundManager::instance().decreaseVolume(0.02f);
     }
 }
 

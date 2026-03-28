@@ -64,7 +64,7 @@ void Instructions::render() {
     text.render("UP/DOWN: Climb Stairs & Enter Pipes", glm::vec2(60, initY + 60.f), 14, white, projection);
     text.render("UP: Enter Doors & Enter Tunnels", glm::vec2(60, initY + 90.f), 14, white, projection);
     text.render("Q: Fire Weapon", glm::vec2(60, initY + 120.f), 14, white, projection);
-	text.render("+/-: Change Music Volume", glm::vec2(60, initY + 150.f), 14, white, projection);
+	text.render("O/P: Change Music Volume", glm::vec2(60, initY + 150.f), 14, white, projection);
 
     // MISSION OBJECTIVE
 	initY = 310;

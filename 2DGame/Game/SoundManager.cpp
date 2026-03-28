@@ -171,7 +171,6 @@ void SoundManager::setMusicVolume(float volume) {
     }
 }
 
-
 void SoundManager::update() {
     if (!initialized) return;
 
@@ -190,10 +189,10 @@ void SoundManager::update() {
 }
 
 
-void SoundManager::increaseMusicVolume(float delta) {
-    setMusicVolume(min(musicVolume + delta, 1.0f));
+void SoundManager::increaseVolume(float delta) {
+    setMusicVolume(min(musicVolume + delta, 0.3f));
 }
 
-void SoundManager::decreaseMusicVolume(float delta) {
+void SoundManager::decreaseVolume(float delta) {
     setMusicVolume(max(musicVolume - delta, 0.0f));
 }
