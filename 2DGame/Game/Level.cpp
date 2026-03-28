@@ -435,7 +435,7 @@ void Level::killPlayer() {
     player->blockInput(); // Bloquear input del jugador durante la transición
 
     // Reproducir sonido de muerte
-    SoundManager::instance().playSound("death", 0.2f);
+    SoundManager::instance().playSound("death", 0.6f);
 }
 
 void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2& offset, int end = -1) {
@@ -451,7 +451,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             transitionTimer = 300.f;
             interactedEntity = e;
             cout << "collectedKeys: " << collectedKeys << "/" << allKeys << endl;
-            SoundManager::instance().playSound("key", 0.7f);
+            SoundManager::instance().playSound("key", 1.2f);
             break;
         }
 
@@ -465,7 +465,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             transitionTimer = 300.f;
             interactedEntity = e;
             cout << "numLives: " << numLives << endl;
-            SoundManager::instance().playSound("life", 0.1f);
+            SoundManager::instance().playSound("life", 0.15f);
             break;
         }
 
@@ -480,7 +480,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             state = PICKING_OBJECT;
             transitionTimer = 300.f;
             interactedEntity = e;
-            SoundManager::instance().playSound("kachow", 0.1f);
+            SoundManager::instance().playSound("kachow", 0.6f);
             break;
         }
 
@@ -495,7 +495,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             state = PICKING_OBJECT;
             transitionTimer = 300.f;
             interactedEntity = e;
-            SoundManager::instance().playSound("gun", 0.3f);
+            SoundManager::instance().playSound("gun", 0.4f);
             break;
         }
 
@@ -620,13 +620,13 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
                             }
                             else { player->setAnimation("ENTER"); }
                             //if (door->isCave() || door->isWorm() || door->getVisited()) Cualquier puerta 
-                            SoundManager::instance().playSound("stepIn", 0.3f);
+                            SoundManager::instance().playSound("stepIn", 0.6f);
                             break;
                         }
                         case EnterType::TUNNEL: // Si es un túnel la animación del jugador es ENTER_TUNNEL
                         {
                             Tunnel* tunnel = static_cast<Tunnel*>(enter);
-                            SoundManager::instance().playSound("tunnelSteps", 0.4f);
+                            SoundManager::instance().playSound("tunnelSteps", 0.8f);
                             if (tunnel->getUp()) player->setAnimation("TUNNEL_ENTER_TOP");
                             else player->setAnimation("TUNNEL_ENTER_BOTTOM");
 
@@ -661,7 +661,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             if (pipe->isOccupied()) {
                 Game::instance().showTutorial("YOU CAN'T ENTER A PIPE WHEN IT'S OCCUPIED");
                 cout << "This pipe is already being used!" << endl;
-                if (pipe->getEntryKey(end)) SoundManager::instance().playSound("invalidAction", 0.2f);
+                if (pipe->getEntryKey(end)) SoundManager::instance().playSound("invalidAction", 0.9f);
                 break;
             }
             else {

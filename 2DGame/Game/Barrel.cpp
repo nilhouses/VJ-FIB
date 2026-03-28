@@ -189,7 +189,7 @@ void Barrel::explode() {
 	if (cam->isVisible(pos) ||
 		cam->isVisible(pos + glm::ivec2(200, 0)) ||
 		cam->isVisible(pos - glm::ivec2(200, 0))) // Si el barril está relativamente cerca al campo de visión (200px) de la cámare se debe escuchar
-		SoundManager::instance().playSound("explosion", 0.4f);
+		SoundManager::instance().playSound("explosion", 4.0f);
 	sprite->changeAnimation(EXPLOSION);
 	cout << "Barrel explosion!" << endl;
 	// En el update se desactivará la entidad cuando acabe la animación de explosión

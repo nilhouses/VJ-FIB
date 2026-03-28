@@ -59,23 +59,23 @@ void Door::openingAnim(bool sound) {
 	sprite->changeAnimation(OPENING);
 	if (sound) {
 		if (spriteRow == 0)
-			SoundManager::instance().playSound("cowboyDoorOpen", 0.3f);
+			SoundManager::instance().playSound("cowboyDoorOpen", 1.0f);
 		else if (spriteRow == 1)
-			SoundManager::instance().playSound("clothDoorOpen", 0.3f);
+			SoundManager::instance().playSound("clothDoorOpen", 1.3f);
 		else
-			SoundManager::instance().playSound("doorOpen", 0.3f);
+			SoundManager::instance().playSound("doorOpen", 0.9f);
 	}
 }
 
 void Door::lockedDoorSound() {
-	if (spriteRow == 8) SoundManager::instance().playSound("chainDoorLocked", 0.3f);
-	else SoundManager::instance().playSound("doorLocked", 0.3f);
+	if (spriteRow == 8) SoundManager::instance().playSound("chainDoorLocked", 0.9f);
+	else SoundManager::instance().playSound("doorLocked", 2.0f);
 }
 
 void Door::openLockedDoorSound() {
-	if (spriteRow == 8) SoundManager::instance().playSound("openChainedDoor", 0.5f);
-	else if (spriteRow == 12) SoundManager::instance().playSound("openSpaceShipDoor", 0.5f);
-	else SoundManager::instance().playSound("openLockedDoor", 0.5f);
+	if (spriteRow == 8) SoundManager::instance().playSound("openChainedDoor", 1.0f);
+	else if (spriteRow == 12) SoundManager::instance().playSound("openSpaceShipDoor", 1.5f);
+	else SoundManager::instance().playSound("openLockedDoor", 1.2f);
 }
 
 void Door::setToVisited()

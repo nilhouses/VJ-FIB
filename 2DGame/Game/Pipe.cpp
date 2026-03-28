@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <iostream>
 
-// Coordenadas de textura de cada tile del spritesheet pipe.png, (En función de donde tiene los agujeros)
+// Coordenadas de textura de cada tile del spritesheet pipe.png, (En funciï¿½n de donde tiene los agujeros)
 #define NRows 3
 #define NCols 7
 
@@ -27,7 +27,7 @@ Pipe::Pipe() : Entity(Type::PIPE) {}
 Pipe::~Pipe()
 {
     // El segmento 0 lo destruye Entity::~Entity() via sprite
-    // Los demás (1..n) esta clase
+    // Los demï¿½s (1..n) esta clase
     for (int i = 1; i < (int)segments.size(); ++i)
     {
         Sprite* s = segments[i].getSprite();
@@ -37,7 +37,7 @@ Pipe::~Pipe()
         if (arrows[i]) delete arrows[i];
 }
 
-// ------------------------------------------------------- Lògica para saber qué textura tiene cada segmento -------------------------------------------------------
+// ------------------------------------------------------- Lï¿½gica para saber quï¿½ textura tiene cada segmento -------------------------------------------------------
 
 glm::vec2 Pipe::endTexCoords(const glm::ivec2& dirToAdjacent) const
 {
@@ -79,7 +79,7 @@ glm::vec2 Pipe::busyTexCoords(const glm::vec2& idleTexCoords) const
     else if (idleTexCoords == TOP_LEFT) return FAT_TOP_LEFT;
     else if (idleTexCoords == BOTTOM_RIGHT) return FAT_BOTTOM_RIGHT;
 	else if (idleTexCoords == BOTTOM_LEFT) return FAT_BOTTOM_LEFT;
-    return idleTexCoords; // Los demás segmentos no cambian
+    return idleTexCoords; // Los demï¿½s segmentos no cambian
 }
 
 // ------------------------------------------------------- Init -------------------------------------------------------
@@ -168,7 +168,7 @@ void Pipe::update(int deltaTime)
         segments[activeSegment].setActive(false);
         someoneInside = false;
         transitComplete = true;
-        if (soundEnabled) { SoundManager::instance().playSound("pipe_out", 0.05f); soundEnabled = false; }
+        if (soundEnabled) { SoundManager::instance().playSound("pipe_out", 0.2f); soundEnabled = false; }
     }
 }
 
@@ -206,7 +206,7 @@ void Pipe::setPosition(const glm::vec2& pos)
     }
 }
 
-// ------------------------------------------------------- Tráfico -------------------------------------------------------
+// ------------------------------------------------------- Trï¿½fico -------------------------------------------------------
 
 void Pipe::startTransit(int end, bool withSound)
 {
@@ -218,7 +218,7 @@ void Pipe::startTransit(int end, bool withSound)
     activeSegment = (end == 0) ? 0 : (int)segments.size() - 1;
     segments[activeSegment].setActive(true);
 
-    if (withSound) SoundManager::instance().playSound("pipe_in", 0.05f);
+    if (withSound) SoundManager::instance().playSound("pipe_in", 0.2f);
 }
 
 glm::vec2 Pipe::getExitPosition(int playerHeight) const { return getExitPosition(playerHeight, entryEnd); }
@@ -252,7 +252,7 @@ bool Pipe::getEntryKey(int end) const
     int idx = (end == 0) ? 0 : (int)segments.size() - 1;
     int nextIdx = (end == 0) ? 1 : (int)segments.size() - 2;
 
-    // La dirección hacia el interior del tubo
+    // La direcciï¿½n hacia el interior del tubo
     glm::vec2 dir = segments[nextIdx].getTilePos() - segments[idx].getTilePos();
 
     if (dir.y > 0) return Game::instance().getKey(GLFW_KEY_DOWN);
@@ -261,7 +261,7 @@ bool Pipe::getEntryKey(int end) const
 }
 
 // Override
-glm::vec4 Pipe::getBoundingBox() const // Cubre ambos extremos de la tubería
+glm::vec4 Pipe::getBoundingBox() const // Cubre ambos extremos de la tuberï¿½a
 {
     glm::vec4 b0 = getEndBoundingBox(0);
     glm::vec4 b1 = getEndBoundingBox(1);
