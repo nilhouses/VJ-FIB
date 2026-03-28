@@ -1,6 +1,10 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3native.h>
+#include <windows.h>
 #include "Game.h"
+#include "resource.h"
 
 
 #define TARGET_FRAMERATE 60.0f
@@ -63,6 +67,12 @@ int main(void)
 	glfwSetWindowPos(window, 100, 100);
 	/* Marcamos el contexto de la ventana como el contexto actual para OpenGL */
 	glfwMakeContextCurrent(window);
+
+	// Set window icon
+	HWND hwnd = glfwGetWin32Window(window);
+	HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
+	SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+	SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
 
 	/* Cada vez que se produzca un evento de teclado o ratón, se llamará a las funciones creadas arriba */
 	glfwSetKeyCallback(window, key_callback);

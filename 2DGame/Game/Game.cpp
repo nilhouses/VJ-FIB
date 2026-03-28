@@ -177,7 +177,7 @@ void Game::changeState(GameState newState, int levelNumber)
         case GAMEOVER:
             currentScene = new GameOver();
 			SoundManager::instance().stopMusic();
-            SoundManager::instance().playSound("gameOver", 0.2f);
+            SoundManager::instance().playSound("gameOver", 0.75f);
 			break;
     }
 

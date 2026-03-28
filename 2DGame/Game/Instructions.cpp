@@ -70,7 +70,7 @@ void Instructions::render() {
 	initY = 310;
     text.render("MISSION OBJECTIVE", glm::vec2(40, initY), 22, lightBlue, projection);
     text.render("Find all spaceship parts to", glm::vec2(60, initY + 30.f), 16, white, projection);
-    text.render("advance to the next level.", glm::vec2(58, initY + 60.f), 16, white, projection);
+    text.render("reach the next level.", glm::vec2(58, initY + 60.f), 16, white, projection);
 
     // VOLVER
     float animY = 420.0f + 5.0f * sin(timer / 300.f);

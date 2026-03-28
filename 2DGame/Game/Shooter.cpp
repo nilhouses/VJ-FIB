@@ -215,6 +215,6 @@ void Shooter::die()
     dying = true;
     sprite->changeAnimation(DIE);
     cout << "RIP Shooter" << endl;
-    SoundManager::instance().playSound("shooterDeath", 0.1f);
+    SoundManager::instance().playSound("shooterDeath", 0.2f);
     // En el update se desactivar� la entidad cuando acabe la animaci�n de explosi�n
 }

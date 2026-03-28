@@ -118,6 +118,6 @@ void Dummy::die()
     dying = true;
     sprite->changeAnimation(DIE);
     cout << "RIP Dummy" << endl;
-    SoundManager::instance().playSound("birdDeath", 0.1f);
+    SoundManager::instance().playSound("birdDeath", 0.6f);
     // En el update se desactivar� la entidad cuando acabe la animaci�n de explosi�n
 }

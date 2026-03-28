@@ -36,7 +36,7 @@ void Comic::init() {
 
 void Comic::initIntro() {
     currentFrame = 1;
-    SoundManager::instance().playSound("nave", 0.09f);
+    SoundManager::instance().playSound("nave", 0.2f);
     texStrip.loadFromFile("images/comic_inicio.png", TEXTURE_PIXEL_FORMAT_RGBA);
     numRows = 10;
 }
@@ -53,16 +53,14 @@ void Comic::update(int deltaTime) {
     timer += deltaTime;
     autoTimer += deltaTime;
 
-    bool anyDown = Game::instance().getKey(GLFW_KEY_SPACE) || Game::instance().getKey(GLFW_KEY_ENTER);
-
     if (onLastFrame) {
         fadeTimer += deltaTime;
         fadeAlpha = min(1.f, fadeTimer / 1000.f);
 
-        if (anyDown && !autoSkip) {
+        if (Game::instance().getKey(GLFW_KEY_SPACE) && !autoSkip) {
             finished = true;
         }
-        if (!anyDown) autoSkip = false;
+        if (!Game::instance().getKey(GLFW_KEY_SPACE)) autoSkip = false;
         return;
     }
 
@@ -74,32 +72,32 @@ void Comic::update(int deltaTime) {
     }
 
     // Avanzar a mano
-    if (anyDown && !autoSkip) {
+    if (Game::instance().getKey(GLFW_KEY_SPACE) && !autoSkip) {
         autoSkip = true;
         autoTimer = 0.f;
         advanceFrame();
     }
-    else if (!anyDown) autoSkip = false;
+    else if (!Game::instance().getKey(GLFW_KEY_SPACE)) autoSkip = false;
 }
 
 void Comic::soundInitialComic() {
     switch (currentFrame) {
         case 2:
-            SoundManager::instance().playSoundForce("turnPage2", 0.2f);
+            SoundManager::instance().playSoundForce("turnPage2", 0.05f);
             break;
         case 3:
-            SoundManager::instance().playSound("crash", 0.2f);
-            SoundManager::instance().playSound("distracted", 1.f);
+            SoundManager::instance().playSound("crash", 0.3f);
+            SoundManager::instance().playSound("distracted", 2.f);
             break;
         case 4:
-            SoundManager::instance().playSoundForce("alarm", 0.2f);
+            SoundManager::instance().playSoundForce("alarm", 0.75f);
             break;
         case 6:
-            SoundManager::instance().playSoundForce("spaceShipFalling", 0.2f);
+            SoundManager::instance().playSoundForce("spaceShipFalling", 0.6f);
             break;
         case 9:
-            SoundManager::instance().playSoundForce("jump", 0.1f);
-            SoundManager::instance().playSound("parachute", 0.1f);
+            SoundManager::instance().playSoundForce("jump", 0.5f);
+            SoundManager::instance().playSound("parachute", 1.f);
             break;
         default:
             break;
@@ -114,13 +112,13 @@ void Comic::soundFinalComic() {
             SoundManager::instance().playSoundForce("soplete", 0.3f);
             break;
         case 3:
-            SoundManager::instance().playSoundForce("turnPage2", 0.2f);
+            SoundManager::instance().playSoundForce("turnPage2", 0.05f);
             break;
         case 4:
             SoundManager::instance().playSoundForce("golpeMetal", 0.1f); 
             break;
         case 5:
-            SoundManager::instance().playSoundForce("turnPage2", 0.2f);
+            SoundManager::instance().playSoundForce("turnPage2", 0.05f);
             break;
         case 6:
             SoundManager::instance().playSoundForce("button", 0.3f);
