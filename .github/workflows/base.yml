@@ -27,13 +27,12 @@ jobs:
         # 1. Crear la carpeta neta a l'arrel del repo
         mkdir -p soil_temp
         
-        # 2. Localitzar la carpeta de SOIL dins de 2DGame sense embuts
-        # Fem servir cometes dobles i el path que ja sabem que existeix
+        # 2. Localitzar la carpeta de SOIL dins de 2DGame
         SOIL_SRC_DIR="./2DGame/libs/Simple OpenGL Image Library/src"
         
         echo "Copiant fitxers des de: $SOIL_SRC_DIR"
         
-        # 3. Copiar fitxers individuals per evitar problemes amb subcarpetes
+        # 3. Copiar fitxers individuals (això ja ens funciona bé)
         cp "$SOIL_SRC_DIR/SOIL.c" soil_temp/
         cp "$SOIL_SRC_DIR/image_helper.c" soil_temp/
         cp "$SOIL_SRC_DIR/image_DXT.c" soil_temp/
@@ -43,14 +42,14 @@ jobs:
         # 4. Entrar al directori del joc
         cd 2DGame/Game
         
-        # 5. Compilar
-        # Ara estem a 2DGame/Game, per tant soil_temp està a ../../soil_temp
+        # 5. Compilar (Amb el nou flag per evitar l'error de glx.h)
         emcc *.cpp \
         ../../soil_temp/SOIL.c \
         ../../soil_temp/image_helper.c \
         ../../soil_temp/image_DXT.c \
         ../../soil_temp/stb_image_aug.c \
         -o ../../index.html \
+        -DSOIL_GLES2 \
         -s USE_GLFW=3 \
         -s USE_FREETYPE=1 \
         -s FULL_ES2=1 \
