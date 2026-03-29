@@ -25,7 +25,9 @@ jobs:
     - name: Compile with emcc
       run: |
         cd 2DGame/Game
-        emcc *.cpp -o ../../index.html \
+        emcc *.cpp \
+        ../../libs/"Simple OpenGL Image Library"/src/*.c \
+        -o ../../index.html \
         -s USE_GLFW=3 \
         -s USE_FREETYPE=1 \
         -s FULL_ES2=1 \
@@ -34,6 +36,7 @@ jobs:
         -s EXIT_RUNTIME=1 \
         -I. \
         -I../../external/glm \
+        -I../../libs/"Simple OpenGL Image Library"/src \
         --preload-file images@images \
         --preload-file shaders@shaders \
         --preload-file levels@levels \
