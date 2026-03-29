@@ -24,35 +24,32 @@ jobs:
 
     - name: Compile with emcc
       run: |
-        # 1. Crear la carpeta neta
+        # 1. Preparar SOIL (el que ja teníem)
         mkdir -p soil_temp
-        
-        # 2. Localitzar i copiar fitxers
         SOIL_SRC_DIR="./2DGame/libs/Simple OpenGL Image Library/src"
-        cp "$SOIL_SRC_DIR/SOIL.c" soil_temp/
-        cp "$SOIL_SRC_DIR/image_helper.c" soil_temp/
-        cp "$SOIL_SRC_DIR/image_DXT.c" soil_temp/
-        cp "$SOIL_SRC_DIR/stb_image_aug.c" soil_temp/
-        cp "$SOIL_SRC_DIR"/*.h soil_temp/
-        
-        # 3. CIRURGIA RADICAL
+        cp "$SOIL_SRC_DIR"/* soil_temp/
         sed -i 's/\bGL_CLAMP\b/GL_CLAMP_TO_EDGE/g' soil_temp/SOIL.c
-        
-        echo '#define SOIL_GLES2' > soil_temp/SOIL_fix.c
-        echo '#include <GLES2/gl2.h>' >> soil_temp/SOIL_fix.c
-        echo '#include <GLES2/gl2ext.h>' >> soil_temp/SOIL_fix.c
-        echo '#define APIENTRY' >> soil_temp/SOIL_fix.c
-        echo '#define glXGetProcAddressARB(x) NULL' >> soil_temp/SOIL_fix.c
+        echo -e "#define SOIL_GLES2\n#include <GLES2/gl2.h>\n#include <GLES2/gl2ext.h>\n#define APIENTRY\n#define glXGetProcAddressARB(x) NULL" > soil_temp/SOIL_fix.c
         cat soil_temp/SOIL.c >> soil_temp/SOIL_fix.c
         mv soil_temp/SOIL_fix.c soil_temp/SOIL.c
-        
         sed -i 's/#include <GL\/glx.h>//g' soil_temp/SOIL.c
         sed -i 's/#include <GL\/gl.h>//g' soil_temp/SOIL.c
-        
-        # 4. Entrar al directori del joc
+
+        # 2. CIRURGIA DE SHADERS (WebGL 2 Compatibility)
+        # Canviem la versió a '300 es' i afegim la precisió als fragments
+        for f in 2DGame/Game/shaders/*.frag; do
+          echo -e "#version 300 es\nprecision mediump float;" > "${f}.tmp"
+          sed '1d' "$f" >> "${f}.tmp"
+          mv "${f}.tmp" "$f"
+        done
+        for f in 2DGame/Game/shaders/*.vert; do
+          echo -e "#version 300 es\nprecision mediump float;" > "${f}.tmp"
+          sed '1d' "$f" >> "${f}.tmp"
+          mv "${f}.tmp" "$f"
+        done
+
+        # 3. Entrar i Compilar
         cd 2DGame/Game
-        
-        # 5. Compilar
         emcc *.cpp \
         ../../soil_temp/SOIL.c \
         ../../soil_temp/image_helper.c \
@@ -62,7 +59,8 @@ jobs:
         -DSOIL_GLES2 \
         -s USE_GLFW=3 \
         -s USE_FREETYPE=1 \
-        -s FULL_ES2=1 \
+        -s MAX_WEBGL_VERSION=2 \
+        -s FULL_ES3=1 \
         -s CASE_INSENSITIVE_FS=1 \
         -s ALLOW_MEMORY_GROWTH=1 \
         -s EXIT_RUNTIME=1 \
@@ -75,13 +73,10 @@ jobs:
         --preload-file sounds@sounds \
         --preload-file fonts@fonts
 
-    # -------------------------------------------------------------
-    # EL PAS QUE FALTAVA: Empaquetar els fitxers per al Deploy!
-    # -------------------------------------------------------------
     - name: Upload Pages artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        path: '.' # Puja tot el directori arrel (on hi ha l'index.html acabat de crear)
+        path: '.'
 
   deploy:
     needs: build
