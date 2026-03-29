@@ -37,15 +37,18 @@ jobs:
         sed -i 's/#include <GL\/gl.h>//g' soil_temp/SOIL.c
 
         # 2. CIRURGIA DE SHADERS (WebGL 2 Compatibility)
-        # Aquest script és més robust: força la versió 300 es a la línia 1
         find 2DGame -name "*.frag" -o -name "*.vert" | while read f; do
-          echo "Processant shader: $f"
-          # 1. Esborra qualsevol línia de versió existent
+          echo "Adaptant shader: $f"
+          # Eliminar línies de versió i espais/salts de línia al principi del fitxer
           sed -i '/#version/d' "$f"
-          # 2. Esborra línies en blanc al principi del fitxer
-          sed -i '././,$!d' "$f"
-          # 3. Insereix la versió correcta a la línia 1 i la precisió a la 2
-          sed -i '1i #version 300 es\nprecision mediump float;' "$f"
+          sed -i '1{/^$/d}' "$f" 
+          
+          # Crear el fitxer nou amb la capçalera exacta que WebGL 2 demana
+          # #version 300 es HA DE SER la primera línia.
+          echo "#version 300 es" > "${f}.tmp"
+          echo "precision mediump float;" >> "${f}.tmp"
+          cat "$f" >> "${f}.tmp"
+          mv "${f}.tmp" "$f"
         done
 
         # 3. Entrar i Compilar
