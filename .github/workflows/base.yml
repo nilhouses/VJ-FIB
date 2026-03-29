@@ -26,12 +26,14 @@ jobs:
       run: |
         cd 2DGame/Game
         
-        # Compilem el teu joc i els 4 fitxers font de SOIL un per un
+        # Definim la carpeta de SOIL per no repetir-la i evitar errors
+        SOIL_DIR="$GITHUB_WORKSPACE/libs/Simple OpenGL Image Library/src"
+        
         emcc *.cpp \
-        "../../libs/Simple OpenGL Image Library/src/SOIL.c" \
-        "../../libs/Simple OpenGL Image Library/src/image_helper.c" \
-        "../../libs/Simple OpenGL Image Library/src/image_DXT.c" \
-        "../../libs/Simple OpenGL Image Library/src/stb_image_aug.c" \
+        "$SOIL_DIR/SOIL.c" \
+        "$SOIL_DIR/image_helper.c" \
+        "$SOIL_DIR/image_DXT.c" \
+        "$SOIL_DIR/stb_image_aug.c" \
         -o ../../index.html \
         -s USE_GLFW=3 \
         -s USE_FREETYPE=1 \
@@ -40,17 +42,13 @@ jobs:
         -s ALLOW_MEMORY_GROWTH=1 \
         -s EXIT_RUNTIME=1 \
         -I. \
-        -I../../external/glm \
-        -I"../../libs/Simple OpenGL Image Library/src" \
+        -I"$GITHUB_WORKSPACE/external/glm" \
+        -I"$SOIL_DIR" \
         --preload-file images@images \
         --preload-file shaders@shaders \
         --preload-file levels@levels \
         --preload-file sounds@sounds \
         --preload-file fonts@fonts
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: .
 
   deploy:
     needs: build
