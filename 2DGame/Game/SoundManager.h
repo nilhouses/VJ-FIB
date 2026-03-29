@@ -2,7 +2,9 @@
 #define _SOUND_MANAGER_INCLUDE
 
 #include "miniaudio.h"
+#include <list>
 #include <string>
+#include <algorithm>
 #include <unordered_map>
 #include <map>
 #include <cmath>
@@ -41,7 +43,7 @@ public:
 private:
     SoundManager() : initialized(false) {} // Constructor privado
     ma_engine engine;
-    ma_sound bgm; // Objeto específico para la música actual
+    ma_sound bgm;
     bool initialized;
     bool musicPlaying = false;
     std::string currentMusicKey = "";
