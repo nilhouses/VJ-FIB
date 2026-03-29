@@ -35,19 +35,21 @@ jobs:
         cp "$SOIL_SRC_DIR/stb_image_aug.c" soil_temp/
         cp "$SOIL_SRC_DIR"/*.h soil_temp/
         
-        # 3. CIRURGIA FINAL: Injectar capçaleres de GLES2 per a Emscripten
-        # Posem les definicions necessàries al principi del fitxer
+        # 3. CIRURGIA FINAL: Injectar capçaleres i arreglar constants obsoletes
         echo '#define SOIL_GLES2' > soil_temp/SOIL_fix.c
         echo '#include <GLES2/gl2.h>' >> soil_temp/SOIL_fix.c
         echo '#include <GLES2/gl2ext.h>' >> soil_temp/SOIL_fix.c
         echo '#define APIENTRY' >> soil_temp/SOIL_fix.c
+        # El gran truc: Redefinir GL_CLAMP perquè SOIL no es queixi
+        echo '#define GL_CLAMP GL_CLAMP_TO_EDGE' >> soil_temp/SOIL_fix.c
         cat soil_temp/SOIL.c >> soil_temp/SOIL_fix.c
         mv soil_temp/SOIL_fix.c soil_temp/SOIL.c
         
-        # Netegem possibles restes de codi d'escriptori
+        # Netegem restes d'escriptori i forcem el canvi de CLAMP si encara queda algun
         sed -i 's/#include <GL\/glx.h>//g' soil_temp/SOIL.c
         sed -i 's/#include <GL\/gl.h>//g' soil_temp/SOIL.c
         sed -i 's/glXGetProcAddressARB/(void*)/g' soil_temp/SOIL.c
+        sed -i 's/GL_CLAMP /GL_CLAMP_TO_EDGE /g' soil_temp/SOIL.c
         
         # 4. Entrar al directori del joc
         cd 2DGame/Game
