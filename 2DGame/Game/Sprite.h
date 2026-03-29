@@ -7,7 +7,7 @@
 #include "Texture.h"
 #include "ShaderProgram.h"
 #include "AnimKeyframes.h"
-#include "camera.h"
+#include "Camera.h"
 #include <iostream>
 
 

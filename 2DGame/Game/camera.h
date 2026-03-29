@@ -6,7 +6,7 @@
 class Camera
 {
 public:
-    Camera(int screenWidth, int screenHeight, int hudHeight = 96.f);
+    Camera(int screenWidth, int screenHeight);
 
     // Actualiza la cámara para seguir al jugador u otro objetivo
     void update(const glm::vec2& targetPos, const glm::vec2& mapSize);
@@ -32,7 +32,7 @@ private:
     glm::vec2 target;    // Punto de la pantalla donde queremos centrar al jugador
     int screenWidth;
     int screenHeight;
-    int hudHeight;
+    // int hudHeight; unused
 
 	float totalTransitionTime; // Duración total de la transición (para updateTransition)
 	glm::vec2 transitionStartPos; // Posición inicial de la transición

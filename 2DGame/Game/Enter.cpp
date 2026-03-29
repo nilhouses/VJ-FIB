@@ -28,9 +28,9 @@ void Enter::render()
         arrow->render();
 }
 
-void Enter::setRoom(int r) {
-	Entity::setRoom(r);
-	if (arrow != nullptr) arrow->setRoom(r);
+void Enter::setRoomInt(int r) {
+	Entity::setRoomInt(r);
+	if (arrow != nullptr) arrow->setRoomInt(r);
 }
 
 void Enter::setPosition(const glm::vec2& pos) {

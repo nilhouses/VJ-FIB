@@ -17,7 +17,6 @@ public:
 	void update(int deltaTime) override;
 
 private:
-	bool active = false;
 };
 
 

@@ -10,7 +10,7 @@ class Bullet : public Entity
 {
 public:
     Bullet();
-    Bullet::~Bullet();
+    ~Bullet();
     void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, BulletType t);
     void update(int deltaTime) override;
 	void render() override;

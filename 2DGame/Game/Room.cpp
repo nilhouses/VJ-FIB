@@ -19,7 +19,8 @@ Room::~Room()
 {
     if (map != NULL)
         delete map;
-	for (Entity* entity : entities) {
+	
+    for (Entity* entity : entities) {
         if (entity != nullptr)
             delete entity;
     }

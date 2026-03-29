@@ -185,11 +185,11 @@ void Pipe::activateArrow(int end)
     if (arrows[end]) arrows[end]->activate();
 }
 
-void Pipe::setRoom(int r)
+void Pipe::setRoomInt(int r)
 {
-    Entity::setRoom(r);
+    Entity::setRoomInt(r);
     for (int i = 0; i < 2; i++)
-        if (arrows[i]) arrows[i]->setRoom(r);
+        if (arrows[i]) arrows[i]->setRoomInt(r);
 }
 
 void Pipe::setPosition(const glm::vec2& pos)

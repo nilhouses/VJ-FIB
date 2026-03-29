@@ -268,7 +268,6 @@ void Clever::update(int deltaTime)
     bool canPipeUp = false;
     bool canPipeDown = false;
     if (foundPipe != nullptr) {
-        int exitEnd = (pipeEnd == 0) ? 1 : 0;
         glm::vec2 exitPos = foundPipe->getExitPosition(size.y, pipeEnd);
         float currentY = (float)(pos.y + size.y);
         float exitY = exitPos.y + size.y;
@@ -309,7 +308,6 @@ void Clever::update(int deltaTime)
                 foundPipe->startTransit(pipeEnd, false);
 
                 // Sonido de entrada en la pipe si está cerca del jugador
-                glm::vec2 pPos = playerTarget->getPosition();
                 glm::vec4 b = foundPipe->getEndBoundingBox(pipeEnd);
                 glm::vec2 endCenter(b.x + b.z * 0.5f, b.y + b.w * 0.5f);
                 if (cam->isVisible(endCenter + glm::vec2(0, 200)) ||
@@ -337,7 +335,6 @@ void Clever::update(int deltaTime)
                 foundPipe->startTransit(pipeEnd, false);
 
                 // Sonido de entrada en la pipe si está cerca del jugador
-                glm::vec2 pPos = playerTarget->getPosition();
                 glm::vec4 b = foundPipe->getEndBoundingBox(pipeEnd);
                 glm::vec2 endCenter(b.x + b.z * 0.5f, b.y + b.w * 0.5f);
                 if (cam->isVisible(endCenter + glm::vec2(0, 200)) ||

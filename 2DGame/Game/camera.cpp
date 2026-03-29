@@ -3,8 +3,8 @@
 #include <algorithm>
 using namespace std;
 
-Camera::Camera(int screenWidth, int screenHeight, int hudHeight)
-    : screenWidth(screenWidth), screenHeight(screenHeight), hudHeight(hudHeight)
+Camera::Camera(int screenWidth, int screenHeight)
+    : screenWidth(screenWidth), screenHeight(screenHeight)
 {
     position = glm::vec2(0.f, 0.f);
     target = glm::vec2(screenWidth / 2.f, screenHeight / 2.f);

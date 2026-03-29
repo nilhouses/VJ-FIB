@@ -21,7 +21,7 @@ public:
     void render()              override;
     
     void activateArrow(int end);
-    void setRoom(int r) override;
+    void setRoomInt(int r) override;
     void setPosition(const glm::vec2& pos) override;
 
     glm::vec4 getEndBoundingBox(int end) const;
@@ -44,7 +44,7 @@ public:
 private:
     glm::vec2 endTexCoords(const glm::ivec2& dirToAdjacent) const;
     glm::vec2 inferTexCoords(const vector<glm::ivec2>& tiles, int i) const;
-    glm::vec2 Pipe::busyTexCoords(const glm::vec2& idleTexCoords) const;
+    glm::vec2 busyTexCoords(const glm::vec2& idleTexCoords) const;
     vector<PipeSegment> segments;
 
     int   entryEnd = 0;

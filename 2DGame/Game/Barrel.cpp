@@ -117,7 +117,7 @@ void Barrel::update(int deltaTime)
 
 	// Variables para empujar el barril
 	if (!beingTouchedThisFrame && !isBeingPushed) {
-		pushAccumulator = std::max(0.f, pushAccumulator - 1.0f);
+		pushAccumulator = max(0.f, pushAccumulator - 1.0f);
 	}
 	beingTouchedThisFrame = false;
 

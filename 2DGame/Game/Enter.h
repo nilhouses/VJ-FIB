@@ -22,8 +22,8 @@ public:
 	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c);
 	void update(int deltaTime) override;
 	void render() override;
-	void setRoom(int r) override;
-	void setPosition(const glm::vec2& pos);
+	void setRoomInt(int r) override;
+	void setPosition(const glm::vec2& pos) override;
 	void activateArrow() { arrow->activate(); }
 	void setConnectedTo(Enter* e) { connectedTo = e; }
 

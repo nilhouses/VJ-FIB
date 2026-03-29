@@ -53,7 +53,6 @@ private:
 	bool wasPushing = false;				// Indica si el jugador estaba empujando un barril en el frame anterior
 	// Atributos necesarios para items
 	int itemPickTimer;
-	int lockedDoorTimer;
 	// Atributos necesarios para el SpeedBoost
 	float speedBoostTimer;
 	float speedMultiplier = 1.f;
@@ -68,8 +67,6 @@ private:
 	Camera* cameraPtr = nullptr;
 	float startAnimTimer;
 	bool deathByMap = false; // Indica si el jugador ha muerto por un daño de mapa (caída, pinchos, etc.) para configurar la animación de muerte correspondiente
-
-	void Player::updateAnimation();
 };
 
 

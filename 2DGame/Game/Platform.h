@@ -22,7 +22,6 @@ private:
     int direction;          // 1 o -1
     glm::vec2 deltaMovement;
     float distanceCounter = 0.f;
-	float stopTimer = 0.f;
 };
 
 #endif // _PLATFORM_INCLUDE

@@ -35,7 +35,7 @@ private:
 	void createRooms(); // Carga las habitaciones del nivel
 
 	void checkCollisions(); // Comprueba las colisiones entre el jugador y las entidades del nivel actual y actualiza el estado del juego en consecuencia
-	void handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2& offset, int end); // Maneja la colisión entre el jugador y una entidad.
+	void handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, const glm::vec2& offset, int end); // Maneja la colisión entre el jugador y una entidad.
 	void handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollided); // Maneja la colisión entre un enemigo y una entidad distinta de player
 	void handleBulletCollision(Bullet* b, Entity* e, glm::vec2& rangeCollided); // Maneja la colisión entre una bala y otra entidad
 	void handleBarrelCollision(Barrel* b, Entity* e, glm::vec2& rangeCollided); // Maneja la colisión entre un barril y otra entidad
@@ -46,7 +46,7 @@ private:
 	void loadAssets();		// Carga los elementos decorativos del nivel a través de un fichero de texto
 	Entity* createEntity(const string& type, int tileX, int tileY, int indexRoom, bool movingRight = false, bool stay = false, int rangePixels = 100, int axis = 0, int dir = 1, const vector<glm::ivec2>& segments = {}, int sr = -1);
 	// Crea una entidad del tipo dado en la posición dada (en tiles)
-	void createAsset(const string& spriteDir, glm::vec2& pos, glm::vec2& size, int indexRoom, bool bg); // Crea un elemento decorativo en la posición dada (en tiles) y con el tamaño dado (en tiles
+	void createAsset(const string& spriteDir, const glm::vec2& pos, const glm::vec2& size, int indexRoom, bool bg); // Crea un elemento decorativo en la posición dada (en tiles) y con el tamaño dado (en tiles
 
 private:
 	bool playerCenteredOn(const glm::vec4& bbox) const;
@@ -60,7 +60,6 @@ private:
     int level;
 	int collectedKeys;			// N�mero de llaves recogidas por el jugador
 	int allKeys;				// N�mero total de llaves en el nivel
-	int numRooms;				// N�mero total de habitaciones en el nivel
 	bool levelCompleted;		// Indica si el nivel ha sido completado
 	int numLives;
 	vector<Room*> rooms;			// Las diferentes habitaciones del nivel

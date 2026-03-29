@@ -50,8 +50,6 @@ void Instructions::render() {
     // Colores claros para que se vean sobre fondo oscuro
     glm::vec4 yellow = glm::vec4(1, 1, 0, 1);
     glm::vec4 lightBlue = glm::vec4(0.289f, 0.504f, 9.922f, 1.f);
-    glm::vec4 black = glm::vec4(0, 0, 0, 1);
-    glm::vec4 red = glm::vec4(1.0f, 0.4f, 0.4f, 1);
 	glm::vec4 white = glm::vec4(1, 1, 1, 1);
 
     // TÍTULO PRINCIPAL

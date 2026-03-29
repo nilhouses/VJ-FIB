@@ -25,7 +25,7 @@ class Entity
 {
 public:
 	Entity(Type t);
-	~Entity();
+	virtual ~Entity();
 
 	// Todas las entidades se inicializan con la misma función init. En este punto la posición es fija respecto al mapa de tiles
 	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, const string& spritesheetDir, const glm::vec2& quadSize, const glm::vec2& sizeInSpritesheet, Camera* c);
@@ -53,7 +53,7 @@ public:
 	const glm::ivec2& getSize() const { return size; }
 
 	int getRoom() const { return room; }
-	virtual void setRoom(int r) { room = r; }
+	virtual void setRoomInt(int r) { room = r; }
 	virtual bool isEnemy() const { return false; }
 
 	void printDebugInfo() const; // Función para imprimir información de depuración sobre la entidad (posición, tipo, estado, etc.)

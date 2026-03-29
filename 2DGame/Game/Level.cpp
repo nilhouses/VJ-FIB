@@ -166,7 +166,7 @@ Entity* Level::createEntity(const string& type, int tx, int ty, int indexRoom, b
     if (entity != nullptr)
     {
         if (type != "PIPE") entity->setPosition(glm::vec2(float(tx * map->getTileSize()), float(ty * map->getTileSize())));
-        entity->setRoom(indexRoom);
+        entity->setRoomInt(indexRoom);
         // Añado la entidad a la habitación correspondiente
         if (type != "PLAYER") rooms[indexRoom]->addEntity(entity);
     }
@@ -265,7 +265,7 @@ void Level::loadEntities()
     }
 }
 
-void Level::createAsset(const string& spriteDir, glm::vec2& pos, glm::vec2& size, int indexRoom, bool bg)
+void Level::createAsset(const string& spriteDir, const glm::vec2& pos, const glm::vec2& size, int indexRoom, bool bg)
 {
     Asset* asset = new Asset();
     asset->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, spriteDir, size, camera);
@@ -438,7 +438,7 @@ void Level::killPlayer() {
     SoundManager::instance().playSound("death", 0.6f);
 }
 
-void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2& offset, int end = -1) {
+void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, const glm::vec2& offset, int end = -1) {
     switch (e->getType())
     {
         case Type::KEY:
@@ -511,13 +511,8 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             else Game::instance().showTutorial("HOLD [LEFT] OR [RIGHT] NEXT TO A BARREL TO PUSH IT");
             
             // Colisiones
-            glm::ivec2 pSize = player->getSize();
             glm::vec2 pPos = player->getPosition();
             glm::vec2 bPos = b->getPosition();
-            glm::ivec2 bSize = b->getSize();
-
-            float playerBottom = pPos.y + pSize.y;
-            float barrelTop = bPos.y;
 
             // Colisión vertical
             if (rangeCollided.y < rangeCollided.x && pPos.y < bPos.y) player->setOnGround(true);
@@ -552,7 +547,6 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
             glm::ivec2 playerSize = player->getSize();
             glm::vec2 playerPos = player->getPosition();
             glm::vec2 pPos = p->getPosition();
-            glm::ivec2 pSize = p->getSize();
             glm::vec2 platformOffset = p->getDeltaMovement();
 
             float playerFeet = playerPos.y + playerSize.y;
@@ -577,7 +571,6 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, glm::vec2
 
         case Type::ENTER:
         {
-            int centerX = (int)(player->getPosition().x + 16.0f);
             
 			Enter* enter = static_cast<Enter*>(e);
 
@@ -731,7 +724,6 @@ void Level::handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollid
         Barrel* b = static_cast<Barrel*>(e);
         if (b->isMoving() || b->isExploding()) {
             // El barril explota en la misma posición del dummy, NO al lado
-            glm::vec2 enemyPos = enemy->getPosition();
             enemy->die();
             b->stopPush();
             b->explode();

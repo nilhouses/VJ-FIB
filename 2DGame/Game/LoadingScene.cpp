@@ -62,7 +62,7 @@ void LoadingScene::update(int deltaTime) {
 
     // Rotación de Pro-tips
     tipTimer += deltaTime;
-    if (tipTimer > 2000.f || Game::instance().getKey(GLFW_KEY_ENTER) && enterReleased) {
+    if (tipTimer > 2000.f || (Game::instance().getKey(GLFW_KEY_ENTER) && enterReleased)) {
         currentTipIndex = (currentTipIndex + 1) % tips.size();
         tipTimer = 0;
     }
