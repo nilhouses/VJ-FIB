@@ -26,7 +26,7 @@ jobs:
       run: |
         cd 2DGame/Game
         
-        # Compilem tots els .cpp del teu joc + els .c de SOIL un per un per evitar errors d'espais
+        # Compilem el teu joc i els 4 fitxers font de SOIL un per un
         emcc *.cpp \
         "../../libs/Simple OpenGL Image Library/src/SOIL.c" \
         "../../libs/Simple OpenGL Image Library/src/image_helper.c" \
@@ -47,7 +47,6 @@ jobs:
         --preload-file levels@levels \
         --preload-file sounds@sounds \
         --preload-file fonts@fonts
-
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
