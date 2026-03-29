@@ -24,21 +24,27 @@ jobs:
 
     - name: Compile with emcc
       run: |
-        # 1. Crear la carpeta neta
+        # 1. Crear la carpeta neta a l'arrel del repo
         mkdir -p soil_temp
         
-        # 2. BUSCAR on està realment el SOIL.c i copiar tota la seva carpeta
-        # Això busca el fitxer SOIL.c i ens dóna la seva ruta
-        SOIL_PATH=$(find . -name "SOIL.c" -print -quit)
-        SOIL_DIR=$(dirname "$SOIL_PATH")
+        # 2. Localitzar la carpeta de SOIL dins de 2DGame sense embuts
+        # Fem servir cometes dobles i el path que ja sabem que existeix
+        SOIL_SRC_DIR="./2DGame/libs/Simple OpenGL Image Library/src"
         
-        echo "La ruta real trobada és: $SOIL_DIR"
+        echo "Copiant fitxers des de: $SOIL_SRC_DIR"
         
-        # 3. Copiar el contingut d'aquella carpeta a la nostra carpeta neta
-        cp "$SOIL_DIR"/* soil_temp/
+        # 3. Copiar fitxers individuals per evitar problemes amb subcarpetes
+        cp "$SOIL_SRC_DIR/SOIL.c" soil_temp/
+        cp "$SOIL_SRC_DIR/image_helper.c" soil_temp/
+        cp "$SOIL_SRC_DIR/image_DXT.c" soil_temp/
+        cp "$SOIL_SRC_DIR/stb_image_aug.c" soil_temp/
+        cp "$SOIL_SRC_DIR"/*.h soil_temp/
         
-        # 4. Anar a la carpeta del joc i compilar
+        # 4. Entrar al directori del joc
         cd 2DGame/Game
+        
+        # 5. Compilar
+        # Ara estem a 2DGame/Game, per tant soil_temp està a ../../soil_temp
         emcc *.cpp \
         ../../soil_temp/SOIL.c \
         ../../soil_temp/image_helper.c \
@@ -59,7 +65,6 @@ jobs:
         --preload-file levels@levels \
         --preload-file sounds@sounds \
         --preload-file fonts@fonts
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
