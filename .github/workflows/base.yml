@@ -33,40 +33,37 @@ jobs:
         echo -e "#define SOIL_GLES2\n#include <GLES2/gl2.h>\n#include <GLES2/gl2ext.h>\n#define APIENTRY\n#define glXGetProcAddressARB(x) NULL" > soil_temp/SOIL_fix.c
         cat soil_temp/SOIL.c >> soil_temp/SOIL_fix.c
         mv soil_temp/SOIL_fix.c soil_temp/SOIL.c
-        sed -i 's/#include <GL\/glx.h>//g' soil_temp/SOIL.c
-        sed -i 's/#include <GL\/gl.h>//g' soil_temp/SOIL.c
-
-        # 2. CIRURGIA DE SHADERS (WebGL 2 Compatibility)
-        find 2DGame -name "*.frag" -o -name "*.vert" | while read f; do
-          echo "Adaptant shader: $f"
-          # Eliminar línies de versió i espais/salts de línia al principi del fitxer
-          sed -i '/#version/d' "$f"
-          sed -i '1{/^$/d}' "$f" 
+        
+        # 2. CIRURGIA DE SHADERS (Més robusta)
+        # Busquem tots els shaders dins de la carpeta shaders del joc
+        find 2DGame/Game/shaders -name "*.frag" -o -name "*.vert" | while read f; do
+          echo "Adaptant shader per a WebGL 2: $f"
+          # Creem una versió neta sense cap línia de versió antiga ni espais
+          grep -v "#version" "$f" > "${f}.tmp"
           
-          # Crear el fitxer nou amb la capçalera exacta que WebGL 2 demana
-          # #version 300 es HA DE SER la primera línia.
-          echo "#version 300 es" > "${f}.tmp"
-          echo "precision mediump float;" >> "${f}.tmp"
-          cat "$f" >> "${f}.tmp"
-          mv "${f}.tmp" "$f"
+          # Escrivim la capçalera de WebGL 2 (PRIMERA LÍNIA SENSE ESPAIS)
+          echo "#version 300 es" > "$f"
+          echo "precision mediump float;" >> "$f"
+          cat "${f}.tmp" >> "$f"
+          rm "${f}.tmp"
         done
 
-        # 3. Entrar i Compilar
+        # 3. Compilar el joc
+        # Creem una carpeta 'dist' per posar NOMÉS el que volem publicar
+        mkdir -p dist
         cd 2DGame/Game
         emcc *.cpp \
         ../../soil_temp/SOIL.c \
         ../../soil_temp/image_helper.c \
         ../../soil_temp/image_DXT.c \
         ../../soil_temp/stb_image_aug.c \
-        -o ../../index.html \
+        -o ../../dist/index.html \
         -DSOIL_GLES2 \
         -s USE_GLFW=3 \
         -s USE_FREETYPE=1 \
         -s MAX_WEBGL_VERSION=2 \
         -s FULL_ES3=1 \
-        -s CASE_INSENSITIVE_FS=1 \
         -s ALLOW_MEMORY_GROWTH=1 \
-        -s EXIT_RUNTIME=1 \
         -I. \
         -I../../external/glm \
         -I../../soil_temp \
@@ -79,7 +76,7 @@ jobs:
     - name: Upload Pages artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        path: '.'
+        path: 'dist/'
 
   deploy:
     needs: build
