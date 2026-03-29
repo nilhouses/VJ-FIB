@@ -35,10 +35,14 @@ jobs:
         cp "$SOIL_SRC_DIR/stb_image_aug.c" soil_temp/
         cp "$SOIL_SRC_DIR"/*.h soil_temp/
         
-        # 3. CIRURGIA: Forçar SOIL a no buscar llibreries de Linux d'escriptori
-        # Esborrem les línies que demanen GLX i forcem el mode GLES2
-        sed -i 's/#include <GL\/glx.h>//g' soil_temp/SOIL.c
+        # 3. CIRURGIA RADICAL: Forçar mode GLES2 i eliminar codi d'escriptori
+        # Definim GLES2 a la primera línia
         sed -i '1i #define SOIL_GLES2' soil_temp/SOIL.c
+        # Eliminem els includes de GL que fan nosa
+        sed -i 's/#include <GL\/glx.h>//g' soil_temp/SOIL.c
+        sed -i 's/#include <GL\/gl.h>//g' soil_temp/SOIL.c
+        # Comentem la línia que fa servir glXGetProcAddressARB (el gran culpable ara)
+        sed -i 's/glXGetProcAddressARB/(void*)/g' soil_temp/SOIL.c
         
         # 4. Entrar al directori del joc
         cd 2DGame/Game
