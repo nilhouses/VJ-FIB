@@ -24,16 +24,21 @@ jobs:
 
     - name: Compile with emcc
       run: |
-        # 1. Anar a la carpeta del joc
+        # 1. Crear la carpeta neta
+        mkdir -p soil_temp
+        
+        # 2. BUSCAR on està realment el SOIL.c i copiar tota la seva carpeta
+        # Això busca el fitxer SOIL.c i ens dóna la seva ruta
+        SOIL_PATH=$(find . -name "SOIL.c" -print -quit)
+        SOIL_DIR=$(dirname "$SOIL_PATH")
+        
+        echo "La ruta real trobada és: $SOIL_DIR"
+        
+        # 3. Copiar el contingut d'aquella carpeta a la nostra carpeta neta
+        cp "$SOIL_DIR"/* soil_temp/
+        
+        # 4. Anar a la carpeta del joc i compilar
         cd 2DGame/Game
-        
-        # 2. Crear una carpeta temporal SENSE ESPAIS per a SOIL
-        mkdir -p ../../soil_temp
-        
-        # 3. Copiar els fitxers de SOIL a la carpeta neta (fem servir cometes aquí per última vegada)
-        cp "../../libs/Simple OpenGL Image Library/src/"* ../../soil_temp/
-        
-        # 4. Compilar fent referència a la carpeta neta
         emcc *.cpp \
         ../../soil_temp/SOIL.c \
         ../../soil_temp/image_helper.c \
