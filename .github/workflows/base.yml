@@ -36,21 +36,16 @@ jobs:
         cp "$SOIL_SRC_DIR"/*.h soil_temp/
         
         # 3. CIRURGIA RADICAL
-        # Forcem la substitució de text de GL_CLAMP per la versió moderna
         sed -i 's/\bGL_CLAMP\b/GL_CLAMP_TO_EDGE/g' soil_temp/SOIL.c
         
-        # Injectem les capçaleres i trucs necessaris al principi
         echo '#define SOIL_GLES2' > soil_temp/SOIL_fix.c
         echo '#include <GLES2/gl2.h>' >> soil_temp/SOIL_fix.c
         echo '#include <GLES2/gl2ext.h>' >> soil_temp/SOIL_fix.c
         echo '#define APIENTRY' >> soil_temp/SOIL_fix.c
-        # Adormim funcions de Linux d'escriptori que la Web no entén:
         echo '#define glXGetProcAddressARB(x) NULL' >> soil_temp/SOIL_fix.c
-        
         cat soil_temp/SOIL.c >> soil_temp/SOIL_fix.c
         mv soil_temp/SOIL_fix.c soil_temp/SOIL.c
         
-        # Netegem includes d'escriptori que fan nosa
         sed -i 's/#include <GL\/glx.h>//g' soil_temp/SOIL.c
         sed -i 's/#include <GL\/gl.h>//g' soil_temp/SOIL.c
         
@@ -79,6 +74,15 @@ jobs:
         --preload-file levels@levels \
         --preload-file sounds@sounds \
         --preload-file fonts@fonts
+
+    # -------------------------------------------------------------
+    # EL PAS QUE FALTAVA: Empaquetar els fitxers per al Deploy!
+    # -------------------------------------------------------------
+    - name: Upload Pages artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: '.' # Puja tot el directori arrel (on hi ha l'index.html acabat de crear)
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -87,6 +91,7 @@ jobs:
       id-token: write
     environment:
       name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
     - name: Deploy to GitHub Pages
       id: deployment
