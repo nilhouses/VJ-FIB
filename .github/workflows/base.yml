@@ -24,25 +24,26 @@ jobs:
 
     - name: Compile with emcc
       run: |
-        # 1. Crear la carpeta neta a l'arrel del repo
+        # 1. Crear la carpeta neta
         mkdir -p soil_temp
         
-        # 2. Localitzar la carpeta de SOIL dins de 2DGame
+        # 2. Localitzar i copiar fitxers
         SOIL_SRC_DIR="./2DGame/libs/Simple OpenGL Image Library/src"
-        
-        echo "Copiant fitxers des de: $SOIL_SRC_DIR"
-        
-        # 3. Copiar fitxers individuals (això ja ens funciona bé)
         cp "$SOIL_SRC_DIR/SOIL.c" soil_temp/
         cp "$SOIL_SRC_DIR/image_helper.c" soil_temp/
         cp "$SOIL_SRC_DIR/image_DXT.c" soil_temp/
         cp "$SOIL_SRC_DIR/stb_image_aug.c" soil_temp/
         cp "$SOIL_SRC_DIR"/*.h soil_temp/
         
+        # 3. CIRURGIA: Forçar SOIL a no buscar llibreries de Linux d'escriptori
+        # Esborrem les línies que demanen GLX i forcem el mode GLES2
+        sed -i 's/#include <GL\/glx.h>//g' soil_temp/SOIL.c
+        sed -i '1i #define SOIL_GLES2' soil_temp/SOIL.c
+        
         # 4. Entrar al directori del joc
         cd 2DGame/Game
         
-        # 5. Compilar (Amb el nou flag per evitar l'error de glx.h)
+        # 5. Compilar
         emcc *.cpp \
         ../../soil_temp/SOIL.c \
         ../../soil_temp/image_helper.c \
