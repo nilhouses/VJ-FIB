@@ -24,19 +24,21 @@ jobs:
 
     - name: Compile with emcc
       run: |
-        emcc 2DGame/Game/*.cpp -o index.html \
+        cd 2DGame/Game
+        emcc *.cpp -o ../../index.html \
         -s USE_GLFW=3 \
         -s USE_FREETYPE=1 \
         -s FULL_ES2=1 \
         -s CASE_INSENSITIVE_FS=1 \
         -s ALLOW_MEMORY_GROWTH=1 \
-        -I2DGame/Game \
-        -Iexternal/glm \
-        --preload-file 2DGame/Game/images@images \
-        --preload-file 2DGame/Game/shaders@shaders \
-        --preload-file 2DGame/Game/levels@levels \
-        --preload-file 2DGame/Game/sounds@sounds \
-        --preload-file 2DGame/Game/fonts@fonts
+        -s EXIT_RUNTIME=1 \
+        -I. \
+        -I../../external/glm \
+        --preload-file images@images \
+        --preload-file shaders@shaders \
+        --preload-file levels@levels \
+        --preload-file sounds@sounds \
+        --preload-file fonts@fonts
 
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
@@ -51,7 +53,6 @@ jobs:
       id-token: write
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
     - name: Deploy to GitHub Pages
       id: deployment
