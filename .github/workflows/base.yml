@@ -24,33 +24,28 @@ jobs:
 
     - name: Compile with emcc
       run: |
-        # 1. Preparar SOIL (Netegem el cp per evitar errors de directoris)
+        # 1. Preparar SOIL
         mkdir -p soil_temp
         SOIL_SRC_DIR="./2DGame/libs/Simple OpenGL Image Library/src"
-        # Copiem només fitxers (.c i .h), no directoris
         cp "$SOIL_SRC_DIR"/*.c soil_temp/
         cp "$SOIL_SRC_DIR"/*.h soil_temp/
-        
-        # Pedaç de GL_CLAMP
         sed -i 's/\bGL_CLAMP\b/GL_CLAMP_TO_EDGE/g' soil_temp/SOIL.c
-        
-        # Injectem capçaleres
         echo -e "#define SOIL_GLES2\n#include <GLES2/gl2.h>\n#include <GLES2/gl2ext.h>\n#define APIENTRY\n#define glXGetProcAddressARB(x) NULL" > soil_temp/SOIL_fix.c
         cat soil_temp/SOIL.c >> soil_temp/SOIL_fix.c
         mv soil_temp/SOIL_fix.c soil_temp/SOIL.c
-        
-        # Netegem includes d'escriptori
         sed -i 's/#include <GL\/glx.h>//g' soil_temp/SOIL.c
         sed -i 's/#include <GL\/gl.h>//g' soil_temp/SOIL.c
 
         # 2. CIRURGIA DE SHADERS (WebGL 2 Compatibility)
-        # Anem a buscar els shaders allà on siguin (fem un find per si de cas)
+        # Aquest script és més robust: força la versió 300 es a la línia 1
         find 2DGame -name "*.frag" -o -name "*.vert" | while read f; do
-          echo "Adaptant shader: $f"
-          echo -e "#version 300 es\nprecision mediump float;" > "${f}.tmp"
-          # Saltem la primera línia (#version 330) i copiem la resta
-          sed '1d' "$f" >> "${f}.tmp"
-          mv "${f}.tmp" "$f"
+          echo "Processant shader: $f"
+          # 1. Esborra qualsevol línia de versió existent
+          sed -i '/#version/d' "$f"
+          # 2. Esborra línies en blanc al principi del fitxer
+          sed -i '././,$!d' "$f"
+          # 3. Insereix la versió correcta a la línia 1 i la precisió a la 2
+          sed -i '1i #version 300 es\nprecision mediump float;' "$f"
         done
 
         # 3. Entrar i Compilar
@@ -77,7 +72,7 @@ jobs:
         --preload-file levels@levels \
         --preload-file sounds@sounds \
         --preload-file fonts@fonts
-        
+
     - name: Upload Pages artifact
       uses: actions/upload-pages-artifact@v3
       with:
