@@ -24,16 +24,21 @@ jobs:
 
     - name: Compile with emcc
       run: |
+        # 1. Anar a la carpeta del joc
         cd 2DGame/Game
         
-        # Definim la carpeta de SOIL per no repetir-la i evitar errors
-        SOIL_DIR="$GITHUB_WORKSPACE/libs/Simple OpenGL Image Library/src"
+        # 2. Crear una carpeta temporal SENSE ESPAIS per a SOIL
+        mkdir -p ../../soil_temp
         
+        # 3. Copiar els fitxers de SOIL a la carpeta neta (fem servir cometes aquí per última vegada)
+        cp "../../libs/Simple OpenGL Image Library/src/"* ../../soil_temp/
+        
+        # 4. Compilar fent referència a la carpeta neta
         emcc *.cpp \
-        "$SOIL_DIR/SOIL.c" \
-        "$SOIL_DIR/image_helper.c" \
-        "$SOIL_DIR/image_DXT.c" \
-        "$SOIL_DIR/stb_image_aug.c" \
+        ../../soil_temp/SOIL.c \
+        ../../soil_temp/image_helper.c \
+        ../../soil_temp/image_DXT.c \
+        ../../soil_temp/stb_image_aug.c \
         -o ../../index.html \
         -s USE_GLFW=3 \
         -s USE_FREETYPE=1 \
@@ -42,8 +47,8 @@ jobs:
         -s ALLOW_MEMORY_GROWTH=1 \
         -s EXIT_RUNTIME=1 \
         -I. \
-        -I"$GITHUB_WORKSPACE/external/glm" \
-        -I"$SOIL_DIR" \
+        -I../../external/glm \
+        -I../../soil_temp \
         --preload-file images@images \
         --preload-file shaders@shaders \
         --preload-file levels@levels \
