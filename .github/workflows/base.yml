@@ -25,9 +25,10 @@ jobs:
     - name: Compile with emcc
       run: |
         cd 2DGame/Game
-        emcc *.cpp \
-        "../../libs/Simple OpenGL Image Library/src/"*.c \
-        -o ../../index.html \
+        # Creem una variable amb la llista de fitxers .c de SOIL
+        SOIL_FILES=$(ls "../../libs/Simple OpenGL Image Library/src/"*.c)
+        
+        emcc *.cpp $SOIL_FILES -o ../../index.html \
         -s USE_GLFW=3 \
         -s USE_FREETYPE=1 \
         -s FULL_ES2=1 \
