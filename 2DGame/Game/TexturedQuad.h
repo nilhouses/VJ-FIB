@@ -22,9 +22,9 @@ public:
 	void free();
 
 private:
-	GLuint vao;
-	GLuint vbo;
-	GLint posLocation, texCoordLocation;
+	GLuint vao = GLuint();
+	GLuint vbo = GLuint();
+	GLint posLocation = GLint(), texCoordLocation = GLint();
 
 };
 

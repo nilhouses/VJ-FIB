@@ -21,7 +21,7 @@ public:
 	bool getUp() const { return up; }
 
 private:
-	bool up;
+	bool up = false;
 };
 
 

@@ -37,9 +37,9 @@ private:
 	bool loadShaderSource(const string &filename, string &shaderSource);
 
 private:
-	GLuint shaderId;
-	bool compiled;
-	string errorLog;
+	GLuint shaderId = GLuint();
+	bool compiled = false;
+	string errorLog = "";
 
 };
 

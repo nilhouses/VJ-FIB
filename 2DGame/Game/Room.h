@@ -50,12 +50,12 @@ public:
 	void setTransitioning(bool t) { transitioning = t; }
 
 private:
-    TileMap* map;
-	Asset* background;
-    vector<Entity*> entities;
-    vector<Enemy*> enemies;
-    vector<Asset*> assets;
-	bool transitioning; // Indica si se está realizando una transición entre habitaciones para evitar actualizar la lógica de la habitación durante la transición
+    TileMap* map = nullptr;
+	Asset* background = nullptr;
+    vector<Entity*> entities = vector<Entity*>();
+    vector<Enemy*> enemies = vector<Enemy*>();
+    vector<Asset*> assets = vector<Asset*>();
+	bool transitioning = false; // Indica si se está realizando una transición entre habitaciones para evitar actualizar la lógica de la habitación durante la transición
 
     ShaderProgram& texProgram; // Referencia al shader del Level
 

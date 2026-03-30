@@ -50,12 +50,12 @@ private:
 	void createTextureAtlas();
 	
 private:
-	int fontSize, textureSize, maxCharWidth, maxCharHeight;
-	FT_Face face;
-	CharMetrics chars[NUM_CHARACTERS];
-	Texture textureAtlas;
-	ShaderProgram program;
-	TexturedQuad *quad;
+	int fontSize = 0, textureSize = 0, maxCharWidth = 0, maxCharHeight = 0;
+	FT_Face face = FT_Face();
+	CharMetrics chars[NUM_CHARACTERS] = {};
+	Texture textureAtlas = Texture();
+	ShaderProgram program = ShaderProgram();
+	TexturedQuad *quad = nullptr;
 
 	static bool bLibInit;
 	static FT_Library library;

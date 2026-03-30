@@ -44,19 +44,19 @@ public:
 	bool isLastKeyframe() const { return currentKeyframe == (int)animations[currentAnimation].keyframeDispl.size() - 1; }
 
 private:
-	Texture *texture;
-	ShaderProgram *shaderProgram;
-	GLuint vao;
-	GLuint vbo;
-	GLint posLocation, texCoordLocation;
-	glm::vec2 position;
-	int currentAnimation, currentKeyframe;
-	float timeAnimation;
-	glm::vec2 texCoordDispl;
-	vector<AnimKeyframes> animations;
-	Camera* camera;
+	Texture *texture = nullptr;
+	ShaderProgram *shaderProgram = nullptr;
+	GLuint vao = GLuint();
+	GLuint vbo = GLuint();
+	GLint posLocation = GLint(), texCoordLocation = GLint();
+	glm::vec2 position = glm::vec2(0.f,0.f);
+	int currentAnimation = 0, currentKeyframe = 0;
+	float timeAnimation = 0.f;
+	glm::vec2 texCoordDispl = glm::vec2(0.f,0.f);
+	std::vector<AnimKeyframes> animations = std::vector<AnimKeyframes>();
+	Camera* camera = nullptr;
 	bool isPaused = false;
-	float fParallax = 1;
+	float fParallax = 1.f;
 };
 
 

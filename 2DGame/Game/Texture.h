@@ -41,10 +41,9 @@ public:
 	int height() const { return heightTex; }
 
 private:
-	int widthTex, heightTex;
-	GLuint texId;
-	GLint wrapS, wrapT, minFilter, magFilter;
-
+	int widthTex = 0, heightTex = 0;
+	GLuint texId = GLuint();
+	GLint wrapS = GLint(), wrapT = GLint(), minFilter = GLint(), magFilter = GLint();
 };
 
 
