@@ -292,9 +292,12 @@ void Player::update(int deltaTime)
 		}
 	}
 
-	bool inputDetected = true;
+	bool inputDetected = false;
 
 	if (!blockedInput || isShooting) { // Quiero que se caiga el jugador al disparar en el aire
+		if (!Game::instance().getKey(GLFW_KEY_LEFT)) leftReleased = true;
+		if (!Game::instance().getKey(GLFW_KEY_RIGHT)) rightReleased = true;
+
 		if (map->collisionLadderUp(pos, getSize()) || map->collisionLadderDown(pos, getSize()))
 			Game::instance().showTutorial("HOLD [UP] OR [DOWN] TO CLIMB A LADDER");
 
@@ -302,33 +305,11 @@ void Player::update(int deltaTime)
 			shoot();
 		}
 
-		// Con la flecha hacia arriba el personaje subirá si existe una escalera en esa posición
-		if (Game::instance().getKey(GLFW_KEY_UP)) {
-			if (map->collisionLadderUp(pos, getSize())) {
-				center();
-				if (sprite->animation() != CLIMB) sprite->changeAnimation(CLIMB);
-				sprite->setPaused(false);
-				pos.y -= (int)(SPEED * speedMultiplier);
-				bJumping = false;
-			}
-			else if (!isShooting && sprite->animation() != IDLE && sprite->animation() != WEAPON_IDLE && sprite->animation() != FALL)
-				(numBullets > 0) ? sprite->changeAnimation(WEAPON_IDLE) : sprite->changeAnimation(IDLE);
-		}
-		// Con la flecha hacia abajo el personaje bajará si existe una escalera en esa posición
-		else if (Game::instance().getKey(GLFW_KEY_DOWN)) {
-			if (map->collisionLadderDown(pos, getSize())) {
-				center();
-				if (sprite->animation() != CLIMB) sprite->changeAnimation(CLIMB);
-				sprite->setPaused(false);
-				pos.y += (int)(SPEED * speedMultiplier);
-				bJumping = false;
-			}
-			else if (!isShooting && sprite->animation() != IDLE && sprite->animation() != WEAPON_IDLE && sprite->animation() != FALL)
-				(numBullets > 0) ? sprite->changeAnimation(WEAPON_IDLE) : sprite->changeAnimation(IDLE);
-		}
 		// Si la flecha izquierda está pulsada
-		else if (Game::instance().getKey(GLFW_KEY_LEFT)) {
+		if (Game::instance().getKey(GLFW_KEY_LEFT) && rightReleased) {
+			inputDetected = true;
 			facingRight = false;
+			leftReleased = false;
 			if (sprite->animation() == CLIMB && !map->collisionDown(pos, getSize(), 12.f)) {}
 			else {
 				auto targetAnim = hasBullets() ? GUN_WALK_LEFT : WALK_LEFT;
@@ -341,8 +322,10 @@ void Player::update(int deltaTime)
 			}
 		}
 		// Con la flecha derecha hago exactamente lo mismo
-		else if (Game::instance().getKey(GLFW_KEY_RIGHT)) {
+		else if (Game::instance().getKey(GLFW_KEY_RIGHT) && leftReleased) {
+			inputDetected = true;
 			facingRight = true;
+			rightReleased = false;
 			if (sprite->animation() == CLIMB && !map->collisionDown(pos, getSize(), 12.f)) {}
 			else {
 				auto targetAnim = hasBullets() ? GUN_WALK_RIGHT : WALK_RIGHT;
@@ -355,8 +338,29 @@ void Player::update(int deltaTime)
 					incrLeft();
 			}
 		}
-		else inputDetected = false;
-		// Si ninguna de las flechas está pulsada entonces dejo el personaje quieto mirando hacia el lado que corresponda
+
+		// Con la flecha hacia arriba el personaje subirá si existe una escalera en esa posición
+		if (Game::instance().getKey(GLFW_KEY_UP)) {
+			inputDetected = true;
+			if (map->collisionLadderUp(pos, getSize())) {
+				center();
+				if (sprite->animation() != CLIMB) sprite->changeAnimation(CLIMB);
+				sprite->setPaused(false);
+				pos.y -= (int)(SPEED * speedMultiplier);
+				bJumping = false;
+			}
+		}
+		// Con la flecha hacia abajo el personaje bajará si existe una escalera en esa posición
+		else if (Game::instance().getKey(GLFW_KEY_DOWN)) {
+			inputDetected = true;
+			if (map->collisionLadderDown(pos, getSize())) {
+				center();
+				if (sprite->animation() != CLIMB) sprite->changeAnimation(CLIMB);
+				sprite->setPaused(false);
+				pos.y += (int)(SPEED * speedMultiplier);
+				bJumping = false;
+			}
+		}
 
 		if (!inputDetected) {
 			if (sprite->animation() == CLIMB)

@@ -67,6 +67,8 @@ private:
 	Camera* cameraPtr = nullptr;
 	float startAnimTimer;
 	bool deathByMap = false; // Indica si el jugador ha muerto por un daño de mapa (caída, pinchos, etc.) para configurar la animación de muerte correspondiente
+
+	bool leftReleased = true, rightReleased = true;
 };
 
 

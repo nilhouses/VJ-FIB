@@ -3,8 +3,6 @@
 #include <sstream>
 #include <vector>
 #include "TileMap.h"
-
-
 using namespace std;
 
 
@@ -14,7 +12,6 @@ TileMap* TileMap::createTileMap(const string& levelFile, const glm::vec2& minCoo
 
 	return map;
 }
-
 
 TileMap::TileMap(const string& levelFile, const glm::vec2& minCoords, ShaderProgram& program)
 {
@@ -174,7 +171,6 @@ bool TileMap::loadLevel(const string& levelFile)
 	return true;
 }
 
-
 void TileMap::prepareLayerArray(const glm::vec2& minCoords, ShaderProgram& program, int* layer, GLuint& vao, GLuint& vbo, int& nTiles, GLint& posLocation, GLint& texCoordLocation)
 {
 	int tile;
@@ -239,7 +235,6 @@ void TileMap::prepareLayerArray(const glm::vec2& minCoords, ShaderProgram& progr
 	posLocation = program.bindVertexAttribute("position", 2, 4 * sizeof(float), 0);
 	texCoordLocation = program.bindVertexAttribute("texCoord", 2, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 }
-
 
 void TileMap::prepareArrays(const glm::vec2& minCoords, ShaderProgram& program)
 {
