@@ -75,7 +75,7 @@ void GameOver::render() {
     playerDeadQuad->render(texPlayerDead);
 
     // Texto
-
+    glUseProgram(0);
     string msg1 = "GAME OVER";
     int size1 = 50;
     float width1 = msg1.length() * (float)size1;

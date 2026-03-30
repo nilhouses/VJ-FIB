@@ -87,7 +87,7 @@ void LoadingScene::render() {
 
     // Render de textos
     // Usamos la función de texto que maneja sus propios shaders
-
+    glUseProgram(0);
     // Render "LOADING..." centrado
     
     text.render(loadingStr, glm::vec2(250, 300), 20, glm::vec4(0.8f, 0.8f, 0.8f, 1), projection);

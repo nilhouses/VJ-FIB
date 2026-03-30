@@ -83,6 +83,7 @@ void Game::render()
     }
 
     // Mensajes de tutorial
+    glUseProgram(0);
     actionMsg.render(uiProjection);
 }
 
