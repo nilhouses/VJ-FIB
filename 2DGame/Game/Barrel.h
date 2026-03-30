@@ -27,13 +27,13 @@ public:
 
 private:
 	Camera* cam = nullptr;
-	glm::vec2 prevPos;			        // Para trackear ca�das(y) y movimiento(x) del barril
-	bool exploding;						// Para evitar que un barril explote varias veces
-	float explosionTimer;				// Para controlar el tiempo que dura la animaci�n de explosi�n antes del 
-	bool isBeingPushed;					// Si el barril est� siendo empujado
-	bool startingRoll = false;			// Para poner la animación intermedia
-	int pushDirection;					// 1 derecha, -1 izquierda
-	float fallSpeed;				    // Para controlar la velocidad de ca�da del barril, ahora que hay aceleraci�n
+	glm::vec2 prevPos = glm::vec2(0.f,0.f);			        // Para trackear ca�das(y) y movimiento(x) del barril
+	bool exploding = false;									// Para evitar que un barril explote varias veces
+	float explosionTimer = 0.f;								// Para controlar el tiempo que dura la animaci�n de explosi�n antes del 
+	bool isBeingPushed = false;								// Si el barril est� siendo empujado
+	bool startingRoll = false;								// Para poner la animación intermedia
+	int pushDirection = 1;									// 1 derecha, -1 izquierda
+	float fallSpeed = 0.f;									// Para controlar la velocidad de ca�da del barril, ahora que hay aceleraci�n
 	// Interacciones con el jugador
 	float pushAccumulator = 0.f;
 	const float PUSH_THRESHOLD = 30.f; // Tiempo necesario para que el jugador empuje el barril

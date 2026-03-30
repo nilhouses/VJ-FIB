@@ -52,32 +52,34 @@ private:
 	bool playerCenteredOn(const glm::vec4& bbox) const;
 	void killPlayer();
 
-    ShaderProgram texProgram;	// El programa de shaders para renderizar el mapa y el jugador
-    float currentTime;			// El tiempo actual del juego
+    ShaderProgram texProgram = ShaderProgram();	// El programa de shaders para renderizar el mapa y el jugador
+    float currentTime = 0.f;					// El tiempo actual del juego
 
 	// Global attributes of the level
-	Player* player;			// El jugador del nivel
-    int level;
-	int collectedKeys;			// N�mero de llaves recogidas por el jugador
-	int allKeys;				// N�mero total de llaves en el nivel
-	bool levelCompleted;		// Indica si el nivel ha sido completado
-	int numLives;
-	vector<Room*> rooms;			// Las diferentes habitaciones del nivel
-	int currentRoom;				// La habitación actual en la que se encuentra el jugador
+	Player* player = nullptr;					// El jugador del nivel
+    int level = 0;
+	int collectedKeys = 0;						// N�mero de llaves recogidas por el jugador
+	int allKeys = 0;							// N�mero total de llaves en el nivel
+	bool levelCompleted = false;				// Indica si el nivel ha sido completado
+	int numLives = 0;
+	vector<Room*> rooms = vector<Room*>();		// Las diferentes habitaciones del nivel
+	int currentRoom = 0;						// La habitación actual en la que se encuentra el jugador
 
 	int state;
 	Enter* interactedEnter = nullptr;
 	Entity* interactedEntity = nullptr;
 	Pipe* interactedPipe = nullptr;
 
-	Camera* camera;
+	Camera* camera = nullptr;
 	glm::mat4 projection;
-	Hud* hud;
+	Hud* hud = nullptr;
 
 	// Para saltar contenido
 	bool godMode = false;
 	bool releasedG = true;
 	bool releasedUp = true;
+
+	vector<TileMap*> maps = vector<TileMap*>();
 };
 
 #endif // _LEVEL_INCLUDE

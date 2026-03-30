@@ -9,6 +9,9 @@ LoadingScene::LoadingScene(int nextLevel) : Scene(SceneType::LOADING) {
 
 
 LoadingScene::~LoadingScene() {
+	if (texProgram.isLinked()) {
+        texProgram.free();
+    }
 }
 
 
@@ -70,6 +73,7 @@ void LoadingScene::update(int deltaTime) {
     // Si ha pasado el tiempo suficiente, cambiamos al nivel real
     if (totalTimeElapsed >= loadingDuration) {
         Game::instance().changeState(PLAYING, nextLevel);
+        return;
     }
 
     enterReleased = !Game::instance().getKey(GLFW_KEY_ENTER);

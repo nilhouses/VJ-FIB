@@ -20,11 +20,11 @@ private:
     void initShaders();
 
 private:
-    Texture texBackground;
-    TexturedQuad* background;
-    Text text;
-    ShaderProgram texProgram;
-    glm::mat4 projection;
+    Texture texBackground = Texture();
+    TexturedQuad* background = nullptr;
+    Text text = Text();
+    ShaderProgram texProgram = ShaderProgram();
+    glm::mat4 projection = glm::mat4(1.f);
 
     int timer = 0;
 };

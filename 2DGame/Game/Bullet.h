@@ -4,7 +4,7 @@
 #include "Entity.h"
 #include "SoundManager.h"
 
-enum class BulletType { PLAYER, ENEMY};
+enum class BulletType { PLAYER, ENEMY, NONE };
 
 class Bullet : public Entity
 {
@@ -22,13 +22,13 @@ public:
     void setPosition(const glm::vec2& pos) override;
 
 private:
-	BulletType t;
+	BulletType t = BulletType::NONE;
     Camera* cam = nullptr;
     Sprite* explosionSprite = nullptr;
     bool movingRight = true;
-    float speed;
-    bool exploding;
-    float explosionTimer;
+    float speed = 0.f;
+    bool exploding = false;
+    float explosionTimer = 0.f;
 	int distanceTraveled = 0;
     static constexpr float MAX_DISTANCE= 640.f; // px
 };

@@ -32,11 +32,11 @@ private:
     CreditEntry makeSection(const std::string& label);
     CreditEntry makeName(const std::string& label);
 
-    TexturedQuad* background;
-    Texture       texBackground;
-    ShaderProgram texProgram;
-    Text          text;
-    glm::mat4     projection;
+    TexturedQuad* background = nullptr;
+    Texture       texBackground = Texture();
+    ShaderProgram texProgram = ShaderProgram();
+    Text          text = Text();
+    glm::mat4     projection = glm::mat4(1.f);
 
     // Scroll
 	float startDelay = 500.f; // medio segundo de delay antes de empezar a scrollear
@@ -51,8 +51,8 @@ private:
     float fadeAlpha = 0.f;
 
     // Contenido
-    std::vector<CreditEntry> text_entries;
-    std::vector<float>       text_entryY;
+    std::vector<CreditEntry> text_entries = vector<CreditEntry>();
+    std::vector<float>       text_entryY = vector<float>();
 };
 
 #endif // _CREDITS_INCLUDE

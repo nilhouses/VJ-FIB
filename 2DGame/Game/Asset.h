@@ -22,9 +22,9 @@ public:
 	void setParrallax(float f) { sprite->setParallax(f); }
 
 protected:
-	glm::ivec2 tileMapDispl, pos;			// Posición de la entidad en el mapa de tiles
-	Texture spritesheet;
-	Sprite* sprite;
+	glm::ivec2 tileMapDispl = glm::ivec2(0.f, 0.f), pos = glm::ivec2(0.f, 0.f);			// Posición de la entidad en el mapa de tiles
+	Texture spritesheet = Texture();
+	Sprite* sprite = nullptr;
 };
 
 #endif // _ASSET_INCLUDE

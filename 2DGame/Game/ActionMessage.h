@@ -16,11 +16,11 @@ public:
     bool isActive() const { return active; }
 
 private:
-    Text* text;
-    std::string currentMsg;
-    float timer;
-    float alpha;
-    bool active;
+    Text* text = nullptr;
+    std::string currentMsg = "";
+    float timer = 0.f;
+    float alpha = 0.f;
+    bool active = true;
 };
 
 #endif  // _ACTION_MESSAGE_INCLUDE

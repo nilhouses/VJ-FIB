@@ -44,28 +44,28 @@ public:
 	bool getDeathByMap() { return deathByMap; }
 
 private:
-	bool bJumping;						// Indica si el jugador está saltando o no
-	int jumpAngle, startY;				// Ángulo de salto y posición inicial en Y para el salto
+	bool bJumping = false;						// Indica si el jugador está saltando o no
+	int jumpAngle = 0, startY = 0;				// Ángulo de salto y posición inicial en Y para el salto
 	bool onGround = false;
 	bool onGroundLastFrame= false;
 
-	bool blockedInput;
-	bool wasPushing = false;				// Indica si el jugador estaba empujando un barril en el frame anterior
+	bool blockedInput = false;
+	bool wasPushing = false;					// Indica si el jugador estaba empujando un barril en el frame anterior
 	// Atributos necesarios para items
-	int itemPickTimer;
+	int itemPickTimer = 0;
 	// Atributos necesarios para el SpeedBoost
-	float speedBoostTimer;
+	float speedBoostTimer = 0.f;
 	float speedMultiplier = 1.f;
 	// Atributos necesarios para disparar
 	bool isShooting = false;
 	float shootAnimTimer = 0;
 	float shootCooldown = 0;
 	int  numBullets = 0;
-	bool facingRight = true;        // Dirección disparo
+	bool facingRight = true;					// Dirección disparo
 	Room* currentRoom = nullptr;
 	ShaderProgram* shaderProgram = nullptr;
 	Camera* cameraPtr = nullptr;
-	float startAnimTimer;
+	float startAnimTimer = 0.f;
 	bool deathByMap = false; // Indica si el jugador ha muerto por un daño de mapa (caída, pinchos, etc.) para configurar la animación de muerte correspondiente
 
 	bool leftReleased = true, rightReleased = true;

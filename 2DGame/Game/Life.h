@@ -19,7 +19,7 @@ public:
 	
 private:
 	bool collecting = false;
-	float collectTimer;
+	float collectTimer = 0.f;
 };
 
 

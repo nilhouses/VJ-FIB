@@ -18,11 +18,7 @@ Acid::Acid() : Entity(Type::ACID)
 
 }
 
-Acid::~Acid()
-{
-    if (sprite != NULL)
-        delete sprite;
-}
+Acid::~Acid() {}
 
 void Acid::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c)
 {

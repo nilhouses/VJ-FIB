@@ -8,7 +8,7 @@ Hud::Hud()
 
 Hud::~Hud()
 {
-
+	if (background != nullptr) delete background;
 }
 
 void Hud::init(int numLives, int numKeys, int level)
@@ -32,10 +32,15 @@ void Hud::init(int numLives, int numKeys, int level)
     vShader.free();
     fShader.free();
 
-    lifeIcon.init(hudProgram, "images/items.png", glm::ivec2(32, 32), glm::vec2(0.25f, 1.f / 5.f), glm::vec2(0.50f, 0.f));
-    gunIcon.init(hudProgram, "images/items.png", glm::ivec2(32, 32), glm::vec2(0.25f, 1.f / 5.f), glm::vec2(0.25f, 1.f/5.f));
-    boostIcon.init(hudProgram, "images/items.png", glm::ivec2(32, 32), glm::vec2(0.25f, 1.f / 5.f), glm::vec2(0.25f, 0.f));
-    keyIcon.init(hudProgram, "images/items.png", glm::ivec2(32, 32), glm::vec2(0.25f, 1.f / 5.f), glm::vec2(0.f, 0.f));
+	lifeIcon = new HudIcon();
+	gunIcon = new HudIcon();
+	boostIcon = new HudIcon();
+	keyIcon = new HudIcon();
+
+    lifeIcon->init(hudProgram, "images/items.png", glm::ivec2(32, 32), glm::vec2(0.25f, 1.f / 5.f), glm::vec2(0.50f, 0.f));
+    gunIcon->init(hudProgram, "images/items.png", glm::ivec2(32, 32), glm::vec2(0.25f, 1.f / 5.f), glm::vec2(0.25f, 1.f/5.f));
+    boostIcon->init(hudProgram, "images/items.png", glm::ivec2(32, 32), glm::vec2(0.25f, 1.f / 5.f), glm::vec2(0.25f, 0.f));
+    keyIcon->init(hudProgram, "images/items.png", glm::ivec2(32, 32), glm::vec2(0.25f, 1.f / 5.f), glm::vec2(0.f, 0.f));
 
 	initShaders();
 
@@ -84,7 +89,7 @@ void Hud::render()
     
     // Llaves
     float keysGroupX = HUD_WIDTH - 130.f;
-    keyIcon.render(glm::vec2(keysGroupX, iconsY), hudProj, 0.f);
+    keyIcon->render(glm::vec2(keysGroupX, iconsY), hudProj, 0.f);
     if (numKeys == allKeys) text.render(keysStr, glm::vec2(keysGroupX + 40.f, textY), 24, glm::vec4(1, 1, 0.2f, 1), hudProj);
     else text.render(keysStr, glm::vec2(keysGroupX + 40.f, textY), 24, glm::vec4(1, 1, 1, 1), hudProj);
 
@@ -92,18 +97,18 @@ void Hud::render()
     float boostGroupX = keysGroupX - 60.f;
     if (boostTimeLeft > 0.0f) {
         float fill = glm::clamp(boostTimeLeft / SpeedBoost::getMaxTime(), 0.0f, 1.0f);
-        boostIcon.render(glm::vec2(boostGroupX, iconsY), hudProj, fill);
+        boostIcon->render(glm::vec2(boostGroupX, iconsY), hudProj, fill);
     }
-    else boostIcon.render(glm::vec2(boostGroupX, iconsY), hudProj, 0.f);
+    else boostIcon->render(glm::vec2(boostGroupX, iconsY), hudProj, 0.f);
 
     // Pipa
     float gunGroupX = boostGroupX - 120.f;
-    gunIcon.render(glm::vec2(gunGroupX, iconsY), hudProj, 0.f);
+    gunIcon->render(glm::vec2(gunGroupX, iconsY), hudProj, 0.f);
     text.render(gunStr, glm::vec2(gunGroupX + 40.f, textY), 24, glm::vec4(1, 1, 1, 1), hudProj);
 
     // Vidas
     float livesGroupX = gunGroupX - 120.f;
-    lifeIcon.render(glm::vec2(livesGroupX, iconsY), hudProj, 0.f);
+    lifeIcon->render(glm::vec2(livesGroupX, iconsY), hudProj, 0.f);
     text.render(livesStr, glm::vec2(livesGroupX + 40.f, textY), 24, glm::vec4(1, 1, 1, 1), hudProj);
 
     // GodMode (opcional)

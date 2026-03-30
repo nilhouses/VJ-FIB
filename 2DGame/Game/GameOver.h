@@ -18,13 +18,13 @@ public:
 private:
     void initShaders();
 
-    TexturedQuad* background;
-    TexturedQuad* playerDeadQuad;
-    Texture texBackground;
-    Texture texPlayerDead;
+    TexturedQuad* background = nullptr;
+    TexturedQuad* playerDeadQuad = nullptr;
+    Texture texBackground = Texture();
+    Texture texPlayerDead = Texture();
 
-    ShaderProgram texProgram;
-    Text text;
+    ShaderProgram texProgram = ShaderProgram();
+    Text text = Text();
 
     float timer = 0.f;
 	float delayBeforePressB = 4500.f; // 1.5 segundos de espera antes de mostrar al personaje muerto y el mensaje de "PRESS B"

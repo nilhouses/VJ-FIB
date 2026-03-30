@@ -9,8 +9,11 @@ Enter::Enter(EnterType t) : Entity(Type::ENTER), eType(t) {}
 
 Enter::~Enter()
 {
-	if (sprite != NULL)
-		delete sprite;
+    connectedTo = nullptr;
+	if (arrow != nullptr) {
+        delete arrow;
+        arrow = nullptr;
+    }
 }
 
 void Enter::update(int deltaTime)

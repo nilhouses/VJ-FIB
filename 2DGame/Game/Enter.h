@@ -9,7 +9,8 @@
 
 enum class EnterType {
 	DOOR,
-	TUNNEL
+	TUNNEL,
+	NONE
 };
 
 class Enter : public Entity
@@ -31,7 +32,7 @@ public:
 	EnterType getEnterType() const { return eType; }
 	
 private:
-	EnterType eType;
+	EnterType eType = EnterType::NONE;
 	Enter* connectedTo = nullptr; // Puerta a la que se conecta esta puerta
 
 protected:

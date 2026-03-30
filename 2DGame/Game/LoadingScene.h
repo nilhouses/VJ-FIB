@@ -24,18 +24,18 @@ private:
     void setupTips();
 
 private:
-    Text text;
-    ShaderProgram texProgram;
+    Text text = Text();
+    ShaderProgram texProgram = ShaderProgram();
 
-    float currentTime;
-    int nextLevel;
+    float currentTime = 0.f;
+    int nextLevel = -1;
 
     // Lógica de los puntos (...)
     int dotCount = 0;
     float dotTimer = 0;
 
     // Lógica de los Tips
-    std::vector<std::string> tips;
+    vector<string> tips = vector<string>();
     int currentTipIndex = 0;
     float tipTimer = 0;
 

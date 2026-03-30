@@ -15,11 +15,7 @@ enum LifeAnims
 Life::Life() : Entity(Type::LIFE) {}
 
 
-Life::~Life()
-{
-	if (sprite != NULL)
-		delete sprite;
-}
+Life::~Life() {}
 
 
 void Life::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c)

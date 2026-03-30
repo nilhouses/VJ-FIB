@@ -18,7 +18,8 @@ enum class Type {
 	PIPE,
 	ENTER,
 	ACID,
-	ENTERARROW
+	ENTERARROW,
+	NONE
 };
 
 class Entity
@@ -59,13 +60,13 @@ public:
 	void printDebugInfo() const; // Función para imprimir información de depuración sobre la entidad (posición, tipo, estado, etc.)
 	
 protected:
-	TileMap* map;					    	// Mapa de tiles para detectar colisiones
-	glm::ivec2 tileMapDispl, pos;			// Posición de la entidad en el mapa de tiles (px)
-	Texture spritesheet;
-	Sprite *sprite;
-	bool active;							// Indica si la entidad está activa (visible y actualizable) o no
-	Type type;								// Aquí guardamos qué es (Player, Key, etc.)
-	int room;
+	TileMap* map = nullptr;					    										// Mapa de tiles para detectar colisiones
+	glm::ivec2 tileMapDispl = glm::ivec2(0,0), pos = glm::ivec2(0,0);					// Posición de la entidad en el mapa de tiles (px)
+	Texture spritesheet = Texture();
+	Sprite *sprite = nullptr;
+	bool active = true;																	// Indica si la entidad está activa (visible y actualizable) o no
+	Type type = Type::NONE;																// Aquí guardamos qué es (Player, Key, etc.)
+	int room = -1;
 	float itemTimer = 0.f;
 	glm::ivec2 size = glm::ivec2(32, 32);   // Tamaño del bounding box por defecto (se asume que es un cuadrado de 32x32 píxeles, pero cada entidad puede sobreescribir esta función para devolver un bounding box diferente
 };

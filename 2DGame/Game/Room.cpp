@@ -17,19 +17,16 @@ Room::Room(ShaderProgram& shaderProgram)
 
 Room::~Room()
 {
-    if (map != NULL)
-        delete map;
+	if (background != nullptr)
+        delete background;
 	
     for (Entity* entity : entities) {
         if (entity != nullptr)
             delete entity;
     }
 	entities.clear();
-    for (Entity* enemy : enemies) {
-        if (enemy != nullptr)
-            delete enemy;
-    }
     enemies.clear();
+
     for (Asset* asset : assets) {
         if (asset != nullptr)
             delete asset;

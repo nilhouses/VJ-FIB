@@ -12,10 +12,12 @@ enum BulletAnims
 
 Bullet::Bullet() : Entity(Type::BULLET) {}
 
-Bullet::~Bullet()
-{
-    if (explosionSprite != nullptr)
+Bullet::~Bullet() {
+	if (explosionSprite != nullptr) {
+        explosionSprite->free();
         delete explosionSprite;
+        explosionSprite = nullptr;
+    }
 }
 
 void Bullet::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, BulletType t)

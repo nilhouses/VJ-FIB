@@ -45,16 +45,16 @@ private:
     glm::vec2 endTexCoords(const glm::ivec2& dirToAdjacent) const;
     glm::vec2 inferTexCoords(const vector<glm::ivec2>& tiles, int i) const;
     glm::vec2 busyTexCoords(const glm::vec2& idleTexCoords) const;
-    vector<PipeSegment> segments;
+    vector<PipeSegment> segments = vector<PipeSegment>();
 
     int   entryEnd = 0;
     bool  someoneInside = false;
     bool  transitComplete = false;
     float transitProgress = 0.f;
-    float transitDuration; // se calcula en init()
+    float transitDuration = 0.f; // se calcula en init()
     int activeSegment = 0;
     bool soundEnabled = false;
-    int tileSize;
+    int tileSize = 32;
 
     ShaderProgram* shaderProg = nullptr;
     Camera* cam = nullptr;

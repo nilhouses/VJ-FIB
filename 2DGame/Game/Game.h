@@ -63,17 +63,17 @@ public:
 	void showTutorial(const string& msg);
 
 private:
-	bool bPlay;					 // Guarda si el juego debe seguir ejecutandose o no
-	bool keys[GLFW_KEY_LAST+1];  // Guarda por cada tecla si está pulsada o no
-	Scene* currentScene;         // Puntero a la pantalla a la que estamos
-	int currentLevel;            // Nivel actual
-	int numLives = 3;            // Número de vidas del jugador en la partida actual, se mantiene al cambiar de nivel  
+	bool bPlay = true;						// Guarda si el juego debe seguir ejecutandose o no
+	bool keys[GLFW_KEY_LAST + 1] = {};		// Guarda por cada tecla si está pulsada o no
+	Scene* currentScene = nullptr;			// Puntero a la pantalla a la que estamos
+	int currentLevel = -1;					// Nivel actual
+	int numLives = 3;						// Número de vidas del jugador en la partida actual, se mantiene al cambiar de nivel  
 	
 	// Textos de información
-	Text tutorialText;
-	ActionMessage actionMsg;
-	set<string> messagesSeen; // Mensajes ya mostrados al usuario en esta ejecución del juego
-	glm::mat4 uiProjection;
+	Text tutorialText = Text();
+	ActionMessage actionMsg = ActionMessage();
+	set<string> messagesSeen = set<string>();	// Mensajes ya mostrados al usuario en esta ejecución del juego
+	glm::mat4 uiProjection = glm::mat4(1.f);
 
 };
 

@@ -6,11 +6,7 @@
 
 EnterArrow::EnterArrow() : Entity(Type::ENTERARROW) {}
 
-EnterArrow::~EnterArrow()
-{
-	if (sprite != NULL)
-		delete sprite;
-}
+EnterArrow::~EnterArrow() {}
 
 void EnterArrow::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, bool pointsDown)
 {

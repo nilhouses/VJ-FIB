@@ -24,11 +24,7 @@ Player::Player() : Entity(Type::PLAYER)
 	map = NULL;
 }
 
-Player::~Player()
-{
-	if (sprite != NULL)
-		delete sprite;
-}
+Player::~Player() {}
 
 void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c)
 {

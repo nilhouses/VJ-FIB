@@ -15,11 +15,7 @@ enum GunAnims
 Gun::Gun() : Entity(Type::GUN) {}
 
 
-Gun::~Gun()
-{
-	if (sprite != NULL)
-		delete sprite;
-}
+Gun::~Gun() {}
 
 
 void Gun::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c)

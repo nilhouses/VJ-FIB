@@ -28,15 +28,14 @@ public:
     }
 
 private:
-    glm::vec2 position;  // Posición de la cámara en el mundo
-    glm::vec2 target;    // Punto de la pantalla donde queremos centrar al jugador
-    int screenWidth;
-    int screenHeight;
-    // int hudHeight; unused
+    glm::vec2 position = glm::vec2(0.f,0.f);            // Posición de la cámara en el mundo
+    glm::vec2 target = glm::vec2(0.f, 0.f);             // Punto de la pantalla donde queremos centrar al jugador
+    int screenWidth = 640;
+    int screenHeight = 480;
 
-	float totalTransitionTime; // Duración total de la transición (para updateTransition)
-	glm::vec2 transitionStartPos; // Posición inicial de la transición
-	glm::vec2 transitionEndPos;   // Posición final de la transición
+	float totalTransitionTime = 0.f;                    // Duración total de la transición (para updateTransition)
+	glm::vec2 transitionStartPos = glm::vec2(0.f, 0.f); // Posición inicial de la transición
+	glm::vec2 transitionEndPos = glm::vec2(0.f, 0.f);   // Posición final de la transición
 };
 
 #endif

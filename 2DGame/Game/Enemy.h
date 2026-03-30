@@ -6,7 +6,8 @@
 enum class EnemyType {
     DUMMY,
     CLEVER,
-    SHOOTER
+    SHOOTER,
+    NONE
 };
 
 class Enemy : public Entity
@@ -41,14 +42,14 @@ public:
     void centerY();
 
 protected:
-    EnemyType eType;                                    // Tipos de enemigo
-    bool dying = false;                                 // Para poder desactivar colisiones con otras entidades
-	bool hurts = true;                                  // Para poder controlar si el enemigo hace daño (por ejemplo, el Clever no hace daño mientras está saliendo de un túnel)
-    float deathTimer;                                   // Para controlar el tiempo que dura la animaci�n de muerte antes del deactivate
-	int speed = 1;                                      // Todo enemigo tiene una velocidad de movimiento en px. (Por Defecto 1)
-	int fallStep = 6;                                   // Px por ca�da (Por defecto 6)
-	int deathDuration = 500;                            // Animaci�n muerte en ms (Por defecto 500ms)
-    bool movingRight;                                   // Para controlar la direcci�n del movimiento (true = right, false = left)
+    EnemyType eType = EnemyType::NONE;                      // Tipos de enemigo
+    bool dying = false;                                     // Para poder desactivar colisiones con otras entidades
+	bool hurts = true;                                      // Para poder controlar si el enemigo hace daño (por ejemplo, el Clever no hace daño mientras está saliendo de un túnel)
+    float deathTimer = 0.f;                                 // Para controlar el tiempo que dura la animaci�n de muerte antes del deactivate
+	int speed = 1;                                          // Todo enemigo tiene una velocidad de movimiento en px. (Por Defecto 1)
+	int fallStep = 6;                                       // Px por ca�da (Por defecto 6)
+	int deathDuration = 500;                                // Animaci�n muerte en ms (Por defecto 500ms)
+    bool movingRight = false;                               // Para controlar la direcci�n del movimiento (true = right, false = left)
     bool onGround = false;
 };
 

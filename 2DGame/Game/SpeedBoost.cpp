@@ -14,11 +14,7 @@ enum SpeedBoostAnims
 
 SpeedBoost::SpeedBoost() : Entity(Type::SPEEDBOOST) {}
 
-SpeedBoost::~SpeedBoost()
-{
-	if (sprite != NULL)
-		delete sprite;
-}
+SpeedBoost::~SpeedBoost() {}
 
 void SpeedBoost::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c)
 {

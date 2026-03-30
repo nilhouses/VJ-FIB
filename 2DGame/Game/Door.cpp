@@ -12,11 +12,7 @@ enum DoorAnims
 
 Door::Door() : Enter(EnterType::DOOR) {}
 
-Door::~Door()
-{
-	if (sprite != NULL)
-		delete sprite;
-}
+Door::~Door() {}
 
 void Door::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, int sr)
 {

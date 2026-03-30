@@ -33,19 +33,30 @@ bool Game::update(int deltaTime)
     // Version compatible Web
     int fixedDeltaTime = (deltaTime > 17) ? 17 : deltaTime;
 
+    SoundManager::instance().update(); // Limpiar sonidos que ya han terminado
+    actionMsg.update(fixedDeltaTime);
+
     // Actualizar escena actual
     if (currentScene != nullptr) {
+        SceneType type = currentScene->getType();
+
         currentScene->update(fixedDeltaTime);
 
-        if (currentScene->getType() == SceneType::COMIC) {
+        if (type == SceneType::COMIC) {
             Comic* c = static_cast<Comic*>(currentScene);
             if (c->hasFinished()) {
-                if (c->isInitial()) changeState(LOADING, 1);
+                if (c->isInitial()) {
+                    try {
+                        changeState(LOADING, 1);
+                    }
+                    catch (...) {
+                        cout << "Error" << endl;
+                    }
+                }
                 else changeState(CREDITS);
             }
         }
-
-        if (currentScene->getType() == SceneType::LEVEL) {
+        else if (type == SceneType::LEVEL) {
             Level* level = static_cast<Level*>(currentScene);
 
             if (level->gameOver()) {
@@ -61,15 +72,11 @@ bool Game::update(int deltaTime)
                 }
             }
         }
-
-        if (currentScene->getType() == SceneType::GAMEOVER) {
+        else if (type == SceneType::GAMEOVER) {
             GameOver* go = static_cast<GameOver*>(currentScene);
             if (go->hasFinished()) changeState(MAIN_MENU);
 		}
     }
-
-	SoundManager::instance().update(); // Limpiar sonidos que ya han terminado
-    actionMsg.update(fixedDeltaTime);
 
 	return bPlay;
 }
@@ -104,11 +111,13 @@ void Game::keyPressed(int key)
             numLives = level->getLives();
 		}
         changeState(PLAYING, currentLevel);
+        return;
 	}
     if (key == GLFW_KEY_B) {
         SceneType type = currentScene->getType();
         if (type != SceneType::CREDITS && type != SceneType::GAMEOVER) {
             changeState(MAIN_MENU, currentLevel);
+            return;
         }
     }
 
@@ -143,6 +152,13 @@ bool Game::getKey(int key) const
 void Game::changeState(GameState newState, int levelNumber)
 {
     currentLevel = levelNumber;
+    SoundManager::instance().setMusicSpeed(1.0f);
+
+    if (currentScene != nullptr) {
+        glFinish();
+        delete currentScene; // Liberamos la memoria de la escena anterior
+        currentScene = nullptr;
+	}
 
     // Instanciamos la nueva escena seg�n el estado
     switch (newState) {
@@ -174,7 +190,6 @@ void Game::changeState(GameState newState, int levelNumber)
             break;
         case LOADING:
             SoundManager::instance().stopMusic();
-		    cout << "Loading level " << levelNumber << "..." << endl;
             currentScene = new LoadingScene(levelNumber);
 		    break;
         case GAMEOVER:

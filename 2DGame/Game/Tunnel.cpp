@@ -11,11 +11,7 @@ enum TunnelAnims
 
 Tunnel::Tunnel() : Enter(EnterType::TUNNEL) {}
 
-Tunnel::~Tunnel()
-{
-	if (sprite != NULL)
-		delete sprite;
-}
+Tunnel::~Tunnel() {}
 
 void Tunnel::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, int sr)
 {

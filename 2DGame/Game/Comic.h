@@ -27,13 +27,13 @@ private:
     void initIntro();
     void initOutro();
 
-    int version;
+    int version = -1;
 
-    TexturedQuad* strip;
-    Texture       texStrip;
-    ShaderProgram texProgram;
-    Text          text;
-    glm::mat4     projection;
+    TexturedQuad* strip = nullptr;
+    Texture       texStrip = Texture();
+    ShaderProgram texProgram = ShaderProgram();
+    Text          text = Text();
+    glm::mat4     projection = glm::mat4(1.f);
 
     int currentFrame = 0;
     int numRows = 0;

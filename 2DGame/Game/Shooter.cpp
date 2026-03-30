@@ -14,11 +14,7 @@ Shooter::Shooter() : Enemy(EnemyType::SHOOTER) {
     sprite = nullptr;
 }
 
-Shooter::~Shooter()
-{
-    if (sprite != NULL)
-        delete sprite;
-}
+Shooter::~Shooter() {}
 
 void Shooter::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, bool movingRight)
 {

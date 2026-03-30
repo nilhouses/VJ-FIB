@@ -16,7 +16,7 @@ public:
 	void setPosition(const glm::vec2& pos) override;
 
 private:
-	glm::vec2 initPos;
+	glm::vec2 initPos = glm::vec2(0.f, 0.f);
 	float timer = 0;
 };
 

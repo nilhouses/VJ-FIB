@@ -16,11 +16,11 @@ public:
     virtual void setPosition(const glm::vec2& pos) override;
 
 private:
-    glm::vec2 origin;       // Posición inicial
-	int rangePixels;        // Rango de movimiento en píxeles
-    int axis;               // 0 = horitzontal, 1 = vertical
-    int direction;          // 1 o -1
-    glm::vec2 deltaMovement;
+    glm::vec2 origin = glm::vec2(0.f,0.f);          // Posición inicial
+	int rangePixels = 0;                            // Rango de movimiento en píxeles
+    int axis = 0;                                   // 0 = horitzontal, 1 = vertical
+    int direction = 1;                              // 1 o -1
+    glm::vec2 deltaMovement = glm::vec2(0.f,0.f);
     float distanceCounter = 0.f;
 };
 

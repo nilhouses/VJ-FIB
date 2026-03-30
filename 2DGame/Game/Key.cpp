@@ -11,11 +11,7 @@ enum KeyAnims
 
 Key::Key() : Entity(Type::KEY) {}
 
-Key::~Key()
-{
-	if (sprite != NULL)
-		delete sprite;
-}
+Key::~Key() {}
 
 void Key::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c)
 {

@@ -6,11 +6,7 @@
 
 Platform::Platform() : Entity(Type::PLATFORM) {}
 
-Platform::~Platform()
-{
-    if (sprite != NULL)
-        delete sprite;
-}
+Platform::~Platform() {}
 
 void Platform::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, int rangePixels, int axis, int direction, int sr)
 {

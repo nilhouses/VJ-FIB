@@ -23,27 +23,27 @@ public:
 private:
 	void initShaders();
 
-	int numLives;
-	int numKeys;
-	int allKeys; // Número total de llaves del nivel, para mostrar el contador de llaves como numKeys/allKeys
-	int numBullets;
-	float speedBoostDuration;
-	float boostTimeLeft;
-	bool godMode;
+	int numLives = 0;
+	int numKeys = 0;
+	int allKeys = 0; // Número total de llaves del nivel, para mostrar el contador de llaves como numKeys/allKeys
+	int numBullets = 0;
+	float speedBoostDuration = 0.f;
+	float boostTimeLeft = 0.f;
+	bool godMode = false;
 
-	glm::mat4 hudProj;
-	Text text;
+	glm::mat4 hudProj = glm::mat4(1.f);
+	Text text = Text();
 
 	// Iconos
-	ShaderProgram hudProgram, texProgram;
+	ShaderProgram hudProgram = ShaderProgram(), texProgram = ShaderProgram();
 
-	Texture texBackground;
-	TexturedQuad* background;
+	Texture texBackground = Texture();
+	TexturedQuad* background = nullptr;
 
-	HudIcon keyIcon;
-	HudIcon lifeIcon;
-	HudIcon boostIcon;
-	HudIcon gunIcon;
+	HudIcon* keyIcon = nullptr;
+	HudIcon* lifeIcon = nullptr;
+	HudIcon* boostIcon = nullptr;
+	HudIcon* gunIcon = nullptr;
 };
 
 #endif // _HUD_INCLUDE

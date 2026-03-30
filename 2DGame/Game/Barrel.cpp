@@ -18,11 +18,7 @@ enum BarrelAnims
 Barrel::Barrel() : Entity(Type::BARREL) {}
 
 
-Barrel::~Barrel()
-{
-	if (sprite != NULL)
-		delete sprite;
-}
+Barrel::~Barrel() {}
 
 void Barrel::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, glm::vec2 prevPos)
 {

@@ -38,7 +38,7 @@ private:
 	// Escalera
 	static const int VERTICAL_COOLDOWN = 1000; // 1 segundo, para evitar que el clever suba y baje por la misma escalera o pipe repetidamente
 	// Pipes
-	vector<Pipe*> pipes;
+	vector<Pipe*> pipes = vector<Pipe*>();
 	Pipe* currentPipe = nullptr;
 	bool inPipe = false;
 	bool visible = true;
@@ -51,7 +51,7 @@ private:
 	static constexpr float TUNNEL_DURATION = 1000.f; // ms, igual que el player
 	static constexpr float TUNNEL_CLEAR_DISTANCE = 16.f; // N?mero de px que hace falta recorrer para no volver a usar el mismo t?nel, evita el t?pico bucle de entrar y salir del t?nel constantemente, que no se usar? casi nunca pero depende del nivel
 	Camera* cam = nullptr;
-	float startAnimTimer;
+	float startAnimTimer = 0.f;
 };
 
 

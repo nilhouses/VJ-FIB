@@ -27,10 +27,35 @@ Level::Level(int levelNumber, int numLives) : Scene(SceneType::LEVEL)
 
 Level::~Level()
 {
-    texProgram.free();
+    if (texProgram.isLinked()) {
+        texProgram.free();
+    }
+
     for (Room* room : rooms) {
-        if (room != nullptr)
+        if (room != nullptr) {
             delete room;
+        }
+    }
+    rooms.clear();
+
+	for (TileMap* map : maps) {
+        if (map != nullptr) {
+            delete map;
+        }
+    }
+	maps.clear();
+
+    if (player != nullptr) {
+        delete player;
+        player = nullptr;
+    }
+    if (camera != nullptr) {
+        delete camera;
+        camera = nullptr;
+    }
+    if (hud != nullptr) {
+        delete hud;
+        hud = nullptr;
     }
 }
 
@@ -333,7 +358,7 @@ void Level::createRooms()
     int totalRooms, totalMaps;
     fin >> totalRooms >> totalMaps; // Número de Rooms y Maps distintos
 
-    vector<TileMap*> maps(totalMaps);
+    maps = vector<TileMap*>(totalMaps);
     loadMaps(maps, totalMaps);  // Se cargan los mapas y se guardan sus referencias en el vector maps para asignarlos a cada habitación
 
     int roomIndex, mapIndex;
@@ -369,6 +394,32 @@ void Level::createRooms()
 
 void Level::init()
 {
+    // Limpieza
+    if (texProgram.isLinked()) {
+        texProgram.free();
+    }
+
+    for (Room* room : rooms) {
+        if (room != nullptr) {
+            delete room;
+        }
+    }
+    rooms.clear();
+
+    if (player != nullptr) {
+        delete player;
+        player = nullptr;
+    }
+    if (camera != nullptr) {
+        delete camera;
+        camera = nullptr;
+    }
+    if (hud != nullptr) {
+        delete hud;
+        hud = nullptr;
+    }
+
+
     initShaders();
 
     // Atributos globales del nivel
@@ -1102,6 +1153,7 @@ void Level::update(int deltaTime)
                     numLives--;
                     cout << "numLives: " << numLives << endl;
                     init(); // Temporal, el init vuelve a leer todos los ficheros. Necesitaremos un reset()
+                    return;
                 }
             }
 

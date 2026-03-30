@@ -15,11 +15,7 @@ Dummy::Dummy() : Enemy(EnemyType::DUMMY)
 
 }
 
-Dummy::~Dummy()
-{
-	if (sprite != NULL)
-		delete sprite;
-}
+Dummy::~Dummy() {}
 
 void Dummy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, bool movingRight)
 {

@@ -17,11 +17,7 @@ Clever::Clever() : Enemy(EnemyType::CLEVER)
 
 }
 
-Clever::~Clever()
-{
-    if (sprite != NULL)
-        delete sprite;
-}
+Clever::~Clever() {}
 
 void Clever::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Camera* c, bool movingRight)
 {

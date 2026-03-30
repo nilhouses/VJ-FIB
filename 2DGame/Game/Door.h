@@ -25,8 +25,8 @@ public:
 	void openLockedDoorSound();
 
 private:
-	bool visited;
-	int spriteRow;
+	bool visited = false;
+	int spriteRow = -1;
 };
 
 

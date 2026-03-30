@@ -20,15 +20,15 @@ private:
     void initShaders();
 
 private:
-    Texture texBackground, texSprite;
-    TexturedQuad* background, * cursor;
-    Text text;
-    ShaderProgram texProgram;
-    glm::mat4 projection;
+    Texture texBackground = Texture(), texSprite = Texture();
+    TexturedQuad* background = nullptr, * cursor = nullptr;
+    Text text = Text();
+    ShaderProgram texProgram = ShaderProgram();
+    glm::mat4 projection = glm::mat4(1.f);
 
     int selectedOption = 0; // [0,1,2]
     int timeSinceLastKey = 0;
-    float currentTime;
+    float currentTime = 0.f;
 };
 
 #endif
