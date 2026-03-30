@@ -277,7 +277,7 @@ void Player::update(int deltaTime)
 	// SpeedBoost
 	if (speedBoostTimer > 0) {
 		speedBoostTimer -= deltaTime;
-		if (speedBoostTimer <= 0) { speedBoostTimer = 0; speedMultiplier = 1.f; }
+		if (speedBoostTimer <= 0) { speedBoostTimer = 0; speedMultiplier = 1.f; SoundManager::instance().setMusicSpeed(1.0f); }
 	}
 
 	// Disparos

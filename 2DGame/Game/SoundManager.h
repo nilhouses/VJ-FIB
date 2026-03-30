@@ -31,9 +31,10 @@ public:
 
     // Ajusta el volumen de todo el motor
     void setMasterVolume(float volume);
-
+    
     // Ajusta el volumen de la música actual
     void setMusicVolume(float volume);
+    void setMusicSpeed(float speed);
 
     void increaseVolume(float delta);
     void decreaseVolume(float delta);
@@ -48,6 +49,7 @@ private:
     bool musicPlaying = false;
     std::string currentMusicKey = "";
     float musicVolume = 0.1f;
+    float turboTimer = 0.0f;
     std::list<ma_sound*> activeSounds; // Lista de sonidos en reproducción
 };
 

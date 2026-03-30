@@ -173,6 +173,11 @@ void SoundManager::setMusicVolume(float volume) {
     }
 }
 
+void SoundManager::setMusicSpeed(float speed) {
+    if (!initialized || !musicPlaying) return;
+    ma_sound_set_pitch(&bgm, speed);
+}
+
 void SoundManager::update() {
     if (!initialized) return;
 

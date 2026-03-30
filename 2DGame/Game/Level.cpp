@@ -389,6 +389,7 @@ void Level::init()
 
     createRooms();
     currentTime = 0.0f;
+    SoundManager::instance().setMusicSpeed(1.0f);
 }
 
 // ---------------------- UPDATE + COLLISIONS ----------------------
@@ -481,6 +482,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, const glm
             transitionTimer = 300.f;
             interactedEntity = e;
             SoundManager::instance().playSound("kachow", 0.6f);
+            SoundManager::instance().setMusicSpeed(1.5f);
             break;
         }
 
