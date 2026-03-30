@@ -638,7 +638,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, const glm
             if (enter->getEnterType() == EnterType::DOOR) Game::instance().showTutorial("PRESS [UP] TO  ENTER A DOOR");
 			else if (enter->getEnterType() == EnterType::TUNNEL) Game::instance().showTutorial("PRESS [UP] TO TRAVEL THROUGH A TUNNEL");
             
-            if (rangeCollided.x > 18 && rangeCollided.y > 50) {
+            if (rangeCollided.x > 18 && rangeCollided.y > 56) {
                 Enter* enter = static_cast<Door*>(e);
                 enter->activateArrow();
                 bool isUpPressed = Game::instance().getKey(GLFW_KEY_UP);

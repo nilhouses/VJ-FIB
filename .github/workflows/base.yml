@@ -147,12 +147,15 @@ jobs:
           fi
         done
 
-        # 4. Fix main.cpp
+        # 4. Fix main.cpp: eliminar windows, glew i afegir guard #ifndef __EMSCRIPTEN__
         find 2DGame/Game -name "main.cpp" | while read f; do
           sed -i '/#include <windows.h>/d' "$f"
           sed -i '/#include "resource.h"/d' "$f"
           sed -i '/#define GLFW_EXPOSE_NATIVE_WIN32/d' "$f"
           sed -i '/#ifdef _WIN32/,/#endif/d' "$f"
+          # Substituir glewInit() per versió guardada
+          sed -i 's/glewExperimental = GL_TRUE;/#ifndef __EMSCRIPTEN__\n\tglewExperimental = GL_TRUE;/' "$f"
+          sed -i 's/glewInit();/glewInit();\n#endif/' "$f"
         done
 
         # 5. Fix Text.cpp

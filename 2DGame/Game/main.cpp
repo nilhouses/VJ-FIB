@@ -2,19 +2,18 @@
 #include <GLFW/glfw3.h>
 
 #ifdef _WIN32
-    #define GLFW_EXPOSE_NATIVE_WIN32
-    #include <GLFW/glfw3native.h>
-    #include <windows.h>
-    #include "resource.h"
+	#define GLFW_EXPOSE_NATIVE_WIN32
+	#include <GLFW/glfw3native.h>
+	#include <windows.h>
+	#include "resource.h"
 #endif
 
 #ifdef __EMSCRIPTEN__
-    #include <emscripten.h>
+	#include <emscripten.h>
 #endif
 
 #include "Game.h"
 #include <iostream>
-
 
 #define TARGET_FRAMERATE 60.0f
 
@@ -110,8 +109,10 @@ int main(void)
 	/* ------------------------------------------------------------------------------------------- */
 
 	/* Init glew to have access to GL extensions */
-	glewExperimental = GL_TRUE;
-	glewInit();
+	#ifndef __EMSCRIPTEN__
+		glewExperimental = GL_TRUE;
+		glewInit();
+	#endif
 
 	/* Obtenemos una instancia del juego (Clase singleton) y la inicializamos */
 	Game::instance().init();
