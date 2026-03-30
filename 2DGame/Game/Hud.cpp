@@ -66,7 +66,7 @@ void Hud::update(int deltaTime, int numLives, int numBullets, float speedBoostDu
 
 void Hud::render()
 {
-	// Fondo del HUD
+    // Fondo del HUD
     texProgram.use();
     texProgram.setUniformMatrix4f("projection", hudProj);
     texProgram.setUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
@@ -76,45 +76,45 @@ void Hud::render()
     background->render(texBackground);
 
     glUseProgram(0);
-    
+
     // Preparamos strings
     std::string livesStr = "x" + std::to_string(numLives);
-    std::string gunStr   = "x" + std::to_string(numBullets);
-    std::string keysStr  = std::to_string(numKeys) + "/" + std::to_string(allKeys);
+    std::string gunStr = "x" + std::to_string(numBullets);
+    std::string keysStr = std::to_string(numKeys) + "/" + std::to_string(allKeys);
 
     float iconsY = 16.f;
+    float margin = 25.f;  
+
+    // Texto +  iconos agrupados a la derecha
+
     float textY = 45.f;
-
-	// Texto +  iconos agrupados a la derecha
-    
-    // Llaves
-    float keysGroupX = HUD_WIDTH - 130.f;
-    keyIcon->render(glm::vec2(keysGroupX, iconsY), hudProj, 0.f);
-    if (numKeys == allKeys) text.render(keysStr, glm::vec2(keysGroupX + 40.f, textY), 24, glm::vec4(1, 1, 0.2f, 1), hudProj);
-    else text.render(keysStr, glm::vec2(keysGroupX + 40.f, textY), 24, glm::vec4(1, 1, 1, 1), hudProj);
-
-    // Speedboost   
-    float boostGroupX = keysGroupX - 60.f;
-    if (boostTimeLeft > 0.0f) {
-        float fill = glm::clamp(boostTimeLeft / SpeedBoost::getMaxTime(), 0.0f, 1.0f);
-        boostIcon->render(glm::vec2(boostGroupX, iconsY), hudProj, fill);
-    }
-    else boostIcon->render(glm::vec2(boostGroupX, iconsY), hudProj, 0.f);
-
-    // Pipa
-    float gunGroupX = boostGroupX - 120.f;
-    gunIcon->render(glm::vec2(gunGroupX, iconsY), hudProj, 0.f);
-    text.render(gunStr, glm::vec2(gunGroupX + 40.f, textY), 24, glm::vec4(1, 1, 1, 1), hudProj);
+    float step = 100.f;
 
     // Vidas
-    float livesGroupX = gunGroupX - 120.f;
-    lifeIcon->render(glm::vec2(livesGroupX, iconsY), hudProj, 0.f);
-    text.render(livesStr, glm::vec2(livesGroupX + 40.f, textY), 24, glm::vec4(1, 1, 1, 1), hudProj);
+    float livesX = margin;
+    lifeIcon->render(glm::vec2(livesX, iconsY), hudProj, 1.f);
+    text.render(livesStr, glm::vec2(livesX + 45.f, textY), 24, glm::vec4(1, 1, 1, 1), hudProj);
 
-    // GodMode (opcional)
-    float godModeGroupX = livesGroupX - 200.f;
-    if (godMode) text.render("GOD MODE", glm::vec2(godModeGroupX, textY), 24, glm::vec4(1, 0.5f, 0.5f, 1), hudProj);
+    // God mode
+    float godModeX = livesX + 110.f;
+    if (godMode)
+        text.render("GOD MODE", glm::vec2(godModeX, textY), 24, glm::vec4(1, 0.5f, 0.5f, 1), hudProj);
 
+    // Llaves
+    float keysX = HUD_WIDTH - margin - 70.f - 40.f;
+    keyIcon->render(glm::vec2(keysX, iconsY), hudProj, 1.f);
+    glm::vec4 keyCol = (numKeys == allKeys) ? glm::vec4(1, 1, 0.2f, 1) : glm::vec4(1, 1, 1, 1);
+    text.render(keysStr, glm::vec2(keysX + 40.f, textY), 24, keyCol, hudProj);
+
+    // Pistola
+    float gunX = keysX - 110.f;
+    gunIcon->render(glm::vec2(gunX, iconsY), hudProj, 1.f);
+    text.render(gunStr, glm::vec2(gunX + 40.f, textY), 24, glm::vec4(1, 1, 1, 1), hudProj);
+
+    // Speedboost
+    float boostX = gunX - 50.f;
+    float fill = (boostTimeLeft > 0.0f) ? (boostTimeLeft / SpeedBoost::getMaxTime()) : 0.f;
+    boostIcon->render(glm::vec2(boostX, iconsY), hudProj, fill);
 }
 
 

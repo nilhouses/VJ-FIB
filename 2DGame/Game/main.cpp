@@ -58,23 +58,22 @@ void window_resize_callback(GLFWwindow* window, int width, int height)
 
 void main_loop()
 {
-	double currentTime = glfwGetTime();
-	// Calculem quants mil·lisegons han passat realment
-	double deltaTime = (currentTime - timePreviousFrame);
+    double currentTime = glfwGetTime();
+    if (currentTime - timePreviousFrame >= timePerFrame)    // Si ha pasado pasado el tiempo necesario para renderizar un nuevo frame...
+    {
+        /* Update & render steps of the game loop */
+        if(!Game::instance().update(int(1000.0f * (currentTime - timePreviousFrame))))
+            glfwSetWindowShouldClose(global_window, GLFW_TRUE);
+        
+        Game::instance().render();
+        timePreviousFrame = currentTime;
 
-	// Evitem salts massa grans si el navegador es queda congelat un moment
-	if (deltaTime > 0.1) deltaTime = 0.1;
+        /* Swap front and back buffers */
+        glfwSwapBuffers(global_window);
+    }
 
-	// Actualitzem el joc amb el temps real transcorregut
-	if (!Game::instance().update(int(deltaTime * 1000.0f)))
-		glfwSetWindowShouldClose(global_window, GLFW_TRUE);
-
-	Game::instance().render();
-
-	timePreviousFrame = currentTime;
-
-	glfwSwapBuffers(global_window);
-	glfwPollEvents();
+    // Se analiza si se han producido eventos de teclado o ratón y se llaman a las funciones correspondientes de GLFW
+    glfwPollEvents();
 }
 
 int main(void)
@@ -131,4 +130,3 @@ int main(void)
     #endif
 	return 0;
 }
-

@@ -9,6 +9,6 @@ out vec4 outColor;
 void main() {
     vec4 texColor = texture(tex, texCoordFrag);
     if(texColor.a < 0.01) discard;
-    if (vNormalizedY > (1.0 - fillAmount)) outColor = mix(texColor, vec4(1.0, 1.0, 1.0, texColor.a), 0.7);
+    if (vNormalizedY < (1.0 - fillAmount)) outColor = mix(texColor, vec4(0.0, 0.0, 0.0, texColor.a), 0.7);
     else outColor = texColor;
 }
