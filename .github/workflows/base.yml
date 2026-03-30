@@ -24,46 +24,43 @@ jobs:
 
     - name: Compile with emcc
       run: |
-        # 1. PREPARAR SOIL (Solució radical per a l'error glx.h)
+        # 1. PREPARAR SOIL (Solució definitiva als errors de tipus i glx.h)
         mkdir -p soil_temp
         cp "./2DGame/libs/Simple OpenGL Image Library/src"/*.c soil_temp/
         cp "./2DGame/libs/Simple OpenGL Image Library/src"/*.h soil_temp/
         
-        # Eliminem qualsevol rastre de codi d'escriptori que fa fallar el compilador
-        sed -i 's/#include <GL\/gl.h>/#include <GLES2\/gl2.h>/g' soil_temp/SOIL.c
+        # Injectem definicions de compatibilitat al principi de SOIL.c
+        # Això arregla l'error 'expected )' definint APIENTRY com a buit (com fa falta a Web/Linux)
+        echo -e "#define APIENTRY\n#define GL_APIENTRYP\n#include <GLES2/gl2.h>" > soil_temp/SOIL_fixed.c
+        cat soil_temp/SOIL.c >> soil_temp/SOIL_fixed.c
+        mv soil_temp/SOIL_fixed.c soil_temp/SOIL.c
+
+        # Netegem dependències d'escriptori
+        sed -i '/#include <GL\/gl.h>/d' soil_temp/SOIL.c
         sed -i '/#include <GL\/glx.h>/d' soil_temp/SOIL.c
         sed -i '/#include <windows.h>/d' soil_temp/SOIL.c
-        
-        # Substituïm les funcions de cerca de memòria de vídeo d'escriptori per NULL
         sed -i 's/glXGetProcAddressARB/NULL \/\//g' soil_temp/SOIL.c
         sed -i 's/wglGetProcAddress/NULL \/\//g' soil_temp/SOIL.c
-        
-        # Forcem el mode de repetició de textures compatible amb WebGL
         sed -i 's/\bGL_CLAMP\b/GL_CLAMP_TO_EDGE/g' soil_temp/SOIL.c
 
-        # 2. CIRURGIA DE SHADERS (Adaptació a WebGL 2 / GLSL 300 es)
+        # 2. CIRURGIA DE SHADERS (Adaptació a WebGL 2)
         find 2DGame/Game/shaders -name "*.frag" -o -name "*.vert" | while read f; do
           echo "Adaptant shader: $f"
           grep -v "#version" "$f" > "${f}.tmp"
-          
-          # La versió ha de ser la primera línia sense cap espai abans
           echo "#version 300 es" > "$f"
           echo "precision mediump float;" >> "$f"
           
           if [[ "$f" == *.frag ]]; then
             sed -i 's/\bvarying\b/in/g' "${f}.tmp"
             sed -i 's/\btexture2D\b/texture/g' "${f}.tmp"
-            # Si el shader usa gl_FragColor, el canviem al nou outColor de WebGL 2
             if grep -q "gl_FragColor" "${f}.tmp"; then
               sed -i 's/gl_FragColor/outColor/g' "${f}.tmp"
               echo "out vec4 outColor;" >> "$f"
             fi
           else
-            # Shaders de vèrtexs
             sed -i 's/\battribute\b/in/g' "${f}.tmp"
             sed -i 's/\bvarying\b/out/g' "${f}.tmp"
           fi
-          
           cat "${f}.tmp" >> "$f"
           rm "${f}.tmp"
         done
