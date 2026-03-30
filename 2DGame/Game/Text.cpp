@@ -1,10 +1,15 @@
 ﻿#include <iostream>
 #include <cmath>
-#include <GL/glew.h>
-#include <GL/gl.h>
+#ifdef __EMSCRIPTEN__
+	#include <GLES3/gl3.h>
+	#include <GLFW/glfw3.h>
+#else
+	#include <GL/glew.h>
+	#include <GL/gl.h>
+	#include <GLFW/glfw3.h>
+#endif
 #include <glm/gtc/matrix_transform.hpp>
 #include "Text.h"
-
 
 #define ATLAS_FONT_SIZE 64
 
@@ -85,11 +90,16 @@ int Text::getSize() const
 // ── Single char, no projection (falls back to viewport-derived) ──────────────
 void Text::render(char c, const glm::vec2& pixel, int size, const glm::vec4& color)
 {
+	// Alternativa segura: usar una projecció base coneguda
+	// O millor: elimina aquest mètode i força sempre passar la proj
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	int vp[4];
-	glGetIntegerv(GL_VIEWPORT, vp);
-	glm::mat4 proj = glm::ortho(0.f, float(vp[2] - 1), float(vp[3] - 1), 0.f);
+
+	// En comptes de glGetIntegerv, agafa la mida de la finestra
+	int w, h;
+	GLFWwindow* win = glfwGetCurrentContext();
+	glfwGetFramebufferSize(win, &w, &h);
+	glm::mat4 proj = glm::ortho(0.f, float(w), float(h), 0.f);
 	render(c, pixel, size, color, proj);
 }
 
