@@ -24,14 +24,21 @@ jobs:
 
     - name: Compile with emcc
       run: |
-        # 1. SOIL FIX (Molt important per a les textures que no es veuen)
+        # 1. Preparar SOIL (Versió ultra-compatible per a WebGL)
         mkdir -p soil_temp
         cp "./2DGame/libs/Simple OpenGL Image Library/src"/*.c soil_temp/
         cp "./2DGame/libs/Simple OpenGL Image Library/src"/*.h soil_temp/
-        sed -i 's/\bGL_CLAMP\b/GL_CLAMP_TO_EDGE/g' soil_temp/SOIL.c
-        echo -e "#define SOIL_GLES2\n#include <GLES2/gl2.h>\n#define APIENTRY\n#define glXGetProcAddressARB(x) NULL" > soil_temp/SOIL_fix.c
-        cat soil_temp/SOIL.c >> soil_temp/SOIL_fix.c
-        mv soil_temp/SOIL_fix.c soil_temp/SOIL.c
+        
+        # ELIMINACIÓ RADICAL de dependències d'escriptori
+        # Substituïm tot el bloc d'includes conflictiu per un include de GLES2 pur
+        sed -i 's/#include <GL\/gl.h>/#include <GLES2\/gl2.h>/g' soil_temp/SOIL.c
+        # Eliminem glx.h i wgl directament de soca-rel
+        sed -i '/#include <GL\/glx.h>/d' soil_temp/SOIL.c
+        sed -i '/#include <windows.h>/d' soil_temp/SOIL.c
+        
+        # Forcem que no intenti carregar funcions d'extensió d'escriptori
+        sed -i 's/glXGetProcAddressARB/NULL \/\//g' soil_temp/SOIL.c
+        sed -i 's/wglGetProcAddress/NULL \/\//g' soil_temp/SOIL.c
 
         # 2. SHADER FIX (Versió compatible amb el teu codi)
         find 2DGame/Game/shaders -name "*.frag" -o -name "*.vert" | while read f; do
