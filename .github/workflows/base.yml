@@ -24,41 +24,42 @@ jobs:
 
     - name: Compile with emcc
       run: |
-        # 1. Preparar SOIL (Versió ultra-compatible per a WebGL)
+        # 1. PREPARAR SOIL (Solució radical per a l'error glx.h)
         mkdir -p soil_temp
         cp "./2DGame/libs/Simple OpenGL Image Library/src"/*.c soil_temp/
         cp "./2DGame/libs/Simple OpenGL Image Library/src"/*.h soil_temp/
         
-        # ELIMINACIÓ RADICAL de dependències d'escriptori
-        # Substituïm tot el bloc d'includes conflictiu per un include de GLES2 pur
+        # Eliminem qualsevol rastre de codi d'escriptori que fa fallar el compilador
         sed -i 's/#include <GL\/gl.h>/#include <GLES2\/gl2.h>/g' soil_temp/SOIL.c
-        # Eliminem glx.h i wgl directament de soca-rel
         sed -i '/#include <GL\/glx.h>/d' soil_temp/SOIL.c
         sed -i '/#include <windows.h>/d' soil_temp/SOIL.c
         
-        # Forcem que no intenti carregar funcions d'extensió d'escriptori
+        # Substituïm les funcions de cerca de memòria de vídeo d'escriptori per NULL
         sed -i 's/glXGetProcAddressARB/NULL \/\//g' soil_temp/SOIL.c
         sed -i 's/wglGetProcAddress/NULL \/\//g' soil_temp/SOIL.c
+        
+        # Forcem el mode de repetició de textures compatible amb WebGL
+        sed -i 's/\bGL_CLAMP\b/GL_CLAMP_TO_EDGE/g' soil_temp/SOIL.c
 
-        # 2. SHADER FIX (Versió compatible amb el teu codi)
+        # 2. CIRURGIA DE SHADERS (Adaptació a WebGL 2 / GLSL 300 es)
         find 2DGame/Game/shaders -name "*.frag" -o -name "*.vert" | while read f; do
-          # Guardem el contingut original sense la línia de versió
+          echo "Adaptant shader: $f"
           grep -v "#version" "$f" > "${f}.tmp"
-          # WebGL 2 EXIGEIX que #version sigui la primera línia absoluta
+          
+          # La versió ha de ser la primera línia sense cap espai abans
           echo "#version 300 es" > "$f"
           echo "precision mediump float;" >> "$f"
           
-          # Adaptem sintaxi segons si és Fragment o Vertex
           if [[ "$f" == *.frag ]]; then
             sed -i 's/\bvarying\b/in/g' "${f}.tmp"
             sed -i 's/\btexture2D\b/texture/g' "${f}.tmp"
-            # Si el shader usa gl_FragColor, el canviem a outColor
+            # Si el shader usa gl_FragColor, el canviem al nou outColor de WebGL 2
             if grep -q "gl_FragColor" "${f}.tmp"; then
               sed -i 's/gl_FragColor/outColor/g' "${f}.tmp"
-              # Afegim la declaració de outColor només si no hi és
               echo "out vec4 outColor;" >> "$f"
             fi
           else
+            # Shaders de vèrtexs
             sed -i 's/\battribute\b/in/g' "${f}.tmp"
             sed -i 's/\bvarying\b/out/g' "${f}.tmp"
           fi
@@ -67,17 +68,23 @@ jobs:
           rm "${f}.tmp"
         done
 
-        # 3. COMPILACIÓ AMB FLAGS DE DEPURACIÓ
+        # 3. COMPILACIÓ FINAL
         mkdir -p dist
         cd 2DGame/Game
         emcc *.cpp \
-        ../../soil_temp/SOIL.c ../../soil_temp/image_helper.c ../../soil_temp/image_DXT.c ../../soil_temp/stb_image_aug.c \
+        ../../soil_temp/SOIL.c \
+        ../../soil_temp/image_helper.c \
+        ../../soil_temp/image_DXT.c \
+        ../../soil_temp/stb_image_aug.c \
         -o ../../dist/index.html \
-        -s USE_GLFW=3 -s USE_FREETYPE=1 -s MAX_WEBGL_VERSION=2 -s FULL_ES3=1 \
+        -s USE_GLFW=3 \
+        -s USE_FREETYPE=1 \
+        -s MAX_WEBGL_VERSION=2 \
+        -s FULL_ES3=1 \
         -s ALLOW_MEMORY_GROWTH=1 \
-        -s GL_ASSERTIONS=1 \
-        -s GL_DEBUG=1 \
-        -I. -I../../external/glm -I../../soil_temp \
+        -I. \
+        -I../../external/glm \
+        -I../../soil_temp \
         --preload-file images@images \
         --preload-file shaders@shaders \
         --preload-file levels@levels \

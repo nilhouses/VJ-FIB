@@ -30,9 +30,12 @@ void Game::init()
 
 bool Game::update(int deltaTime)
 {
+    // Version compatible Web
+    int fixedDeltaTime = (deltaTime > 17) ? 17 : deltaTime;
+
     // Actualizar escena actual
     if (currentScene != nullptr) {
-        currentScene->update(deltaTime);
+        currentScene->update(fixedDeltaTime);
 
         if (currentScene->getType() == SceneType::COMIC) {
             Comic* c = static_cast<Comic*>(currentScene);
@@ -66,7 +69,7 @@ bool Game::update(int deltaTime)
     }
 
 	SoundManager::instance().update(); // Limpiar sonidos que ya han terminado
-    actionMsg.update(deltaTime);
+    actionMsg.update(fixedDeltaTime);
 
 	return bPlay;
 }
