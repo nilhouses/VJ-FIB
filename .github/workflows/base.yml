@@ -85,6 +85,9 @@ jobs:
         -DSOIL_GLES2 \
         -s USE_GLFW=3 \
         -s USE_FREETYPE=1 \
+        -s ERROR_ON_UNDEFINED_SYMBOLS=0 \
+        --bind \
+        -s NO_EXIT_RUNTIME=1 \
         -s MAX_WEBGL_VERSION=2 \
         -s FULL_ES3=1 \
         -s ALLOW_MEMORY_GROWTH=1 \
@@ -97,6 +100,10 @@ jobs:
         --preload-file sounds@sounds \
         --preload-file fonts@fonts
 
+    - name: Fix canvas fullscreen CSS
+      run: |
+        sed -i 's|</head>|<style>* { margin: 0; padding: 0; box-sizing: border-box; } body { overflow: hidden; background: black; } canvas { display: block; width: 100vw !important; height: 100vh !important; }</style></head>|' dist/index.html
+        
     - name: Upload Pages artifact
       uses: actions/upload-pages-artifact@v3
       with:
