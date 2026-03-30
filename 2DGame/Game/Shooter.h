@@ -10,7 +10,8 @@ enum EnemyState {
 	WALKING,
 	RELOAD,
 	SHOOTING,
-	IDLING
+	IDLING,
+	NONE
 };
 
 class Shooter : public Enemy
@@ -27,14 +28,14 @@ public:
 	void setStay(bool s);
 
 private:
-	EnemyState currentState;
-	float stateTimer;
+	EnemyState currentState = EnemyState::NONE;
+	float stateTimer = 0.f;
 	void changeState(EnemyState newState);
 	void shoot();
 
 	// Atributos necesarios para crear una bala
-	bool movingRight;
-	bool stay;
+	bool movingRight = false;
+	bool stay = false;
 	Room* currentRoom = nullptr;
 	ShaderProgram* shaderProgram = nullptr;
 	Camera* cameraPtr = nullptr;

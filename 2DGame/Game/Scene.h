@@ -14,7 +14,8 @@ enum class SceneType {
     CREDITS,
 	LOADING,
     COMIC,
-    GAMEOVER
+    GAMEOVER,
+    NONE
 };
 
 // Scene contains all the entities of our game.
@@ -49,8 +50,8 @@ public:
         projection = glm::ortho(0.f, float(raW), float(raH), 0.f);
     }
 protected:
-    glm::mat4 projection;
-	SceneType t;
+    glm::mat4 projection = glm::mat4();
+	SceneType t = SceneType::NONE;
 
     static int viewX, viewY, viewWidth, viewHeight;
 };

@@ -45,7 +45,7 @@ private:
     SoundManager() : initialized(false) {} // Constructor privado
     ma_engine engine;
     ma_sound bgm;
-    bool initialized;
+    bool initialized = false;
     bool musicPlaying = false;
     std::string currentMusicKey = "";
     float musicVolume = 0.1f;

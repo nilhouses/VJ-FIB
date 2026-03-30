@@ -22,7 +22,7 @@ public:
 
 private:
 	bool collecting = false;
-	float collectTimer;
+	float collectTimer = 0.f;
 	static constexpr float multiplier = 2.f;
 	static constexpr float duration = 12500.f; 
 };

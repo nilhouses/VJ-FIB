@@ -126,7 +126,6 @@ void Bullet::explode() {
     explosionSprite->setPosition(centeredPos);
     explosionSprite->changeAnimation(0);
 
-    cout << "Bullet explosion!" << endl;
     // En el update se desactivar� la entidad cuando acabe la animaci�n de explosi�n
 }
 
