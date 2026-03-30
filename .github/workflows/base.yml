@@ -24,42 +24,56 @@ jobs:
 
     - name: Compile with emcc
       run: |
-        # 1. PREPARAR SOIL (Còpia i fix de capçaleres)
+        # 1. Preparar SOIL (Versió ultra-compatible per a WebGL)
         mkdir -p soil_temp
-        cp "./2DGame/libs/Simple OpenGL Image Library/src"/*.c soil_temp/
-        cp "./2DGame/libs/Simple OpenGL Image Library/src"/*.h soil_temp/
+        SOIL_SRC_DIR="./2DGame/libs/Simple OpenGL Image Library/src"
+        cp "$SOIL_SRC_DIR"/*.c soil_temp/
+        cp "$SOIL_SRC_DIR"/*.h soil_temp/
         
-        # Injectem GLES2 per evitar errors de GLenum/APIENTRY
-        echo -e "#include <GLES2/gl2.h>\n#include <GLES2/gl2ext.h>\n#define GL_GLEXT_PROTOTYPES\n" > soil_temp/SOIL_prefix.h
-        cat soil_temp/SOIL_prefix.h soil_temp/SOIL.c > soil_temp/SOIL_new.c
-        mv soil_temp/SOIL_new.c soil_temp/SOIL.c
-        
+        # Forcem l'eliminació de qualsevol inclusió de llibreries d'escriptori (GL, GLX, WGL)
         sed -i '/#include <GL\/gl.h>/d' soil_temp/SOIL.c
         sed -i '/#include <GL\/glx.h>/d' soil_temp/SOIL.c
         sed -i '/#include <windows.h>/d' soil_temp/SOIL.c
+        
+        # Substituïm GL_CLAMP per GL_CLAMP_TO_EDGE (obligatori a WebGL)
         sed -i 's/\bGL_CLAMP\b/GL_CLAMP_TO_EDGE/g' soil_temp/SOIL.c
-
-        # 2. CIRURGIA DE SHADERS (Obligatori per WebGL 2)
+        
+        # Creem una capçalera neta que defineixi tot el necessari per a GLES2/WebGL
+        echo -e "#define SOIL_GLES2\n#include <GLES2/gl2.h>\n#include <GLES2/gl2ext.h>\n#define APIENTRY\n#define glXGetProcAddressARB(x) NULL\n#define wglGetProcAddress(x) NULL" > soil_temp/SOIL_fix.c
+        
+        # Ajuntem el fix amb el codi original però ignorant les primeres línies conflictuve
+        cat soil_temp/SOIL.c >> soil_temp/SOIL_fix.c
+        mv soil_temp/SOIL_fix.c soil_temp/SOIL.c
+        
+        # 2. CIRURGIA DE SHADERS (Adaptació real a WebGL 2)
         find 2DGame/Game/shaders -name "*.frag" -o -name "*.vert" | while read f; do
+          echo "Adaptant shader: $f"
           grep -v "#version" "$f" > "${f}.tmp"
           echo "#version 300 es" > "$f"
           echo "precision mediump float;" >> "$f"
+          
+          # Si el fitxer és un fragment shader (.frag), hem de canviar 'texture2D' per 'texture'
+          # i definir el color de sortida obligatori a WebGL 2
           if [[ "$f" == *.frag ]]; then
-            sed -i 's/\bvarying\b/in/g' "${f}.tmp"
-            sed -i 's/\btexture2D\b/texture/g' "${f}.tmp"
-            if ! grep -q "out vec4" "${f}.tmp"; then
+            sed -i 's/varying/in/g' "${f}.tmp"
+            sed -i 's/texture2D/texture/g' "${f}.tmp"
+            # Si no té outColor definit, el definim (per seguretat)
+            if ! grep -q "out vec4 outColor" "${f}.tmp"; then
                echo "out vec4 outColor;" >> "$f"
                sed -i 's/gl_FragColor/outColor/g' "${f}.tmp"
             fi
           else
-            sed -i 's/\battribute\b/in/g' "${f}.tmp"
-            sed -i 's/\bvarying\b/out/g' "${f}.tmp"
+            # Si és un vertex shader (.vert)
+            sed -i 's/attribute/in/g' "${f}.tmp"
+            sed -i 's/varying/out/g' "${f}.tmp"
           fi
+          
           cat "${f}.tmp" >> "$f"
           rm "${f}.tmp"
         done
 
-        # 3. COMPILACIÓ
+        # 3. Compilar el joc
+        # Creem una carpeta 'dist' per posar NOMÉS el que volem publicar
         mkdir -p dist
         cd 2DGame/Game
         emcc *.cpp \
@@ -68,8 +82,7 @@ jobs:
         ../../soil_temp/image_DXT.c \
         ../../soil_temp/stb_image_aug.c \
         -o ../../dist/index.html \
-        -DAPIENTRY="" \
-        -DGL_APIENTRYP="" \
+        -DSOIL_GLES2 \
         -s USE_GLFW=3 \
         -s USE_FREETYPE=1 \
         -s MAX_WEBGL_VERSION=2 \
@@ -97,6 +110,7 @@ jobs:
       id-token: write
     environment:
       name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
     - name: Deploy to GitHub Pages
       id: deployment
