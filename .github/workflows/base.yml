@@ -24,73 +24,53 @@ jobs:
 
     - name: Compile with emcc
       run: |
-        # 1. Preparar SOIL (Versió ultra-compatible per a WebGL)
+        # 1. SOIL FIX (Molt important per a les textures que no es veuen)
         mkdir -p soil_temp
-        SOIL_SRC_DIR="./2DGame/libs/Simple OpenGL Image Library/src"
-        cp "$SOIL_SRC_DIR"/*.c soil_temp/
-        cp "$SOIL_SRC_DIR"/*.h soil_temp/
-        
-        # Forcem l'eliminació de qualsevol inclusió de llibreries d'escriptori (GL, GLX, WGL)
-        sed -i '/#include <GL\/gl.h>/d' soil_temp/SOIL.c
-        sed -i '/#include <GL\/glx.h>/d' soil_temp/SOIL.c
-        sed -i '/#include <windows.h>/d' soil_temp/SOIL.c
-        
-        # Substituïm GL_CLAMP per GL_CLAMP_TO_EDGE (obligatori a WebGL)
+        cp "./2DGame/libs/Simple OpenGL Image Library/src"/*.c soil_temp/
+        cp "./2DGame/libs/Simple OpenGL Image Library/src"/*.h soil_temp/
         sed -i 's/\bGL_CLAMP\b/GL_CLAMP_TO_EDGE/g' soil_temp/SOIL.c
-        
-        # Creem una capçalera neta que defineixi tot el necessari per a GLES2/WebGL
-        echo -e "#define SOIL_GLES2\n#include <GLES2/gl2.h>\n#include <GLES2/gl2ext.h>\n#define APIENTRY\n#define glXGetProcAddressARB(x) NULL\n#define wglGetProcAddress(x) NULL" > soil_temp/SOIL_fix.c
-        
-        # Ajuntem el fix amb el codi original però ignorant les primeres línies conflictuve
+        echo -e "#define SOIL_GLES2\n#include <GLES2/gl2.h>\n#define APIENTRY\n#define glXGetProcAddressARB(x) NULL" > soil_temp/SOIL_fix.c
         cat soil_temp/SOIL.c >> soil_temp/SOIL_fix.c
         mv soil_temp/SOIL_fix.c soil_temp/SOIL.c
-        
-        # 2. CIRURGIA DE SHADERS (Adaptació real a WebGL 2)
+
+        # 2. SHADER FIX (Versió compatible amb el teu codi)
         find 2DGame/Game/shaders -name "*.frag" -o -name "*.vert" | while read f; do
-          echo "Adaptant shader: $f"
+          # Guardem el contingut original sense la línia de versió
           grep -v "#version" "$f" > "${f}.tmp"
+          # WebGL 2 EXIGEIX que #version sigui la primera línia absoluta
           echo "#version 300 es" > "$f"
           echo "precision mediump float;" >> "$f"
           
-          # Si el fitxer és un fragment shader (.frag), hem de canviar 'texture2D' per 'texture'
-          # i definir el color de sortida obligatori a WebGL 2
+          # Adaptem sintaxi segons si és Fragment o Vertex
           if [[ "$f" == *.frag ]]; then
-            sed -i 's/varying/in/g' "${f}.tmp"
-            sed -i 's/texture2D/texture/g' "${f}.tmp"
-            # Si no té outColor definit, el definim (per seguretat)
-            if ! grep -q "out vec4 outColor" "${f}.tmp"; then
-               echo "out vec4 outColor;" >> "$f"
-               sed -i 's/gl_FragColor/outColor/g' "${f}.tmp"
+            sed -i 's/\bvarying\b/in/g' "${f}.tmp"
+            sed -i 's/\btexture2D\b/texture/g' "${f}.tmp"
+            # Si el shader usa gl_FragColor, el canviem a outColor
+            if grep -q "gl_FragColor" "${f}.tmp"; then
+              sed -i 's/gl_FragColor/outColor/g' "${f}.tmp"
+              # Afegim la declaració de outColor només si no hi és
+              echo "out vec4 outColor;" >> "$f"
             fi
           else
-            # Si és un vertex shader (.vert)
-            sed -i 's/attribute/in/g' "${f}.tmp"
-            sed -i 's/varying/out/g' "${f}.tmp"
+            sed -i 's/\battribute\b/in/g' "${f}.tmp"
+            sed -i 's/\bvarying\b/out/g' "${f}.tmp"
           fi
           
           cat "${f}.tmp" >> "$f"
           rm "${f}.tmp"
         done
 
-        # 3. Compilar el joc
-        # Creem una carpeta 'dist' per posar NOMÉS el que volem publicar
+        # 3. COMPILACIÓ AMB FLAGS DE DEPURACIÓ
         mkdir -p dist
         cd 2DGame/Game
         emcc *.cpp \
-        ../../soil_temp/SOIL.c \
-        ../../soil_temp/image_helper.c \
-        ../../soil_temp/image_DXT.c \
-        ../../soil_temp/stb_image_aug.c \
+        ../../soil_temp/SOIL.c ../../soil_temp/image_helper.c ../../soil_temp/image_DXT.c ../../soil_temp/stb_image_aug.c \
         -o ../../dist/index.html \
-        -DSOIL_GLES2 \
-        -s USE_GLFW=3 \
-        -s USE_FREETYPE=1 \
-        -s MAX_WEBGL_VERSION=2 \
-        -s FULL_ES3=1 \
+        -s USE_GLFW=3 -s USE_FREETYPE=1 -s MAX_WEBGL_VERSION=2 -s FULL_ES3=1 \
         -s ALLOW_MEMORY_GROWTH=1 \
-        -I. \
-        -I../../external/glm \
-        -I../../soil_temp \
+        -s GL_ASSERTIONS=1 \
+        -s GL_DEBUG=1 \
+        -I. -I../../external/glm -I../../soil_temp \
         --preload-file images@images \
         --preload-file shaders@shaders \
         --preload-file levels@levels \
