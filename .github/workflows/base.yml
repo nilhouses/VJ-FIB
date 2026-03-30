@@ -45,16 +45,29 @@ jobs:
         cat soil_temp/SOIL.c >> soil_temp/SOIL_fix.c
         mv soil_temp/SOIL_fix.c soil_temp/SOIL.c
         
-        # 2. CIRURGIA DE SHADERS (Més robusta)
-        # Busquem tots els shaders dins de la carpeta shaders del joc
+        # 2. CIRURGIA DE SHADERS (Adaptació real a WebGL 2)
         find 2DGame/Game/shaders -name "*.frag" -o -name "*.vert" | while read f; do
-          echo "Adaptant shader per a WebGL 2: $f"
-          # Creem una versió neta sense cap línia de versió antiga ni espais
+          echo "Adaptant shader: $f"
           grep -v "#version" "$f" > "${f}.tmp"
-          
-          # Escrivim la capçalera de WebGL 2 (PRIMERA LÍNIA SENSE ESPAIS)
           echo "#version 300 es" > "$f"
           echo "precision mediump float;" >> "$f"
+          
+          # Si el fitxer és un fragment shader (.frag), hem de canviar 'texture2D' per 'texture'
+          # i definir el color de sortida obligatori a WebGL 2
+          if [[ "$f" == *.frag ]]; then
+            sed -i 's/varying/in/g' "${f}.tmp"
+            sed -i 's/texture2D/texture/g' "${f}.tmp"
+            # Si no té outColor definit, el definim (per seguretat)
+            if ! grep -q "out vec4 outColor" "${f}.tmp"; then
+               echo "out vec4 outColor;" >> "$f"
+               sed -i 's/gl_FragColor/outColor/g' "${f}.tmp"
+            fi
+          else
+            # Si és un vertex shader (.vert)
+            sed -i 's/attribute/in/g' "${f}.tmp"
+            sed -i 's/varying/out/g' "${f}.tmp"
+          fi
+          
           cat "${f}.tmp" >> "$f"
           rm "${f}.tmp"
         done

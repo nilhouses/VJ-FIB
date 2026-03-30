@@ -86,7 +86,7 @@ void LoadingScene::render() {
     for (int i = 0; i < dotCount; ++i) loadingStr += ".";
 
     // Render de textos
-    glUseProgram(0); // Usamos la función de texto que maneja sus propios shaders
+    // Usamos la función de texto que maneja sus propios shaders
 
     // Render "LOADING..." centrado
     

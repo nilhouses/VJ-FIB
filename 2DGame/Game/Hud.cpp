@@ -69,7 +69,6 @@ void Hud::render()
     texProgram.setUniformMatrix4f("modelview", modelview);
     texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
     background->render(texBackground);
-    glUseProgram(0);
 
     // Preparamos strings
     std::string livesStr = "x" + std::to_string(numLives);

@@ -80,7 +80,6 @@ void MainMenu::render() {
     cursor->render(texSprite);
 
     // 2. Textos
-    glUseProgram(0);
 
     int sizeS = 26;
     int sizeH = 26;
