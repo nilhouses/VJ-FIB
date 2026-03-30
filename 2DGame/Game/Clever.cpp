@@ -434,9 +434,7 @@ void Clever::notifyTunnelEntry(Tunnel* t)
     }
 
     if (!shouldEnter) { inTunnel = false; return; }
-
-    centerX();
-    centerY();
+    this->setPosition(t->getPosition());
     hurts = false;
     currentTunnel = t;
     inTunnel = true;

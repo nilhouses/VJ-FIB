@@ -773,7 +773,7 @@ void Level::handleEnemyCollision(Enemy* enemy, Entity* e, glm::vec2& rangeCollid
         float tunnelCenterX = tBox.x + tBox.z * 0.5f;
         float tunnelCenterY = tBox.y + tBox.w * 0.5f;
         float cleverCenterY = cleverPos.y + cleverSize.y * 0.5f;
-        bool aligned = abs(cleverCenterX - tunnelCenterX) < 8.f && abs(cleverCenterY - tunnelCenterY) < 40.f;
+        bool aligned = abs(cleverCenterX - tunnelCenterX) < 4.f && abs(cleverCenterY - tunnelCenterY) < 2.f;
         if (aligned) clever->notifyTunnelEntry(tunnel);
         break;
     }
