@@ -39,66 +39,65 @@ jobs:
         cat soil_temp/SOIL.c >> soil_temp/SOIL_fix.c
         mv soil_temp/SOIL_fix.c soil_temp/SOIL.c
 
-        # 2. Fix de TOTS els .cpp: eliminar glew/gl desktop i afegir bloc condicional
-        # Funció comuna per aplicar el fix a qualsevol fitxer
+        # 2. Fix BOM (Byte Order Mark) - caracter invisible de Windows
+        find 2DGame/Game -name "*.cpp" -o -name "*.h" | while read f; do
+          sed -i '1s/^\xEF\xBB\xBF//' "$f"
+        done
+
+        # 3. Fix de TOTS els .cpp: eliminar glew/gl desktop i afegir bloc condicional
         fix_gl_includes() {
           local f="$1"
           echo "Fixant GL includes de: $f"
 
-          # Eliminem els includes conflictius un per un
           sed -i '/#include <GL\/glew.h>/d' "$f"
           sed -i '/#include <GL\/gl.h>/d' "$f"
           sed -i '/#include <GLFW\/glfw3.h>/d' "$f"
           sed -i '/#include <GLFW\/glfw3native.h>/d' "$f"
 
-          # Inserim el bloc condicional al principi de tot (línia 1)
           sed -i '1s|^|#ifdef __EMSCRIPTEN__\n#include <GLES3/gl3.h>\n#include <GLFW/glfw3.h>\n#else\n#include <GL/glew.h>\n#include <GL/gl.h>\n#include <GLFW/glfw3.h>\n#endif\n|' "$f"
         }
 
-        # Apliquem a tots els .cpp que tinguin includes de GL
         find 2DGame/Game -name "*.cpp" | while read f; do
           if grep -qE '#include <GL/glew.h>|#include <GL/gl.h>|#include <GLFW/glfw3.h>' "$f"; then
             fix_gl_includes "$f"
           fi
         done
 
-        # Fix específic per al main.cpp: eliminar includes de Windows que no existeixen a Linux
+        # 4. Fix específic per al main.cpp: eliminar includes de Windows
         find 2DGame/Game -name "main.cpp" | while read f; do
           sed -i '/#include <windows.h>/d' "$f"
           sed -i '/#include "resource.h"/d' "$f"
           sed -i '/#define GLFW_EXPOSE_NATIVE_WIN32/d' "$f"
-          # El bloc #ifdef _WIN32 ... #endif sencer
           sed -i '/#ifdef _WIN32/,/#endif/d' "$f"
         done
 
-        # 3. Fix del render de Text.cpp: substituir glGetIntegerv per glfwGetFramebufferSize
+        # 5. Fix del render de Text.cpp: substituir glGetIntegerv per glfwGetFramebufferSize
         find 2DGame/Game -name "Text.cpp" | while read f; do
           echo "Fixant glGetIntegerv a: $f"
-          # Substituïm el bloc sencer del render(string) sense projecció
           python3 - "$f" << 'PYEOF'
-        import re, sys
-        path = sys.argv[1]
-        with open(path, 'r') as fp:
-            src = fp.read()
+import re, sys
+path = sys.argv[1]
+with open(path, 'r') as fp:
+    src = fp.read()
 
-        old = r'void Text::render\(const string& str, const glm::vec2& pixel, int size, const glm::vec4& color\)\s*\{[^}]*glGetIntegerv[^}]*\}'
-        new = '''void Text::render(const string& str, const glm::vec2& pixel, int size, const glm::vec4& color)
-        {
-        \tint w, h;
-        \tGLFWwindow* win = glfwGetCurrentContext();
-        \tglfwGetFramebufferSize(win, &w, &h);
-        \tglm::mat4 proj = glm::ortho(0.f, float(w), float(h), 0.f);
-        \trender(str, pixel, size, color, proj);
-        }'''
+old = r'void Text::render\(const string& str, const glm::vec2& pixel, int size, const glm::vec4& color\)\s*\{[^}]*glGetIntegerv[^}]*\}'
+new = '''void Text::render(const string& str, const glm::vec2& pixel, int size, const glm::vec4& color)
+{
+\tint w, h;
+\tGLFWwindow* win = glfwGetCurrentContext();
+\tglfwGetFramebufferSize(win, &w, &h);
+\tglm::mat4 proj = glm::ortho(0.f, float(w), float(h), 0.f);
+\trender(str, pixel, size, color, proj);
+}'''
 
-        result = re.sub(old, new, src, flags=re.DOTALL)
-        with open(path, 'w') as fp:
-            fp.write(result)
-        print("Done")
-        PYEOF
+result = re.sub(old, new, src, flags=re.DOTALL)
+with open(path, 'w') as fp:
+    fp.write(result)
+print("Done")
+PYEOF
         done
 
-        # 4. Adaptació de shaders a WebGL 2
+        # 6. Adaptació de shaders a WebGL 2
         find 2DGame/Game/shaders -name "*.frag" -o -name "*.vert" | while read f; do
           echo "Adaptant shader: $f"
           grep -v "#version" "$f" > "${f}.tmp"
@@ -121,7 +120,7 @@ jobs:
           rm "${f}.tmp"
         done
 
-        # 5. Compilar el joc
+        # 7. Compilar el joc
         mkdir -p dist
         cd 2DGame/Game
         emcc *.cpp \
@@ -150,68 +149,62 @@ jobs:
 
     - name: Fix canvas i CSS per aspect ratio correcte
       run: |
-        # El canvas d'Emscripten té width/height hardcodejats com a atributs.
-        # Els atributs HTML tenen prioritat sobre el CSS, així que cal
-        # sobreescriure'ls via JS en lloc de CSS.
-        # Inserim un script just abans de </body> que ajusta el canvas
-        # mantenint l'aspect ratio 640x480 i omplint la pantalla.
         python3 - dist/index.html << 'PYEOF'
-        import sys
-        path = sys.argv[1]
-        with open(path, 'r') as f:
-            html = f.read()
+import sys
+path = sys.argv[1]
+with open(path, 'r') as f:
+    html = f.read()
 
-        css = """<style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-          overflow: hidden;
-          background: black;
-          width: 100vw;
-          height: 100vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        #canvas {
-          display: block;
-          image-rendering: pixelated;
-        }
-        </style>"""
+css = """<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  overflow: hidden;
+  background: black;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#canvas {
+  display: block;
+  image-rendering: pixelated;
+}
+</style>"""
 
-        js = """<script>
-        (function() {
-          var GAME_W = 640;
-          var GAME_H = 480;
-          function resizeCanvas() {
-            var canvas = document.getElementById('canvas');
-            if (!canvas) return;
-            var scaleX = window.innerWidth  / GAME_W;
-            var scaleY = window.innerHeight / GAME_H;
-            var scale  = Math.min(scaleX, scaleY);
-            var w = Math.floor(GAME_W * scale);
-            var h = Math.floor(GAME_H * scale);
-            canvas.style.width  = w + 'px';
-            canvas.style.height = h + 'px';
-          }
-          window.addEventListener('resize', resizeCanvas);
-          // Esperem que Emscripten creï el canvas
-          var tries = 0;
-          var iv = setInterval(function() {
-            if (document.getElementById('canvas') || ++tries > 50) {
-              clearInterval(iv);
-              resizeCanvas();
-            }
-          }, 100);
-        })();
-        </script>"""
+js = """<script>
+(function() {
+  var GAME_W = 640;
+  var GAME_H = 480;
+  function resizeCanvas() {
+    var canvas = document.getElementById('canvas');
+    if (!canvas) return;
+    var scaleX = window.innerWidth  / GAME_W;
+    var scaleY = window.innerHeight / GAME_H;
+    var scale  = Math.min(scaleX, scaleY);
+    var w = Math.floor(GAME_W * scale);
+    var h = Math.floor(GAME_H * scale);
+    canvas.style.width  = w + 'px';
+    canvas.style.height = h + 'px';
+  }
+  window.addEventListener('resize', resizeCanvas);
+  var tries = 0;
+  var iv = setInterval(function() {
+    if (document.getElementById('canvas') || ++tries > 50) {
+      clearInterval(iv);
+      resizeCanvas();
+    }
+  }, 100);
+})();
+</script>"""
 
-        html = html.replace('</head>', css + '</head>', 1)
-        html = html.replace('</body>', js + '</body>', 1)
+html = html.replace('</head>', css + '</head>', 1)
+html = html.replace('</body>', js + '</body>', 1)
 
-        with open(path, 'w') as f:
-            f.write(html)
-        print("Done")
-        PYEOF
+with open(path, 'w') as f:
+    f.write(html)
+print("Done")
+PYEOF
 
     - name: Upload Pages artifact
       uses: actions/upload-pages-artifact@v3
