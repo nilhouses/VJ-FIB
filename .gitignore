@@ -4,3 +4,6 @@
 *.tlog
 *.pdb
 *.exe
+*.iobj
+*.ipdb
+Release/
