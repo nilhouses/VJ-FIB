@@ -24,40 +24,30 @@ jobs:
 
     - name: Compile with emcc
       run: |
-        # 1. PREPARAR SOIL (Tornem a la versió que et compilava)
+        # 1. PREPARAR SOIL (Còpia neta)
         mkdir -p soil_temp
         cp "./2DGame/libs/Simple OpenGL Image Library/src"/*.c soil_temp/
         cp "./2DGame/libs/Simple OpenGL Image Library/src"/*.h soil_temp/
         
-        # Substitucions segures que ja et funcionaven per compilar
-        sed -i 's/#include <GL\/gl.h>/#include <GLES2\/gl2.h>/g' soil_temp/SOIL.c
+        # Eliminem les línies que inclouen GL d'escriptori per evitar conflictes
+        sed -i '/#include <GL\/gl.h>/d' soil_temp/SOIL.c
         sed -i '/#include <GL\/glx.h>/d' soil_temp/SOIL.c
         sed -i '/#include <windows.h>/d' soil_temp/SOIL.c
-        sed -i 's/glXGetProcAddressARB/NULL \/\//g' soil_temp/SOIL.c
-        sed -i 's/wglGetProcAddress/NULL \/\//g' soil_temp/SOIL.c
         sed -i 's/\bGL_CLAMP\b/GL_CLAMP_TO_EDGE/g' soil_temp/SOIL.c
 
-        # 2. CIRURGIA DE SHADERS (Millorada per a que es vegi el text i textures)
+        # 2. CIRURGIA DE SHADERS (WebGL 2 Ready)
         find 2DGame/Game/shaders -name "*.frag" -o -name "*.vert" | while read f; do
-          echo "Adaptant shader: $f"
-          # Netegem versions antigues i espais en blanc
           grep -v "#version" "$f" > "${f}.tmp"
-          
-          # Injectem la capçalera obligatòria de WebGL 2
           echo "#version 300 es" > "$f"
           echo "precision mediump float;" >> "$f"
-          
           if [[ "$f" == *.frag ]]; then
-            # Fragments: canviem 'varying' per 'in', 'texture2D' per 'texture'
             sed -i 's/\bvarying\b/in/g' "${f}.tmp"
             sed -i 's/\btexture2D\b/texture/g' "${f}.tmp"
-            # WebGL 2 no té gl_FragColor. Creem un 'outColor' si no existeix.
             if grep -q "gl_FragColor" "${f}.tmp"; then
-              echo "out vec4 _webgl_out_color_;" >> "$f"
-              sed -i 's/gl_FragColor/_webgl_out_color_/g' "${f}.tmp"
+              echo "out vec4 outColor;" >> "$f"
+              sed -i 's/gl_FragColor/outColor/g' "${f}.tmp"
             fi
           else
-            # Vertexs: canviem 'attribute' per 'in' i 'varying' per 'out'
             sed -i 's/\battribute\b/in/g' "${f}.tmp"
             sed -i 's/\bvarying\b/out/g' "${f}.tmp"
           fi
@@ -65,7 +55,7 @@ jobs:
           rm "${f}.tmp"
         done
 
-        # 3. COMPILACIÓ (Mantenim el que et funcionava)
+        # 3. COMPILACIÓ AMB DEFINICIONS DIRECTES (Bypass de l'error APIENTRY)
         mkdir -p dist
         cd 2DGame/Game
         emcc *.cpp \
@@ -74,6 +64,8 @@ jobs:
         ../../soil_temp/image_DXT.c \
         ../../soil_temp/stb_image_aug.c \
         -o ../../dist/index.html \
+        -DAPIENTRY="" \
+        -DGL_APIENTRYP="" \
         -s USE_GLFW=3 \
         -s USE_FREETYPE=1 \
         -s MAX_WEBGL_VERSION=2 \
@@ -87,7 +79,7 @@ jobs:
         --preload-file levels@levels \
         --preload-file sounds@sounds \
         --preload-file fonts@fonts
-
+        
     - name: Upload Pages artifact
       uses: actions/upload-pages-artifact@v3
       with:
