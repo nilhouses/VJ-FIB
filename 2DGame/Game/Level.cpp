@@ -735,7 +735,7 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, const glm
                 camera->setStartPos(player->getPosition());
                 camera->setEndPos(interactedPipe->getExitPosition((int)player->getSize().y, end));
 
-				camera->printTransitionInfo();
+				//camera->printTransitionInfo();
             }
             break;
         }

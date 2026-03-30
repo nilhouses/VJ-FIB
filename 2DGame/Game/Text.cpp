@@ -129,9 +129,10 @@ void Text::render(char c, const glm::vec2& pixel, int size, const glm::vec4& col
 // ── String, no projection (falls back to viewport-derived) ──────────────────
 void Text::render(const string& str, const glm::vec2& pixel, int size, const glm::vec4& color)
 {
-	int vp[4];
-	glGetIntegerv(GL_VIEWPORT, vp);
-	glm::mat4 proj = glm::ortho(0.f, float(vp[2] - 1), float(vp[3] - 1), 0.f);
+	int w, h;
+	GLFWwindow* win = glfwGetCurrentContext();
+	glfwGetFramebufferSize(win, &w, &h);
+	glm::mat4 proj = glm::ortho(0.f, float(w), float(h), 0.f);
 	render(str, pixel, size, color, proj);
 }
 
