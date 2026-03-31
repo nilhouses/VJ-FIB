@@ -50,7 +50,10 @@ bool Text::init(const char* filename)
 	}
 	error = FT_New_Face(Text::library, filename, 0, &face);
 	if (error)
+	{
+		cout << "ERROR! No s'ha pogut carregar la font: " << filename << endl;
 		return false;
+	}
 	FT_Set_Pixel_Sizes(face, ATLAS_FONT_SIZE, ATLAS_FONT_SIZE);
 
 	if (!extractCharSizes(&maxCharWidth, &maxCharHeight))
@@ -218,6 +221,9 @@ void Text::createTextureAtlas()
 	int x = 0, y = 0;
 
 	textureAtlas.createEmptyTexture(textureSize, textureSize);
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
 	for (c = 32; c < 128; c++)
 	{
 		FT_Load_Char(face, c, FT_LOAD_RENDER);
@@ -240,4 +246,6 @@ void Text::createTextureAtlas()
 	textureAtlas.generateMipmap();
 	textureAtlas.setWrapS(GL_CLAMP_TO_EDGE);
 	textureAtlas.setWrapT(GL_CLAMP_TO_EDGE);
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 }

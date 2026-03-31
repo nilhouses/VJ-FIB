@@ -57,6 +57,8 @@ void Texture::loadFromGlyphBuffer(unsigned char *buffer, int width, int height)
 	glBindTexture(GL_TEXTURE_2D, texId);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, buffer);
+	GLint swizzleMask[] = {GL_ONE, GL_ONE, GL_ONE, GL_RED};
+    glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 }

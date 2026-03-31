@@ -38,7 +38,6 @@ void GameOver::init() {
     };
 
     playerDeadQuad = TexturedQuad::createTexturedQuad(geomP, texCoordsP, texProgram);
-    playerDeadQuad = TexturedQuad::createTexturedQuad(geomP, texCoordsP, texProgram);
 
     if (!text.init("fonts/PressStart2P.ttf"))
         std::cout << "Could not load pixel font!!!" << std::endl;
@@ -59,13 +58,15 @@ void GameOver::update(int deltaTime) {
 }
 
 void GameOver::render() {
-    glm::mat4 modelview;
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     texProgram.use();
     texProgram.setUniformMatrix4f("projection", projection);
     texProgram.setUniform4f("color", 1.f, 1.f, 1.f, 1.f);
 
     // Fondo
-    modelview = glm::mat4(1.f);
+    glm::mat4 modelview = glm::mat4(1.f);
     texProgram.setUniformMatrix4f("modelview", modelview);
     background->render(texBackground);
 
@@ -75,7 +76,7 @@ void GameOver::render() {
     playerDeadQuad->render(texPlayerDead);
 
     // Texto
-    glUseProgram(0);
+    //glUseProgram(0);
     string msg1 = "GAME OVER";
     int size1 = 50;
     float width1 = msg1.length() * (float)size1;
