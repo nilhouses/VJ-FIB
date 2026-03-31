@@ -380,6 +380,23 @@ bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, i
 	return false;
 }
 
+bool TileMap::collisionMoveDownSimple(const glm::ivec2& pos, const glm::ivec2& size, int margin)
+{
+	int x0, x1, y;
+	x0 = (pos.x + margin) / tileSize;
+	x1 = (pos.x + size.x - 1 - margin) / tileSize;
+	y = (pos.y + size.y) / tileSize;
+	for (int x = x0; x <= x1; x++)
+	{
+		if (isGround(x, y))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 
 bool TileMap::isOutOfMap(const glm::vec2& pos, const glm::ivec2& size)
 {

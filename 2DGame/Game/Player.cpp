@@ -595,3 +595,8 @@ void Player::exitPipe(bool exitingUp) {
 void Player::center() {
 	pos.x = ((pos.x + map->getBlockSize() / 2) / map->getBlockSize()) * map->getBlockSize();
 }
+
+bool Player::isOnGround() {
+	int posY = int(pos.y);
+	return map->collisionMoveDownSimple(pos, getSize(), 8);
+}

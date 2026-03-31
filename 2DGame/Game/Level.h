@@ -73,6 +73,7 @@ private:
 	Camera* camera = nullptr;
 	glm::mat4 projection;
 	Hud* hud = nullptr;
+	Text text = Text();
 
 	// Para saltar contenido
 	bool godMode = false;

@@ -14,6 +14,7 @@ public:
     glm::vec2 getDeltaMovement() const { return deltaMovement; }
     
     virtual void setPosition(const glm::vec2& pos) override;
+    bool isHorizontal() { return axis == 0; }
 
 private:
     glm::vec2 origin = glm::vec2(0.f,0.f);          // Posición inicial

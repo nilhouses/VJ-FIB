@@ -103,7 +103,7 @@ void SoundManager::playSoundForce(const std::string& sound, float volume) {
         return;
     }
 
-	// Eliminar sonidos activos para forzar el nuevo (si es que hay alguno)
+    // Eliminar sonidos activos para forzar el nuevo (si es que hay alguno)
     for (ma_sound* s : activeSounds) {
         ma_sound_stop(s);
         ma_sound_uninit(s);
@@ -138,7 +138,7 @@ void SoundManager::playMusic(const std::string& musicKey, bool loop) {
     ma_result result = ma_sound_init_from_file(&engine, it->second.c_str(), MA_SOUND_FLAG_STREAM, NULL, NULL, &bgm);
     if (result == MA_SUCCESS) {
         ma_sound_set_looping(&bgm, loop ? MA_TRUE : MA_FALSE);
-        ma_sound_set_volume(&bgm, musicVolume);
+        ma_sound_set_volume(&bgm, musicVolume + diffVolume);
         ma_sound_start(&bgm);
         musicPlaying = true;
         currentMusicKey = musicKey;
@@ -167,7 +167,6 @@ void SoundManager::setMasterVolume(float volume) {
 
 void SoundManager::setMusicVolume(float volume) {
     if (!initialized) return;
-    musicVolume = volume;
     if (musicPlaying) {
         ma_sound_set_volume(&bgm, volume);
     }
@@ -195,11 +194,14 @@ void SoundManager::update() {
     }
 }
 
-
 void SoundManager::increaseVolume(float delta) {
-    setMusicVolume(std::min<float>(musicVolume + delta, 0.3f));
+    diffVolume += delta;
+    if (musicVolume + diffVolume > 0.3f) diffVolume -= delta;
+    setMusicVolume(musicVolume + diffVolume);
 }
 
 void SoundManager::decreaseVolume(float delta) {
-    setMusicVolume(std::max<float>(musicVolume - delta, 0.0f));
+    diffVolume -= delta;
+    if (musicVolume + diffVolume < 0.f) diffVolume += delta;
+    setMusicVolume(musicVolume + diffVolume);
 }

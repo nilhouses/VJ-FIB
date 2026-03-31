@@ -421,6 +421,8 @@ void Level::init()
 
 
     initShaders();
+    if (!text.init("fonts/PressStart2P.ttf"))
+        cout << "Could not load font!" << endl;
 
     // Atributos globales del nivel
     collectedKeys = 0;
@@ -595,40 +597,42 @@ void Level::handlePlayerCollision(Entity* e, glm::vec2& rangeCollided, const glm
         case Type::PLATFORM:
         {
             Platform* p = static_cast<Platform*>(e);
-            glm::ivec2 pSize = p->getSize();
-            glm::vec2 pPos = p->getPosition();
-            glm::vec2 platformOffset = p->getDeltaMovement();
+            if (!p->isHorizontal() || !player->isOnGround() || rangeCollided.x >= 16) {
+                glm::ivec2 pSize = p->getSize();
+                glm::vec2 pPos = p->getPosition();
+                glm::vec2 platformOffset = p->getDeltaMovement();
 
-            glm::ivec2 playerSize = player->getSize();
-            glm::vec2 playerPos = player->getPosition();
+                glm::ivec2 playerSize = player->getSize();
+                glm::vec2 playerPos = player->getPosition();
 
-            // Quitamos 10 px de cada lado de la plataforma para evitar que parezca que el el jugador vuele
-            // y que cuando cuando estamos tocando el suelo y llega la plataforma esta nos empuje
-            int paddingX = 10;
-            float platLimitL = pPos.x + paddingX;
-            float platLimitR = pPos.x + pSize.x - paddingX;
+                // Quitamos 10 px de cada lado de la plataforma para evitar que parezca que el el jugador vuele
+                // y que cuando cuando estamos tocando el suelo y llega la plataforma esta nos empuje
+                int paddingX = 10;
+                float platLimitL = pPos.x + paddingX;
+                float platLimitR = pPos.x + pSize.x - paddingX;
 
-            // Colisión Horizontal
-            bool isInsideX = (playerPos.x + playerSize.x > platLimitL) && (playerPos.x < platLimitR);
+                // Colisión Horizontal
+                bool isInsideX = (playerPos.x + playerSize.x > platLimitL) && (playerPos.x < platLimitR);
 
-            // Colisión Vertical
-            float playerFeet = playerPos.y + playerSize.y;
-            bool isAbove = playerFeet <= (pPos.y + 2.0f);
+                // Colisión Vertical
+                float playerFeet = playerPos.y + playerSize.y;
+                bool isAbove = playerFeet <= (pPos.y + 2.0f);
 
-            if (isAbove && isInsideX) {
-                
-                // Marcar que está en el suelo para evitar que la gravedad lo acelere
-                player->setOnGround(true);
-                
-                // Forzamos la Y del jugador a: (Posición de la plataforma - Altura del jugador)
-                float snappedY = pPos.y - playerSize.y;
-                
-                // Sumamos el delta X para que el jugador se mueva lateralmente con ella
-                float movedX = playerPos.x + platformOffset.x;
+                if (isAbove && isInsideX) {
 
-                player->setPosition(glm::vec2(movedX, snappedY));
+                    // Marcar que está en el suelo para evitar que la gravedad lo acelere
+                    player->setOnGround(true);
+
+                    // Forzamos la Y del jugador a: (Posición de la plataforma - Altura del jugador)
+                    float snappedY = pPos.y - playerSize.y;
+
+                    // Sumamos el delta X para que el jugador se mueva lateralmente con ella
+                    float movedX = playerPos.x + platformOffset.x;
+
+                    player->setPosition(glm::vec2(movedX, snappedY));
+                }
+                break;
             }
-            break;
         }
         case Type::ENTER:
         {
@@ -1043,7 +1047,7 @@ void Level::update(int deltaTime)
 	// Update del Hud con datos actuales
     SpeedBoost* sb = new SpeedBoost();
     float speedBoostDuration = sb->getDuration();
-    hud->update(deltaTime, numLives, player->getBullets(), speedBoostDuration, player->getRemainingBoostTime(), collectedKeys, godMode);
+    hud->update(deltaTime, numLives, player->getBullets(), speedBoostDuration, player->getRemainingBoostTime(), collectedKeys);
 
     rooms[currentRoom]->update(deltaTime);
     player->update(deltaTime);
@@ -1231,6 +1235,10 @@ void Level::render()
 
     // RESET
     glViewport(viewX, viewY, viewWidth, viewHeight);
+
+    // PRINT GODMODE
+    if (godMode)
+        text.render("GOD MODE", glm::vec2(440.f, 40.f), 24, glm::vec4(1, 1, 0.2f, 1), projection);
 }
 
 bool Level::gameOver() { return (numLives == 0); }

@@ -50,6 +50,7 @@ public:
 	bool collisionLadderDown(const glm::vec2& pos, const glm::ivec2& size);
 	bool collisionDown(const glm::ivec2& pos, const glm::ivec2& size, float offsetY);
 	bool collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY, int fallStep, int margin);
+	bool collisionMoveDownSimple(const glm::ivec2& pos, const glm::ivec2& size, int margin);
 	bool isOutOfMap(const glm::vec2& pos, const glm::ivec2& size);
 
 	void print() const; // Función de depuración para imprimir el mapa en consola

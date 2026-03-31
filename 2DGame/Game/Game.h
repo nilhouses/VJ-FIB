@@ -9,7 +9,7 @@
 #include "ActionMessage.h"
 
 #define LEVEL_WIDTH 640
-#define LEVEL_HEIGHT 384
+#define LEVEL_HEIGHT 416
 #define HUD_WIDTH 640
 #define HUD_HEIGHT 64
 #define SCREEN_WIDTH 640
@@ -74,6 +74,8 @@ private:
 	ActionMessage actionMsg = ActionMessage();
 	set<string> messagesSeen = set<string>();	// Mensajes ya mostrados al usuario en esta ejecución del juego
 	glm::mat4 uiProjection = glm::mat4(1.f);
+
+	Scene* sceneToDelete = nullptr;
 
 };
 

@@ -54,14 +54,13 @@ void Hud::init(int numLives, int numKeys, int level)
     background = TexturedQuad::createTexturedQuad(geomBG, texCoords, texProgram);
 }
 
-void Hud::update(int deltaTime, int numLives, int numBullets, float speedBoostDuration, float boostTimeLeft, int collectedKeys, bool godMode)
+void Hud::update(int deltaTime, int numLives, int numBullets, float speedBoostDuration, float boostTimeLeft, int collectedKeys)
 {
 	this->numLives = numLives;
 	this->numKeys = collectedKeys;
 	this->numBullets = numBullets;
 	this->speedBoostDuration = speedBoostDuration;
 	this->boostTimeLeft = boostTimeLeft;
-	this->godMode = godMode;
 }
 
 void Hud::render()
@@ -95,26 +94,21 @@ void Hud::render()
     lifeIcon->render(glm::vec2(livesX, iconsY), hudProj, 1.f);
     text.render(livesStr, glm::vec2(livesX + 45.f, textY), 24, glm::vec4(1, 1, 1, 1), hudProj);
 
-    // God mode
-    float godModeX = livesX + 110.f;
-    if (godMode)
-        text.render("GOD MODE", glm::vec2(godModeX, textY), 24, glm::vec4(1, 0.5f, 0.5f, 1), hudProj);
-
-    // Llaves
-    float keysX = HUD_WIDTH - margin - 70.f - 40.f;
-    keyIcon->render(glm::vec2(keysX, iconsY), hudProj, 1.f);
-    glm::vec4 keyCol = (numKeys == allKeys) ? glm::vec4(1, 1, 0.2f, 1) : glm::vec4(1, 1, 1, 1);
-    text.render(keysStr, glm::vec2(keysX + 40.f, textY), 24, keyCol, hudProj);
+    // Speedboost
+    float boostX = margin + 190.f;
+    float fill = (boostTimeLeft > 0.0f) ? (boostTimeLeft / SpeedBoost::getMaxTime()) : 0.f;
+    boostIcon->render(glm::vec2(boostX, iconsY), hudProj, fill);
 
     // Pistola
-    float gunX = keysX - 110.f;
+    float gunX = margin + 320.f;
     gunIcon->render(glm::vec2(gunX, iconsY), hudProj, 1.f);
     text.render(gunStr, glm::vec2(gunX + 40.f, textY), 24, glm::vec4(1, 1, 1, 1), hudProj);
 
-    // Speedboost
-    float boostX = gunX - 50.f;
-    float fill = (boostTimeLeft > 0.0f) ? (boostTimeLeft / SpeedBoost::getMaxTime()) : 0.f;
-    boostIcon->render(glm::vec2(boostX, iconsY), hudProj, fill);
+    // Llaves
+    float keysX = margin + 480.f;
+    keyIcon->render(glm::vec2(keysX, iconsY), hudProj, 1.f);
+    glm::vec4 keyCol = (numKeys == allKeys) ? glm::vec4(1, 1, 0.2f, 1) : glm::vec4(1, 1, 1, 1);
+    text.render(keysStr, glm::vec2(keysX + 40.f, textY), 24, keyCol, hudProj);
 }
 
 

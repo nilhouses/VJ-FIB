@@ -15,7 +15,7 @@ public:
 	~Hud();
 
 	void init(int numLives, int numKeys, int level);
-	void update(int deltaTime, int numLives, int numBullets, float speedBoostDuration, float boostTimeLeft, int collectedKeys, bool godMode);
+	void update(int deltaTime, int numLives, int numBullets, float speedBoostDuration, float boostTimeLeft, int collectedKeys);
 	void render();
 
 	void setAllKeys(int allKeys) { this->allKeys = allKeys; }
@@ -29,7 +29,6 @@ private:
 	int numBullets = 0;
 	float speedBoostDuration = 0.f;
 	float boostTimeLeft = 0.f;
-	bool godMode = false;
 
 	glm::mat4 hudProj = glm::mat4(1.f);
 	Text text = Text();

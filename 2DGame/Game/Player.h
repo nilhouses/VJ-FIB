@@ -42,6 +42,7 @@ public:
 	void exitPipe(bool exitingUp);
 	void center();
 	bool getDeathByMap() { return deathByMap; }
+	bool isOnGround();
 
 private:
 	bool bJumping = false;						// Indica si el jugador está saltando o no

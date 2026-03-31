@@ -50,6 +50,7 @@ private:
     std::string currentMusicKey = "";
     float musicVolume = 0.1f;
     float turboTimer = 0.0f;
+    float diffVolume = 0.0f;
     std::list<ma_sound*> activeSounds; // Lista de sonidos en reproducción
 };
 
