@@ -38,7 +38,7 @@ std::unordered_map<std::string, std::string> sounds = {
     { "distracted", "sounds/distracted.mp3" },
     { "alarm", "sounds/alarm.mp3" },
     { "crash", "sounds/crash.mp3" },
-    { "spaceShipFalling", "sounds/spaceShipFalling.mp3" },
+    { "spaceshipFalling", "sounds/spaceshipFalling.mp3" },
     { "jump", "sounds/jump.mp3" },
     { "parachute", "sounds/parachute.mp3" },
     { "nave", "sounds/nave.mp3" },
