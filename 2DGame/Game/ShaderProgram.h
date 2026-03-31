@@ -2,8 +2,12 @@
 #define _SHADER_PROGRAM_INCLUDE
 
 
-#include <GL/glew.h>
-#include <GL/gl.h>
+#ifdef __EMSCRIPTEN__
+	#include <GLES3/gl3.h>
+#else
+	#include <GL/glew.h>
+	#include <GL/gl.h>
+#endif
 #include <glm/glm.hpp>
 #include "Shader.h"
 

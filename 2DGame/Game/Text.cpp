@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <cmath>
 #ifdef __EMSCRIPTEN__
 	#include <GLES3/gl3.h>
@@ -51,7 +51,8 @@ bool Text::init(const char* filename)
 	error = FT_New_Face(Text::library, filename, 0, &face);
 	if (error)
 	{
-		cout << "ERROR! No s'ha pogut carregar la font: " << filename << endl;
+		cerr << "ERROR! Could not load font: " << filename << " (FT_New_Face code=" << error << ")" << endl;
+		cerr.flush();
 		return false;
 	}
 	FT_Set_Pixel_Sizes(face, ATLAS_FONT_SIZE, ATLAS_FONT_SIZE);
@@ -206,8 +207,14 @@ bool Text::extractCharSizes(int* maxCharWidth, int* maxCharHeight)
 	*maxCharHeight = 0;
 	for (c = 32; c < 128; c++)
 	{
-		if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+		FT_Error err = FT_Load_Char(face, c, FT_LOAD_RENDER);
+		if (err)
+		{
+			cerr << "ERROR! FT_Load_Char failed during metrics extraction. char='" << static_cast<char>(c)
+			     << "' (code=" << c << ") (FT_Load_Char code=" << err << ")" << endl;
+			cerr.flush();
 			return false;
+		}
 		*maxCharWidth = glm::max(*maxCharWidth, (int)face->glyph->bitmap.width);
 		*maxCharHeight = glm::max(*maxCharHeight, (int)face->glyph->bitmap.rows);
 	}
@@ -226,7 +233,14 @@ void Text::createTextureAtlas()
 
 	for (c = 32; c < 128; c++)
 	{
-		FT_Load_Char(face, c, FT_LOAD_RENDER);
+		FT_Error err = FT_Load_Char(face, c, FT_LOAD_RENDER);
+		if (err)
+		{
+			cerr << "ERROR! FT_Load_Char failed during atlas build. char='" << static_cast<char>(c)
+			     << "' (code=" << c << ") (FT_Load_Char code=" << err << ")" << endl;
+			cerr.flush();
+			continue;
+		}
 		chars[c - 32].tx = x;
 		chars[c - 32].ty = y;
 		chars[c - 32].sx = face->glyph->bitmap.width;

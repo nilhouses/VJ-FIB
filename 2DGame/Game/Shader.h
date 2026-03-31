@@ -3,8 +3,12 @@
 
 
 #include <string>
-#include <GL/glew.h>
-#include <GL/gl.h>
+#ifdef __EMSCRIPTEN__
+	#include <GLES3/gl3.h>
+#else
+	#include <GL/glew.h>
+	#include <GL/gl.h>
+#endif
 
 
 using namespace std;
