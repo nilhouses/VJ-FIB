@@ -24,35 +24,26 @@ jobs:
 
     - name: Crear scripts Python auxiliars
       run: |
-        cat > /tmp/fix_text.py << 'EOF'
-        import re, sys
-        path = sys.argv[1]
-        with open(path, 'r') as fp:
-            src = fp.read()
-
-        old = r'void Text::render\(const string& str, const glm::vec2& pixel, int size, const glm::vec4& color\)\s*\{[^}]*glGetIntegerv[^}]*\}'
-        new = (
-            "void Text::render(const string& str, const glm::vec2& pixel, int size, const glm::vec4& color)\n"
-            "{\n"
-            "\tint w, h;\n"
-            "\tGLFWwindow* win = glfwGetCurrentContext();\n"
-            "\tglfwGetFramebufferSize(win, &w, &h);\n"
-            "\tglm::mat4 proj = glm::ortho(0.f, float(w), float(h), 0.f);\n"
-            "\trender(str, pixel, size, color, proj);\n"
-            "}"
-        )
-
-        result = re.sub(old, new, src, flags=re.DOTALL)
-        with open(path, 'w') as fp:
-            fp.write(result)
-        print("Done")
-        EOF
-
         cat > /tmp/fix_html.py << 'EOF'
+        import re
         import sys
+
+        PAGE_TITLE = "Stranded in Alien Territory"
+
         path = sys.argv[1]
         with open(path, 'r') as f:
             html = f.read()
+
+        html = re.sub(
+            r"<title>[^<]*</title>",
+            f"<title>{PAGE_TITLE}</title>",
+            html,
+            count=1,
+        )
+
+        head_inject = (
+            '<link rel="icon" href="favicon.ico" type="image/x-icon">\n'
+        )
 
         css = (
             "<style>\n"
@@ -101,7 +92,7 @@ jobs:
             "</script>"
         )
 
-        html = html.replace('</head>', css + '</head>', 1)
+        html = html.replace('</head>', head_inject + css + '</head>', 1)
         html = html.replace('</body>', js + '</body>', 1)
 
         with open(path, 'w') as f:
@@ -131,39 +122,7 @@ jobs:
           sed -i '1s/^\xEF\xBB\xBF//' "$f"
         done
 
-        # 3. Fix GL includes
-        fix_gl_includes() {
-          local f="$1"
-          sed -i '/#include <GL\/glew.h>/d' "$f"
-          sed -i '/#include <GL\/gl.h>/d' "$f"
-          sed -i '/#include <GLFW\/glfw3.h>/d' "$f"
-          sed -i '/#include <GLFW\/glfw3native.h>/d' "$f"
-          sed -i '1s|^|#ifdef __EMSCRIPTEN__\n#include <GLES3/gl3.h>\n#include <GLFW/glfw3.h>\n#else\n#include <GL/glew.h>\n#include <GL/gl.h>\n#include <GLFW/glfw3.h>\n#endif\n|' "$f"
-        }
-
-        find 2DGame/Game -name "*.cpp" | while read f; do
-          if grep -qE '#include <GL/glew.h>|#include <GL/gl.h>|#include <GLFW/glfw3.h>' "$f"; then
-            fix_gl_includes "$f"
-          fi
-        done
-
-        # 4. Fix main.cpp: eliminar windows, glew i afegir guard #ifndef __EMSCRIPTEN__
-        find 2DGame/Game -name "main.cpp" | while read f; do
-          sed -i '/#include <windows.h>/d' "$f"
-          sed -i '/#include "resource.h"/d' "$f"
-          sed -i '/#define GLFW_EXPOSE_NATIVE_WIN32/d' "$f"
-          sed -i '/#ifdef _WIN32/,/#endif/d' "$f"
-          # Substituir glewInit() per versió guardada
-          sed -i 's/glewExperimental = GL_TRUE;/#ifndef __EMSCRIPTEN__\n\tglewExperimental = GL_TRUE;/' "$f"
-          sed -i 's/glewInit();/glewInit();\n#endif/' "$f"
-        done
-
-        # 5. Fix Text.cpp
-        find 2DGame/Game -name "Text.cpp" | while read f; do
-          python3 /tmp/fix_text.py "$f"
-        done
-
-        # 6. Adaptació shaders
+        # 3. Adaptació shaders (keep until shaders are committed as WebGL2/GLES3)
         find 2DGame/Game/shaders -name "*.frag" -o -name "*.vert" | while read f; do
           grep -v "#version" "$f" > "${f}.tmp"
           echo "#version 300 es" > "$f"
@@ -183,7 +142,7 @@ jobs:
           rm "${f}.tmp"
         done
 
-        # 7. Compilar
+        # 4. Compilar
         mkdir -p dist
         cd 2DGame/Game
         emcc *.cpp \
@@ -195,6 +154,8 @@ jobs:
         -DSOIL_GLES2 \
         -s USE_GLFW=3 \
         -s USE_FREETYPE=1 \
+        -s GL_ASSERTIONS=1 \
+        -s ASSERTIONS=1 \
         -s ERROR_ON_UNDEFINED_SYMBOLS=0 \
         --bind \
         -s NO_EXIT_RUNTIME=1 \
@@ -209,6 +170,8 @@ jobs:
         --preload-file levels@levels \
         --preload-file sounds@sounds \
         --preload-file fonts@fonts
+
+        cp icon1.ico ../../dist/favicon.ico
 
     - name: Fix canvas HTML final
       run: python3 /tmp/fix_html.py dist/index.html

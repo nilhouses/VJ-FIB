@@ -56,9 +56,14 @@ void Texture::loadFromGlyphBuffer(unsigned char *buffer, int width, int height)
 	glGenTextures(1, &texId);
 	glBindTexture(GL_TEXTURE_2D, texId);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+#ifdef __EMSCRIPTEN__
+	// WebGL2 requires sized internal formats (e.g. GL_R8). Texture swizzle is not supported.
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, buffer);
+#else
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, buffer);
 	GLint swizzleMask[] = {GL_ONE, GL_ONE, GL_ONE, GL_RED};
-    glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
+	glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
+#endif
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 }
@@ -68,7 +73,11 @@ void Texture::createEmptyTexture(int width, int height)
 	glGenTextures(1, &texId);
 	glBindTexture(GL_TEXTURE_2D, texId);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+#ifdef __EMSCRIPTEN__
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, 0);
+#else
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, 0);
+#endif
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 }
 
@@ -110,7 +119,9 @@ void Texture::setMagFilter(GLint value)
 
 void Texture::use() const
 {
+#ifndef __EMSCRIPTEN__
 	glEnable(GL_TEXTURE_2D);
+#endif
 	glBindTexture(GL_TEXTURE_2D, texId);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapS);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapT);

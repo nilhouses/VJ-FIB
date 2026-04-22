@@ -3,7 +3,11 @@
 
 
 #include <string>
-#include <GL/glew.h>
+#ifdef __EMSCRIPTEN__
+	#include <GLES3/gl3.h>
+#else
+	#include <GL/glew.h>
+#endif
 
 
 using namespace std;

@@ -93,7 +93,7 @@ void Comic::soundInitialComic() {
             SoundManager::instance().playSoundForce("alarm", 0.75f);
             break;
         case 6:
-            SoundManager::instance().playSoundForce("spaceShipFalling", 0.6f);
+            SoundManager::instance().playSoundForce("spaceshipFalling", 0.6f);
             break;
         case 9:
             SoundManager::instance().playSoundForce("jump", 0.5f);
