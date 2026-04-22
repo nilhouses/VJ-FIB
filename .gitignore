@@ -7,3 +7,12 @@
 *.iobj
 *.ipdb
 Release/
+
+3DGame/Library/
+3DGame/Temp/
+3DGame/Obj/
+3DGame/Logs/
+3DGame/UserSettings/
+3DGame/.vs/
+*.csproj
+*.sln
