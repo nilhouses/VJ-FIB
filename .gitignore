@@ -14,5 +14,3 @@ Release/
 3DGame/Logs/
 3DGame/UserSettings/
 3DGame/.vs/
-*.csproj
-*.sln
