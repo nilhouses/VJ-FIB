@@ -1,11 +1,34 @@
 # VJ-FIB
 
-## Info
-* **Obrir VS des de l'explorador de fitxers a partir de la solution del projecte :** `.sln`.
-* **Executar:** `Ctrl + F5` (Build + Run).
-* **Cal fer retarget** Si no fas servir VS2015, **Botó dret al Projecte (01-window) > Retarget Projects**. Si no, no compilarà (error de SDK). Si fas el retarget al fitxer de configuració es passa de `<PlatformToolset>v140</PlatformToolset>` a `<PlatformToolset>v143</PlatformToolset>` (VS2015 o VS2022).
+This repository contains the source code for our projects developed during the 2025-26 Q2 semester at [FIB-UPC](https://www.fib.upc.edu/en).
 
-## Fitxers
-* **.sln** Contenidor pare que agrupa tots els projectes i configuracions.
-* **.vcxproj:** És la configuració de cada projecte (com un Makefile). Diu quins .cpp usar i quines llibreries carregar.
-* **Prohibit:** No pugis mai la carpeta `Debug/` ni `Release/`.
+## 🎮 Projects Overview
+
+* **2D Game:** Developed using **C++ and OpenGL**.
+* **3D Game:** Developed using the **Unity Engine**.
+
+---
+
+## 🕹️ 2D Game: Stranded in Alien Territory
+
+### Tools & Software Used
+
+#### Level Design
+* [Tiled](https://www.mapeditor.org/) - Map editor for tile-based levels.
+
+#### Audio & Music
+* [Studio One](https://www.presonus.com/en/products/studio-one) - Music production and composition.
+* [Audacity](https://www.audacityteam.org/) - Audio editing and sound effects.
+
+---
+
+## 🧊 3D Game: [Insert Name Here]
+
+### Tools & Software Used
+
+#### Development
+* [Unity](https://unity.com/) - Primary game engine and scripting.
+
+#### 3D Modeling
+* [Blender](https://www.blender.org/) - General 3D modeling and UV mapping.
+* [MagicaVoxel](https://ephtracy.github.io/) - Voxel art and asset creation.

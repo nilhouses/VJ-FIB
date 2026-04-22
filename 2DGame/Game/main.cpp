@@ -2,14 +2,14 @@
 #include <GLFW/glfw3.h>
 
 #ifdef _WIN32
-	#define GLFW_EXPOSE_NATIVE_WIN32
-	#include <GLFW/glfw3native.h>
-	#include <windows.h>
-	#include "resource.h"
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3native.h>
+#include <windows.h>
+#include "resource.h"
 #endif
 
 #ifdef __EMSCRIPTEN__
-	#include <emscripten.h>
+#include <emscripten.h>
 #endif
 
 #include "Game.h"
@@ -54,26 +54,33 @@ void window_resize_callback(GLFWwindow* window, int width, int height)
 }
 /* ------------------------------------------------------------------------------------------- */
 
-
 void main_loop()
 {
-    double currentTime = glfwGetTime();
-    if (currentTime - timePreviousFrame >= timePerFrame)    // Si ha pasado pasado el tiempo necesario para renderizar un nuevo frame...
-    {
-        /* Update & render steps of the game loop */
-        if(!Game::instance().update(int(1000.0f * (currentTime - timePreviousFrame))))
-            glfwSetWindowShouldClose(global_window, GLFW_TRUE);
-        
-        Game::instance().render();
-        timePreviousFrame = currentTime;
+	glfwPollEvents();
 
-        /* Swap front and back buffers */
-        glfwSwapBuffers(global_window);
-    }
+	double currentTime = glfwGetTime();
+	double deltaTime = currentTime - timePreviousFrame;
 
-    // Se analiza si se han producido eventos de teclado o ratón y se llaman a las funciones correspondientes de GLFW
-    glfwPollEvents();
+	#ifndef __EMSCRIPTEN__ // Capar FPS SOLO en windows
+		if (deltaTime < timePerFrame) return;
+	#endif 
+
+	// Update del juego
+	if (deltaTime > 0.1) deltaTime = 0.1;
+
+	/* Update & render steps of the game loop */
+	if (!Game::instance().update(int(1000.0f * deltaTime)))
+		glfwSetWindowShouldClose(global_window, GLFW_TRUE);
+
+	Game::instance().render();
+
+	// Update time
+	timePreviousFrame = currentTime;
+
+	/* Swap front and back buffers */
+	glfwSwapBuffers(global_window);
 }
+
 
 int main(void)
 {
@@ -82,7 +89,7 @@ int main(void)
 		return -1;
 
 	/* Tamaño y nombre de la ventana */
-	global_window  = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Stranded in Alien Territory", NULL, NULL);
+	global_window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Stranded in Alien Territory", NULL, NULL);
 	if (!global_window)
 	{
 		glfwTerminate();
@@ -90,17 +97,18 @@ int main(void)
 	}
 
 	/* Posición inicial de la ventana dentro de la pantalla */
-	glfwSetWindowPos(global_window , 100, 100);
+	glfwSetWindowPos(global_window, 100, 100);
 	/* Marcamos el contexto de la ventana como el contexto actual para OpenGL */
 	glfwMakeContextCurrent(global_window);
 
 	// Set window icon (windows only)
 	#ifdef _WIN32
+		glfwSwapInterval(1);
 		HWND hwnd = glfwGetWin32Window(global_window);
 		HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
 		SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
 		SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
-    #endif
+	#endif
 	/* Cada vez que se produzca un evento de teclado o ratón, se llamará a las funciones creadas arriba */
 	glfwSetKeyCallback(global_window, key_callback);
 	glfwSetCursorPosCallback(global_window, cursor_position_callback);
@@ -119,15 +127,18 @@ int main(void)
 	timePreviousFrame = glfwGetTime();
 
 	#ifdef __EMSCRIPTEN__
-        emscripten_set_main_loop(main_loop, 0, 1);
-    #else
-        // A Windows, fem servir el bucle while tradicional
-        while (!glfwWindowShouldClose(global_window))
-        {
-            main_loop();
-        }
+		// Web
+		emscripten_set_main_loop(main_loop, 0, 1);
+	#else
+		// Windows
+		while (!glfwWindowShouldClose(global_window))
+		{
+			main_loop();
+		}
 
-        glfwTerminate();
-    #endif
+		glfwTerminate();
+	#endif
 	return 0;
 }
+
+

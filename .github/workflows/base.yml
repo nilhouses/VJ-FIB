@@ -1,26 +1,32 @@
 name: Deploy to GitHub Pages
 
+
 on:
   push:
     branches: [ main ]
+
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
+
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4 
+      uses: actions/checkout@v4
+
 
     - name: Setup Emscripten
       uses: mymindstorm/setup-emsdk@v14
       with:
         version: latest
 
+
     - name: Install GLM
       run: |
         mkdir -p external
         git clone https://github.com/g-truc/glm.git external/glm
+
 
     - name: Crear scripts Python auxiliars
       run: |
@@ -28,11 +34,14 @@ jobs:
         import re
         import sys
 
+
         PAGE_TITLE = "Stranded in Alien Territory"
+
 
         path = sys.argv[1]
         with open(path, 'r') as f:
             html = f.read()
+
 
         html = re.sub(
             r"<title>[^<]*</title>",
@@ -41,9 +50,11 @@ jobs:
             count=1,
         )
 
+
         head_inject = (
             '<link rel="icon" href="favicon.ico" type="image/x-icon">\n'
         )
+
 
         css = (
             "<style>\n"
@@ -63,6 +74,7 @@ jobs:
             "}\n"
             "</style>"
         )
+
 
         js = (
             "<script>\n"
@@ -92,13 +104,16 @@ jobs:
             "</script>"
         )
 
+
         html = html.replace('</head>', head_inject + css + '</head>', 1)
         html = html.replace('</body>', js + '</body>', 1)
+
 
         with open(path, 'w') as f:
             f.write(html)
         print("Done")
         EOF
+
 
     - name: Compile with emcc
       run: |
@@ -108,19 +123,23 @@ jobs:
         cp "$SOIL_SRC_DIR"/*.c soil_temp/
         cp "$SOIL_SRC_DIR"/*.h soil_temp/
 
+
         sed -i '/#include <GL\/gl.h>/d' soil_temp/SOIL.c
         sed -i '/#include <GL\/glx.h>/d' soil_temp/SOIL.c
         sed -i '/#include <windows.h>/d' soil_temp/SOIL.c
         sed -i 's/\bGL_CLAMP\b/GL_CLAMP_TO_EDGE/g' soil_temp/SOIL.c
 
+
         echo -e "#define SOIL_GLES2\n#include <GLES2/gl2.h>\n#include <GLES2/gl2ext.h>\n#define APIENTRY\n#define glXGetProcAddressARB(x) NULL\n#define wglGetProcAddress(x) NULL" > soil_temp/SOIL_fix.c
         cat soil_temp/SOIL.c >> soil_temp/SOIL_fix.c
         mv soil_temp/SOIL_fix.c soil_temp/SOIL.c
+
 
         # 2. Fix BOM
         find 2DGame/Game -name "*.cpp" -o -name "*.h" | while read f; do
           sed -i '1s/^\xEF\xBB\xBF//' "$f"
         done
+
 
         # 3. Adaptació shaders (keep until shaders are committed as WebGL2/GLES3)
         find 2DGame/Game/shaders -name "*.frag" -o -name "*.vert" | while read f; do
@@ -142,6 +161,7 @@ jobs:
           rm "${f}.tmp"
         done
 
+
         # 4. Compilar
         mkdir -p dist
         cd 2DGame/Game
@@ -151,11 +171,10 @@ jobs:
         ../../soil_temp/image_DXT.c \
         ../../soil_temp/stb_image_aug.c \
         -o ../../dist/index.html \
+        -O3 \
         -DSOIL_GLES2 \
         -s USE_GLFW=3 \
         -s USE_FREETYPE=1 \
-        -s GL_ASSERTIONS=1 \
-        -s ASSERTIONS=1 \
         -s ERROR_ON_UNDEFINED_SYMBOLS=0 \
         --bind \
         -s NO_EXIT_RUNTIME=1 \
@@ -171,15 +190,19 @@ jobs:
         --preload-file sounds@sounds \
         --preload-file fonts@fonts
 
+
         cp icon1.ico ../../dist/favicon.ico
+
 
     - name: Fix canvas HTML final
       run: python3 /tmp/fix_html.py dist/index.html
+
 
     - name: Upload Pages artifact
       uses: actions/upload-pages-artifact@v3
       with:
         path: 'dist/'
+
 
   deploy:
     needs: build
@@ -194,3 +217,4 @@ jobs:
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v4
+
