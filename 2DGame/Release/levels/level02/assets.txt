@@ -1,0 +1,30 @@
+5
+images/fondo_desierto_alto_ajustado.png
+1
+693 480
+0 0 0
+images/fondo_habitacion.png
+4
+1280 960
+1 0 0
+2 0 0
+3 0 0
+4 0 0
+
+images/casa_2.png
+2
+128 128
+0 29 9
+0 30 5
+images/casa_1.png
+1
+128 96
+0 9 7
+images/casa_3.png
+1
+192 96
+0 10 1
+images/metal_banner.png
+1
+32 96
+0 16 1

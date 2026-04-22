@@ -6,7 +6,6 @@
 *.exe
 *.iobj
 *.ipdb
-Release/
 
 3DGame/Library/
 3DGame/Temp/
@@ -14,3 +13,4 @@ Release/
 3DGame/Logs/
 3DGame/UserSettings/
 3DGame/.vs/
+
