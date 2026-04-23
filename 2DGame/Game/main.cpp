@@ -61,10 +61,8 @@ void main_loop()
 	double currentTime = glfwGetTime();
 	double deltaTime = currentTime - timePreviousFrame;
 
-	#ifndef __EMSCRIPTEN__ // Capar FPS SOLO en windows
-		if (deltaTime < timePerFrame) return;
-	#endif 
-
+	if (deltaTime < timePerFrame) return;
+	
 	// Update del juego
 	if (deltaTime > 0.1) deltaTime = 0.1;
 
