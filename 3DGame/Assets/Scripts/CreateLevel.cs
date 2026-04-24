@@ -9,7 +9,7 @@ public class CreateLevel : MonoBehaviour
 {
     public GameObject player;                   // Reference to the player object.
                                                 // We need to position it according to the level.
-    public GameObject ground, wall, box, goal;  // References to objects we need to instantiate to
+    public GameObject ground, wall, box, goal, bat;  // References to objects we need to instantiate to
                                                 // build the level.
 
     // Start is called before the first frame update
@@ -39,7 +39,9 @@ public class CreateLevel : MonoBehaviour
                     int tile = int.Parse(tokens[x]);
 
                     // All tiles will have a ground instance under them. We instantiate it here.
-                    GameObject obj = Instantiate(ground, new Vector3(x, 0.0f, y), transform.rotation);
+                    GameObject obj = Instantiate(ground, new Vector3(x, -0.8f, y), transform.rotation);
+                    obj.transform.localScale = new Vector3(0.31f, 0.31f, 0.31f);
+
                     // All instances created by this script end as children of the object that contains the script.
                     obj.transform.parent = transform;
 
