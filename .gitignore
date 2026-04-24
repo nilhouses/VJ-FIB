@@ -1,5 +1,4 @@
 .vs/
-*.obj
 *.log
 *.tlog
 *.pdb
@@ -13,4 +12,3 @@
 3DGame/Logs/
 3DGame/UserSettings/
 3DGame/.vs/
-
