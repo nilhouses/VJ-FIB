@@ -435,10 +435,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1843085259}
-  ground: {fileID: 919132149155446097, guid: 3e4ccbe8dcd7e444aa437f6f58ed9ccd, type: 3}
+  ground: {fileID: 7721698503481951632, guid: 1c09e53da7c544c40a0d0a1251d89e04, type: 3}
   wall: {fileID: 2512714034962792149, guid: facace8863641b14d80702e20a53d8d9, type: 3}
+  wall_1: {fileID: 2512714034962792149, guid: dd11d762fce1eb547aef54bd08bd4004, type: 3}
+  door: {fileID: 174958979223755381, guid: c93a8122a68be9241bdbb352f91b2a62, type: 3}
   box: {fileID: 6057771484784391244, guid: e20d5a2a58984bc47bc259277f7db9d1, type: 3}
   goal: {fileID: 1851759096616309945, guid: 82a5f1ed78ed1a94a94a536658b11d9e, type: 3}
+  bat: {fileID: 4061012142582937487, guid: ed525d46651a7394cad440d12d1e5cec, type: 3}
 --- !u!4 &1182457125
 Transform:
   m_ObjectHideFlags: 0
@@ -464,15 +467,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 8ab2a4da45db62842aa2752c6575ef3d, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8ab2a4da45db62842aa2752c6575ef3d, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8ab2a4da45db62842aa2752c6575ef3d, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8ab2a4da45db62842aa2752c6575ef3d, type: 3}
       propertyPath: m_LocalPosition.x

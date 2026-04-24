@@ -9,7 +9,7 @@ public class CreateLevel : MonoBehaviour
 {
     public GameObject player;                   // Reference to the player object.
                                                 // We need to position it according to the level.
-    public GameObject ground, wall, box, goal, bat;  // References to objects we need to instantiate to
+    public GameObject ground, wall, wall_1, door, box, goal, bat;  // References to objects we need to instantiate to
                                                 // build the level.
 
     // Start is called before the first frame update
@@ -17,7 +17,7 @@ public class CreateLevel : MonoBehaviour
     {
         // dataPath is the directory path to the Assets in the project
         // We want to load file map.txt inside directory Maps.
-        string filename = Application.dataPath + "/Maps/map.txt";
+        string filename = Application.dataPath + "/Maps/testing_map.txt";
 
         if (File.Exists(filename))
         {
@@ -30,6 +30,32 @@ public class CreateLevel : MonoBehaviour
             int width, height;
             width = int.Parse(tokens[0]);
             height = int.Parse(tokens[1]);
+
+            // Decorative walls
+            for (int y = 0; y < height; y++) // Left wall
+            {
+                GameObject obj = Instantiate(wall_1, new Vector3(-1f, 0.5f, y), transform.rotation);
+                obj.transform.parent = transform;
+                obj.transform.Rotate(0.0f, 90.0f, 0.0f);
+            }
+            for (int x = 0; x < width; x++) // Top wall
+            {
+                if (x == width/2)
+                {
+                    GameObject obj = Instantiate(door, new Vector3(x, 0.5f, height), transform.rotation);
+                    obj.transform.parent = transform;
+                    obj.transform.Rotate(0.0f, 180.0f, 0.0f);
+                }
+                else
+                {
+                    GameObject obj = Instantiate(wall_1, new Vector3(x, 0.5f, height), transform.rotation);
+                    obj.transform.parent = transform;
+                    obj.transform.Rotate(0.0f, 180.0f, 0.0f);    
+                }
+                
+            }
+
+            // Other elements
             for (int y = 0; y < height; y++)
             {
                 line = reader.ReadLine();
@@ -39,9 +65,7 @@ public class CreateLevel : MonoBehaviour
                     int tile = int.Parse(tokens[x]);
 
                     // All tiles will have a ground instance under them. We instantiate it here.
-                    GameObject obj = Instantiate(ground, new Vector3(x, -0.8f, y), transform.rotation);
-                    obj.transform.localScale = new Vector3(0.31f, 0.31f, 0.31f);
-
+                    GameObject obj = Instantiate(ground, new Vector3(x, -0.75f, y), transform.rotation);
                     // All instances created by this script end as children of the object that contains the script.
                     obj.transform.parent = transform;
 
@@ -64,7 +88,11 @@ public class CreateLevel : MonoBehaviour
                             // For the player, we position it at the location of the tile with the player tile id.
                             player.transform.Translate(x, 0.0f, y);
                             break;
-                    }
+                        case 7: 
+                            obj = Instantiate(bat, new Vector3(x, 0.0f, y), transform.rotation);
+                            obj.transform.parent = transform;
+                            break;
+                        }
                 }
             }
         }

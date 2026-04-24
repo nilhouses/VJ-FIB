@@ -64,6 +64,7 @@
     <Compile Include="Assets\Scripts\CreateLevel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Maps\testing_map.txt" />
     <None Include="Assets\Maps\map.txt" />
   </ItemGroup>
   <ItemGroup>
