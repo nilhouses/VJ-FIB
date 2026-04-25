@@ -58,8 +58,8 @@ public class MoveEnemy : MonoBehaviour
             currentState = EnemyState.MOVE;
             timeInMove = 0.0f;
 
-            // Rotación suave hacia la dirección
-            transform.Rotate(0.0f, 90.0f * ((int)randomDir - (int)dir), 0.0f);
+            // Rotación suave hacia la dirección           
+            transform.eulerAngles = new Vector3(0, (int)randomDir * 90.0f, 0);
             dir = randomDir;
         }
     }
