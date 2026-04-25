@@ -9,7 +9,7 @@ public class CreateLevel : MonoBehaviour
 {
     public GameObject player;                   // Reference to the player object.
                                                 // We need to position it according to the level.
-    public GameObject ground, wall, wall_1, door, box, goal, bat;  // References to objects we need to instantiate to
+    public GameObject floor, wall_1, door, goal, bat;  // References to objects we need to instantiate to
                                                 // build the level.
 
     // Start is called before the first frame update
@@ -38,25 +38,18 @@ public class CreateLevel : MonoBehaviour
                 obj.transform.parent = transform;
                 obj.transform.Rotate(0.0f, 90.0f, 0.0f);
             }
+            
             for (int x = 0; x < width; x++) // Top wall
             {
-                if (x == width/2)
-                {
-                    GameObject obj = Instantiate(door, new Vector3(x, 0.5f, height), transform.rotation);
-                    obj.transform.parent = transform;
-                    obj.transform.Rotate(0.0f, 180.0f, 0.0f);
-                }
-                else
-                {
-                    GameObject obj = Instantiate(wall_1, new Vector3(x, 0.5f, height), transform.rotation);
-                    obj.transform.parent = transform;
-                    obj.transform.Rotate(0.0f, 180.0f, 0.0f);    
-                }
-                
+                GameObject obj;
+                if (x == width/2) obj = Instantiate(door, new Vector3(x, 0.5f, height), transform.rotation);
+                else obj = Instantiate(wall_1, new Vector3(x, 0.5f, height), transform.rotation);
+                obj.transform.parent = transform;
+                obj.transform.Rotate(0.0f, 180.0f, 0.0f);  
             }
 
             // Other elements
-            for (int y = 0; y < height; y++)
+            for (int y = height - 1; y >= 0; y--)
             {
                 line = reader.ReadLine();
                 tokens = line.Split(" ");
@@ -64,35 +57,22 @@ public class CreateLevel : MonoBehaviour
                 {
                     int tile = int.Parse(tokens[x]);
 
-                    // All tiles will have a ground instance under them. We instantiate it here.
-                    GameObject obj = Instantiate(ground, new Vector3(x, -0.75f, y), transform.rotation);
+                    // All tiles will have a floor instance under them. We instantiate it here.
+                    GameObject obj = Instantiate(floor, new Vector3(x, -0.75f, y), transform.rotation);
                     // All instances created by this script end as children of the object that contains the script.
                     obj.transform.parent = transform;
 
                     // Now, for objects other than the player we spawn an instance.
                     switch (tile)
                     {
-                        case 2:
-                            obj = Instantiate(wall, new Vector3(x, 0.0f, y), transform.rotation);
-                            obj.transform.parent = transform;
+                        case 6: // Player
+                            player.transform.position = new Vector3(x, 0.0f, y);
                             break;
-                        case 3:
-                            obj = Instantiate(goal, new Vector3(x, 0.0f, y), transform.rotation);
-                            obj.transform.parent = transform;
-                            break;
-                        case 5:
-                            obj = Instantiate(box, new Vector3(x, 0.0f, y), transform.rotation);
-                            obj.transform.parent = transform;
-                            break;
-                        case 6:
-                            // For the player, we position it at the location of the tile with the player tile id.
-                            player.transform.Translate(x, 0.0f, y);
-                            break;
-                        case 7: 
+                        case 7: // Bat
                             obj = Instantiate(bat, new Vector3(x, 0.0f, y), transform.rotation);
                             obj.transform.parent = transform;
                             break;
-                        }
+                    }
                 }
             }
         }
