@@ -3,25 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-enum PlayerState { STOP, MOVE };
-enum Direction { UP = 0, RIGHT, DOWN, LEFT };
+public enum Direction { UP = 0, RIGHT, DOWN, LEFT };
 
 public class MovePlayer : MonoBehaviour
 {
     public float speed = 3.0f;
     public float heightJump = 0.4f;
+    public int lives = 3;
+    
     public AudioClip jumpSound;
-
-    PlayerState state;
-    Direction dir;
-    Vector3 initialPosMove, vecMove;
-    float timeInMove;
+    [HideInInspector] public Animator anim;
+    [HideInInspector] public StateMachine stateMachine;
+    [HideInInspector] public Direction dir;
+    [HideInInspector] public Vector3 initialPosMove, vecMove;
+    [HideInInspector] public float timeInMove;
 
     void Start()
     {
-        state = PlayerState.STOP;
-        dir = Direction.DOWN;
+        anim = GetComponentInChildren<Animator>();
+        dir = Direction.UP;
         transform.position = new Vector3(Mathf.Round(transform.position.x), 0.0f, Mathf.Round(transform.position.z));
+
+        stateMachine = new StateMachine();
+        stateMachine.ChangeState(new IdleState(this));
     }
 
     void Update()
@@ -29,10 +33,8 @@ public class MovePlayer : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
-        if (state == PlayerState.STOP)
-            CheckInput();
-        else
-            UpdateMovement();
+        stateMachine.Update();
+
     }
 
     private void CheckInput()
@@ -48,7 +50,7 @@ public class MovePlayer : MonoBehaviour
         if (bMove) PrepareMovement(dirMove);
     }
 
-    private bool PrepareMovement(Direction dirMove)
+    public bool PrepareMovement(Direction dirMove)
     {
         float angleMove = Mathf.PI * (int)dirMove / 2.0f;
         initialPosMove = transform.position;
@@ -63,7 +65,6 @@ public class MovePlayer : MonoBehaviour
 
         if (canMove)
         {
-            state = PlayerState.MOVE;
             timeInMove = 0.0f;
             transform.Rotate(0.0f, 90.0f * ((int)dirMove - (int)dir), 0.0f);
             dir = dirMove;
@@ -73,7 +74,7 @@ public class MovePlayer : MonoBehaviour
         return canMove;
     }
 
-    private void UpdateMovement()
+    public void UpdateMovement()
     {
         timeInMove += Time.deltaTime;
         float duration = 1.0f / speed;
@@ -81,7 +82,6 @@ public class MovePlayer : MonoBehaviour
         if (timeInMove >= duration)
         {
             transform.position = initialPosMove + vecMove;
-            state = PlayerState.STOP;
         }
         else
         {

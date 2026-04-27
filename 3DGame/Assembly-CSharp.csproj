@@ -60,9 +60,16 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.32f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\States\IState.cs" />
     <Compile Include="Assets\Scripts\moveEnemy.cs" />
+    <Compile Include="Assets\Scripts\States\HurtState.cs" />
+    <Compile Include="Assets\Scripts\States\BlockState.cs" />
     <Compile Include="Assets\Scripts\MovePlayer.cs" />
+    <Compile Include="Assets\Scripts\States\IdleState.cs" />
     <Compile Include="Assets\Scripts\CreateLevel.cs" />
+    <Compile Include="Assets\Scripts\States\StateMachine.cs" />
+    <Compile Include="Assets\Scripts\States\MovingState.cs" />
+    <Compile Include="Assets\Scripts\States\AttackState.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Maps\testing_map.txt" />
