@@ -18,14 +18,18 @@ public class MovePlayer : MonoBehaviour
     [HideInInspector] public Vector3 initialPosMove, vecMove;
     [HideInInspector] public float timeInMove;
 
-    void Start()
+    void Awake()
     {
         anim = GetComponentInChildren<Animator>();
+        stateMachine = new StateMachine();
+    }
+
+    void Start()
+    {
         dir = Direction.UP;
         transform.position = new Vector3(Mathf.Round(transform.position.x), 0.0f, Mathf.Round(transform.position.z));
 
-        stateMachine = new StateMachine();
-        stateMachine.ChangeState(new IdleState(this));
+        stateMachine.ChangeState(new IdleState(this, true));
     }
 
     void Update()
@@ -33,7 +37,10 @@ public class MovePlayer : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
-        stateMachine.Update();
+        if (stateMachine != null)
+        {
+            stateMachine.Update();
+        }
 
     }
 

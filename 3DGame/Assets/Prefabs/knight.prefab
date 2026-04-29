@@ -47,7 +47,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 4
   heightJump: 0.5
+  lives: 3
   jumpSound: {fileID: 8300000, guid: aad764e98302718409099d90023e7fea, type: 3}
+  anim: {fileID: 0}
+  dir: 0
+  initialPosMove: {x: 0, y: 0, z: 0}
+  vecMove: {x: 0, y: 0, z: 0}
+  timeInMove: 0
 --- !u!1001 &1079969809499402539
 PrefabInstance:
   m_ObjectHideFlags: 0

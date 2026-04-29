@@ -4,19 +4,27 @@ public class IdleState : IState
 {
     MovePlayer p;
     float timer;
-
-    public IdleState(MovePlayer player) { this.p = player; }
+    bool firstTime;
+    public IdleState(MovePlayer player, bool startWithLongIdle = false) 
+    { 
+        this.p = player; 
+        // Estado idle incial o de inactividad
+        firstTime = startWithLongIdle;
+    }
 
     public void Enter()
     {
         p.anim.SetBool("isMoving", false);
-        timer = 0f;
+
+        if (firstTime) {
+            timer = 3.0f;
+            firstTime = false;
+        }
     }
 
     public void Update()
     {
         // We have 2 idle states: one for when the player has just stopped moving (timer < 5s) and another for when the player has been idle for a while (timer >= 3s)
-
         timer += Time.deltaTime;
         p.anim.SetFloat("idleTime", timer);
 
@@ -50,5 +58,8 @@ public class IdleState : IState
         }
     }
 
-    public void Exit() { }
+    public void Exit()
+    {
+        p.anim.SetFloat("idleTime", 0f);
+    }
 }

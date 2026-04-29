@@ -9,8 +9,8 @@ public class AttackState : IState
 
     public void Enter()
     {
+        //Debug.Log("State ATTACK");
         int randomAttack = Random.Range(1, 3); // [1,2]
-        
         p.anim.SetTrigger("Attack" + randomAttack); 
         
         // Lock player input
