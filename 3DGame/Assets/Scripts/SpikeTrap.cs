@@ -72,6 +72,7 @@ private void OnTriggerEnter(Collider other)
         // Esperamos 0.5 segundos para que se escuche el sonido y se vea el pinchazo
         yield return new WaitForSeconds(0.5f);
 
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        // Llamamos al método loseLife del GameManager para restar una vida al jugador
+        GameManager.instance.loseLife();
     }
 }

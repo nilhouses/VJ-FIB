@@ -79,6 +79,8 @@ public class CreateLevel : MonoBehaviour
                             case 7: // Bat
                                 GameObject batObj = Instantiate(bat, new Vector3(x, 0.0f, y), transform.rotation);
                                 batObj.transform.parent = transform;
+                                // Registramos al enemigo en el LevelManager
+                                FindObjectOfType<LevelManager>().RegisterEnemy();
                                 break;
                             // (monedas, enemigos, etc.)
                         }
