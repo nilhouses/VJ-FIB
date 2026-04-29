@@ -20,5 +20,7 @@ public class MovingState : IState
             p.stateMachine.ChangeState(new IdleState(p));
     }
 
-    public void Exit() { }
+    public void Exit() {
+        p.anim.SetBool("isMoving", false);
+    }
 }
