@@ -9,7 +9,6 @@ public class MovePlayer : MonoBehaviour
 {
     public float speed = 3.0f;
     public float heightJump = 0.4f;
-    public int lives = 3;
     public bool allowInput = true;
     
     public AudioClip jumpSound;
@@ -19,17 +18,12 @@ public class MovePlayer : MonoBehaviour
     [HideInInspector] public Vector3 initialPosMove, vecMove;
     [HideInInspector] public float timeInMove;
 
-    void Awake()
-    {
-        anim = GetComponentInChildren<Animator>();
-        stateMachine = new StateMachine();
-    }
-
     void Start()
     {
         dir = Direction.UP;
         transform.position = new Vector3(Mathf.Round(transform.position.x), 0.0f, Mathf.Round(transform.position.z));
-
+        anim = GetComponentInChildren<Animator>();
+        stateMachine = new StateMachine();
         stateMachine.ChangeState(new IdleState(this, true));
     }
 
@@ -45,7 +39,7 @@ public class MovePlayer : MonoBehaviour
 
     }
 
-    private void CheckInput()
+    public bool hasMoved()
     {
         bool bMove = false;
         Direction dirMove = Direction.DOWN;
@@ -55,7 +49,11 @@ public class MovePlayer : MonoBehaviour
         else if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S)) { bMove = true; dirMove = Direction.DOWN; }
         else if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) { bMove = true; dirMove = Direction.LEFT; }
 
-        if (bMove) PrepareMovement(dirMove);
+        if (bMove) 
+        {
+            return PrepareMovement(dirMove);
+        }
+        return false;
     }
 
     public bool PrepareMovement(Direction dirMove)

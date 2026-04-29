@@ -25,7 +25,8 @@ public class IdleState : IState
     public void Update()
     {
         if (!p.allowInput) return;
-        // We have 2 idle states: one for when the player has just stopped moving (timer < 5s) and another for when the player has been idle for a while (timer >= 3s)
+        // We have 2 idle animations: one for when the player has just started the game or when he has been idle for a while
+        
         timer += Time.deltaTime;
         p.anim.SetFloat("idleTime", timer);
 
@@ -41,22 +42,10 @@ public class IdleState : IState
             p.stateMachine.ChangeState(new BlockState(p));
             return;
         }
-
-        bool bMove = false;
-        Direction dirMove = Direction.DOWN;
-
-        if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)) { bMove = true; dirMove = Direction.UP; }
-        else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) { bMove = true; dirMove = Direction.RIGHT; }
-        else if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S)) { bMove = true; dirMove = Direction.DOWN; }
-        else if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) { bMove = true; dirMove = Direction.LEFT; }
-
-        if (bMove)
-        {
-            if (p.PrepareMovement(dirMove))
-            {
-                p.stateMachine.ChangeState(new MovingState(p));
-            }
-        }
+        
+        bool playerMoved = p.hasMoved();
+        if (playerMoved)
+            p.stateMachine.ChangeState(new MovingState(p));
     }
 
     public void Exit()
