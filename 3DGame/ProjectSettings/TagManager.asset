@@ -8,6 +8,7 @@ TagManager:
   - Goal
   - Wall
   - Floor
+  - Spike
   layers:
   - Default
   - TransparentFX

@@ -9,7 +9,7 @@ public class CreateLevel : MonoBehaviour
 {
     public GameObject player;                   // Reference to the player object.
                                                 // We need to position it according to the level.
-    public GameObject floor, wall_1, door, goal, bat;  // References to objects we need to instantiate to
+    public GameObject floor, wall_1, door, goal, bat, spikeTrap;  // References to objects we need to instantiate to
                                                 // build the level.
 
     // Start is called before the first frame update
@@ -56,22 +56,32 @@ public class CreateLevel : MonoBehaviour
                 for (int x = 0; x < width; x++)
                 {
                     int tile = int.Parse(tokens[x]);
+                    Vector3 floorPosition = new Vector3(x, -0.75f, y); // La posición del nivel del suelo
 
-                    // All tiles will have a floor instance under them. We instantiate it here.
-                    GameObject obj = Instantiate(floor, new Vector3(x, -0.75f, y), transform.rotation);
-                    // All instances created by this script end as children of the object that contains the script.
-                    obj.transform.parent = transform;
-
-                    // Now, for objects other than the player we spawn an instance.
-                    switch (tile)
+                    // Si el tile es un spike trap, no colocamos el suelo normal, sino directamente el spike trap
+                    if (tile == 8) 
                     {
-                        case 6: // Player
-                            player.transform.position = new Vector3(x, 0.0f, y);
-                            break;
-                        case 7: // Bat
-                            obj = Instantiate(bat, new Vector3(x, 0.0f, y), transform.rotation);
-                            obj.transform.parent = transform;
-                            break;
+                        GameObject obj = Instantiate(spikeTrap, floorPosition, transform.rotation);
+                        obj.transform.parent = transform;
+                    }
+                    else    // Si el tile no es un spike trap, colocamos el suelo normal y luego comprobamos si hay algo encima 
+                    {
+                        // Ponemos el suelo normal primero
+                        GameObject floorObj = Instantiate(floor, floorPosition, transform.rotation);
+                        floorObj.transform.parent = transform;
+
+                        // Y ahora comprobamos si hay algo encima del suelo
+                        switch (tile)
+                        {
+                            case 6: // Player
+                                player.transform.position = new Vector3(x, 0.0f, y);
+                                break;
+                            case 7: // Bat
+                                GameObject batObj = Instantiate(bat, new Vector3(x, 0.0f, y), transform.rotation);
+                                batObj.transform.parent = transform;
+                                break;
+                            // (monedas, enemigos, etc.)
+                        }
                     }
                 }
             }

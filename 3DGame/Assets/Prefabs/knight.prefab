@@ -47,7 +47,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 4
   heightJump: 0.5
+  lives: 3
   jumpSound: {fileID: 8300000, guid: aad764e98302718409099d90023e7fea, type: 3}
+  anim: {fileID: 0}
+  dir: 0
+  initialPosMove: {x: 0, y: 0, z: 0}
+  vecMove: {x: 0, y: 0, z: 0}
+  timeInMove: 0
 --- !u!1001 &1079969809499402539
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -165,6 +171,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 19cf33344e88e764d87eb24f1a00ebae, type: 3}
       propertyPath: m_Name
       value: sections
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 19cf33344e88e764d87eb24f1a00ebae, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 2106145266610383287, guid: 19cf33344e88e764d87eb24f1a00ebae, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
