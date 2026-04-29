@@ -48,6 +48,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 2
   heightJump: 0.3
+  anim: {fileID: 0}
+  dir: 0
+  initialPosMove: {x: 0, y: 0, z: 0}
+  vecMove: {x: 0, y: 0, z: 0}
+  timeInMove: 0
   timeBetweenMoves: 2
 --- !u!95 &4954518689305593792
 Animator:
@@ -59,7 +64,7 @@ Animator:
   m_GameObject: {fileID: 4061012142582937487}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 939472a356eb7ca47895c0526d9660e8, type: 2}
+  m_Controller: {fileID: 22100000, guid: 4db498d5de7cc524f9c25e744aa53b9f, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 1

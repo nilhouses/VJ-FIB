@@ -1,0 +1,89 @@
+using UnityEngine;
+
+public enum Direction { UP = 0, RIGHT, DOWN, LEFT }
+
+public abstract class EntityController : MonoBehaviour
+{
+    public float speed = 3.0f;
+    public float heightJump = 0.5f;
+    public abstract void ReturnToIdle();
+
+    [HideInInspector] public Animator anim;
+    [HideInInspector] public Direction dir;
+    [HideInInspector] public Vector3 initialPosMove, vecMove;
+    [HideInInspector] public float timeInMove;
+    [HideInInspector] public StateMachine stateMachine;
+
+    public abstract IState GetIdleState(bool longIdle = false);
+
+    protected virtual void Start()
+    {
+        dir = Direction.UP;
+        transform.position = new Vector3( Mathf.Round(transform.position.x), 
+                                          0f,
+                                          Mathf.Round(transform.position.z));
+        anim = GetComponentInChildren<Animator>();
+        stateMachine = new StateMachine();
+    }
+
+    // Para las distintas llamadas de player o Enemy, gestiona rotación, sonido, etc. La dirección ya se actualitza en PrepareMovement.
+    protected virtual void OnMovementStarted(Direction dirMove)
+    {
+        
+    }
+
+    public bool PrepareMovement(Direction dirMove)
+    {
+        float angle = Mathf.PI * (int)dirMove / 2.0f;
+        initialPosMove = transform.position;
+        vecMove = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
+
+        // Check collisions
+        GameObject ground = GetObjectInDirection("Floor", initialPosMove + vecMove + Vector3.up, Vector3.down, 0f, 2f);
+        GameObject wall   = GetObjectInDirection("Wall",  initialPosMove, vecMove, 0f, 1f);
+
+        bool canMove = ground != null && wall == null;
+        if (canMove)
+        {
+            timeInMove = 0f;
+            transform.Rotate(0f, 90f * ((int)dirMove - (int)dir), 0f);
+            OnMovementStarted(dirMove);
+            dir = dirMove;
+        }
+        return canMove;
+    }
+
+    public void UpdateMovement()
+    {
+        timeInMove += Time.deltaTime;
+        float duration = 1f / speed;
+        if (timeInMove >= duration)
+        {
+            transform.position = initialPosMove + vecMove;
+        }
+        else
+        {
+            float progress = timeInMove / duration;
+            Vector3 jump = Vector3.up * heightJump * Mathf.Sin(progress * Mathf.PI);
+            transform.position = initialPosMove + vecMove * progress + jump;
+        }
+    }
+
+    protected GameObject GetObjectInDirection(string tag, Vector3 origin, Vector3 dir, float min, float max)
+    {
+        RaycastHit[] hits = Physics.RaycastAll(origin, dir, max);
+        GameObject closest = null;
+        float best = max + 1f;
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.distance > min && hit.distance < max)
+            {
+                if (tag == null || hit.collider.CompareTag(tag))
+                {
+                    if (hit.distance < best) { best = hit.distance; closest = hit.collider.gameObject; }
+                }
+            }
+        }
+        return closest;
+    }
+}

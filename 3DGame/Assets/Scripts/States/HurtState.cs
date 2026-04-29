@@ -2,16 +2,16 @@ using UnityEngine;
 
 public class HurtState : IState
 {
-    PlayerController p;
+    protected EntityController e;
     float stunTimer;
 
-    public HurtState(PlayerController player) { this.p = player; }
+    public HurtState(EntityController entity) { this.e = entity; }
 
     public void Enter()
     {
-        //p.anim.SetTrigger("Die"); 
+        //e.anim.SetTrigger("Die"); 
         
-        //p.anim.SetTrigger("StunnedHit");
+        e.anim.SetTrigger("StunnedHit");
         // Lock player input
         stunTimer = 0.6f;
     }
@@ -19,10 +19,7 @@ public class HurtState : IState
     public void Update()
     {
         stunTimer -= Time.deltaTime;
-        if (stunTimer <= 0)
-        {
-            p.stateMachine.ChangeState(new IdleState(p));
-        }
+        if (stunTimer <= 0) e.ReturnToIdle();
     }
     public void Exit() { }
 }

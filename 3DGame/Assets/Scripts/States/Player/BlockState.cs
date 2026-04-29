@@ -2,32 +2,32 @@ using UnityEngine;
 
 public class BlockState : IState
 {
-    PlayerController p;
+    protected EntityController e;
 
-    public BlockState(PlayerController player) { this.p = player; }
+    public BlockState(EntityController entity) { this.e = entity; }
 
     public void Enter()
     {
-        p.anim.SetBool("isBlocking", true);
+        e.anim.SetBool("isBlocking", true);
     }
     public void Update()
     {
         // Si la animación llega al momento en el que el escudo está completamente levantado, paramos la animación para que se quede en esa pose
-        AnimatorStateInfo stateInfo = p.anim.GetCurrentAnimatorStateInfo(0);
+        AnimatorStateInfo stateInfo = e.anim.GetCurrentAnimatorStateInfo(0);
         if (stateInfo.IsName("Block") && stateInfo.normalizedTime >= 0.95f)
-            p.anim.speed = 0;
+            e.anim.speed = 0;
     
         // Cambio de estado
         if (Input.GetKeyUp(KeyCode.Q))
         {
-            p.anim.speed = 1; 
-            p.stateMachine.ChangeState(new IdleState(p));
+            e.anim.speed = 1; 
+            e.ReturnToIdle();
         }
     }
 
     public void Exit()
     {
-        p.anim.SetBool("isBlocking", false);
-        p.anim.speed = 1; 
+        e.anim.SetBool("isBlocking", false);
+        e.anim.speed = 1; 
     }
 }
