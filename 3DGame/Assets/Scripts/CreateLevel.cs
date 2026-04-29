@@ -9,7 +9,7 @@ public class CreateLevel : MonoBehaviour
 {
     public GameObject player;                   // Reference to the player object.
                                                 // We need to position it according to the level.
-    public GameObject floor, wall_1, door, goal, bat, spikeTrap;  // References to objects we need to instantiate to
+    public GameObject floor, wall_1, door, bat, spikeTrap;  // References to objects we need to instantiate to
                                                 // build the level.
 
     // Start is called before the first frame update

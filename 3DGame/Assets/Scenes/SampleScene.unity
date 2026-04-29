@@ -182,6 +182,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9144677723894283182, guid: 00a87bf49dd65444da0fcfe84a6a81f6, type: 3}
+      propertyPath: heightJump
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -330,12 +334,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 885159264}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4a131fa0ebca6c4aa196844728da298, type: 3}
+  m_Script: {fileID: 11500000, guid: 00f853c88e38e1948bd595d025c362a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vidasJugador: 3
-  maxSalasSobrevividas: 0
-  monedas: 0
+  lives: 3
+  maxRoomsSurvived: 0
+  coins: 0
 --- !u!1 &935043490
 GameObject:
   m_ObjectHideFlags: 0
@@ -377,9 +381,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 935043490}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c32138005ee2e8440a0216bdd41039a9, type: 3}
+  m_Script: {fileID: 11500000, guid: 095abf41935b98946bb7aaefbac234db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  totalEnemies: 0
+  enemiesDefeated: 0
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -617,7 +623,6 @@ MonoBehaviour:
   floor: {fileID: 7721698503481951632, guid: 1c09e53da7c544c40a0d0a1251d89e04, type: 3}
   wall_1: {fileID: 2512714034962792149, guid: dd11d762fce1eb547aef54bd08bd4004, type: 3}
   door: {fileID: 174958979223755381, guid: c93a8122a68be9241bdbb352f91b2a62, type: 3}
-  goal: {fileID: 174958979223755381, guid: c93a8122a68be9241bdbb352f91b2a62, type: 3}
   bat: {fileID: 4061012142582937487, guid: ed525d46651a7394cad440d12d1e5cec, type: 3}
   spikeTrap: {fileID: 3634867882328196730, guid: bde77dc802176564887faee43a40c9ac, type: 3}
 --- !u!1 &2020426277 stripped
