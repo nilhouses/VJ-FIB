@@ -172,6 +172,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: sections
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 19cf33344e88e764d87eb24f1a00ebae, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 2106145266610383287, guid: 19cf33344e88e764d87eb24f1a00ebae, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

@@ -10,6 +10,7 @@ public class MovePlayer : MonoBehaviour
     public float speed = 3.0f;
     public float heightJump = 0.4f;
     public int lives = 3;
+    public bool allowInput = true;
     
     public AudioClip jumpSound;
     [HideInInspector] public Animator anim;

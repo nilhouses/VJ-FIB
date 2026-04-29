@@ -24,6 +24,7 @@ public class IdleState : IState
 
     public void Update()
     {
+        if (!p.allowInput) return;
         // We have 2 idle states: one for when the player has just stopped moving (timer < 5s) and another for when the player has been idle for a while (timer >= 3s)
         timer += Time.deltaTime;
         p.anim.SetFloat("idleTime", timer);
