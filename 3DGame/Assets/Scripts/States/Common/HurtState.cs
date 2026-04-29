@@ -2,16 +2,13 @@ using UnityEngine;
 
 public class HurtState : IState
 {
-    MovePlayer p;
+    PlayerController p;
     float stunTimer;
 
-    public HurtState(MovePlayer player) { this.p = player; }
+    public HurtState(PlayerController player) { this.p = player; }
 
     public void Enter()
     {
-
-
-        
         //p.anim.SetTrigger("Die"); 
         
         //p.anim.SetTrigger("StunnedHit");

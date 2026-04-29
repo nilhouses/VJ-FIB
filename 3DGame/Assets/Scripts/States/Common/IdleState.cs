@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class IdleState : IState
 {
-    MovePlayer p;
+    PlayerController p;
     float timer;
     bool firstTime;
-    public IdleState(MovePlayer player, bool startWithLongIdle = false) 
+    public IdleState(PlayerController player, bool startWithLongIdle = false) 
     { 
         this.p = player; 
         // Estado idle incial o de inactividad

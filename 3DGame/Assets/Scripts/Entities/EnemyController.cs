@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveEnemy : MonoBehaviour
+public class EnemyController : MonoBehaviour
 {
     public float speed = 2.0f;
     public float heightJump = 0.3f;

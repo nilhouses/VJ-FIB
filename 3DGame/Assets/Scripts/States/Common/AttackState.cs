@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class AttackState : IState
 {
-    MovePlayer p;
+    PlayerController p;
     float attackTimer;
 
-    public AttackState(MovePlayer player) { this.p = player; }
+    public AttackState(PlayerController player) { this.p = player; }
 
     public void Enter()
     {

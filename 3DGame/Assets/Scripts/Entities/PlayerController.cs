@@ -5,10 +5,10 @@ using UnityEngine.SceneManagement;
 
 public enum Direction { UP = 0, RIGHT, DOWN, LEFT };
 
-public class MovePlayer : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     public float speed = 3.0f;
-    public float heightJump = 0.4f;
+    public float heightJump = 0.5f;
     public bool allowInput = true;
     
     public AudioClip jumpSound;

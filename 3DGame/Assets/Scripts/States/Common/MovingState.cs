@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class MovingState : IState
 {
-    MovePlayer p;
+    PlayerController p;
 
-    public MovingState(MovePlayer player) { this.p = player; }
+    public MovingState(PlayerController player) { this.p = player; }
 
     public void Enter()
     {

@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class BlockState : IState
 {
-    MovePlayer p;
+    PlayerController p;
 
-    public BlockState(MovePlayer player) { this.p = player; }
+    public BlockState(PlayerController player) { this.p = player; }
 
     public void Enter()
     {

@@ -49,8 +49,8 @@ private void OnTriggerEnter(Collider other)
 {
     if (other.CompareTag("Player"))
     {
-        // Usamos GetComponentInParent para subir un nivel en la jerarquía ya que el padre es el que tiene el script MovePlayer
-        MovePlayer scriptJugador = other.GetComponentInParent<MovePlayer>();
+        // Usamos GetComponentInParent para subir un nivel en la jerarquía ya que el padre es el que tiene el script PlayerController
+        PlayerController scriptJugador = other.GetComponentInParent<PlayerController>();
 
         if (scriptJugador != null)
         {
