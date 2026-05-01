@@ -13,6 +13,7 @@
         {
             base.Start();
             stateMachine.ChangeState(GetIdleState(true));
+            base.numAttacks = 2;
         }
 
         void Update()

@@ -1,10 +1,14 @@
+
 using UnityEngine;
 
 public class MovingState : IState
 {
     EntityController e;
 
-    public MovingState(EntityController entity) { this.e = entity; }
+    public MovingState(EntityController entity)
+    { 
+        e = entity;
+    }
 
     public void Enter()
     {

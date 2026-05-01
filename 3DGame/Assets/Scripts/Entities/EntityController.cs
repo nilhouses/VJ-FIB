@@ -6,6 +6,7 @@ public abstract class EntityController : MonoBehaviour
 {
     public float speed = 3.0f;
     public float heightJump = 0.5f;
+    public int numAttacks = 1;
     public abstract void ReturnToIdle();
 
     [HideInInspector] public Animator anim;
@@ -19,9 +20,10 @@ public abstract class EntityController : MonoBehaviour
     protected virtual void Start()
     {
         dir = Direction.UP;
-        transform.position = new Vector3( Mathf.Round(transform.position.x), 
-                                          0f,
-                                          Mathf.Round(transform.position.z));
+        transform.position = new Vector3( 
+            Mathf.Round(transform.position.x), 
+            0f,
+            Mathf.Round(transform.position.z));
         anim = GetComponentInChildren<Animator>();
         stateMachine = new StateMachine();
     }

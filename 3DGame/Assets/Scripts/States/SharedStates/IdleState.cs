@@ -1,18 +1,19 @@
+using System.ComponentModel;
 using UnityEngine;
 
 public abstract class IdleState : IState
 {
-    protected EntityController e;
+    EntityController e;
     protected float timer;
     protected bool firstTime;
 
     public IdleState(EntityController entity, bool startWithLongIdle = false) 
     { 
-        this.e = entity; 
+        e = entity;
         // Estado idle incial o de inactividad
         firstTime = startWithLongIdle;
     }
-
+    
     public virtual void Enter()
     {
         e.anim.SetBool("isMoving", false);
