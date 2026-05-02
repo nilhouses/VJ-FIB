@@ -5,7 +5,7 @@ using UnityEngine;
     public class PlayerController : EntityController
     {
         public bool allowInput = true;
-        public AudioClip jumpSound;
+        public AudioClip jumpSound, attackSound;
 
         public override IState GetIdleState(bool longIdle = false) { return new PlayerIdleState(this, longIdle); }
         public override void ReturnToIdle() { stateMachine.ChangeState(GetIdleState(false)); }
@@ -43,13 +43,26 @@ using UnityEngine;
                 return 0;
         }
 
-        protected override void OnMovementStarted(Direction dirMove)
+        protected override void playMoveSound()
         {
             if (jumpSound != null)
                 AudioSource.PlayClipAtPoint(jumpSound, Camera.main.transform.position);
             else
                 Debug.LogWarning("The player has no jump sound assigned!");
         }
+        
+        protected override void playAttackSound()
+        {
+            if (attackSound != null)
+            {
+                
+                Debug.Log("Attack sound played!");
+                AudioSource.PlayClipAtPoint(attackSound, Camera.main.transform.position);
+            }   
+            else
+                Debug.LogWarning("The player has no attack sound assigned!");
+        }
+
 
 
         public override int getLivesRemaining()

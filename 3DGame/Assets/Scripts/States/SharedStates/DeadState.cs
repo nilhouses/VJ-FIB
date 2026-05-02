@@ -3,7 +3,6 @@ using UnityEngine;
 public class DeadState : IState
 {
     EntityController e;
-    private float timer = 1.0f;
 
     public DeadState(EntityController entity)
     { 
@@ -17,8 +16,8 @@ public class DeadState : IState
 
     public void Update()
     {
-        timer -= Time.deltaTime;
-        if (timer <= 0)
+        AnimatorStateInfo stateInfo = e.anim.GetCurrentAnimatorStateInfo(0);
+        if (stateInfo.IsName("Die") && stateInfo.normalizedTime >= 0.95f)
             e.DestroyEntity();
     }
 

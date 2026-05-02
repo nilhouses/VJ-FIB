@@ -19,8 +19,6 @@ public abstract class IdleState : IState
 
     public virtual void Update()
     {
-        timer += Time.deltaTime;
-
         // Cambiar de estado en función de la acción detectada
         switch (e.getAction()) {
             case 0:

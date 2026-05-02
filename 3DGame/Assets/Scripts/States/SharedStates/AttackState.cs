@@ -19,14 +19,16 @@ public class AttackState : IState
         randomAttack = Random.Range(1, attacker.numAttacks + 1);
         attacker.anim.SetBool("isAttacking" + randomAttack, true); 
         attackTimer = randomAttack == 1 ? 1.0f : 1.6f;
-
-        // Apply damage to the victim immediately upon entering the attack state
-        victim.receiveHit();
     }
 
     public void Update()
     {
         attackTimer -= Time.deltaTime;
+        if (attackTimer <= 0.75f && victim != null) 
+        {
+            victim.receiveHit();
+            victim = null;
+        }
         if (attackTimer <= 0) attacker.ReturnToIdle();
     }
 

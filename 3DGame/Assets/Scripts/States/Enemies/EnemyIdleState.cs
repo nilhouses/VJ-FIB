@@ -11,11 +11,13 @@ public class EnemyIdleState : IdleState
 
     public override void Update()
     {
-        // Comportamiento de cada enemigo (Ya podremos hacer subclases y todo)
+        timer += Time.deltaTime;
+        // Comportamiento base de cada enemigo
         if (timer >= enemy.timeBetweenMoves)
         {
-            base.Update();  // Actualiza el timer base y el cambio de estado
-            timer = 0f;     // Reinicia el timer para el siguiente movimiento
+            // Acciones comunes en entidades
+            base.Update();  // Cambio de estado
+            timer = 0f;     // Reinicia el timer para el siguiente turno a actuar del enemigo
         }
     }
 }

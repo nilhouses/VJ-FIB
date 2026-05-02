@@ -3,7 +3,6 @@ using UnityEngine;
 public class HurtState : IState
 {
     private EntityController e;
-    private float timer;
 
     public HurtState(EntityController entity) 
     { 
@@ -13,18 +12,17 @@ public class HurtState : IState
     public void Enter()
     {
         e.anim.SetBool("isGettingHit", true);
-        timer = 0.6f;
     }
 
     public void Update()
     {
-        timer -= Time.deltaTime;
-        if (timer <= 0) {
-            if (e.getLivesRemaining() <= 0) {   // Pasamos a estado de muerte si no quedan vidas
+        AnimatorStateInfo stateInfo = e.anim.GetCurrentAnimatorStateInfo(0);
+        if (stateInfo.IsName("Hurt") && stateInfo.normalizedTime >= 0.75f)
+        {
+            if (e.getLivesRemaining() <= 0) 
                 e.stateMachine.ChangeState(new DeadState(e));
-            } else {                            // Volvemos a idle si quedan vidas
+            else
                 e.ReturnToIdle();
-            }
         }
     }
 

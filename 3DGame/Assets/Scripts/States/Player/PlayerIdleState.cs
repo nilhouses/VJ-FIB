@@ -23,8 +23,11 @@ public class PlayerIdleState : IdleState
     {
         if (!p.allowInput) return;
 
+        timer += Time.deltaTime; // Actualitza el timer base
         e.anim.SetFloat("idleTime", timer);
-        base.Update(); // Actualitza el timer base
+        
+        // Acciones comunes en entidades
+        base.Update();
 
         // Solo las acciones únicas del player van en esta sección, el resto de acciones comunes a enemigos y player van en IdleState
         if (Input.GetKey(KeyCode.Q))

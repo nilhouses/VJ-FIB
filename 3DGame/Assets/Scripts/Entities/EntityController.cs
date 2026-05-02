@@ -33,10 +33,9 @@ public abstract class EntityController : MonoBehaviour
     }
 
     // Para las distintas llamadas de player o Enemy, gestiona rotación, sonido, etc. La dirección ya se actualitza en PrepareMovement.
-    protected virtual void OnMovementStarted(Direction dirMove)
-    {
-        
-    }
+    protected virtual void playMoveSound() {}
+    protected virtual void playAttackSound() {}
+
 
     public abstract int getAction();
 
@@ -60,16 +59,23 @@ public abstract class EntityController : MonoBehaviour
 
         bool canMove = ground != null && wall == null;
 
-        if (canMove && lastDetectedTarget == null) // Solo movemos si no hay enemigo
+        // Movimiento/ataque
+        if ((canMove && lastDetectedTarget == null) || lastDetectedTarget != null)
         {
-            timeInMove = 0f;
+            // Rotación (Para ambos casos)
             transform.Rotate(0f, 90f * ((int)dirMove - (int)dir), 0f);
-            OnMovementStarted(dirMove);
             dir = dirMove;
-            return 1; // MOVIMIENTO
+
+            if (canMove && lastDetectedTarget == null) // MOVIMIENTO
+            {
+                timeInMove = 0f;
+                playMoveSound();
+                return 1;
+            } 
+            else {
+                return 2; // ATAQUE
+            }
         }
-        
-        if (lastDetectedTarget != null) return 2; // ATAQUE
 
         return 0; // NADA
     }

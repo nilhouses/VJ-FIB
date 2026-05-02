@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
         lives--;
         if (lives <= 0)
         {
-            Debug.Log("¡Has perdido todas tus vidas! Reiniciando el nivel...");
+            Debug.Log("¡Has perdido todas tus vidas! Volviendo al Lobby...");
             goToLobby();   // Ir al Lobby
             lives = 3;     // Reiniciar las vidas
         }
