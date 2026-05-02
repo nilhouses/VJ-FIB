@@ -2,33 +2,36 @@ using UnityEngine;
 
 public class AttackState : IState
 {
-    EntityController e;
-    float attackTimer;
-    float randomAttack;
+    private EntityController attacker;
+    private EntityController victim;
 
-    public AttackState(EntityController entity) 
+    private float attackTimer;
+    private float randomAttack;
+
+    public AttackState(EntityController attacker) 
     { 
-        e = entity;
+        this.attacker = attacker;
+        this.victim = attacker.lastDetectedTarget;
     }
 
     public void Enter()
     {
-        randomAttack = Random.Range(1, e.numAttacks + 1);
-        e.anim.SetBool("isAttacking" + randomAttack, true); 
-        
-        // TODO: Lock player input
+        randomAttack = Random.Range(1, attacker.numAttacks + 1);
+        attacker.anim.SetBool("isAttacking" + randomAttack, true); 
         attackTimer = randomAttack == 1 ? 1.0f : 1.6f;
+
+        // Apply damage to the victim immediately upon entering the attack state
+        victim.receiveHit();
     }
 
     public void Update()
     {
         attackTimer -= Time.deltaTime;
-        if (attackTimer <= 0) e.ReturnToIdle();
+        if (attackTimer <= 0) attacker.ReturnToIdle();
     }
 
     public void Exit()
     {
-        // TODO: Unlock player input if needed
-        e.anim.SetBool("isAttacking" + randomAttack, false);
+        attacker.anim.SetBool("isAttacking" + randomAttack, false);
     }
 }

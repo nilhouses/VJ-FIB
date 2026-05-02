@@ -1,4 +1,5 @@
-    using UnityEngine;
+using System.Runtime.CompilerServices;
+using UnityEngine;
     using UnityEngine.SceneManagement;
 
     public class PlayerController : EntityController
@@ -14,6 +15,7 @@
             base.Start();
             stateMachine.ChangeState(GetIdleState(true));
             base.numAttacks = 2;
+            enemyTag = "Enemy";
         }
 
         void Update()
@@ -25,7 +27,7 @@
                 stateMachine.Update();
         }
 
-        public bool hasMoved()
+        public override int getAction()
         {
             Direction dirMove = Direction.UP;
             bool moved = false;
@@ -35,7 +37,10 @@
             else if (Input.GetKey(KeyCode.DownArrow)   || Input.GetKey(KeyCode.S)) { moved = true; dirMove = Direction.DOWN;  }
             else if (Input.GetKey(KeyCode.LeftArrow)   || Input.GetKey(KeyCode.A)) { moved = true; dirMove = Direction.LEFT;  }
 
-            return moved && PrepareMovement(dirMove);
+            if (moved)
+                return CheckAction(dirMove);
+            else
+                return 0;
         }
 
         protected override void OnMovementStarted(Direction dirMove)
@@ -44,5 +49,17 @@
                 AudioSource.PlayClipAtPoint(jumpSound, Camera.main.transform.position);
             else
                 Debug.LogWarning("The player has no jump sound assigned!");
+        }
+
+
+        public override int getLivesRemaining()
+        {
+            return GameManager.instance.lives;
+        }
+
+        public override void receiveHit()
+        {
+            GameManager.instance.loseLife();
+            stateMachine.ChangeState(new HurtState(this));
         }
     }

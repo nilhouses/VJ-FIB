@@ -4,6 +4,8 @@ public enum Direction { UP = 0, RIGHT, DOWN, LEFT }
 
 public abstract class EntityController : MonoBehaviour
 {
+    public string enemyTag = "Enemy";
+
     public float speed = 3.0f;
     public float heightJump = 0.5f;
     public int numAttacks = 1;
@@ -14,6 +16,8 @@ public abstract class EntityController : MonoBehaviour
     [HideInInspector] public Vector3 initialPosMove, vecMove;
     [HideInInspector] public float timeInMove;
     [HideInInspector] public StateMachine stateMachine;
+
+    [HideInInspector] public EntityController lastDetectedTarget;
 
     public abstract IState GetIdleState(bool longIdle = false);
 
@@ -34,26 +38,42 @@ public abstract class EntityController : MonoBehaviour
         
     }
 
-    public bool PrepareMovement(Direction dirMove)
+    public abstract int getAction();
+
+    /* 
+        Devuelve:
+            - 0 si no se puede mover
+            - 1 si se puede mover
+            - 2 si se puede mover y hay una entidad a la que atacar
+    */
+    public int CheckAction(Direction dirMove)
     {
+        lastDetectedTarget = null;
         float angle = Mathf.PI * (int)dirMove / 2.0f;
         initialPosMove = transform.position;
         vecMove = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
 
-        // Check collisions
+        // Guardamos el objetivo en la variable de clase para que los estados la vean
+        lastDetectedTarget = GetEntityInDirection(initialPosMove, vecMove);
         GameObject ground = GetObjectInDirection("Floor", initialPosMove + vecMove + Vector3.up, Vector3.down, 0f, 2f);
         GameObject wall   = GetObjectInDirection("Wall",  initialPosMove, vecMove, 0f, 1f);
 
         bool canMove = ground != null && wall == null;
-        if (canMove)
+
+        if (canMove && lastDetectedTarget == null) // Solo movemos si no hay enemigo
         {
             timeInMove = 0f;
             transform.Rotate(0f, 90f * ((int)dirMove - (int)dir), 0f);
             OnMovementStarted(dirMove);
             dir = dirMove;
+            return 1; // MOVIMIENTO
         }
-        return canMove;
+        
+        if (lastDetectedTarget != null) return 2; // ATAQUE
+
+        return 0; // NADA
     }
+
 
     public void UpdateMovement()
     {
@@ -88,4 +108,27 @@ public abstract class EntityController : MonoBehaviour
         }
         return closest;
     }
+
+
+    // Detección de entidades
+    public EntityController GetEntityInDirection(Vector3 origen, Vector3 dir)
+    {
+        // Buscamos si hay un objeto con el tag enemigo en la posición de destino
+        GameObject target = GetObjectInDirection(enemyTag, origen, dir, 0f, 1.1f);
+        if (target != null)
+        {
+            return target.GetComponent<EntityController>();
+        }
+        return null;
+    }
+
+
+    public abstract int getLivesRemaining();
+    public abstract void receiveHit();
+
+    public void DestroyEntity()
+    {
+        Destroy(gameObject);
+    }
 }
+

@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class HurtState : IState
 {
-    protected EntityController e;
-    float stunTimer;
+    private EntityController e;
+    private float timer;
 
     public HurtState(EntityController entity) 
     { 
@@ -12,22 +12,24 @@ public class HurtState : IState
 
     public void Enter()
     {
-        //e.anim.SetTrigger("Die"); 
-        
         e.anim.SetBool("isGettingHit", true);
-        // Lock player input
-        stunTimer = 0.6f;
+        timer = 0.6f;
     }
 
     public void Update()
     {
-        stunTimer -= Time.deltaTime;
-        if (stunTimer <= 0) e.ReturnToIdle();
+        timer -= Time.deltaTime;
+        if (timer <= 0) {
+            if (e.getLivesRemaining() <= 0) {   // Pasamos a estado de muerte si no quedan vidas
+                e.stateMachine.ChangeState(new DeadState(e));
+            } else {                            // Volvemos a idle si quedan vidas
+                e.ReturnToIdle();
+            }
+        }
     }
 
     public void Exit()
     {
-        // Unlock player input
         e.anim.SetBool("isGettingHit", false);
     }
 }

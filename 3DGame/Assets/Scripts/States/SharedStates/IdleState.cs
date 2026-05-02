@@ -3,32 +3,37 @@ using UnityEngine;
 
 public abstract class IdleState : IState
 {
-    EntityController e;
+    protected EntityController e;
+    protected int action;
     protected float timer;
-    protected bool firstTime;
 
     public IdleState(EntityController entity, bool startWithLongIdle = false) 
     { 
         e = entity;
-        // Estado idle incial o de inactividad
-        firstTime = startWithLongIdle;
     }
     
     public virtual void Enter()
     {
-        e.anim.SetBool("isMoving", false);
-
-        if (firstTime) {
-            timer = 3.0f;
-            firstTime = false;
-        }
+        
     }
 
     public virtual void Update()
     {
-        // We have 2 idle animations: one for when the player has just started the game or when he has been idle for a while
         timer += Time.deltaTime;
-        e.anim.SetFloat("idleTime", timer);
+
+        // Cambiar de estado en función de la acción detectada
+        switch (e.getAction()) {
+            case 0:
+                break;
+            case 1:
+                e.stateMachine.ChangeState(new MovingState(e));
+                break;
+            case 2:
+                e.stateMachine.ChangeState(new AttackState(e));
+                break;
+            default:
+                break;
+        }
     }
 
     public virtual void Exit()

@@ -50,7 +50,6 @@ public class GameManager : MonoBehaviour
         else
         {
             Debug.Log("¡Has perdido una vida! Vidas restantes: " + lives);
-            RestartLevel(); // Reiniciar el nivel actual
         }
     }
 
