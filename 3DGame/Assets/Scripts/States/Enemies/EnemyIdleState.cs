@@ -20,4 +20,9 @@ public class EnemyIdleState : IdleState
             timer = 0f;     // Reinicia el timer para el siguiente turno a actuar del enemigo
         }
     }
+
+    public override void Exit()
+    {
+
+    }
 }

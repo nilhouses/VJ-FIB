@@ -8,6 +8,7 @@ public class SpikeTrap : MonoBehaviour
     public float heightUp = 0.8f;       // Altura máxima a la que se elevarán los pinchos
     public float speed = 5f;            // Velocidad a la que se moverán los pinchos
     public float waitTime = 2f;         // Tiempo que los pinchos permanecerán elevados antes de bajar
+    private bool hasHitTarget = false;  // Para evitar múltiples colisiones con el mismo jugador
 
     [Header("Referencias")]
     public AudioClip spikeSound;
@@ -27,52 +28,83 @@ public class SpikeTrap : MonoBehaviour
 
     void Update()
     {
-        timer -= Time.deltaTime; // Reducir el temporizador con el tiempo transcurrido
+        timer -= Time.deltaTime;
 
         if (timer <= 0f)
         {
-            Vector3 targetPosition = isMovingUp ? positionUp : positionDown; // Determinar la posición objetivo según el estado actual
+            Vector3 targetPosition = isMovingUp ? positionUp : positionDown;
+            transform.localPosition = Vector3.MoveTowards(transform.localPosition, targetPosition, speed * Time.deltaTime);
 
-            transform.localPosition = Vector3.MoveTowards(transform.localPosition, targetPosition, speed * Time.deltaTime); // Mover los pinchos hacia la posición objetivo
-
-            // Comprobar si los pinchos han alcanzado la posición objetivo
+            // Cambiamos de dirección cuando llegamos a la posición objetivo
             if (Vector3.Distance(transform.localPosition, targetPosition) < 0.01f)
             {
-                isMovingUp = !isMovingUp; // Cambiar dirección
-                timer = waitTime; // Reiniciar el temporizador
+                isMovingUp = !isMovingUp;
+                timer = waitTime;
+            }
+
+            // Reseteamos la detección cuando los pinchos estén completamente abajo
+            if (!isMovingUp && Vector3.Distance(transform.localPosition, positionDown) < 0.05f)
+            {
+                hasHitTarget = false; 
             }
         }
     }
 
-    // Esta función se llama cuando otro collider entra en el trigger de este objeto
-private void OnTriggerEnter(Collider other)
-{
-    if (other.CompareTag("Player"))
+    void FixedUpdate() 
     {
-        // Usamos GetComponentInParent para subir un nivel en la jerarquía ya que el padre es el que tiene el script PlayerController
-        PlayerController scriptJugador = other.GetComponentInParent<PlayerController>();
+        // Calculamos si los pinchos han subido lo suficiente para activar la detección
+        bool spikesOut = transform.localPosition.y > (positionDown.y + heightUp * 0.3f);
 
-        if (scriptJugador != null)
+        if (spikesOut && !hasHitTarget)
         {
-            scriptJugador.allowInput = false; // Deshabilitar el control del jugador
+            CheckForPlayerRaycast();
         }
-
-        // Iniciamos la corrutina para matar al jugador después de un breve retraso para que se escuche el sonido y se vea la animación de los pinchos
-        StartCoroutine(killCo());
     }
-}
 
-    IEnumerator killCo()
+    private void CheckForPlayerRaycast()
     {
-        if (spikeSound != null)
+        int layerMask = LayerMask.GetMask("Player");
+
+        // Dibujamos la línea para confirmar visualmente el centro
+        // Debug.DrawLine(transform.position, transform.position + Vector3.up * 1.5f, Color.yellow);
+
+        // Detección por volumen
+        Collider[] victims = Physics.OverlapSphere(transform.position, 0.5f, layerMask);
+
+        if (victims.Length > 0 && !hasHitTarget)
         {
-            AudioSource.PlayClipAtPoint(spikeSound, Camera.main.transform.position);
+            Rigidbody rb = victims[0].GetComponentInParent<Rigidbody>();
+            if (rb != null) rb.WakeUp(); 
+
+            PlayerController player = victims[0].GetComponentInParent<PlayerController>();
+            
+            if (player != null)
+            {
+                float distance = Vector2.Distance(
+                    new Vector2(player.transform.position.x, player.transform.position.z),
+                    new Vector2(transform.position.x, transform.position.z)
+                );
+
+                // Umbral de detección (un poco más de la mitad del bloque)
+                if (distance < 0.55f) 
+                {
+                    // Forzamos al jugador al centro exacto detectado
+                    player.transform.position = new Vector3(transform.position.x, player.transform.position.y, transform.position.z);
+                    
+                    hasHitTarget = true;
+                    StartCoroutine(killCo(player));
+                }
+            }
         }
+    }
 
-        // Esperamos 0.5 segundos para que se escuche el sonido y se vea el pinchazo
-        yield return new WaitForSeconds(0.5f);
+    IEnumerator killCo(PlayerController player)
+    {
+        yield return new WaitForSeconds(0.05f);
+        
+        player.receiveHit();
 
-        // Llamamos al método loseLife del GameManager para restar una vida al jugador
-        GameManager.instance.loseLife();
+        if (spikeSound != null && Camera.main != null)
+            AudioSource.PlayClipAtPoint(spikeSound, Camera.main.transform.position);
     }
 }

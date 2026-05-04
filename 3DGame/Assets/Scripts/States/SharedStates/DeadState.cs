@@ -17,8 +17,14 @@ public class DeadState : IState
     public void Update()
     {
         AnimatorStateInfo stateInfo = e.anim.GetCurrentAnimatorStateInfo(0);
-        if (stateInfo.IsName("Die") && stateInfo.normalizedTime >= 0.95f)
-            e.DestroyEntity();
+
+        if (stateInfo.IsName("Die"))
+        {
+            if (stateInfo.normalizedTime >= 0.95f && e is EnemyController)
+            {
+                e.DestroyEntity();
+            }
+        }
     }
 
     public void Exit() {
