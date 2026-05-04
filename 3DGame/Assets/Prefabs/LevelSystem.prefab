@@ -50,6 +50,7 @@ MonoBehaviour:
   door: {fileID: 174958979223755381, guid: c93a8122a68be9241bdbb352f91b2a62, type: 3}
   bat: {fileID: 4061012142582937487, guid: ed525d46651a7394cad440d12d1e5cec, type: 3}
   spikeTrap: {fileID: 3634867882328196730, guid: bde77dc802176564887faee43a40c9ac, type: 3}
+  slime: {fileID: 4061012142582937487, guid: 322478c5a663b1f4c808d0cd5a4f675c, type: 3}
 --- !u!1 &5883211631161152960
 GameObject:
   m_ObjectHideFlags: 0
