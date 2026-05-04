@@ -11,6 +11,11 @@ public class HurtState : IState
 
     public void Enter()
     {
+        e.transform.position = new Vector3(
+            Mathf.Round(e.transform.position.x),
+            0.0f,
+            Mathf.Round(e.transform.position.z)
+        );
         e.anim.SetBool("isGettingHit", true);
     }
 

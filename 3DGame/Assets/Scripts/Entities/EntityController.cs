@@ -21,6 +21,12 @@ public abstract class EntityController : MonoBehaviour
 
     public abstract IState GetIdleState(bool longIdle = false);
 
+    protected virtual void Awake()
+    {
+        anim = GetComponentInChildren<Animator>();
+        stateMachine = new StateMachine();
+    }
+
     protected virtual void Start()
     {
         dir = Direction.UP;
@@ -28,8 +34,6 @@ public abstract class EntityController : MonoBehaviour
             Mathf.Round(transform.position.x), 
             0f,
             Mathf.Round(transform.position.z));
-        anim = GetComponentInChildren<Animator>();
-        stateMachine = new StateMachine();
     }
 
     // Para las distintas llamadas de player o Enemy, gestiona rotación, sonido, etc. La dirección ya se actualitza en PrepareMovement.
@@ -39,11 +43,18 @@ public abstract class EntityController : MonoBehaviour
 
     public abstract int getAction();
 
+    private void RotateEntity(Direction dirMove) 
+    {
+        transform.Rotate(0f, 90f * ((int)dirMove - (int)dir), 0f);
+        dir = dirMove;
+    }
+
     /* 
         Devuelve:
             - 0 si no se puede mover
             - 1 si se puede mover
             - 2 si se puede mover y hay una entidad a la que atacar
+            - 3 si se puede mover, hay una puerta y se han derrotado a todos los enemigos (solo para el jugador)
     */
     public int CheckAction(Direction dirMove)
     {
@@ -56,28 +67,30 @@ public abstract class EntityController : MonoBehaviour
         lastDetectedTarget = GetEntityInDirection(initialPosMove, vecMove);
         GameObject ground = GetObjectInDirection("Floor", initialPosMove + vecMove + Vector3.up, Vector3.down, 0f, 2f);
         GameObject wall   = GetObjectInDirection("Wall",  initialPosMove, vecMove, 0f, 1f);
+        GameObject door  = GetObjectInDirection("Goal",  initialPosMove, vecMove, 0f, 1f);
 
-        bool canMove = ground != null && wall == null;
+        bool canMove = ground != null && wall == null && door == null;
+        bool leavingRoom = door != null && LevelManager.instance.CheckLevelComplete();
 
-        // Movimiento/ataque
-        if ((canMove && lastDetectedTarget == null) || lastDetectedTarget != null)
+        if (this is PlayerController && leavingRoom)
         {
-            // Rotación (Para ambos casos)
-            transform.Rotate(0f, 90f * ((int)dirMove - (int)dir), 0f);
-            dir = dirMove;
-
-            if (canMove && lastDetectedTarget == null) // MOVIMIENTO
-            {
-                timeInMove = 0f;
-                playMoveSound();
-                return 1;
-            } 
-            else {
-                return 2; // ATAQUE
-            }
+            RotateEntity(dirMove);
+            timeInMove = 0f;
+            playMoveSound();
+            return 3; // SALIDA
         }
 
-        return 0; // NADA
+        if (canMove || lastDetectedTarget != null)
+        {
+            RotateEntity(dirMove);
+            if (lastDetectedTarget != null) return 2; // ATAQUE
+            
+            timeInMove = 0f;
+            playMoveSound();
+            return 1; // MOVIMIENTO NORMAL
+        }
+
+        return 0; // NO SE PUEDE MOVER
     }
 
 

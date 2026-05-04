@@ -27,6 +27,7 @@ public class AttackState : IState
         if (attackTimer <= 0.75f && victim != null) 
         {
             victim.receiveHit();
+            if (victim is EnemyController enemy) LevelManager.instance.EnemyDefeated();
             victim = null;
         }
         if (attackTimer <= 0) attacker.ReturnToIdle();

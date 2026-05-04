@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 public class MovingState : IState
@@ -21,7 +20,15 @@ public class MovingState : IState
 
         float duration = 1.0f / e.speed;
         if (e.timeInMove >= duration)
+        {
+            if (e is PlayerController player && player.isMovingToNextLevel)
+            {
+                player.isMovingToNextLevel = false;
+                LevelManager.instance.LoadNextLevel();
+            }
+
             e.ReturnToIdle();
+        }
     }
 
     public void Exit() {

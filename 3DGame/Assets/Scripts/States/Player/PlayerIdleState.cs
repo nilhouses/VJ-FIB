@@ -17,12 +17,15 @@ public class PlayerIdleState : IdleState
             timer = 3.0f;
             firstTime = false;
         }
+        timerToNextAction = 0.2f;
     }
 
     public override void Update()
     {
-        if (!p.allowInput) return;
+        timerToNextAction -= Time.deltaTime;
+        if (timerToNextAction > 0) return;
 
+        if (!p.allowInput) return;
         timer += Time.deltaTime; // Actualitza el timer base
         e.anim.SetFloat("idleTime", timer);
         
@@ -35,5 +38,11 @@ public class PlayerIdleState : IdleState
             p.stateMachine.ChangeState(new BlockState(p));
             return;
         }
+    }
+
+    public override void Exit()
+    {
+        e.anim.SetFloat("idleTime", 0f);
+        timer = 0f; // Reinicia el timer al salir del estado
     }
 }

@@ -6,6 +6,7 @@ public abstract class IdleState : IState
     protected EntityController e;
     protected int action;
     protected float timer;
+    protected float timerToNextAction;
 
     public IdleState(EntityController entity, bool startWithLongIdle = false) 
     { 
@@ -14,7 +15,7 @@ public abstract class IdleState : IState
     
     public virtual void Enter()
     {
-        
+
     }
 
     public virtual void Update()
@@ -29,6 +30,9 @@ public abstract class IdleState : IState
             case 2:
                 e.stateMachine.ChangeState(new AttackState(e));
                 break;
+            case 3:
+                e.stateMachine.ChangeState(new MovingState(e));
+                break;
             default:
                 break;
         }
@@ -36,6 +40,6 @@ public abstract class IdleState : IState
 
     public virtual void Exit()
     {
-        e.anim.SetFloat("idleTime", 0f);
+        
     }
 }

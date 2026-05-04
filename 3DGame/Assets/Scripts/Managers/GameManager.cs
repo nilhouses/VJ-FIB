@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
 
     public void goToLobby()
     {
+        lives = 3; // Reiniciar vidas al volver al lobby
         SceneManager.LoadScene(0);
     }
 
@@ -35,22 +36,14 @@ public class GameManager : MonoBehaviour
 
     public void goToCredits()
     {
+        lives = 3; // Reiniciar vidas al volver a los créditos
         SceneManager.LoadScene(2);
     }
 
     public void loseLife()
     {
         lives--;
-        if (lives <= 0)
-        {
-            Debug.Log("¡Has perdido todas tus vidas! Volviendo al Lobby...");
-            goToLobby();   // Ir al Lobby
-            lives = 3;     // Reiniciar las vidas
-        }
-        else
-        {
-            Debug.Log("¡Has perdido una vida! Vidas restantes: " + lives);
-        }
+        Debug.Log("Player hit! Lives remaining: " + lives);
     }
 
     // Método para reiniciar el nivel actual

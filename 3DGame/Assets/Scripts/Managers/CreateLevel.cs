@@ -13,11 +13,13 @@ public class CreateLevel : MonoBehaviour
                                                 // build the level.
 
     // Start is called before the first frame update
-    void Start()
+    public void GenerateLevel(int levelNumber)
     {
+        ClearLevel();   // Limpiar el nivel actual antes de generar uno nuevo
+
         // dataPath is the directory path to the Assets in the project
         // We want to load file map.txt inside directory Maps.
-        string filename = Application.dataPath + "/Maps/testing_map.txt";
+        string filename = Application.dataPath + "/Maps/level_" + levelNumber + ".txt";
 
         if (File.Exists(filename))
         {
@@ -47,6 +49,9 @@ public class CreateLevel : MonoBehaviour
                 obj.transform.parent = transform;
                 obj.transform.Rotate(0.0f, 180.0f, 0.0f);  
             }
+
+            // Door floor
+            GameObject doorFloor = Instantiate(floor, new Vector3(width/2, -0.75f, height), transform.rotation);
 
             // Other elements
             for (int y = height - 1; y >= 0; y--)
@@ -92,6 +97,16 @@ public class CreateLevel : MonoBehaviour
         {
             // Hopefully this should not happen. But just in case ...
             Debug.Log("Map file could not be found!!!");
+        }
+    }
+
+    // Método para limpiar el nivel actual destruyendo todos los objetos hijos del nivel
+    private void ClearLevel()
+    {
+        // Destruir todos los objetos hijos del nivel para limpiar el nivel actual
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);
         }
     }
 }
