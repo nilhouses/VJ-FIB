@@ -17,7 +17,8 @@ public class CreateLevel : MonoBehaviour
     // Start is called before the first frame update
     public void GenerateLevel(int levelNumber)
     {
-        ClearLevel();   // Limpiar el nivel actual antes de generar uno nuevo
+        ClearLevel();                   // Limpiar el nivel actual antes de generar uno nuevo
+        OccupancyManager.ClearAll();    // Limpiar el OccupancyManager para el nuevo nivel
 
         // dataPath is the directory path to the Assets in the project
         // We want to load file map.txt inside directory Maps.
@@ -102,12 +103,18 @@ public class CreateLevel : MonoBehaviour
                                 batObj.transform.parent = transform;
                                 // Registramos al enemigo en el LevelManager
                                 FindObjectOfType<LevelManager>().RegisterEnemy();
+                                // Registramos al enemigo en el OccupancyManager
+                                Vector2Int batPos = new Vector2Int(x, y);
+                                OccupancyManager.Register(batPos, batObj);
                                 break;
                             case 9: // Slime
                                 GameObject slimeObj = Instantiate(slime, new Vector3(x, 0.0f, y), transform.rotation);
                                 slimeObj.transform.parent = transform;
                                 // Registramos al enemigo en el LevelManager
                                 FindObjectOfType<LevelManager>().RegisterEnemy();
+                                // Registramos al enemigo en el OccupancyManager
+                                Vector2Int slimePos = new Vector2Int(x, y);
+                                OccupancyManager.Register(slimePos, slimeObj);
                                 break;
                             case 10: // Barrel
                                 GameObject barrelObj = Instantiate(barrel, new Vector3(x, 0.0f, y), transform.rotation);
