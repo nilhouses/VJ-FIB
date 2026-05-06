@@ -11,6 +11,7 @@ TagManager:
   - Spike
   - Enemy
   - Obstacle
+  - Puddle
   layers:
   - Default
   - TransparentFX

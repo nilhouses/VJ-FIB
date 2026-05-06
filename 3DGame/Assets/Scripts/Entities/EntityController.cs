@@ -57,7 +57,7 @@ public abstract class EntityController : MonoBehaviour
     // Para las distintas llamadas de player o Enemy, gestiona rotación, sonido, etc. La dirección ya se actualitza en PrepareMovement.
     protected virtual void playMoveSound() {}
     protected virtual void playAttackSound() {}
-
+    protected virtual void OnMovementComplete() {}
 
     public abstract int getAction();
 
@@ -129,6 +129,7 @@ public abstract class EntityController : MonoBehaviour
         if (timeInMove >= duration)
         {
             transform.position = initialPosMove + vecMove;
+            OnMovementComplete();
         }
         else
         {
