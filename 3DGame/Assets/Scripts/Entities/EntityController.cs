@@ -5,7 +5,6 @@ public enum Direction { UP = 0, RIGHT, DOWN, LEFT }
 public abstract class EntityController : MonoBehaviour
 {
     public string enemyTag = "Enemy";
-
     public float speed = 3.0f;
     public float heightJump = 0.5f;
     public int numAttacks = 1;
@@ -19,6 +18,11 @@ public abstract class EntityController : MonoBehaviour
 
     [HideInInspector] public EntityController lastDetectedTarget;
 
+    // Para la gestión de ocupación de celdas, guardamos la posición actual y la objetivo en coordenadas de cuadrícula (Vector2Int)
+    protected Vector2Int currentGridPos;
+    protected Vector2Int targetGridPos;
+
+
     public abstract IState GetIdleState(bool longIdle = false);
 
     protected virtual void Awake()
@@ -27,7 +31,7 @@ public abstract class EntityController : MonoBehaviour
         stateMachine = new StateMachine();
     }
 
-    protected virtual void Start()
+protected virtual void Start()
     {
         dir = Direction.UP;
         transform.position = new Vector3( 
@@ -36,22 +40,31 @@ public abstract class EntityController : MonoBehaviour
             Mathf.Round(transform.position.z));
         
         initialPosMove = transform.position; 
+
+        // Registramos la posición inicial en el OccupancyManager
+        currentGridPos = Vector2Int.RoundToInt(new Vector2(transform.position.x, transform.position.z));
+        targetGridPos = currentGridPos;
+        OccupancyManager.Register(currentGridPos, gameObject);
     }
 
     public void TeleportEntity(Vector3 newPos)
     {
         transform.position = newPos;
         
-        // Si tiene Rigidbody, también actualizamos su posición
         Rigidbody rb = GetComponent<Rigidbody>();
-        if (rb != null)
-        {
-            rb.position = newPos;
-        }
+        if (rb != null) rb.position = newPos;
 
         initialPosMove = newPos;
         vecMove = Vector3.zero;
         timeInMove = 0f;
+
+        // Liberamos ambas celdas (actual y objetivo por si estaba a medio mover)
+        OccupancyManager.Release(currentGridPos, gameObject);
+        OccupancyManager.Release(targetGridPos, gameObject);
+        
+        currentGridPos = Vector2Int.RoundToInt(new Vector2(newPos.x, newPos.z));
+        targetGridPos = currentGridPos; // Sincronizamos ambas
+        OccupancyManager.Register(currentGridPos, gameObject);
     }
 
     // Para las distintas llamadas de player o Enemy, gestiona rotación, sonido, etc. La dirección ya se actualitza en PrepareMovement.
@@ -81,11 +94,30 @@ public abstract class EntityController : MonoBehaviour
         initialPosMove = transform.position;
         vecMove = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
 
-        // Guardamos el objetivo en la variable de clase para que los estados la vean
-        lastDetectedTarget = GetEntityInDirection(initialPosMove, vecMove);
+        // Calculamos la posición lógica de destino
+        Vector2Int nextGridPos = currentGridPos + new Vector2Int(Mathf.RoundToInt(vecMove.x), Mathf.RoundToInt(vecMove.z));
+
+        // Obtenemos qué entidad hay en la celda destino a través del Manager
+        GameObject targetEntity = OccupancyManager.GetEntityAt(nextGridPos);
+
+        // Chequeo de ataque, si hay alguien y tiene el tag enemigo
+        if (targetEntity != null && targetEntity.CompareTag(enemyTag))
+        {
+            RotateEntity(dirMove);
+            lastDetectedTarget = targetEntity.GetComponent<EntityController>();
+            return 2; // ATAQUE
+        }
+
+        // Si no podemos atacar, comprobamos si la celda nos bloquea el movimiento físico
+        if (!OccupancyManager.CanMoveTo(nextGridPos, gameObject))
+        {
+            return 0; // Ya hay una entidad de un tipo que no puedo atacar bloqueando la celda
+        }
+
+        // Si la celda está libre de entidades, comprobamos muros/físicas
         GameObject ground = GetObjectInDirection("Floor", initialPosMove + vecMove + Vector3.up, Vector3.down, 0f, 2f);
         GameObject wall   = GetObjectInDirection("Wall",  initialPosMove, vecMove, 0f, 1f);
-        GameObject door  = GetObjectInDirection("Goal",  initialPosMove, vecMove, 0f, 1f);
+        GameObject door   = GetObjectInDirection("Goal",  initialPosMove, vecMove, 0f, 1f);
 
         bool canMove = ground != null && wall == null && door == null;
         bool leavingRoom = door != null && LevelManager.instance.CheckLevelComplete();
@@ -93,22 +125,29 @@ public abstract class EntityController : MonoBehaviour
         if (this is PlayerController && leavingRoom)
         {
             RotateEntity(dirMove);
+            OccupancyManager.Release(currentGridPos, gameObject);
+            OccupancyManager.Release(targetGridPos, gameObject);
             timeInMove = 0f;
             playMoveSound();
             return 3; // SALIDA
         }
 
-        if (canMove || lastDetectedTarget != null)
+        if (canMove)
         {
             RotateEntity(dirMove);
-            if (lastDetectedTarget != null) return 2; // ATAQUE
-            
+            // Si íbamos hacia una celda pero cambiamos de acción, liberamos la celda
+            if (targetGridPos != currentGridPos)
+            {
+                OccupancyManager.Release(targetGridPos, gameObject);
+            }
+            targetGridPos = nextGridPos;
+            OccupancyManager.Register(targetGridPos, gameObject); 
             timeInMove = 0f;
             playMoveSound();
-            return 1; // MOVIMIENTO NORMAL
+            return 1;
         }
 
-        return 0; // NO SE PUEDE MOVER
+        return 0; // NO SE PUEDE MOVER (Hay un muro o no hay suelo)
     }
 
 
@@ -122,6 +161,16 @@ public abstract class EntityController : MonoBehaviour
         }
         else
         {
+            // A mitad del movimiento, sincronizamos la posición actual con la objetivo y liberamos la celda anterior para que las físicas y detecciones funcionen correctamente
+            if (timeInMove >= duration / 2f)
+            {
+                if (currentGridPos != targetGridPos)
+                {
+                    OccupancyManager.Release(currentGridPos, gameObject);
+                    currentGridPos = targetGridPos; 
+                }    
+            }
+
             float progress = timeInMove / duration;
             Vector3 jump = Vector3.up * heightJump * Mathf.Sin(progress * Mathf.PI);
             transform.position = initialPosMove + vecMove * progress + jump;
@@ -146,7 +195,6 @@ public abstract class EntityController : MonoBehaviour
         return closest;
     }
 
-
     // Detección de entidades
     public EntityController GetEntityInDirection(Vector3 origen, Vector3 dir)
     {
@@ -159,7 +207,6 @@ public abstract class EntityController : MonoBehaviour
         return null;
     }
 
-
     public abstract int getLivesRemaining();
     public abstract void receiveHit();
 
@@ -167,5 +214,11 @@ public abstract class EntityController : MonoBehaviour
     {
         Destroy(gameObject);
     }
-}
 
+    // Al destruir la entidad, liberamos cualquier celda que pudiera estar ocupando
+    protected virtual void OnDestroy()
+    {
+        OccupancyManager.Release(currentGridPos, gameObject);
+        OccupancyManager.Release(targetGridPos, gameObject);
+    }
+}
