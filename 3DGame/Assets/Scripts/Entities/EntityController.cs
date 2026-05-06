@@ -34,6 +34,24 @@ public abstract class EntityController : MonoBehaviour
             Mathf.Round(transform.position.x), 
             0f,
             Mathf.Round(transform.position.z));
+        
+        initialPosMove = transform.position; 
+    }
+
+    public void TeleportEntity(Vector3 newPos)
+    {
+        transform.position = newPos;
+        
+        // Si tiene Rigidbody, también actualizamos su posición
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.position = newPos;
+        }
+
+        initialPosMove = newPos;
+        vecMove = Vector3.zero;
+        timeInMove = 0f;
     }
 
     // Para las distintas llamadas de player o Enemy, gestiona rotación, sonido, etc. La dirección ya se actualitza en PrepareMovement.

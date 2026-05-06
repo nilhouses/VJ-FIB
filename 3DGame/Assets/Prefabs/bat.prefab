@@ -59,6 +59,7 @@ MonoBehaviour:
   lastDetectedTarget: {fileID: 0}
   timeBetweenMoves: 2
   lifesRemaining: 1
+  movementStrategy: {fileID: 11400000, guid: 948278396d8fd68499a1c8f9bcd23c37, type: 2}
 --- !u!95 &4954518689305593792
 Animator:
   serializedVersion: 5

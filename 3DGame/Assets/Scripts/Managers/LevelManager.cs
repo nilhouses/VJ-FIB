@@ -8,7 +8,13 @@ public class LevelManager : MonoBehaviour
     private int currentLevel = 1; // Nivel actual del jugador
     private int maxLevel = 3; // Número máximo de niveles disponibles
 
-    void Awake() => instance = this;
+    void Awake()
+    {
+        instance = this; // Asignar la instancia del singleton
+
+        // Lo primero que hacemos al iniciar el juego es cargar el primer nivel para que el jugador pueda setearse en su posición inicial correctamente
+        LoadCurrentLevel();
+    }
 
     private void LoadCurrentLevel()
     {
@@ -19,7 +25,7 @@ public class LevelManager : MonoBehaviour
 
     public void Start()
     {
-        LoadCurrentLevel(); // Cargar el primer nivel al iniciar el juego
+
     }
 
     public void LoadNextLevel()
