@@ -11,6 +11,8 @@ public class CreateLevel : MonoBehaviour
                                                 // We need to position it according to the level.
     public GameObject floor, wall_1, door, bat, spikeTrap, slime;  // References to objects we need to instantiate to
                                                 // build the level.
+    public static int[,] mapLayout;
+    public static int mapWidth, mapHeight;
 
     // Start is called before the first frame update
     public void GenerateLevel(int levelNumber)
@@ -33,6 +35,11 @@ public class CreateLevel : MonoBehaviour
             width = int.Parse(tokens[0]);
             height = int.Parse(tokens[1]);
 
+            // Inicializamos la matriz lógica
+            mapLayout = new int[width, height];
+            mapWidth = width;
+            mapHeight = height;
+
             // Decorative walls
             for (int y = 0; y < height; y++) // Left wall
             {
@@ -52,6 +59,7 @@ public class CreateLevel : MonoBehaviour
 
             // Door floor
             GameObject doorFloor = Instantiate(floor, new Vector3(width/2, -0.75f, height), transform.rotation);
+            doorFloor.transform.parent = transform;
 
             // Other elements
             for (int y = height - 1; y >= 0; y--)
@@ -61,6 +69,8 @@ public class CreateLevel : MonoBehaviour
                 for (int x = 0; x < width; x++)
                 {
                     int tile = int.Parse(tokens[x]);
+                    mapLayout[x, y] = tile; // Guardamos el tile en la matriz lógica
+
                     Vector3 floorPosition = new Vector3(x, -0.75f, y); // La posición del nivel del suelo
 
                     // Si el tile es un spike trap, no colocamos el suelo normal, sino directamente el spike trap
@@ -79,8 +89,13 @@ public class CreateLevel : MonoBehaviour
                         switch (tile)
                         {
                             case 6: // Player
-                                player.transform.position = new Vector3(x, 0.0f, y);
-                                player.transform.parent = transform;
+                                Vector3 startPos = new Vector3(x, 0.0f, y);
+                                PlayerController pc = player.GetComponent<PlayerController>();
+                                if (pc != null) {
+                                    pc.TeleportEntity(startPos);
+                                } else {
+                                    player.transform.position = startPos;
+                                }
                                 break;
                             case 7: // Bat
                                 GameObject batObj = Instantiate(bat, new Vector3(x, 0.0f, y), transform.rotation);

@@ -6,6 +6,10 @@ public class EnemyController : EntityController
     public float timeBetweenMoves = 2.0f;
     public int lifesRemaining = 1;
 
+    [Header("Movement")]
+    public EnemyMovementStrategy movementStrategy;
+    private Transform playerTransform;
+
     public override IState GetIdleState(bool longIdle = false) { return new EnemyIdleState(this); }
     public override void ReturnToIdle() { stateMachine.ChangeState(new EnemyIdleState(this)); }
     protected override void Start()
@@ -13,6 +17,16 @@ public class EnemyController : EntityController
         base.Start();
         stateMachine.ChangeState(GetIdleState(false));
         enemyTag = "Player";
+
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj != null)
+        {
+            playerTransform = playerObj.transform;
+        }
+        else
+        {
+            Debug.LogError("Player object not found in the scene. Make sure it has the 'Player' tag.");
+        }
     }
 
     void Update()
@@ -25,8 +39,8 @@ public class EnemyController : EntityController
     // Función a llamar por el estado Idle del enemigo (no debería hacerlo el update?)
     public override int getAction()
     {
-        Direction randomDir = (Direction)Random.Range(0, 4);
-        return CheckAction(randomDir);
+        Direction dir = movementStrategy.Move(this, playerTransform);
+        return CheckAction(dir);
     }
 
 
