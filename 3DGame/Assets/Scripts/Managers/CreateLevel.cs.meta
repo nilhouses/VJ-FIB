@@ -11,6 +11,7 @@ MonoImporter:
   - bat: {fileID: 4061012142582937487, guid: ed525d46651a7394cad440d12d1e5cec, type: 3}
   - spikeTrap: {fileID: 3634867882328196730, guid: bde77dc802176564887faee43a40c9ac, type: 3}
   - slime: {fileID: 4061012142582937487, guid: 322478c5a663b1f4c808d0cd5a4f675c, type: 3}
+  - rock: {fileID: 7721698503481951632, guid: 6bc7c9cda5e6039489362a1963016a2c, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

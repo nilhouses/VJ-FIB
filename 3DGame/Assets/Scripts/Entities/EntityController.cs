@@ -68,8 +68,9 @@ public abstract class EntityController : MonoBehaviour
         GameObject ground = GetObjectInDirection("Floor", initialPosMove + vecMove + Vector3.up, Vector3.down, 0f, 2f);
         GameObject wall   = GetObjectInDirection("Wall",  initialPosMove, vecMove, 0f, 1f);
         GameObject door  = GetObjectInDirection("Goal",  initialPosMove, vecMove, 0f, 1f);
+        GameObject obstacle = GetObjectInDirection("Obstacle", initialPosMove, vecMove, 0f, 1f);
 
-        bool canMove = ground != null && wall == null && door == null;
+        bool canMove = ground != null && wall == null && door == null && obstacle == null;
         bool leavingRoom = door != null && LevelManager.instance.CheckLevelComplete();
 
         if (this is PlayerController && leavingRoom)
@@ -79,10 +80,19 @@ public abstract class EntityController : MonoBehaviour
             playMoveSound();
             return 3; // SALIDA
         }
+        
+        // Siempre rotamos la entidad, aunque no se pueda mover, para que el jugador vea que ha intentado moverse en esa dirección
+        RotateEntity(dirMove);
+
+        // Hay otro enemigo
+        if (lastDetectedTarget != null && lastDetectedTarget.CompareTag(this.tag)) 
+        {
+            lastDetectedTarget = null; // No nos movemos ni atacamos
+            canMove = false;
+        }
 
         if (canMove || lastDetectedTarget != null)
         {
-            RotateEntity(dirMove);
             if (lastDetectedTarget != null) return 2; // ATAQUE
             
             timeInMove = 0f;
