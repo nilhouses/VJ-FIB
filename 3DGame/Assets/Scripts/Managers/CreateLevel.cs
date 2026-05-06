@@ -80,6 +80,7 @@ public class CreateLevel : MonoBehaviour
                         {
                             case 6: // Player
                                 player.transform.position = new Vector3(x, 0.0f, y);
+                                player.transform.parent = transform;
                                 break;
                             case 7: // Bat
                                 GameObject batObj = Instantiate(bat, new Vector3(x, 0.0f, y), transform.rotation);
