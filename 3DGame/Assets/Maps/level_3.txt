@@ -17,3 +17,5 @@
 % 6 -> Player
 % 7 -> Bat
 % 8 -> Spike
+% 9 -> Slime
+% 10 -> Barrel
