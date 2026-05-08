@@ -1,14 +1,33 @@
-.vs/
-*.log
-*.tlog
-*.pdb
-*.exe
-*.iobj
-*.ipdb
+# --- ARCHIVOS TEMPORALES DE UNITY (IMPRESCINDIBLE IGNORAR) ---
+# Usamos [Ll] para que detecte tanto minúsculas como mayúsculas
+**/[Ll]ibrary/
+**/[Tt]emp/
+**/[Oo]bj/
+**/[Bb]uild/
+**/[Bb]uilds/
+**/[Ll]ogs/
+**/[Uu]ser[Ss]ettings/
+**/MemoryCaptures/
 
-3DGame/Library/
-3DGame/Temp/
-3DGame/Obj/
-3DGame/Logs/
-3DGame/UserSettings/
-3DGame/.vs/
+# --- ARCHIVOS DE VISUAL STUDIO / IDEs ---
+.vs/
+**/[Aa]ds/
+*.csproj
+*.sln
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.idea/
+.vscode/
+
+# --- ARCHIVOS DE SISTEMA ---
+.DS_Store
+Thumbs.db
+
+# --- ARCHIVOS DE UNITY QUE *SÍ* DEBEN ESTAR ---
+# (Asegúrate de que no haya reglas que los ignoren)
+# Assets/
+# ProjectSettings/
+# Packages/
+# *.meta
