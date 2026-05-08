@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4484000773631059013}
-  - component: {fileID: 4040932785877154631}
   - component: {fileID: 4954518689305593792}
   - component: {fileID: 6403443326695169566}
+  - component: {fileID: 9131110375037520935}
   m_Layer: 0
   m_Name: slime
   m_TagString: Enemy
@@ -35,31 +35,6 @@ Transform:
   - {fileID: 5509630473951165281}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4040932785877154631
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4061012142582937487}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2da0781d5a0b054a88ba6ddf359ce5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enemyTag: Enemy
-  speed: 2
-  heightJump: 0.01
-  numAttacks: 1
-  anim: {fileID: 0}
-  dir: 0
-  initialPosMove: {x: 0, y: 0, z: 0}
-  vecMove: {x: 0, y: 0, z: 0}
-  timeInMove: 0
-  lastDetectedTarget: {fileID: 0}
-  timeBetweenMoves: 2
-  lifesRemaining: 1
-  movementStrategy: {fileID: 11400000, guid: b1d97bf906cb3e844bf3ec12bc6ebd3f, type: 2}
 --- !u!95 &4954518689305593792
 Animator:
   serializedVersion: 5
@@ -102,6 +77,32 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!114 &9131110375037520935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4061012142582937487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3381ea35bf3d34747b55f058274f30ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyTag: Enemy
+  speed: 2
+  heightJump: 0.1
+  numAttacks: 1
+  anim: {fileID: 0}
+  dir: 0
+  initialPosMove: {x: 0, y: 0, z: 0}
+  vecMove: {x: 0, y: 0, z: 0}
+  timeInMove: 0
+  lastDetectedTarget: {fileID: 0}
+  timeBetweenMoves: 2
+  lifesRemaining: 1
+  movementStrategy: {fileID: 11400000, guid: b1d97bf906cb3e844bf3ec12bc6ebd3f, type: 2}
+  puddle: {fileID: 4061012142582937487, guid: 027d2a0ace80e9d41a41d7304220faa9, type: 3}
 --- !u!1 &4128948226754049260
 GameObject:
   m_ObjectHideFlags: 0

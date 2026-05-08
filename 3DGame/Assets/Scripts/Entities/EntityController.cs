@@ -70,7 +70,7 @@ protected virtual void Start()
     // Para las distintas llamadas de player o Enemy, gestiona rotación, sonido, etc. La dirección ya se actualitza en PrepareMovement.
     protected virtual void playMoveSound() {}
     protected virtual void playAttackSound() {}
-
+    protected virtual void OnMovementComplete() {}
 
     public abstract int getAction();
 
@@ -118,13 +118,15 @@ protected virtual void Start()
         GameObject ground = GetObjectInDirection("Floor", initialPosMove + vecMove + Vector3.up, Vector3.down, 0f, 2f);
         GameObject wall   = GetObjectInDirection("Wall",  initialPosMove, vecMove, 0f, 1f);
         GameObject door   = GetObjectInDirection("Goal",  initialPosMove, vecMove, 0f, 1f);
+        GameObject obstacle = GetObjectInDirection("Obstacle", initialPosMove, vecMove, 0f, 1f);
 
-        bool canMove = ground != null && wall == null && door == null;
+        bool canMove = ground != null && wall == null && door == null && obstacle == null;
         bool leavingRoom = door != null && LevelManager.instance.CheckLevelComplete();
+
+        RotateEntity(dirMove);
 
         if (this is PlayerController && leavingRoom)
         {
-            RotateEntity(dirMove);
             OccupancyManager.Release(currentGridPos, gameObject);
             OccupancyManager.Release(targetGridPos, gameObject);
             timeInMove = 0f;
@@ -134,7 +136,6 @@ protected virtual void Start()
 
         if (canMove)
         {
-            RotateEntity(dirMove);
             // Si íbamos hacia una celda pero cambiamos de acción, liberamos la celda
             if (targetGridPos != currentGridPos)
             {
@@ -158,6 +159,7 @@ protected virtual void Start()
         if (timeInMove >= duration)
         {
             transform.position = initialPosMove + vecMove;
+            OnMovementComplete();
         }
         else
         {
