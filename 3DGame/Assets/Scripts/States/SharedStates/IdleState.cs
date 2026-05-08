@@ -33,6 +33,9 @@ public abstract class IdleState : IState
             case 3:
                 e.stateMachine.ChangeState(new MovingState(e));
                 break;
+            case 4:
+                e.stateMachine.ChangeState(new ExitPuddleState(e));
+                break;
             default:
                 break;
         }

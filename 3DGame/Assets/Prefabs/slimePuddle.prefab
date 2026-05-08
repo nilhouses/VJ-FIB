@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4484000773631059013}
   - component: {fileID: 4954518689305593792}
   - component: {fileID: 6403443326695169566}
+  - component: {fileID: -3117651731747776709}
   m_Layer: 0
   m_Name: slimePuddle
   m_TagString: Puddle
@@ -76,6 +77,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!114 &-3117651731747776709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4061012142582937487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcdffe15a392222449e1b646139bc948, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4128948226754049260
 GameObject:
   m_ObjectHideFlags: 0

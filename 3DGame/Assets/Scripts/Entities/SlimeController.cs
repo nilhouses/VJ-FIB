@@ -50,4 +50,19 @@ public class SlimeController : EnemyController
             }
         }
     }
+
+    public override void receiveHit() // Solo para que el puddle que acaba de spawnear haga splash al morir
+    {
+        base.receiveHit();
+
+        GameObject existingPuddle = GetObjectInDirection("Puddle", transform.position + Vector3.up, Vector3.down, 0f, 2f);
+        
+        if (existingPuddle != null)
+        {
+            SlimePuddle puddleScript = existingPuddle.GetComponent<SlimePuddle>();
+            
+            if (puddleScript != null) puddleScript.StepOn();
+            else Debug.LogError("SlimePuddle component not found on the existing puddle object.");
+        }
+    }
 }

@@ -10,6 +10,12 @@ public abstract class EntityController : MonoBehaviour
     public int numAttacks = 1;
     public abstract void ReturnToIdle();
 
+    public bool flyingEnemy = false;
+    
+    public bool isStuckInPuddle = false;
+
+    private SlimePuddle currentPuddle;
+
     [HideInInspector] public Animator anim;
     [HideInInspector] public Direction dir;
     [HideInInspector] public Vector3 initialPosMove, vecMove;
@@ -70,7 +76,31 @@ protected virtual void Start()
     // Para las distintas llamadas de player o Enemy, gestiona rotación, sonido, etc. La dirección ya se actualitza en PrepareMovement.
     protected virtual void playMoveSound() {}
     protected virtual void playAttackSound() {}
-    protected virtual void OnMovementComplete() {}
+    protected virtual void OnMovementComplete() { // Puddle stuck
+        // Si es un slime, no se queda atascado en su propio puddle y si estamos en el aire (murciélago) tampoco
+        if (this is SlimeController || flyingEnemy ) return;
+
+        // Estamos encima de un puddle
+        GameObject puddleObj = GetObjectInDirection("Puddle", transform.position + Vector3.up, Vector3.down, 0f, 2f);
+        
+        if (puddleObj != null)
+        {
+            currentPuddle = puddleObj.GetComponent<SlimePuddle>();
+            isStuckInPuddle = true;
+            currentPuddle.StepOn();
+        }
+    }
+
+    public void exitPuddle()
+    {
+        if (currentPuddle != null)
+        {
+            currentPuddle.TriggerPuddleExit();
+            currentPuddle = null;
+        }
+        isStuckInPuddle = false;
+    }
+
 
     public abstract int getAction();
 
@@ -89,6 +119,14 @@ protected virtual void Start()
     */
     public int CheckAction(Direction dirMove)
     {
+        if (isStuckInPuddle) {
+            initialPosMove = transform.position;
+            vecMove = Vector3.zero; // Sin desplazamiento de celda
+            targetGridPos = currentGridPos;
+            timeInMove = 0f;
+            return 4;
+        }
+
         lastDetectedTarget = null;
         float angle = Mathf.PI * (int)dirMove / 2.0f;
         initialPosMove = transform.position;
