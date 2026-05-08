@@ -17,7 +17,7 @@ public class PlayerIdleState : IdleState
             timer = 3.0f;
             firstTime = false;
         }
-        timerToNextAction = 0.1f;
+        timerToNextAction = 0.2f;
     }
 
     public override void Update()

@@ -115,37 +115,32 @@ protected virtual void Start()
         }
 
         // Si la celda está libre de entidades, comprobamos muros/físicas
-        GameObject ground   = GetObjectInDirection("Floor", initialPosMove + vecMove + Vector3.up, Vector3.down, 0f, 2f);
-        GameObject wall     = GetObjectInDirection("Wall",  initialPosMove, vecMove, 0f, 1f);
-        GameObject door     = GetObjectInDirection("Goal",  initialPosMove, vecMove, 0f, 1f);
+        GameObject ground = GetObjectInDirection("Floor", initialPosMove + vecMove + Vector3.up, Vector3.down, 0f, 2f);
+        GameObject wall   = GetObjectInDirection("Wall",  initialPosMove, vecMove, 0f, 1f);
+        GameObject door   = GetObjectInDirection("Goal",  initialPosMove, vecMove, 0f, 1f);
         GameObject obstacle = GetObjectInDirection("Obstacle", initialPosMove, vecMove, 0f, 1f);
 
         bool canMove = ground != null && wall == null && door == null && obstacle == null;
         bool leavingRoom = door != null && LevelManager.instance.CheckLevelComplete();
 
+        RotateEntity(dirMove);
+
         if (this is PlayerController && leavingRoom)
         {
-            RotateEntity(dirMove);
             OccupancyManager.Release(currentGridPos, gameObject);
             OccupancyManager.Release(targetGridPos, gameObject);
             timeInMove = 0f;
             playMoveSound();
             return 3; // SALIDA
         }
-        
-        // Siempre rotamos la entidad, aunque no se pueda mover, para que el jugador vea que ha intentado moverse en esa dirección
-        RotateEntity(dirMove);
 
         if (canMove)
         {
-            RotateEntity(dirMove);
-            
             // Si íbamos hacia una celda pero cambiamos de acción, liberamos la celda
             if (targetGridPos != currentGridPos)
             {
                 OccupancyManager.Release(targetGridPos, gameObject);
             }
-
             targetGridPos = nextGridPos;
             OccupancyManager.Register(targetGridPos, gameObject); 
             timeInMove = 0f;
