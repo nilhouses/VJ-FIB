@@ -3,27 +3,37 @@ using UnityEngine;
 public class SlimePuddle : MonoBehaviour
 {
     private Animator anim;
-    private bool isSteppedOn = false; // Primera pisada
-    private bool isTriggered = false; // Salida
+    private bool isSteppedOn = false; 
 
-    void Awake() 
-    {
-        anim = GetComponent<Animator>();
-    }
+    void Awake() => anim = GetComponent<Animator>();
 
-    public void StepOn()
+    private void FixedUpdate()
     {
         if (isSteppedOn) return;
-        isSteppedOn = true;
+
+        int layerMask = LayerMask.GetMask("Player", "Enemy");
+        Collider[] victims = Physics.OverlapSphere(transform.position, 0.4f, layerMask);
+
+        if (victims.Length > 0)
+        {
+            EntityController entity = victims[0].GetComponentInParent<EntityController>();
+            if (entity != null && !(entity is SlimeController))
+            {
+                isSteppedOn = true;
+                Splash();
+                entity.SetStuck(this);
+            }
+        }
+    }
+    public void Splash()
+    {
         anim.SetTrigger("stepOnPuddle");
     }
 
     public void TriggerPuddleExit()
     {
-        if (isTriggered) return;
-        isTriggered = true;
         anim.SetTrigger("exitPuddle"); 
-
         Destroy(gameObject, 0.5f);
     }
 }
+

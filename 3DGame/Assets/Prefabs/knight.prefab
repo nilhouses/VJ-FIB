@@ -434,6 +434,7 @@ MonoBehaviour:
   speed: 3
   heightJump: 0.6
   numAttacks: 1
+  isStuckInPuddle: 0
   anim: {fileID: 0}
   dir: 0
   initialPosMove: {x: 0, y: 0, z: 0}

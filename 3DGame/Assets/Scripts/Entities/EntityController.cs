@@ -4,17 +4,15 @@ public enum Direction { UP = 0, RIGHT, DOWN, LEFT }
 
 public abstract class EntityController : MonoBehaviour
 {
+    public AudioClip moveSound, attackSound;
     public string enemyTag = "Enemy";
     public float speed = 3.0f;
     public float heightJump = 0.5f;
     public int numAttacks = 1;
     public abstract void ReturnToIdle();
 
-    public bool flyingEnemy = false;
-    
-    public bool isStuckInPuddle = false;
-
-    private SlimePuddle currentPuddle;
+    [HideInInspector] public bool isStuckInPuddle = false;
+    [HideInInspector] private SlimePuddle currentPuddle;
 
     [HideInInspector] public Animator anim;
     [HideInInspector] public Direction dir;
@@ -37,7 +35,7 @@ public abstract class EntityController : MonoBehaviour
         stateMachine = new StateMachine();
     }
 
-protected virtual void Start()
+    protected virtual void Start()
     {
         dir = Direction.UP;
         transform.position = new Vector3( 
@@ -74,33 +72,35 @@ protected virtual void Start()
     }
 
     // Para las distintas llamadas de player o Enemy, gestiona rotación, sonido, etc. La dirección ya se actualitza en PrepareMovement.
-    protected virtual void playMoveSound() {}
-    protected virtual void playAttackSound() {}
-    protected virtual void OnMovementComplete() { // Puddle stuck
-        // Si es un slime, no se queda atascado en su propio puddle y si estamos en el aire (murciélago) tampoco
-        if (this is SlimeController || flyingEnemy ) return;
-
-        // Estamos encima de un puddle
-        GameObject puddleObj = GetObjectInDirection("Puddle", transform.position + Vector3.up, Vector3.down, 0f, 2f);
-        
-        if (puddleObj != null)
-        {
-            currentPuddle = puddleObj.GetComponent<SlimePuddle>();
-            isStuckInPuddle = true;
-            currentPuddle.StepOn();
-        }
+    protected virtual void playMoveSound()
+    {
+        if (moveSound != null)
+            AudioSource.PlayClipAtPoint(moveSound, Camera.main.transform.position);
+    }
+    protected virtual void playAttackSound()
+    {
+        if (attackSound != null)
+            AudioSource.PlayClipAtPoint(attackSound, Camera.main.transform.position);
     }
 
-    public void exitPuddle()
+    protected virtual void OnMovementComplete() {}
+
+    // Puddle interaction
+    public void SetStuck(SlimePuddle puddle) // Te lo dice el puddle
+    {
+        isStuckInPuddle = true;
+        currentPuddle = puddle;
+    }
+
+    public void exitPuddle() // Te lo dice el estado de salir del puddle
     {
         if (currentPuddle != null)
         {
-            currentPuddle.TriggerPuddleExit();
+            currentPuddle.TriggerPuddleExit(); // Borrar puddle y hacer anim de splash
             currentPuddle = null;
         }
-        isStuckInPuddle = false;
+        isStuckInPuddle = false; 
     }
-
 
     public abstract int getAction();
 
@@ -119,6 +119,8 @@ protected virtual void Start()
     */
     public int CheckAction(Direction dirMove)
     {
+        RotateEntity(dirMove);
+
         if (isStuckInPuddle) {
             initialPosMove = transform.position;
             vecMove = Vector3.zero; // Sin desplazamiento de celda
@@ -141,8 +143,8 @@ protected virtual void Start()
         // Chequeo de ataque, si hay alguien y tiene el tag enemigo
         if (targetEntity != null && targetEntity.CompareTag(enemyTag))
         {
-            RotateEntity(dirMove);
             lastDetectedTarget = targetEntity.GetComponent<EntityController>();
+            playAttackSound();
             return 2; // ATAQUE
         }
 

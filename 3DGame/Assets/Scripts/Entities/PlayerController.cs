@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 public class PlayerController : EntityController
 {
     public bool allowInput = true;
-    public AudioClip jumpSound, attackSound;
     [HideInInspector] public bool isMovingToNextLevel = false;
 
     public override IState GetIdleState(bool longIdle = false) { return new PlayerIdleState(this, longIdle); }
@@ -54,21 +53,15 @@ public class PlayerController : EntityController
 
     protected override void playMoveSound()
     {
-        if (jumpSound != null)
-            AudioSource.PlayClipAtPoint(jumpSound, Camera.main.transform.position);
-        else
-            Debug.LogWarning("The player has no jump sound assigned!");
+        base.playMoveSound();
+        if (moveSound == null)
+            Debug.LogWarning("The player has no move sound assigned!");
     }
     
     protected override void playAttackSound()
     {
-        if (attackSound != null)
-        {
-            
-            Debug.Log("Attack sound played!");
-            AudioSource.PlayClipAtPoint(attackSound, Camera.main.transform.position);
-        }   
-        else
+        base.playAttackSound();
+        if (attackSound == null)
             Debug.LogWarning("The player has no attack sound assigned!");
     }
 

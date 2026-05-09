@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4954518689305593792}
   - component: {fileID: 6403443326695169566}
   - component: {fileID: 9131110375037520935}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: slime
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -75,7 +75,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 0.7, y: 0.9, z: 0.8}
   m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!114 &9131110375037520935
 MonoBehaviour:
@@ -93,6 +93,7 @@ MonoBehaviour:
   speed: 2
   heightJump: 0.1
   numAttacks: 1
+  isStuckInPuddle: 0
   anim: {fileID: 0}
   dir: 0
   initialPosMove: {x: 0, y: 0, z: 0}
@@ -112,7 +113,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5824746077097443759}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -145,7 +146,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5509630473951165281}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: sections
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -180,7 +181,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3658054642901082038}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -217,7 +218,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5824826109604060311}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -297,6 +298,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Body
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: efe5549669561014f832c796930ade7c, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8164078558771037576, guid: efe5549669561014f832c796930ade7c, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -362,6 +371,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6a1699a6fbc1a4a48845c3abea5eec2c, type: 3}
       propertyPath: m_Name
       value: Tongue
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6a1699a6fbc1a4a48845c3abea5eec2c, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8164078558771037576, guid: 6a1699a6fbc1a4a48845c3abea5eec2c, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -429,6 +446,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Saliva2
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 43251991f83a3cc48829699daec85149, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8164078558771037576, guid: 43251991f83a3cc48829699daec85149, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -494,6 +519,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c9952e5733e2ec147b2b0f8b4ab80153, type: 3}
       propertyPath: m_Name
       value: LeftFoot
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c9952e5733e2ec147b2b0f8b4ab80153, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8164078558771037576, guid: c9952e5733e2ec147b2b0f8b4ab80153, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -561,6 +594,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: LeftEye
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c25345aa6deee3b44a6567c4fb17d26f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8164078558771037576, guid: c25345aa6deee3b44a6567c4fb17d26f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -626,6 +667,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 44b72c46bd507ba4fadb3b772b0678e3, type: 3}
       propertyPath: m_Name
       value: Saliva1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 44b72c46bd507ba4fadb3b772b0678e3, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8164078558771037576, guid: 44b72c46bd507ba4fadb3b772b0678e3, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -693,6 +742,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: LeftArm
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: cc0728be907a3914e86cec26ad23f794, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8164078558771037576, guid: cc0728be907a3914e86cec26ad23f794, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -758,6 +815,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 87c9b45f87089784fbfc852c3849129d, type: 3}
       propertyPath: m_Name
       value: RightArm
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 87c9b45f87089784fbfc852c3849129d, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8164078558771037576, guid: 87c9b45f87089784fbfc852c3849129d, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -825,6 +890,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: RightEye
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 0e333d5c87c2313408a317890feb2e94, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8164078558771037576, guid: 0e333d5c87c2313408a317890feb2e94, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -891,6 +964,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: RightFoot
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 1c6f1c5118c6cd34682201ae06f6ba04, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8164078558771037576, guid: 1c6f1c5118c6cd34682201ae06f6ba04, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -956,6 +1037,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 9173d79b38fd3864dbf9df2632bc6b49, type: 3}
       propertyPath: m_Name
       value: Head
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9173d79b38fd3864dbf9df2632bc6b49, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8164078558771037576, guid: 9173d79b38fd3864dbf9df2632bc6b49, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

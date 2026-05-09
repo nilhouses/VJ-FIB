@@ -61,7 +61,7 @@ public class SlimeController : EnemyController
         {
             SlimePuddle puddleScript = existingPuddle.GetComponent<SlimePuddle>();
             
-            if (puddleScript != null) puddleScript.StepOn();
+            if (puddleScript != null) puddleScript.Splash();
             else Debug.LogError("SlimePuddle component not found on the existing puddle object.");
         }
     }

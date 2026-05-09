@@ -57,54 +57,51 @@ public class SpikeTrap : MonoBehaviour
 
         if (spikesOut && !hasHitTarget)
         {
-            CheckForPlayerRaycast();
+            CheckForEntityRaycast();
         }
     }
 
-    private void CheckForPlayerRaycast()
+    private void CheckForEntityRaycast()
     {
-        int layerMask = LayerMask.GetMask("Player");
+        int layerMask = LayerMask.GetMask("Player", "Enemy");
 
         // Dibujamos la línea para confirmar visualmente el centro
         // Debug.DrawLine(transform.position, transform.position + Vector3.up * 1.5f, Color.yellow);
-
+        
         // Detección por volumen
         Collider[] victims = Physics.OverlapSphere(transform.position, 0.5f, layerMask);
 
         if (victims.Length > 0 && !hasHitTarget)
         {
-            Rigidbody rb = victims[0].GetComponentInParent<Rigidbody>();
-            if (rb != null) rb.WakeUp(); 
+            EntityController entity = victims[0].GetComponentInParent<EntityController>();
 
-            PlayerController player = victims[0].GetComponentInParent<PlayerController>();
-            
-            if (player != null)
+            if (entity != null)
             {
                 float distance = Vector2.Distance(
-                    new Vector2(player.transform.position.x, player.transform.position.z),
+                    new Vector2(entity.transform.position.x, entity.transform.position.z),
                     new Vector2(transform.position.x, transform.position.z)
                 );
 
                 // Umbral de detección (un poco más de la mitad del bloque)
                 if (distance < 0.55f) 
                 {
-                    // Forzamos al jugador al centro exacto detectado
-                    player.transform.position = new Vector3(transform.position.x, player.transform.position.y, transform.position.z);
+                    // Forzamos a la entidad afectada al centro exacto detectado
+                    entity.transform.position = new Vector3(transform.position.x, entity.transform.position.y, transform.position.z);
                     
                     hasHitTarget = true;
-                    StartCoroutine(killCo(player));
+                    StartCoroutine(killCo(entity));
                 }
             }
         }
     }
 
-    IEnumerator killCo(PlayerController player)
+    IEnumerator killCo(EntityController entity) // Para player y enemigos tenemos el mismo código
     {
         yield return new WaitForSeconds(0.05f);
-        
-        player.receiveHit();
+        entity.receiveHit();
 
         if (spikeSound != null && Camera.main != null)
             AudioSource.PlayClipAtPoint(spikeSound, Camera.main.transform.position);
     }
+
 }
