@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4954518689305593792}
   - component: {fileID: 6403443326695169566}
   - component: {fileID: 9131110375037520935}
+  - component: {fileID: -5146702829973536074}
   m_Layer: 6
   m_Name: slime
   m_TagString: Enemy
@@ -75,7 +76,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.7, y: 0.9, z: 0.8}
+  m_Size: {x: 0.7, y: 1, z: 0.8}
   m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!114 &9131110375037520935
 MonoBehaviour:
@@ -89,6 +90,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3381ea35bf3d34747b55f058274f30ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSound: {fileID: 8300000, guid: 1897a71d31f340642bf7676af5f8f290, type: 3}
+  attackSound: {fileID: 8300000, guid: 2989001e879579b4894db93c37bf9d4c, type: 3}
+  receiveHitSound: {fileID: 8300000, guid: 0b1c4615c0e25ac428d0312a93a133b6, type: 3}
+  dieSound: {fileID: 8300000, guid: 0b1c4615c0e25ac428d0312a93a133b6, type: 3}
+  levelCompleteSound: {fileID: 0}
   enemyTag: Enemy
   speed: 2
   heightJump: 0.1
@@ -100,10 +106,107 @@ MonoBehaviour:
   vecMove: {x: 0, y: 0, z: 0}
   timeInMove: 0
   lastDetectedTarget: {fileID: 0}
+  entityVolume: 0.5
   timeBetweenMoves: 2
   lifesRemaining: 1
   movementStrategy: {fileID: 11400000, guid: b1d97bf906cb3e844bf3ec12bc6ebd3f, type: 2}
   puddle: {fileID: 4061012142582937487, guid: 027d2a0ace80e9d41a41d7304220faa9, type: 3}
+--- !u!82 &-5146702829973536074
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4061012142582937487}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &4128948226754049260
 GameObject:
   m_ObjectHideFlags: 0

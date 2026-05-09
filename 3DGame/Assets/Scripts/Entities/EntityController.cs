@@ -4,7 +4,7 @@ public enum Direction { UP = 0, RIGHT, DOWN, LEFT }
 
 public abstract class EntityController : MonoBehaviour
 {
-    public AudioClip moveSound, attackSound;
+    public AudioClip moveSound, attackSound, receiveHitSound, dieSound;
     public string enemyTag = "Enemy";
     public float speed = 3.0f;
     public float heightJump = 0.5f;
@@ -19,8 +19,11 @@ public abstract class EntityController : MonoBehaviour
     [HideInInspector] public Vector3 initialPosMove, vecMove;
     [HideInInspector] public float timeInMove;
     [HideInInspector] public StateMachine stateMachine;
-
     [HideInInspector] public EntityController lastDetectedTarget;
+
+    [Header("Audio Settings")]
+    protected AudioSource audioSource;
+    [Range(0f, 1f)] public float entityVolume = 1f;
 
     // Para la gestión de ocupación de celdas, guardamos la posición actual y la objetivo en coordenadas de cuadrícula (Vector2Int)
     protected Vector2Int currentGridPos;
@@ -29,10 +32,18 @@ public abstract class EntityController : MonoBehaviour
 
     public abstract IState GetIdleState(bool longIdle = false);
 
-    protected virtual void Awake()
+    private void Awake()
     {
         anim = GetComponentInChildren<Animator>();
         stateMachine = new StateMachine();
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+        // Sonido dependiente de la posicion
+        audioSource.playOnAwake = false;
+        if (this is EnemyController) audioSource.spatialBlend = 1.0f; // 3D para los enemigos
+        else if (this is PlayerController) audioSource.spatialBlend = 0.1f; // Semi-2D para el jugador:
+        // (se escucha mas fuerte independientemente de la posición, con cierta atenuación para no perder la inmersión)
     }
 
     protected virtual void Start()
@@ -71,19 +82,19 @@ public abstract class EntityController : MonoBehaviour
         OccupancyManager.Register(currentGridPos, gameObject);
     }
 
-    // Para las distintas llamadas de player o Enemy, gestiona rotación, sonido, etc. La dirección ya se actualitza en PrepareMovement.
-    protected virtual void playMoveSound()
+    protected void PlaySound(AudioClip clip, float pitchVariation = 0.1f)
     {
-        if (moveSound != null)
-            AudioSource.PlayClipAtPoint(moveSound, Camera.main.transform.position);
+        if (clip == null) return;
+        
+        audioSource.pitch = Random.Range(1f - pitchVariation, 1f + pitchVariation);
+        audioSource.PlayOneShot(clip, entityVolume);
     }
-    protected virtual void playAttackSound()
-    {
-        if (attackSound != null)
-            AudioSource.PlayClipAtPoint(attackSound, Camera.main.transform.position);
-    }
-
-    protected virtual void OnMovementComplete() {}
+    
+    public virtual void playMoveSound() => PlaySound(moveSound);
+    public virtual void playAttackSound() => PlaySound(attackSound);
+    public virtual void playReceiveHitSound() => PlaySound(receiveHitSound);
+    public virtual void playDieSound() => PlaySound(dieSound);
+    protected virtual void OnMovementComplete() {} // Lo usa el puddle, pero puede ser útil en otras entidades
 
     // Puddle interaction
     public void SetStuck(SlimePuddle puddle) // Te lo dice el puddle
@@ -144,7 +155,6 @@ public abstract class EntityController : MonoBehaviour
         if (targetEntity != null && targetEntity.CompareTag(enemyTag))
         {
             lastDetectedTarget = targetEntity.GetComponent<EntityController>();
-            playAttackSound();
             return 2; // ATAQUE
         }
 
@@ -170,7 +180,10 @@ public abstract class EntityController : MonoBehaviour
             OccupancyManager.Release(currentGridPos, gameObject);
             OccupancyManager.Release(targetGridPos, gameObject);
             timeInMove = 0f;
-            playMoveSound();
+            if (this is PlayerController)
+            {
+                ((PlayerController)this).playLevelCompleteSound();  // Lo hago con el player para que se escuche en la puerta, pero se cambia si quieres 
+            }
             return 3; // SALIDA
         }
 
@@ -184,7 +197,6 @@ public abstract class EntityController : MonoBehaviour
             targetGridPos = nextGridPos;
             OccupancyManager.Register(targetGridPos, gameObject); 
             timeInMove = 0f;
-            playMoveSound();
             return 1;
         }
 

@@ -17,6 +17,7 @@ public class HurtState : IState
             Mathf.Round(e.transform.position.z)
         );
         e.anim.SetBool("isGettingHit", true);
+        e.playReceiveHitSound();
     }
 
     public void Update()

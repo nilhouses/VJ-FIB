@@ -12,6 +12,7 @@ public class DeadState : IState
     public void Enter()
     {
         e.GetComponentInChildren<Animator>().SetBool("isDying", true);
+        e.playDieSound();
     }
 
     public void Update()
@@ -22,6 +23,8 @@ public class DeadState : IState
         {
             if (stateInfo.normalizedTime >= 0.95f && e is EnemyController)
             {
+                if (e is EnemyController)
+                    LevelManager.instance.EnemyDefeated();
                 e.DestroyEntity();
             }
         }

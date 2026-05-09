@@ -12,6 +12,7 @@ public class MovingState : IState
     public void Enter()
     {
         e.GetComponentInChildren<Animator>().SetBool("isMoving", true);
+        e.playMoveSound();
     }
 
     public void Update()

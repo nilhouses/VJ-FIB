@@ -1,11 +1,36 @@
 using UnityEngine;
 
+
 public class SlimePuddle : MonoBehaviour
 {
     private Animator anim;
-    private bool isSteppedOn = false; 
+    private bool isSteppedOn = false;
+    public AudioClip StepOnSound, DisappearSound;
 
-    void Awake() => anim = GetComponent<Animator>();
+    [Header("Audio Settings")]
+    protected AudioSource audioSource;
+    [Range(0f, 1f)] public float puddleVolume = 1f;
+
+    protected void PlaySound(AudioClip clip, float pitchVariation = 0.1f)
+    {
+        if (clip == null) return;
+
+        audioSource.pitch = Random.Range(1f - pitchVariation, 1f + pitchVariation);
+        audioSource.PlayOneShot(clip, puddleVolume); // Para tener sonidos que no corten al anterior
+    }
+
+    private void playStepOnSound() => PlaySound(StepOnSound);
+    private void playDisappearSound() => PlaySound(DisappearSound);
+    void Awake()
+    {
+        anim = GetComponent<Animator>();
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+        // Sonido dependiente de la posicion
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 0.5f; // Semi 3D para que es escuche más fuerte 
+    } 
 
     private void FixedUpdate()
     {
@@ -28,11 +53,13 @@ public class SlimePuddle : MonoBehaviour
     public void Splash()
     {
         anim.SetTrigger("stepOnPuddle");
+        playStepOnSound();
     }
 
     public void TriggerPuddleExit()
     {
         anim.SetTrigger("exitPuddle"); 
+        playDisappearSound();
         Destroy(gameObject, 0.5f);
     }
 }

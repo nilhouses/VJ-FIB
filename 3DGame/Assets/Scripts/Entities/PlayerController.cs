@@ -5,7 +5,11 @@ using UnityEngine.SceneManagement;
 public class PlayerController : EntityController
 {
     public bool allowInput = true;
+    
     [HideInInspector] public bool isMovingToNextLevel = false;
+    public AudioClip levelCompleteSound;
+
+    public void playLevelCompleteSound() => base.PlaySound(levelCompleteSound);
 
     public override IState GetIdleState(bool longIdle = false) { return new PlayerIdleState(this, longIdle); }
     public override void ReturnToIdle() { 
@@ -49,20 +53,6 @@ public class PlayerController : EntityController
         }
         else
             return 0;
-    }
-
-    protected override void playMoveSound()
-    {
-        base.playMoveSound();
-        if (moveSound == null)
-            Debug.LogWarning("The player has no move sound assigned!");
-    }
-    
-    protected override void playAttackSound()
-    {
-        base.playAttackSound();
-        if (attackSound == null)
-            Debug.LogWarning("The player has no attack sound assigned!");
     }
 
     public override int getLivesRemaining()
