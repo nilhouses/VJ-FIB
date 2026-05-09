@@ -10,6 +10,12 @@ public class SpikeTrap : MonoBehaviour
     public float waitTime = 2f;         // Tiempo que los pinchos permanecerán elevados antes de bajar
     private bool hasHitTarget = false;  // Para evitar múltiples colisiones con el mismo jugador
 
+
+    [Header("Ajustes de Audio")]
+    private AudioSource audioSource;
+    [Range(0f, 1f)] public float spikeVolume = 1f;
+
+
     [Header("Referencias")]
     public AudioClip spikeSound;
 
@@ -19,6 +25,17 @@ public class SpikeTrap : MonoBehaviour
     private float timer = 0f;        // Temporizador para controlar el tiempo de espera
 
 
+    void Awake()
+    {
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+
+        if (SoundManager.instance != null)
+            audioSource.outputAudioMixerGroup = SoundManager.instance.objectsGroup;
+        
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 0.3f; // Semi-2D
+    }
     void Start()
     {
         positionDown = transform.localPosition;
@@ -100,8 +117,14 @@ public class SpikeTrap : MonoBehaviour
         yield return new WaitForSeconds(0.05f);
         entity.receiveHit();
 
-        if (spikeSound != null && Camera.main != null)
-            AudioSource.PlayClipAtPoint(spikeSound, Camera.main.transform.position);
+        if (spikeSound != null && audioSource != null)
+        {
+            if (audioSource.outputAudioMixerGroup == null && SoundManager.instance != null)
+            {
+                audioSource.outputAudioMixerGroup = SoundManager.instance.objectsGroup;
+            }
+            audioSource.pitch = Random.Range(0.9f, 1.1f);
+            audioSource.PlayOneShot(spikeSound, spikeVolume);
+        }
     }
-
 }

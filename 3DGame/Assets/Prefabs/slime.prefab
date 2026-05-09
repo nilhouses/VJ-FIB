@@ -94,7 +94,6 @@ MonoBehaviour:
   attackSound: {fileID: 8300000, guid: 2989001e879579b4894db93c37bf9d4c, type: 3}
   receiveHitSound: {fileID: 8300000, guid: 0b1c4615c0e25ac428d0312a93a133b6, type: 3}
   dieSound: {fileID: 8300000, guid: 0b1c4615c0e25ac428d0312a93a133b6, type: 3}
-  levelCompleteSound: {fileID: 0}
   enemyTag: Enemy
   speed: 2
   heightJump: 0.1
@@ -120,7 +119,7 @@ AudioSource:
   m_GameObject: {fileID: 4061012142582937487}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 5919248197028431258, guid: b2b22300213032b49b6932898de15abb, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1

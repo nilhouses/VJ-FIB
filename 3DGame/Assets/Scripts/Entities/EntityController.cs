@@ -21,13 +21,13 @@ public abstract class EntityController : MonoBehaviour
     [HideInInspector] public StateMachine stateMachine;
     [HideInInspector] public EntityController lastDetectedTarget;
 
-    [Header("Audio Settings")]
+    [Header("Ajustes de audio")]
     protected AudioSource audioSource;
     [Range(0f, 1f)] public float entityVolume = 1f;
 
     // Para la gestión de ocupación de celdas, guardamos la posición actual y la objetivo en coordenadas de cuadrícula (Vector2Int)
-    protected Vector2Int currentGridPos;
-    protected Vector2Int targetGridPos;
+    [HideInInspector] protected Vector2Int currentGridPos;
+    [HideInInspector] protected Vector2Int targetGridPos;
 
 
     public abstract IState GetIdleState(bool longIdle = false);
@@ -39,8 +39,18 @@ public abstract class EntityController : MonoBehaviour
 
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
-        // Sonido dependiente de la posicion
+        
+        // Usamos un mixer 
+        if (SoundManager.instance != null) {
+            if (this is PlayerController)
+                audioSource.outputAudioMixerGroup = SoundManager.instance.playerGroup;
+            else
+                audioSource.outputAudioMixerGroup = SoundManager.instance.enemyGroup;
+        }
+
         audioSource.playOnAwake = false;
+
+        // Sonido dependiente de la posicion
         if (this is EnemyController) audioSource.spatialBlend = 1.0f; // 3D para los enemigos
         else if (this is PlayerController) audioSource.spatialBlend = 0.1f; // Semi-2D para el jugador:
         // (se escucha mas fuerte independientemente de la posición, con cierta atenuación para no perder la inmersión)
