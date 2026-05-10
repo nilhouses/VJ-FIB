@@ -49,9 +49,12 @@ public class EnemyController : EntityController
         return lifesRemaining;
     }
 
-    public override void receiveHit()
+    public override void receiveHit(Vector3 fromPosition)
     {
-        lifesRemaining--;
-        stateMachine.ChangeState(new HurtState(this));
+        if (canHurtMe(fromPosition))
+        {
+            lifesRemaining--;
+            stateMachine.ChangeState(new HurtState(this));            
+        }
     }
 }

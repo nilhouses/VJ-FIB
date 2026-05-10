@@ -31,7 +31,6 @@ public abstract class EntityController : MonoBehaviour
 
 
     public abstract IState GetIdleState(bool longIdle = false);
-
     private void Awake()
     {
         anim = GetComponentInChildren<Animator>();
@@ -125,10 +124,34 @@ public abstract class EntityController : MonoBehaviour
 
     public abstract int getAction();
 
-    private void RotateEntity(Direction dirMove) 
+    public void RotateEntity(Direction dirMove, bool smooth = false) 
     {
-        transform.Rotate(0f, 90f * ((int)dirMove - (int)dir), 0f);
-        dir = dirMove;
+        if (dir == dirMove) return;
+        if (smooth)
+        {
+            float targetAngle = 90f * (int)dirMove;
+            StopCoroutine("SmoothRotationRoutine");
+            StartCoroutine(SmoothRotationRoutine(targetAngle));
+            dir = dirMove;
+        }
+        else
+        {
+            transform.Rotate(0f, 90f * ((int)dirMove - (int)dir), 0f);
+            dir = dirMove;   
+        }
+    }
+
+    private System.Collections.IEnumerator SmoothRotationRoutine(float targetAngle)
+    {
+        Quaternion targetRot = Quaternion.Euler(0, targetAngle, 0);
+        float rotationSpeed = 1480f; // Grados por segundo
+
+        while (Quaternion.Angle(transform.rotation, targetRot) > 0.1f)
+        {
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRot, rotationSpeed * Time.deltaTime);
+            yield return null;
+        }
+        transform.rotation = targetRot;
     }
 
     /* 
@@ -138,10 +161,18 @@ public abstract class EntityController : MonoBehaviour
             - 2 si se puede mover y hay una entidad a la que atacar
             - 3 si se puede mover, hay una puerta y se han derrotado a todos los enemigos (solo para el jugador)
     */
+
+    public void handleRotationInPlace() 
+    {
+        if (Input.GetKeyDown(KeyCode.UpArrow)    || Input.GetKeyDown(KeyCode.W)) RotateEntity(Direction.UP, smooth: true);
+        else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)) RotateEntity(Direction.RIGHT, smooth: true);
+        else if (Input.GetKeyDown(KeyCode.DownArrow)  || Input.GetKeyDown(KeyCode.S)) RotateEntity(Direction.DOWN, smooth: true);
+        else if (Input.GetKeyDown(KeyCode.LeftArrow)  || Input.GetKeyDown(KeyCode.A)) RotateEntity(Direction.LEFT, smooth: true);
+    }
     public int CheckAction(Direction dirMove)
     {
         RotateEntity(dirMove);
-
+        
         if (isStuckInPuddle) {
             initialPosMove = transform.position;
             vecMove = Vector3.zero; // Sin desplazamiento de celda
@@ -272,7 +303,27 @@ public abstract class EntityController : MonoBehaviour
     }
 
     public abstract int getLivesRemaining();
-    public abstract void receiveHit();
+    public abstract void receiveHit(Vector3 fromPostition);
+
+    protected bool canHurtMe(Vector3 fromPosition)
+    {
+        // Distancia de Manhattan (ataque melee), (No uso el OccupancyManager porque podría tener varios atacantes)
+        // [Para la bruja, que pega a distancia podemos mirar que tenga la misma x o z, que tira hechizos en línea recta]
+        Vector2Int attackGridPos = Vector2Int.RoundToInt(new Vector2(fromPosition.x, fromPosition.z));
+        int dx = Mathf.Abs(currentGridPos.x - attackGridPos.x);
+        int dy = Mathf.Abs(currentGridPos.y - attackGridPos.y);
+        return (dx + dy <= 1) && !(stateMachine.currentState is DeadState); // Si el atacante está en una celda adyacente o en la misma celda (por ejemplo, un ataque de área)
+    }
+
+    public Direction GetDirectionTo(Vector3 targetPos)
+    {
+        Vector3 diff = targetPos - transform.position;
+
+        if (Mathf.Abs(diff.x) > Mathf.Abs(diff.z))
+            return diff.x > 0 ? Direction.RIGHT : Direction.LEFT;
+        else
+            return diff.z > 0 ? Direction.UP : Direction.DOWN;
+    }
 
     public void DestroyEntity()
     {

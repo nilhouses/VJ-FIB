@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class StateMachine
 {
-    private IState currentState;
+    public IState currentState;
 
     public void ChangeState(IState newState)
     {

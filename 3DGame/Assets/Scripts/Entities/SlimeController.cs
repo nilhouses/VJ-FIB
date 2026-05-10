@@ -51,9 +51,9 @@ public class SlimeController : EnemyController
         }
     }
 
-    public override void receiveHit() // Solo para que el puddle que acaba de spawnear haga splash al morir
+    public override void receiveHit(Vector3 fromPosition) // Solo para que el puddle que acaba de spawnear haga splash al morir
     {
-        base.receiveHit();
+        base.receiveHit(fromPosition);
 
         GameObject existingPuddle = GetObjectInDirection("Puddle", transform.position + Vector3.up, Vector3.down, 0f, 2f);
         

@@ -12,6 +12,8 @@ public class BlockState : IState
     }
     public void Update()
     {
+        // Rotación del personaje para mirar hacia el enemigo mientras bloquea
+        e.handleRotationInPlace();
         // Si la animación llega al momento en el que el escudo está completamente levantado, paramos la animación para que se quede en esa pose
         AnimatorStateInfo stateInfo = e.anim.GetCurrentAnimatorStateInfo(0);
         if (stateInfo.IsName("Block") && stateInfo.normalizedTime >= 0.95f)
