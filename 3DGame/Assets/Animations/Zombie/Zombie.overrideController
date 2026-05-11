@@ -6,7 +6,7 @@ AnimatorOverrideController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ZombieGeneric
+  m_Name: Zombie
   m_Controller: {fileID: 9100000, guid: bedd055d7eb623e43a3d3bd96ee15c23, type: 2}
   m_Clips:
   - m_OriginalClip: {fileID: 7400000, guid: c11317be62c8091439091bc322993c79, type: 2}

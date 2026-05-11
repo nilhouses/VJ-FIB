@@ -20,3 +20,4 @@
 % 9 -> Slime
 % 10 -> Barrel
 % 11 -> Zombie
+% 12 -> Witch

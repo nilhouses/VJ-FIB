@@ -9,7 +9,7 @@ public class CreateLevel : MonoBehaviour
 {
     public GameObject player;                   // Reference to the player object.
                                                 // We need to position it according to the level.
-    public GameObject floor, wall_1, door, bat, spikeTrap, slime, barrel, zombie;  // References to objects we need to instantiate to
+    public GameObject floor, wall_1, door, bat, spikeTrap, slime, barrel, zombie, witch;  // References to objects we need to instantiate to
                                                 // build the level.
     public static int[,] mapLayout;
     public static int mapWidth, mapHeight;
@@ -123,8 +123,22 @@ public class CreateLevel : MonoBehaviour
                             case 11: // Zombie
                                 GameObject zombieObj = Instantiate(zombie, new Vector3(x, 0.0f, y), transform.rotation);
                                 zombieObj.transform.parent = transform;
+                                // Registramos al enemigo en el LevelManager
+                                FindObjectOfType<LevelManager>().RegisterEnemy();
+                                // Registramos al enemigo en el OccupancyManager
+                                Vector2Int zombiePos = new Vector2Int(x, y);
+                                OccupancyManager.Register(zombiePos, zombieObj);
                                 break;
                             // (monedas, enemigos, etc.)
+                            case 12: // Witch
+                                GameObject witchObj = Instantiate(witch, new Vector3(x, 0.0f, y), transform.rotation);
+                                witchObj.transform.parent = transform;
+                                // Registramos al enemigo en el LevelManager
+                                FindObjectOfType<LevelManager>().RegisterEnemy();
+                                // Registramos al enemigo en el OccupancyManager
+                                Vector2Int witchPos = new Vector2Int(x, y);
+                                OccupancyManager.Register(witchPos, witchObj);
+                                break;
                         }
                     }
                 }
