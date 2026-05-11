@@ -9,7 +9,7 @@ public class CreateLevel : MonoBehaviour
 {
     public GameObject player;                   // Reference to the player object.
                                                 // We need to position it according to the level.
-    public GameObject floor, wall_1, door, bat, spikeTrap, slime, barrel;  // References to objects we need to instantiate to
+    public GameObject floor, wall_1, door, bat, spikeTrap, slime, barrel, zombie;  // References to objects we need to instantiate to
                                                 // build the level.
     public static int[,] mapLayout;
     public static int mapWidth, mapHeight;
@@ -119,6 +119,10 @@ public class CreateLevel : MonoBehaviour
                             case 10: // Barrel
                                 GameObject barrelObj = Instantiate(barrel, new Vector3(x, 0.0f, y), transform.rotation);
                                 barrelObj.transform.parent = transform;
+                                break;
+                            case 11: // Zombie
+                                GameObject zombieObj = Instantiate(zombie, new Vector3(x, 0.0f, y), transform.rotation);
+                                zombieObj.transform.parent = transform;
                                 break;
                             // (monedas, enemigos, etc.)
                         }

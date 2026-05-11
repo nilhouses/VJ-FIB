@@ -96,7 +96,8 @@ MonoBehaviour:
   dieSound: {fileID: 8300000, guid: 0b1c4615c0e25ac428d0312a93a133b6, type: 3}
   enemyTag: Enemy
   speed: 2
-  heightJump: 0.1
+  attackSpeed: 1
+  heightJump: 0
   numAttacks: 1
   isStuckInPuddle: 0
   anim: {fileID: 0}

@@ -7,6 +7,8 @@ public abstract class EntityController : MonoBehaviour
     public AudioClip moveSound, attackSound, receiveHitSound, dieSound;
     public string enemyTag = "Enemy";
     public float speed = 3.0f;
+
+    public float attackSpeed = 1.0f;
     public float heightJump = 0.5f;
     public int numAttacks = 1;
     public abstract void ReturnToIdle();
@@ -31,7 +33,7 @@ public abstract class EntityController : MonoBehaviour
 
 
     public abstract IState GetIdleState(bool longIdle = false);
-    private void Awake()
+    protected virtual void Awake()
     {
         anim = GetComponentInChildren<Animator>();
         stateMachine = new StateMachine();

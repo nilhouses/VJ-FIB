@@ -12,6 +12,12 @@ public class EnemyController : EntityController
 
     public override IState GetIdleState(bool longIdle = false) { return new EnemyIdleState(this); }
     public override void ReturnToIdle() { stateMachine.ChangeState(new EnemyIdleState(this)); }
+    
+    protected override void Awake()
+    {
+        base.Awake();
+        anim.SetFloat("attackSpeed", attackSpeed);
+    }
     protected override void Start()
     {
         base.Start();

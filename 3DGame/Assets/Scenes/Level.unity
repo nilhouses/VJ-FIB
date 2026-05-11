@@ -550,6 +550,7 @@ MonoBehaviour:
   spikeTrap: {fileID: 3634867882328196730, guid: bde77dc802176564887faee43a40c9ac, type: 3}
   slime: {fileID: 4061012142582937487, guid: 322478c5a663b1f4c808d0cd5a4f675c, type: 3}
   barrel: {fileID: 5000199087606489284, guid: 0528a1f169204c948acfabcb43c9a704, type: 3}
+  zombie: {fileID: 4061012142582937487, guid: 1dcf79ae933df04498c36156240b8ba4, type: 3}
 --- !u!4 &965331148
 Transform:
   m_ObjectHideFlags: 0

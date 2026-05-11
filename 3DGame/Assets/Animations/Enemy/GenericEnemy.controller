@@ -270,7 +270,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Enemy
+  m_Name: GenericEnemy
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: isMoving
@@ -404,7 +404,7 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: -2309011735137132436}
-    m_Position: {x: 360, y: 80, z: 0}
+    m_Position: {x: 370, y: 80, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1323658943663800087}
     m_Position: {x: 210, y: -90, z: 0}
