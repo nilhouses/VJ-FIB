@@ -676,7 +676,12 @@ MonoBehaviour:
   barrel: {fileID: 5000199087606489284, guid: 0528a1f169204c948acfabcb43c9a704, type: 3}
   zombie: {fileID: 4061012142582937487, guid: 1dcf79ae933df04498c36156240b8ba4, type: 3}
   witch: {fileID: 4061012142582937487, guid: 2174be858299a694495f9beb2f08c2c0, type: 3}
-  levelPalette: {fileID: 11400000, guid: cffe2115f93da3048933547455c97f1c, type: 2}
+  levelPalettes:
+  - {fileID: 11400000, guid: 6e8bb4fd455d2fb49960745bdda0a916, type: 2}
+  - {fileID: 11400000, guid: e93a599c6ec12ed419d5a0744423b770, type: 2}
+  - {fileID: 11400000, guid: 75bad32cdb9e9e645a4851506af32dde, type: 2}
+  - {fileID: 11400000, guid: cffe2115f93da3048933547455c97f1c, type: 2}
+  - {fileID: 11400000, guid: 64530bd0d0d45cb49b90ca2b41debe17, type: 2}
 --- !u!4 &965331148
 Transform:
   m_ObjectHideFlags: 0

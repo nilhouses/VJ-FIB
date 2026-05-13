@@ -13,7 +13,10 @@ public class CreateLevel : MonoBehaviour
                                                 // build the level.
     public static int[,] mapLayout;
     public static int mapWidth, mapHeight;
-    public LevelPalette levelPalette;            // Reference to the palette for the current level
+    
+    [Header("Level Palette")]
+    public LevelPalette[] levelPalettes;   // Array of level palettes to choose from
+    private LevelPalette levelPalette;     // The palette for the current level
 
     private void ApplyPalette(GameObject obj, Color targetColor)
     {
@@ -54,6 +57,10 @@ public class CreateLevel : MonoBehaviour
             mapLayout = new int[width, height];
             mapWidth = width;
             mapHeight = height;
+
+            // Seleccionar la paleta para el nivel actual
+            int randomIndex = UnityEngine.Random.Range(0, levelPalettes.Length);
+            levelPalette = levelPalettes[randomIndex];
 
             if (levelPalette != null)
             {
