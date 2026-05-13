@@ -9,7 +9,7 @@ public class CreateLevel : MonoBehaviour
 {
     public GameObject player;                   // Reference to the player object.
                                                 // We need to position it according to the level.
-    public GameObject floor, wall_1, door, bat, spikeTrap, arrowTrap, slime, barrel, zombie, witch;  // References to objects we need to instantiate to
+    public GameObject floor, wall_1, door, bat, spikeTrap, arrowTrap, slime, barrel, zombie, witch, coin;  // References to objects we need to instantiate to
                                                 // build the level.
     public static int[,] mapLayout;
     public static int mapWidth, mapHeight;
@@ -211,6 +211,10 @@ public class CreateLevel : MonoBehaviour
                                 // Rotacion
                                 float rotationMultiplier = (float)(tile - 13);
                                 arrowObj.transform.Rotate(0f, 90f * rotationMultiplier, 0f);
+                                break;
+                            case 21: // Coins
+                                GameObject coinsObj = Instantiate(coin, new Vector3(x, 0.0f, y), transform.rotation);
+                                coinsObj.transform.parent = transform;
                                 break;
                         }
                     }

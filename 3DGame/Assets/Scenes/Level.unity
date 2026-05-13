@@ -676,6 +676,7 @@ MonoBehaviour:
   barrel: {fileID: 5000199087606489284, guid: 0528a1f169204c948acfabcb43c9a704, type: 3}
   zombie: {fileID: 4061012142582937487, guid: 1dcf79ae933df04498c36156240b8ba4, type: 3}
   witch: {fileID: 4061012142582937487, guid: 2174be858299a694495f9beb2f08c2c0, type: 3}
+  coin: {fileID: 1809230532009429641, guid: b41b7b990860e4b4885ccedd55cb7817, type: 3}
   levelPalettes:
   - {fileID: 11400000, guid: 6e8bb4fd455d2fb49960745bdda0a916, type: 2}
   - {fileID: 11400000, guid: e93a599c6ec12ed419d5a0744423b770, type: 2}

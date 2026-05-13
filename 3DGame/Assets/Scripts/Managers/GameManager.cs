@@ -52,6 +52,12 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    public void AddCoins(int amount)
+    {
+        coins += amount;
+        Debug.Log("Coins collected: " + coins);
+    }
+
     void Update()
     {
         
