@@ -21,3 +21,4 @@
 % 10 -> Barrel
 % 11 -> Zombie
 % 12 -> Witch
+% 13 -> ArrowTrap

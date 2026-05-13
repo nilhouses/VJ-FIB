@@ -39,18 +39,21 @@ public class SlimePuddle : MonoBehaviour
         int layerMask = LayerMask.GetMask("Player", "Enemy");
         Collider[] victims = Physics.OverlapSphere(transform.position, 0.4f, layerMask);
 
-        if (victims.Length > 0)
+        foreach (Collider col in victims)
         {
-            EntityController entity = victims[0].GetComponentInParent<EntityController>();
+            if (col.CompareTag("Shield")) continue;
+
+            EntityController entity = col.GetComponentInParent<EntityController>();
             if (entity != null && !(entity is SlimeController))
             {
                 isSteppedOn = true;
                 Splash();
                 entity.SetStuck(this);
+                break;
             }
         }
     }
-    public void Splash()
+        public void Splash()
     {
         anim.SetTrigger("stepOnPuddle");
         playStepOnSound();

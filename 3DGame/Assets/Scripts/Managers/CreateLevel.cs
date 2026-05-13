@@ -9,7 +9,7 @@ public class CreateLevel : MonoBehaviour
 {
     public GameObject player;                   // Reference to the player object.
                                                 // We need to position it according to the level.
-    public GameObject floor, wall_1, door, bat, spikeTrap, slime, barrel, zombie, witch;  // References to objects we need to instantiate to
+    public GameObject floor, wall_1, door, bat, spikeTrap, arrowTrap, slime, barrel, zombie, witch;  // References to objects we need to instantiate to
                                                 // build the level.
     public static int[,] mapLayout;
     public static int mapWidth, mapHeight;
@@ -87,6 +87,7 @@ public class CreateLevel : MonoBehaviour
                         floorObj.transform.parent = transform;
 
                         // Y ahora comprobamos si hay algo encima del suelo
+                        GameObject arrowObj;
                         switch (tile)
                         {
                             case 6: // Player
@@ -129,7 +130,6 @@ public class CreateLevel : MonoBehaviour
                                 Vector2Int zombiePos = new Vector2Int(x, y);
                                 OccupancyManager.Register(zombiePos, zombieObj);
                                 break;
-                            // (monedas, enemigos, etc.)
                             case 12: // Witch
                                 GameObject witchObj = Instantiate(witch, new Vector3(x, 0.0f, y), transform.rotation);
                                 witchObj.transform.parent = transform;
@@ -138,6 +138,16 @@ public class CreateLevel : MonoBehaviour
                                 // Registramos al enemigo en el OccupancyManager
                                 Vector2Int witchPos = new Vector2Int(x, y);
                                 OccupancyManager.Register(witchPos, witchObj);
+                                break;
+                            case 13: // Arrow Trap Shoot Up
+                            case 14: // Arrow Trap Shoot Right
+                            case 15: // Arrow Trap Shoot Down
+                            case 16: // Arrow Trap Shoot Left
+                                arrowObj = Instantiate(arrowTrap, new Vector3(x, 0.0f, y), transform.rotation);
+                                arrowObj.transform.parent = transform;
+                                // Rotacion
+                                float rotationMultiplier = (float)(tile - 13);
+                                arrowObj.transform.Rotate(0f, 90f * rotationMultiplier, 0f);
                                 break;
                         }
                     }

@@ -12,6 +12,7 @@ TagManager:
   - Enemy
   - Obstacle
   - Puddle
+  - Shield
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - Water
   - UI
   - Enemy
-  - 
+  - FlyingEnemy
   - 
   - 
   - 
