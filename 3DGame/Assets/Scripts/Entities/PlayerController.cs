@@ -65,7 +65,8 @@ public class PlayerController : EntityController
     {
         if (canHurtMe(damageSourcePos))
         {
-            if (stateMachine.currentState is BlockState) // Estado parry
+            bool isFromAbove = (damageSourcePos.y > transform.position.y + 0.2f);
+            if (stateMachine.currentState is BlockState && !isFromAbove) // Estado parry
             {
                 Direction dirToDamage = GetDirectionTo(damageSourcePos);   
                 if (this.dir == dirToDamage) // Dirección parry = dirección del ataque

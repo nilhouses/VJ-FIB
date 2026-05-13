@@ -9,7 +9,7 @@ public class CreateLevel : MonoBehaviour
 {
     public GameObject player;                   // Reference to the player object.
                                                 // We need to position it according to the level.
-    public GameObject floor, wall_1, door, bat, spikeTrap, arrowTrap, slime, barrel, zombie, witch;  // References to objects we need to instantiate to
+    public GameObject floor, wall_1, door, bat, spikeTrap, arrowTrap, axeTrap, slime, barrel, zombie, witch;  // References to objects we need to instantiate to
                                                 // build the level.
     public static int[,] mapLayout;
     public static int mapWidth, mapHeight;
@@ -63,6 +63,7 @@ public class CreateLevel : MonoBehaviour
             doorFloor.transform.parent = transform;
 
             // Other elements
+            float rotationMultiplier; // Variable auxiliar para calcular la rotación de las trampas de flechas y hachas
             for (int y = height - 1; y >= 0; y--)
             {
                 line = reader.ReadLine();
@@ -87,7 +88,6 @@ public class CreateLevel : MonoBehaviour
                         floorObj.transform.parent = transform;
 
                         // Y ahora comprobamos si hay algo encima del suelo
-                        GameObject arrowObj;
                         switch (tile)
                         {
                             case 6: // Player
@@ -143,11 +143,21 @@ public class CreateLevel : MonoBehaviour
                             case 14: // Arrow Trap Shoot Right
                             case 15: // Arrow Trap Shoot Down
                             case 16: // Arrow Trap Shoot Left
-                                arrowObj = Instantiate(arrowTrap, new Vector3(x, 0.0f, y), transform.rotation);
+                                GameObject arrowObj = Instantiate(arrowTrap, new Vector3(x, 0.0f, y), transform.rotation);
                                 arrowObj.transform.parent = transform;
                                 // Rotacion
-                                float rotationMultiplier = (float)(tile - 13);
+                                rotationMultiplier = (float)(tile - 13);
                                 arrowObj.transform.Rotate(0f, 90f * rotationMultiplier, 0f);
+                                break;
+                            case 17: // Axe Trap Hit Up
+                            case 18: // Axe Trap Hit Right
+                            case 19: // Axe Trap Hit Down
+                            case 20: // Axe Trap Hit Left
+                                GameObject axeObj = Instantiate(axeTrap, new Vector3(x, 0.0f, y), transform.rotation);
+                                axeObj.transform.parent = transform;
+                                // Rotacion
+                                rotationMultiplier = (float)(tile - 17);
+                                axeObj.transform.Rotate(0f, 90f * rotationMultiplier, 0f);
                                 break;
                         }
                     }

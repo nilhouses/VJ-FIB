@@ -7,7 +7,7 @@
 1 1 1 1 9
 7 1 1 1 1 
 14 1 1 10 1 
-1 13 1 1 1 
+1 17 1 1 1 
 1 1 6 1 1
 
 % 1 -> Empty
@@ -25,3 +25,7 @@
 % 14 -> Arrow Trap Shoot Right
 % 15 -> Arrow Trap Shoot Down
 % 16 -> Arrow Trap Shoot Left
+% 17 -> AxeTrap Hit Up
+% 18 -> AxeTrap Hit Right
+% 19 -> AxeTrap Hit Down
+% 20 -> AxeTrap Hit Left

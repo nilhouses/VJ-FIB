@@ -1,0 +1,70 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Nil Casas Duatis\\Documents\\Q8\\VJ-FIB\\3DGame\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{FA9178D6-5EB8-034D-FBFF-A344821AB08F}|Assembly-CSharp.csproj|c:\\users\\nil casas duatis\\documents\\q8\\vj-fib\\3dgame\\assets\\scripts\\entities\\traps\\axetrap.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FA9178D6-5EB8-034D-FBFF-A344821AB08F}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\entities\\traps\\axetrap.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FA9178D6-5EB8-034D-FBFF-A344821AB08F}|Assembly-CSharp.csproj|c:\\users\\nil casas duatis\\documents\\q8\\vj-fib\\3dgame\\assets\\scripts\\entities\\enemycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FA9178D6-5EB8-034D-FBFF-A344821AB08F}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\entities\\enemycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FA9178D6-5EB8-034D-FBFF-A344821AB08F}|Assembly-CSharp.csproj|C:\\Users\\Nil Casas Duatis\\Documents\\Q8\\VJ-FIB\\3DGame\\assets\\scripts\\managers\\levelmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FA9178D6-5EB8-034D-FBFF-A344821AB08F}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\managers\\levelmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AxeTrap.cs",
+              "DocumentMoniker": "C:\\Users\\Nil Casas Duatis\\Documents\\Q8\\VJ-FIB\\3DGame\\Assets\\Scripts\\Entities\\Traps\\AxeTrap.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Entities\\Traps\\AxeTrap.cs",
+              "ToolTip": "C:\\Users\\Nil Casas Duatis\\Documents\\Q8\\VJ-FIB\\3DGame\\Assets\\Scripts\\Entities\\Traps\\AxeTrap.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Entities\\Traps\\AxeTrap.cs",
+              "ViewState": "AgIAADwAAAAAAAAAAAAawEkAAABGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-13T17:41:25.759Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "EnemyController.cs",
+              "DocumentMoniker": "C:\\Users\\Nil Casas Duatis\\Documents\\Q8\\VJ-FIB\\3DGame\\Assets\\Scripts\\Entities\\EnemyController.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Entities\\EnemyController.cs",
+              "ToolTip": "C:\\Users\\Nil Casas Duatis\\Documents\\Q8\\VJ-FIB\\3DGame\\Assets\\Scripts\\Entities\\EnemyController.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Entities\\EnemyController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-11T17:10:45.181Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "LevelManager.cs",
+              "DocumentMoniker": "C:\\Users\\Nil Casas Duatis\\Documents\\Q8\\VJ-FIB\\3DGame\\Assets\\Scripts\\Managers\\LevelManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Managers\\LevelManager.cs",
+              "ToolTip": "C:\\Users\\Nil Casas Duatis\\Documents\\Q8\\VJ-FIB\\3DGame\\Assets\\Scripts\\Managers\\LevelManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Managers\\LevelManager.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAO8SURBVEhL7ZTBTxtXEMa/93a967rYFgQDckw52EolkKIoakVysntK2t6iePkLcoh6SBpOzik55lBXHEBKlUuT28IpBxSInLhRCIgolBIRZHAKyMbYWeyYxWDv4rfTS0yVSFV7rvhJI81hvvn03owGOOZ/D2slq6urqqVaoefbz9XUWgrZShY1uwZFURDpiEBRFGNiaMIAgIJZCBQrxcDN1E1ka1lj8ttJ09/lD91fuq/e/f2uBSCfvZa1AIC3DCzVCgkmkiDoTGY6l7nOZa5LTNI547qLXPFWrdtxxx04Ojh0Tjzu7/KHJEhJckjnxJPUpN5WLQOA17nXseJB8fLL/EutdFAK1Owa/KofiqRA5jJkLoOB3b4yeGXU7bjjjzcexxe2F2JPNp6gXC\u002BnQ97QcrQvqmXKmcCr7VcGZ3ycg49nfsykZQDYaezEKvXKD89yz\u002BBVvDjdfdo603Mm3\u002BXpshgYtva2YAvb8Dgen\u002BDiQmGvMPAi/wKmZYKIBkq1Um96M\u002B3bt/dBRD7G2AUiegMgLQFAz3c9sfXd9ZjZMBHti\u002BLSl5c2PYrnRhPNX8Awvn\u002BwP96k5vzZvrNGrVGbO\u002BE\u002B4esP9H\u002B9srOCml37VRvQxq5\u002BdfWcINGRKWc2GdgNR3KmKo8qBzIALL1bgiqpOOk9CY/Lk\u002B5p65kgolmfz2e0/hIAhjAEANnybtlw4ECRFHBw4/q561kQrJnPZsDALE78beZaxkBryAWzgGqjiqA3iPph/Tev1zv6aXN82LRStRTOmbnOnJmDLWw4cDpHZkfCmXJGfV9/DwKpDnPCkZFI4MhA5jIkLh0N9J9obcvTjadaci6Jwl4BTdHU9BU9mUgleqf/nEbTaYYI9BMnHkfLoNPTiTZXG0r7JWxUNz7te4TgwuTgU0FvcPl86Dy8qheMs\u002BXuz7unon1RM9weBmPMJNA0I/YGAGQAONVxCofOIfJmHgTqTEwm\u002Bge/GESH0gEbNjYrm4ANI\u002BgLGgDGjKrBwu3hrsXSInbruxMP4w8fCS567y3ciyyWFt8KIX5eG17LHhlcjFyEcWDgwR8PIEuyBo6YRBI455AcCbIko\u002BFqjAEYAwCVq7qASAOAIznvfD6faZjGMAlShRAWk1mu9WoGALPrs7HiXvHyXG5Oq9rVwKFziHZ3O9yyGy7JBYUrYIzdTnyTuNUS/leOblFqNRUmouT81nxkJjeDYq0IAsGv\u002BtEf6Eeb3DZ25/s7ox/L/52/bxGsfPOwOcyJa60QJDQ40Aikccb1j6XHHPOBvwBFmMRhXMHP0QAAAABJRU5ErkJggg==",
+              "WhenOpened": "2026-05-11T15:48:28.281Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

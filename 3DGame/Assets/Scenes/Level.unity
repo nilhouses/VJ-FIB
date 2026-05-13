@@ -549,6 +549,7 @@ MonoBehaviour:
   bat: {fileID: 4061012142582937487, guid: ed525d46651a7394cad440d12d1e5cec, type: 3}
   spikeTrap: {fileID: 3634867882328196730, guid: bde77dc802176564887faee43a40c9ac, type: 3}
   arrowTrap: {fileID: 3634867882328196730, guid: e4a6125198221574b9dda2f796e8eec4, type: 3}
+  axeTrap: {fileID: 3634867882328196730, guid: 2f138dc46a896aa49ae553538806c5f7, type: 3}
   slime: {fileID: 4061012142582937487, guid: 322478c5a663b1f4c808d0cd5a4f675c, type: 3}
   barrel: {fileID: 5000199087606489284, guid: 0528a1f169204c948acfabcb43c9a704, type: 3}
   zombie: {fileID: 4061012142582937487, guid: 1dcf79ae933df04498c36156240b8ba4, type: 3}
