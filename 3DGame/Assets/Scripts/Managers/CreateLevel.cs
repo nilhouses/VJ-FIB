@@ -221,6 +221,7 @@ public class CreateLevel : MonoBehaviour
                                 // Rotacion
                                 rotationMultiplier = (float)(tile - 17);
                                 axeObj.transform.Rotate(0f, 90f * rotationMultiplier, 0f);
+                                break;
                             case 21: // Coins
                                 GameObject coinsObj = Instantiate(coin, new Vector3(x, 0.0f, y), transform.rotation);
                                 coinsObj.transform.parent = transform;
