@@ -9,10 +9,27 @@ public class CreateLevel : MonoBehaviour
 {
     public GameObject player;                   // Reference to the player object.
                                                 // We need to position it according to the level.
-    public GameObject floor, wall_1, door, bat, spikeTrap, arrowTrap, axeTrap, slime, barrel, zombie, witch;  // References to objects we need to instantiate to
+    public GameObject floor, wall_1, door, bat, spikeTrap, arrowTrap, axeTrap, slime, barrel, zombie, witch, coin;  // References to objects we need to instantiate to
                                                 // build the level.
     public static int[,] mapLayout;
     public static int mapWidth, mapHeight;
+    
+    [Header("Level Palette")]
+    public LevelPalette[] levelPalettes;   // Array of level palettes to choose from
+    private LevelPalette levelPalette;     // The palette for the current level
+
+    private void ApplyPalette(GameObject obj, Color targetColor)
+    {
+        if (levelPalette != null)
+        {
+            // Buscamos en el objeto o en sus hijos
+            Renderer objRenderer = obj.GetComponentInChildren<Renderer>();
+            if (objRenderer != null)
+            {
+                objRenderer.material.color = targetColor;
+            }
+        }
+    }
 
     // Start is called before the first frame update
     public void GenerateLevel(int levelNumber)
@@ -41,12 +58,43 @@ public class CreateLevel : MonoBehaviour
             mapWidth = width;
             mapHeight = height;
 
+            // Seleccionar la paleta para el nivel actual
+            int randomIndex = UnityEngine.Random.Range(0, levelPalettes.Length);
+            levelPalette = levelPalettes[randomIndex];
+
+            if (levelPalette != null)
+            {
+                // Configurar la cámara para que el fondo sea el color de la niebla
+                Camera mainCam = Camera.main;
+                if (mainCam != null)
+                {
+                    mainCam.clearFlags = CameraClearFlags.SolidColor;
+                    mainCam.backgroundColor = levelPalette.skyboxColor;
+                }
+
+                // Configurar el color de la niebla
+                GameObject fogPlane = GameObject.Find("FogPlane");
+                if (fogPlane != null)
+                {
+                    Renderer fogRenderer = fogPlane.GetComponent<Renderer>();
+                    if (fogRenderer != null)
+                    {
+                        fogRenderer.material.SetColor("_Color", levelPalette.fogColor);
+                    }
+                }
+
+                // Luz ambiental
+                RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+                RenderSettings.ambientLight = levelPalette.ambientLightColor;
+            }
+
             // Decorative walls
             for (int y = 0; y < height; y++) // Left wall
             {
                 GameObject obj = Instantiate(wall_1, new Vector3(-1f, 0.5f, y), transform.rotation);
                 obj.transform.parent = transform;
                 obj.transform.Rotate(0.0f, 90.0f, 0.0f);
+                ApplyPalette(obj, levelPalette != null ? levelPalette.wallColor : Color.white);
             }
             
             for (int x = 0; x < width; x++) // Top wall
@@ -55,12 +103,14 @@ public class CreateLevel : MonoBehaviour
                 if (x == width/2) obj = Instantiate(door, new Vector3(x, 0.5f, height), transform.rotation);
                 else obj = Instantiate(wall_1, new Vector3(x, 0.5f, height), transform.rotation);
                 obj.transform.parent = transform;
-                obj.transform.Rotate(0.0f, 180.0f, 0.0f);  
+                obj.transform.Rotate(0.0f, 180.0f, 0.0f);
+                ApplyPalette(obj, levelPalette != null ? levelPalette.wallColor : Color.white);
             }
 
             // Door floor
             GameObject doorFloor = Instantiate(floor, new Vector3(width/2, -0.75f, height), transform.rotation);
             doorFloor.transform.parent = transform;
+            ApplyPalette(doorFloor, levelPalette != null ? levelPalette.floorColor : Color.white);
 
             // Other elements
             float rotationMultiplier; // Variable auxiliar para calcular la rotación de las trampas de flechas y hachas
@@ -75,17 +125,30 @@ public class CreateLevel : MonoBehaviour
 
                     Vector3 floorPosition = new Vector3(x, -0.75f, y); // La posición del nivel del suelo
 
+                    // Si el suelo está en un borde añadimos más suelos abajo para hacer un soporte
+                    if (x == 0 || x == width - 1 || y == 0)
+                    {
+                        for (int i = 1; i <= 3; i++)
+                        {
+                            GameObject supportFloor = Instantiate(floor, new Vector3(x, -0.75f - i, y), transform.rotation);
+                            supportFloor.transform.parent = transform;
+                            ApplyPalette(supportFloor, levelPalette != null ? levelPalette.floorColor : Color.white);
+                        }
+                    }
+
                     // Si el tile es un spike trap, no colocamos el suelo normal, sino directamente el spike trap
                     if (tile == 8) 
                     {
                         GameObject obj = Instantiate(spikeTrap, floorPosition, transform.rotation);
                         obj.transform.parent = transform;
+                        ApplyPalette(obj, levelPalette != null ? levelPalette.floorColor : Color.white);
                     }
                     else    // Si el tile no es un spike trap, colocamos el suelo normal y luego comprobamos si hay algo encima 
                     {
                         // Ponemos el suelo normal primero
                         GameObject floorObj = Instantiate(floor, floorPosition, transform.rotation);
                         floorObj.transform.parent = transform;
+                        ApplyPalette(floorObj, levelPalette != null ? levelPalette.floorColor : Color.white);
 
                         // Y ahora comprobamos si hay algo encima del suelo
                         switch (tile)
@@ -158,6 +221,9 @@ public class CreateLevel : MonoBehaviour
                                 // Rotacion
                                 rotationMultiplier = (float)(tile - 17);
                                 axeObj.transform.Rotate(0f, 90f * rotationMultiplier, 0f);
+                            case 21: // Coins
+                                GameObject coinsObj = Instantiate(coin, new Vector3(x, 0.0f, y), transform.rotation);
+                                coinsObj.transform.parent = transform;
                                 break;
                         }
                     }

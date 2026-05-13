@@ -100,7 +100,7 @@ public abstract class EntityController : MonoBehaviour
         audioSource.pitch = Random.Range(1f - pitchVariation, 1f + pitchVariation);
         audioSource.PlayOneShot(clip, entityVolume);
     }
-    
+
     public virtual void playMoveSound() => PlaySound(moveSound);
     public virtual void playAttackSound() => PlaySound(attackSound);
     public virtual void playReceiveHitSound() => PlaySound(receiveHitSound);

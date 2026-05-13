@@ -8,6 +8,7 @@ public class PlayerController : EntityController
     
     [HideInInspector] public bool isMovingToNextLevel = false;
     public AudioClip parrySound, levelCompleteSound;
+    public bool godMode = false;
 
     public void playParrySound() => base.PlaySound(parrySound);
     public void playLevelCompleteSound() => base.PlaySound(levelCompleteSound);
@@ -63,7 +64,7 @@ public class PlayerController : EntityController
 
     public override void receiveHit(Vector3 damageSourcePos)
     {
-        if (canHurtMe(damageSourcePos))
+        if (!godMode && canHurtMe(damageSourcePos))
         {
             bool isFromAbove = (damageSourcePos.y > transform.position.y + 0.2f);
             if (stateMachine.currentState is BlockState && !isFromAbove) // Estado parry
