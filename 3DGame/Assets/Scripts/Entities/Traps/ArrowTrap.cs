@@ -8,6 +8,11 @@ public class ArrowTrap : MonoBehaviour
     public Transform spawnPoint;
     public float fireRate = 3f; // Tiempo entre disparos en segundos
 
+    [Header("Ajustes de Animación pre-disparo")]
+    public float animDuration = 0.3f;
+    public Vector3 stretchScale = new Vector3(1.2f, 0.7f, 1.2f);
+    private Vector3 originalScale = Vector3.one;
+
     [Header("Ajustes de Audio")]
     private AudioSource audioSource;
     public AudioClip shootSound;
@@ -27,28 +32,52 @@ public class ArrowTrap : MonoBehaviour
 
     void Start()
     {
-        InvokeRepeating("Fire", fireRate, fireRate);
+        StartCoroutine(FireCycle());
     }
 
-    void Fire()
+    IEnumerator FireCycle()
+    {
+        while (true)
+        {
+            yield return StartCoroutine(PlaySqueezeAndShoot());   
+            yield return new WaitForSeconds(fireRate - animDuration);
+        }
+    }
+    IEnumerator PlaySqueezeAndShoot()
+    {
+        float elapsed = 0;
+        bool hasFired = false;
+
+        while (elapsed < animDuration)
+        {
+            elapsed += Time.deltaTime;
+            float percent = elapsed / animDuration;
+
+            // Seno para la tranformación de escala (0->1->0)
+            float curve = Mathf.Sin(percent * Mathf.PI);
+            transform.localScale = Vector3.Lerp(originalScale, 
+                                                Vector3.Scale(originalScale, stretchScale), 
+                                                curve);
+
+            // Disparo a la mitad de la aniación
+            if (percent >= 0.5f && !hasFired)
+            {
+                InstantiateArrow();
+                hasFired = true;
+            }
+
+            yield return null;
+        }
+
+        transform.localScale = originalScale;
+    }
+
+    void InstantiateArrow()
     {
         if (arrowPrefab != null && spawnPoint != null)
         {
             Instantiate(arrowPrefab, spawnPoint.position, spawnPoint.rotation);
-            PlaySound(shootSound);
-        }
-    }
-
-    private void PlaySound(AudioClip sound)
-    {
-        if (sound != null && audioSource != null)
-        {
-            if (audioSource.outputAudioMixerGroup == null && SoundManager.instance != null)
-            {
-                audioSource.outputAudioMixerGroup = SoundManager.instance.objectsGroup;
-            }
-            audioSource.pitch = Random.Range(0.9f, 1.1f);
-            audioSource.PlayOneShot(sound, volume);
+            SoundManager.instance.PlaySpatialSound(audioSource, shootSound, volume);
         }
     }
 }

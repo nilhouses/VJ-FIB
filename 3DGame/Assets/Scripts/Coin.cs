@@ -8,6 +8,23 @@ public class Coin : MonoBehaviour
     public float floatAmount = 0.05f;
     private Vector3 startPos;
     public AudioClip collectSound;
+    private AudioSource audioSource;
+
+
+    void Awake()
+    {
+        // AudioSource
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+        
+        // Grupo del Mixer
+        if (SoundManager.instance != null) {
+            audioSource.outputAudioMixerGroup = SoundManager.instance.objectsGroup;
+        }
+
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 0f;
+    }
 
     void Start()
     {
@@ -27,7 +44,8 @@ public class Coin : MonoBehaviour
         {
             GameManager.instance.AddCoins(1);
             Vector3 camPos = Camera.main.transform.position;
-            AudioSource.PlayClipAtPoint(collectSound, camPos);
+            
+            SoundManager.instance.PlaySound(collectSound, SoundManager.instance.objectsGroup, 1.0f);
             Destroy(gameObject);
         }
     }

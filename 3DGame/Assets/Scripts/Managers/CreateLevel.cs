@@ -206,11 +206,12 @@ public class CreateLevel : MonoBehaviour
                             case 14: // Arrow Trap Shoot Right
                             case 15: // Arrow Trap Shoot Down
                             case 16: // Arrow Trap Shoot Left
-                                GameObject arrowObj = Instantiate(arrowTrap, new Vector3(x, 0.0f, y), transform.rotation);
-                                arrowObj.transform.parent = transform;
+                                GameObject arrowTrapObj = Instantiate(arrowTrap, new Vector3(x, 0.0f, y), transform.rotation);
+                                arrowTrapObj.transform.parent = transform;
                                 // Rotacion
                                 rotationMultiplier = (float)(tile - 13);
-                                arrowObj.transform.Rotate(0f, 90f * rotationMultiplier, 0f);
+                                arrowTrapObj.transform.Rotate(0f, 90f * rotationMultiplier, 0f);
+                                ApplyPalette(arrowTrapObj, levelPalette != null ? levelPalette.floorColor : Color.white);
                                 break;
                             case 17: // Axe Trap Hit Up
                             case 18: // Axe Trap Hit Right
@@ -221,6 +222,7 @@ public class CreateLevel : MonoBehaviour
                                 // Rotacion
                                 rotationMultiplier = (float)(tile - 17);
                                 axeObj.transform.Rotate(0f, 90f * rotationMultiplier, 0f);
+                                ApplyPalette(axeObj, levelPalette != null ? levelPalette.floorColor : Color.white);
                                 break;
                             case 21: // Coins
                                 GameObject coinsObj = Instantiate(coin, new Vector3(x, 0.0f, y), transform.rotation);

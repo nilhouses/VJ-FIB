@@ -10,8 +10,8 @@ public class PlayerController : EntityController
     public AudioClip parrySound, levelCompleteSound;
     public bool godMode = false;
 
-    public void playParrySound() => base.PlaySound(parrySound);
-    public void playLevelCompleteSound() => base.PlaySound(levelCompleteSound);
+    public virtual void playParrySound() => SoundManager.instance.PlaySpatialSound(audioSource, parrySound, entityVolume);
+    public virtual void playLevelCompleteSound() => SoundManager.instance.PlaySound(levelCompleteSound, SoundManager.instance.playerGroup, entityVolume);
 
     public override IState GetIdleState(bool longIdle = false) { return new PlayerIdleState(this, longIdle); }
     public override void ReturnToIdle() { 

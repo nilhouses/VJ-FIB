@@ -93,18 +93,10 @@ public abstract class EntityController : MonoBehaviour
         OccupancyManager.Register(currentGridPos, gameObject);
     }
 
-    protected void PlaySound(AudioClip clip, float pitchVariation = 0.1f)
-    {
-        if (clip == null) return;
-        
-        audioSource.pitch = Random.Range(1f - pitchVariation, 1f + pitchVariation);
-        audioSource.PlayOneShot(clip, entityVolume);
-    }
-
-    public virtual void playMoveSound() => PlaySound(moveSound);
-    public virtual void playAttackSound() => PlaySound(attackSound);
-    public virtual void playReceiveHitSound() => PlaySound(receiveHitSound);
-    public virtual void playDieSound() => PlaySound(dieSound);
+    public virtual void playMoveSound() => SoundManager.instance.PlaySpatialSound(audioSource, moveSound, entityVolume);
+    public virtual void playAttackSound() => SoundManager.instance.PlaySpatialSound(audioSource, attackSound, entityVolume);
+    public virtual void playReceiveHitSound() => SoundManager.instance.PlaySpatialSound(audioSource, receiveHitSound, entityVolume);
+    public virtual void playDieSound() => SoundManager.instance.PlaySpatialSound(audioSource, dieSound, entityVolume);
     protected virtual void OnMovementComplete() {} // Lo usa el puddle, pero puede ser útil en otras entidades
 
     // Puddle interaction
