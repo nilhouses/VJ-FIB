@@ -11,26 +11,27 @@ public class SlimePuddle : MonoBehaviour
     protected AudioSource audioSource;
     [Range(0f, 1f)] public float puddleVolume = 1f;
 
-    protected void PlaySound(AudioClip clip, float pitchVariation = 0.1f)
-    {
-        if (clip == null) return;
 
-        audioSource.pitch = Random.Range(1f - pitchVariation, 1f + pitchVariation);
-        audioSource.PlayOneShot(clip, puddleVolume); // Para tener sonidos que no corten al anterior
-    }
+    private void playStepOnSound() => SoundManager.instance.PlaySpatialSound(audioSource, StepOnSound, puddleVolume);
 
-    private void playStepOnSound() => PlaySound(StepOnSound);
-    private void playDisappearSound() => PlaySound(DisappearSound);
+    private void playDisappearSound() => SoundManager.instance.PlaySpatialSound(audioSource, DisappearSound, puddleVolume);
     void Awake()
     {
         anim = GetComponent<Animator>();
 
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
-        // Sonido dependiente de la posicion
+       
+        // Usamos un mixer 
+        if (SoundManager.instance != null) {
+            audioSource.outputAudioMixerGroup = SoundManager.instance.objectsGroup;
+        }
+
         audioSource.playOnAwake = false;
-        audioSource.spatialBlend = 0.5f; // Semi 3D para que es escuche más fuerte 
-    } 
+
+        // Sonido dependiente de la posicion
+        audioSource.spatialBlend = 0.5f; // Semi-3D
+    }
 
     private void FixedUpdate()
     {
@@ -53,7 +54,7 @@ public class SlimePuddle : MonoBehaviour
             }
         }
     }
-        public void Splash()
+    public void Splash()
     {
         anim.SetTrigger("stepOnPuddle");
         playStepOnSound();

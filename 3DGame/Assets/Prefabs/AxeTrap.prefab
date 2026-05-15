@@ -177,13 +177,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationPoint: {fileID: 2049549969431736156}
-  waitTime: 2
+  waitTime: 1
   rotationDownSpeed: 400
-  rotationUpSpeed: 60
+  rotationUpSpeed: 150
   targetCell: {x: 0, y: 0}
   hurts: 0
-  dropSound: {fileID: 0}
-  hitSound: {fileID: 0}
+  dropSound: {fileID: 8300000, guid: 76bd61640b69b984b99c423ce67b97e9, type: 3}
 --- !u!1 &5153189768473752306
 GameObject:
   m_ObjectHideFlags: 0
@@ -392,6 +391,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72cfc8461a1613f4196a725a367aa027, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hitSound: {fileID: 8300000, guid: 6eb719788cebc964192482e1cd64152a, type: 3}
 --- !u!1001 &8127687230906819657
 PrefabInstance:
   m_ObjectHideFlags: 0

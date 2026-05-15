@@ -27,14 +27,17 @@ public class SpikeTrap : MonoBehaviour
 
     void Awake()
     {
+        // AudioSource
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
-
-        if (SoundManager.instance != null)
-            audioSource.outputAudioMixerGroup = SoundManager.instance.objectsGroup;
         
+        // Grupo del Mixer
+        if (SoundManager.instance != null) {
+            audioSource.outputAudioMixerGroup = SoundManager.instance.objectsGroup;
+        }
+
         audioSource.playOnAwake = false;
-        audioSource.spatialBlend = 0.3f; // Semi-2D
+        audioSource.spatialBlend = 0f;
     }
     void Start()
     {
@@ -112,6 +115,7 @@ public class SpikeTrap : MonoBehaviour
         }
     }
 
+
     IEnumerator killCo(EntityController entity) // Para player y enemigos tenemos el mismo código
     {
         yield return new WaitForSeconds(0.05f);
@@ -123,8 +127,7 @@ public class SpikeTrap : MonoBehaviour
             {
                 audioSource.outputAudioMixerGroup = SoundManager.instance.objectsGroup;
             }
-            audioSource.pitch = Random.Range(0.9f, 1.1f);
-            audioSource.PlayOneShot(spikeSound, spikeVolume);
+            SoundManager.instance.PlaySound(spikeSound, SoundManager.instance.objectsGroup, 1.0f, 0.2f);
         }
     }
 }
