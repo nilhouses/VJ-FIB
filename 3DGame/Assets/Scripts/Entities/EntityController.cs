@@ -7,6 +7,7 @@ public abstract class EntityController : MonoBehaviour
     public AudioClip moveSound, attackSound, receiveHitSound, dieSound;
     public string enemyTag = "Enemy";
     public float speed = 3.0f;
+    public string entityName = "Entity";
 
     public float attackSpeed = 1.0f;
     public float heightJump = 0.5f;
@@ -30,6 +31,7 @@ public abstract class EntityController : MonoBehaviour
     // Para la gestión de ocupación de celdas, guardamos la posición actual y la objetivo en coordenadas de cuadrícula (Vector2Int)
     [HideInInspector] protected Vector2Int currentGridPos;
     [HideInInspector] protected Vector2Int targetGridPos;
+    [HideInInspector] public bool isReceivingHit = false; // Para evitar recibir múltiples golpes a la vez
 
 
     public abstract IState GetIdleState(bool longIdle = false);
@@ -72,6 +74,8 @@ public abstract class EntityController : MonoBehaviour
         targetGridPos = currentGridPos;
         OccupancyManager.Register(currentGridPos, gameObject);
     }
+
+    public bool isIdle() => stateMachine.currentState is IdleState;
 
     public void TeleportEntity(Vector3 newPos)
     {
@@ -207,7 +211,7 @@ public abstract class EntityController : MonoBehaviour
             return 0; // Ya hay una entidad de un tipo que no puedo atacar bloqueando la celda
         }
 
-        // Si la celda está libre de entidades, comprobamos muros/físicas
+        // Si la celda está libre de entidades u objetos, comprobamos muros/físicas
         GameObject ground = GetObjectInDirection("Floor", initialPosMove + vecMove + Vector3.up, Vector3.down, 0f, 2f);
         GameObject wall   = GetObjectInDirection("Wall",  initialPosMove, vecMove, 0f, 1f);
         GameObject door   = GetObjectInDirection("Goal",  initialPosMove, vecMove, 0f, 1f);

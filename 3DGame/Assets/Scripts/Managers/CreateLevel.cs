@@ -88,31 +88,6 @@ public class CreateLevel : MonoBehaviour
                 RenderSettings.ambientLight = levelPalette.ambientLightColor;
             }
 
-            // Decorative walls
-            for (int y = 0; y < height; y++) // Left wall
-            {
-                GameObject obj = Instantiate(wall_1, new Vector3(-1f, 0.5f, y), transform.rotation);
-                obj.transform.parent = transform;
-                obj.transform.Rotate(0.0f, 90.0f, 0.0f);
-                ApplyPalette(obj, levelPalette != null ? levelPalette.wallColor : Color.white);
-            }
-            
-            for (int x = 0; x < width; x++) // Top wall
-            {
-                GameObject obj;
-                if (x == width/2) obj = Instantiate(door, new Vector3(x, 0.5f, height), transform.rotation);
-                else obj = Instantiate(wall_1, new Vector3(x, 0.5f, height), transform.rotation);
-                obj.transform.parent = transform;
-                obj.transform.Rotate(0.0f, 180.0f, 0.0f);
-                ApplyPalette(obj, levelPalette != null ? levelPalette.wallColor : Color.white);
-            }
-
-            // Door floor
-            GameObject doorFloor = Instantiate(floor, new Vector3(width/2, -0.75f, height), transform.rotation);
-            doorFloor.transform.parent = transform;
-            ApplyPalette(doorFloor, levelPalette != null ? levelPalette.floorColor : Color.white);
-
-            // Other elements
             float rotationMultiplier; // Variable auxiliar para calcular la rotación de las trampas de flechas y hachas
             for (int y = height - 1; y >= 0; y--)
             {
@@ -123,17 +98,16 @@ public class CreateLevel : MonoBehaviour
                     int tile = int.Parse(tokens[x]);
                     mapLayout[x, y] = tile; // Guardamos el tile en la matriz lógica
 
+                    if (tile == 0) continue; // Si el tile es 0, no colocamos nada (ni suelo ni nada encima)
+
                     Vector3 floorPosition = new Vector3(x, -0.75f, y); // La posición del nivel del suelo
 
                     // Si el suelo está en un borde añadimos más suelos abajo para hacer un soporte
-                    if (x == 0 || x == width - 1 || y == 0)
+                    for (int i = 1; i <= 3; i++)
                     {
-                        for (int i = 1; i <= 3; i++)
-                        {
-                            GameObject supportFloor = Instantiate(floor, new Vector3(x, -0.75f - i, y), transform.rotation);
-                            supportFloor.transform.parent = transform;
-                            ApplyPalette(supportFloor, levelPalette != null ? levelPalette.floorColor : Color.white);
-                        }
+                        GameObject supportFloor = Instantiate(floor, new Vector3(x, -0.75f - i, y), transform.rotation);
+                        supportFloor.transform.parent = transform;
+                        ApplyPalette(supportFloor, levelPalette != null ? levelPalette.floorColor : Color.white);
                     }
 
                     // Si el tile es un spike trap, no colocamos el suelo normal, sino directamente el spike trap
@@ -183,6 +157,8 @@ public class CreateLevel : MonoBehaviour
                             case 10: // Barrel
                                 GameObject barrelObj = Instantiate(barrel, new Vector3(x, 0.0f, y), transform.rotation);
                                 barrelObj.transform.parent = transform;
+                                Vector2Int barrelPos = new Vector2Int(x, y);
+                                OccupancyManager.Register(barrelPos, barrelObj);
                                 break;
                             case 11: // Zombie
                                 GameObject zombieObj = Instantiate(zombie, new Vector3(x, 0.0f, y), transform.rotation);
@@ -211,6 +187,9 @@ public class CreateLevel : MonoBehaviour
                                 // Rotacion
                                 rotationMultiplier = (float)(tile - 13);
                                 arrowObj.transform.Rotate(0f, 90f * rotationMultiplier, 0f);
+                                // Registramos la trampa en el OccupancyManager
+                                Vector2Int arrowPos = new Vector2Int(x, y);
+                                OccupancyManager.Register(arrowPos, arrowObj);
                                 break;
                             case 17: // Axe Trap Hit Up
                             case 18: // Axe Trap Hit Right
@@ -221,6 +200,9 @@ public class CreateLevel : MonoBehaviour
                                 // Rotacion
                                 rotationMultiplier = (float)(tile - 17);
                                 axeObj.transform.Rotate(0f, 90f * rotationMultiplier, 0f);
+                                // Registramos la trampa en el OccupancyManager
+                                Vector2Int axePos = new Vector2Int(x, y);
+                                OccupancyManager.Register(axePos, axeObj);
                                 break;
                             case 21: // Coins
                                 GameObject coinsObj = Instantiate(coin, new Vector3(x, 0.0f, y), transform.rotation);
@@ -230,6 +212,32 @@ public class CreateLevel : MonoBehaviour
                     }
                 }
             }
+
+            // Decorative walls
+            for (int y = 0; y < height; y++) // Left wall
+            {
+                if (mapLayout[0, y] == 0) continue;
+                GameObject obj = Instantiate(wall_1, new Vector3(-1f, 0.5f, y), transform.rotation);
+                obj.transform.parent = transform;
+                obj.transform.Rotate(0.0f, 90.0f, 0.0f);
+                ApplyPalette(obj, levelPalette != null ? levelPalette.wallColor : Color.white);
+            }
+            
+            for (int x = 0; x < width; x++) // Top wall
+            {
+                if (mapLayout[x, height - 1] == 0) continue;
+                GameObject obj;
+                if (x == width/2) obj = Instantiate(door, new Vector3(x, 0.5f, height), transform.rotation);
+                else obj = Instantiate(wall_1, new Vector3(x, 0.5f, height), transform.rotation);
+                obj.transform.parent = transform;
+                obj.transform.Rotate(0.0f, 180.0f, 0.0f);
+                ApplyPalette(obj, levelPalette != null ? levelPalette.wallColor : Color.white);
+            }
+
+            // Door floor
+            GameObject doorFloor = Instantiate(floor, new Vector3(width/2, -0.75f, height), transform.rotation);
+            doorFloor.transform.parent = transform;
+            ApplyPalette(doorFloor, levelPalette != null ? levelPalette.floorColor : Color.white);
         }
         else
         {

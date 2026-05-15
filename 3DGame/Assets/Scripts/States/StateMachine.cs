@@ -20,5 +20,10 @@ public class StateMachine
     {
         if (currentState != null)
             currentState.Update();
-    }   
+    }
+
+    public bool IsInState<T>() where T : IState
+    {
+        return currentState is T;
+    }
 }

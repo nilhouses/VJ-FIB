@@ -27,13 +27,18 @@ public class SmartFollowMovement : EnemyMovementStrategy
         int currentDistToPlayer = NavigationManager.distanceMap[currentPos.x, currentPos.y];
         if (currentDistToPlayer > distanceThreshold)
         {
-            // Si está lejos, movimiento aleatorio
-            return (Direction)Random.Range(0, 4);
+            Direction randomDir;
+            do
+            {
+                randomDir = (Direction)Random.Range(0, 4);
+            } while (enemyController.CheckAction(randomDir) == 0); // Aseguramos que el movimiento es posible
+            return randomDir;
         }
 
         // Búsqueda del camino más corto
         Direction bestDir = Direction.UP;
         int minDistance = 999;
+        int tiedCount = 0;
         bool foundPath = false;
 
         Direction[] directions = { Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT };
@@ -49,11 +54,22 @@ public class SmartFollowMovement : EnemyMovementStrategy
             int dist = NavigationManager.distanceMap[neighbor.x, neighbor.y];
 
             // Si es mejor camino y la entidad puede moverse ahí
-            if (dist < minDistance && enemyController.CheckAction(dir) != 0)
+            if (enemyController.CheckAction(dir) != 0)
             {
-                minDistance = dist;
-                bestDir = dir;
-                foundPath = true;
+                if (dist < minDistance)
+                {
+                    minDistance = dist;
+                    bestDir = dir;
+                    foundPath = true;
+                    tiedCount = 1; // Reiniciamos el contador de empates
+                } else if (dist == minDistance) // Si hay empate, elige aleatoriamente
+                {
+                    tiedCount++; // Incrementamos el contador de empates
+                    if (Random.Range(0, tiedCount) == 0) // Probabilidad de 1/tiedCount de elegir este camino
+                    {
+                        bestDir = dir;
+                    }
+                }
             }
         }
 
