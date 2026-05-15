@@ -1,10 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-// Función estática que se encarga de generar el mapa de distancias a player
 public static class NavigationManager
 {
-    public static int[,] distanceMap;   // Mapa de distancias a player para cada tile, actualizado cada vez que el player se mueve.
+    public static int[,] distanceMap;
 
     public static void UpdateDistanceMap(Vector3 playerPos)
     {
@@ -13,14 +12,21 @@ public static class NavigationManager
 
         int w = CreateLevel.mapWidth;
         int h = CreateLevel.mapHeight;
-        distanceMap = new int[w, h];
 
-        // Inicializamos el mapa de distancias con valores altos
+        if (distanceMap == null || distanceMap.GetLength(0) != w || distanceMap.GetLength(1) != h)
+        {
+            distanceMap = new int[w, h];
+        }
+
+        // Inicializamos con un valor alto
         for (int i = 0; i < w; i++)
             for (int j = 0; j < h; j++)
                 distanceMap[i, j] = 999;
 
-        // BFS para Dijkstra
+        // Si el player está fuera de límites por error, abortamos
+        if (startX < 0 || startX >= w || startY < 0 || startY >= h) return;
+
+        // Iniciamos el BFS desde la posición del player
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
         
         distanceMap[startX, startY] = 0;
@@ -28,7 +34,6 @@ public static class NavigationManager
 
         Vector2Int[] dirs = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
 
-        // Recorremos el mapa en orden de distancia al player actualizando los valores de distancia (BFS)
         while (queue.Count > 0)
         {
             Vector2Int current = queue.Dequeue();
@@ -37,16 +42,17 @@ public static class NavigationManager
             {
                 Vector2Int neighbor = current + d;
 
-                // Comprobamos límites y si es caminable
+                // Si estamos dentro del mapa
                 if (neighbor.x >= 0 && neighbor.x < w && neighbor.y >= 0 && neighbor.y < h)
                 {
-                    int tileType = CreateLevel.mapLayout[neighbor.x, neighbor.y];
-                    
-                    // Definimos qué es suelo y qué es obstáculo
-                    bool isWalkable = (tileType != 2 && tileType != 5 && tileType != 3);
+                    // Verificamos que exista suelo en el tile
+                    bool hasFloor = CreateLevel.mapLayout[neighbor.x, neighbor.y] != 0;
 
-                    // Si es pisable y no lo hemos visitado antes, asignamos su distancia
-                    if (isWalkable && distanceMap[neighbor.x, neighbor.y] == 999)
+                    // Verificamos si el tile está bloqueado por un objeto
+                    var entity = OccupancyManager.GetEntityAt(neighbor);
+                    bool isBlockedByObject = entity != null && entity.CompareTag("Obstacle"); 
+
+                    if (hasFloor && !isBlockedByObject && distanceMap[neighbor.x, neighbor.y] == 999)
                     {
                         distanceMap[neighbor.x, neighbor.y] = distanceMap[current.x, current.y] + 1;
                         queue.Enqueue(neighbor);

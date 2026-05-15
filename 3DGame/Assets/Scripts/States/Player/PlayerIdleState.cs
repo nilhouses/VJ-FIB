@@ -27,7 +27,8 @@ public class PlayerIdleState : IdleState
 
         if (!p.allowInput) return;
         timer += Time.deltaTime; // Actualitza el timer base
-        e.anim.SetFloat("idleTime", timer);
+        if (timer > 3.5f && p.isReceivingHit) p.isReceivingHit = false;
+        p.anim.SetFloat("idleTime", timer);
         
         // Acciones comunes en entidades
         base.Update();
@@ -42,7 +43,7 @@ public class PlayerIdleState : IdleState
 
     public override void Exit()
     {
-        e.anim.SetFloat("idleTime", 0f);
+        p.anim.SetFloat("idleTime", 0f);
         timer = 0f; // Reinicia el timer al salir del estado
     }
 }

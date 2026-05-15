@@ -20,9 +20,10 @@ public class AttackState : IState
     {
         randomAttack = Random.Range(1, attacker.numAttacks + 1);
         attacker.anim.SetBool("isAttacking" + randomAttack, true); 
-        attackTimer = 1.0f; // Yo los haría igual de largos todos codigo antiguo [randomAttack == 1 ? 1.0f : 1.6f;]
+        attackTimer = 1.0f;
         damageSourcePos = attacker.transform.position;
-        attacker.playAttackSound();   
+        attacker.playAttackSound();
+        victim.isReceivingHit = true;   // Marcamos al objetivo como recibiendo un golpe para evitar que reciba múltiples golpes a la vez
     }
 
     public void Update()

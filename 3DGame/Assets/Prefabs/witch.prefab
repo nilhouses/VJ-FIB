@@ -512,6 +512,7 @@ MonoBehaviour:
   dieSound: {fileID: 8300000, guid: bcd4b87579bf00f41bc820767947c6cc, type: 3}
   enemyTag: Enemy
   speed: 3
+  entityName: Witch
   attackSpeed: 2
   heightJump: 0
   numAttacks: 1
@@ -523,6 +524,7 @@ MonoBehaviour:
   timeInMove: 0
   lastDetectedTarget: {fileID: 0}
   entityVolume: 1
+  isReceivingHit: 0
   timeBetweenMoves: 2
   lifesRemaining: 3
   movementStrategy: {fileID: 11400000, guid: 948278396d8fd68499a1c8f9bcd23c37, type: 2}

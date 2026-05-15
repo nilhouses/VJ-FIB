@@ -28,7 +28,9 @@ public abstract class IdleState : IState
                 e.stateMachine.ChangeState(new MovingState(e));
                 break;
             case 2:
-                e.stateMachine.ChangeState(new AttackState(e));
+                if (e.lastDetectedTarget != null && !e.lastDetectedTarget.isReceivingHit) {
+                    e.stateMachine.ChangeState(new AttackState(e));
+                }
                 break;
             case 3:
                 e.stateMachine.ChangeState(new MovingState(e));

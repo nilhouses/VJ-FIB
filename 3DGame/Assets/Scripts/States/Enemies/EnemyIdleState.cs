@@ -9,16 +9,20 @@ public class EnemyIdleState : IdleState
         this.enemy = e;
     }
 
+    public override void Enter()
+    {
+        timer = enemy.timeBetweenMoves; // Reinicia el timer al entrar en el estado
+    }
+
     public override void Update()
     {
-        timer += Time.deltaTime;
-        // Comportamiento base de cada enemigo
-        if (timer >= enemy.timeBetweenMoves)
-        {
-            // Acciones comunes en entidades
-            base.Update();  // Cambio de estado
-            timer = 0f;     // Reinicia el timer para el siguiente turno a actuar del enemigo
-        }
+        timer -= Time.deltaTime;
+        if (timer < (enemy.timeBetweenMoves - 0.5f) && enemy.isReceivingHit) enemy.isReceivingHit = false;
+        if (timer > 0) return;
+
+        // Acciones comunes en entidades
+        base.Update();                      // Cambio de estado
+        timer = enemy.timeBetweenMoves;     // Reinicia el timer para el siguiente turno a actuar del enemigo
     }
 
     public override void Exit()

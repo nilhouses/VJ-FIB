@@ -1,19 +1,17 @@
 5 10
-1 1 0 21 1
+0 1 1 21 0
 1 1 1 1 1 
 1 8 10 8 21 
 1 8 10 8 7  
-1 21 1 1 1 
-1 1 1 1 9
-7 1 1 1 1 
+0 21 1 1 1 
+1 1 0 1 9
+7 1 0 1 1 
 14 1 1 10 1 
-1 17 1 1 1 
+1 17 1 1 0 
 1 1 6 1 1
 
+% 0 -> No Floor
 % 1 -> Empty
-% 2 -> Wall
-% 3 -> Goal
-% 5 -> Box
 % 6 -> Player
 % 7 -> Bat
 % 8 -> Spike
@@ -29,3 +27,4 @@
 % 18 -> AxeTrap Hit Right
 % 19 -> AxeTrap Hit Down
 % 20 -> AxeTrap Hit Left
+% 21 -> Coin

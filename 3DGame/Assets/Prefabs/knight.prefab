@@ -437,6 +437,7 @@ MonoBehaviour:
   dieSound: {fileID: 8300000, guid: 21c370ffb7ef3604aa4bd8a59135e038, type: 3}
   enemyTag: Enemy
   speed: 3
+  entityName: Player
   attackSpeed: 1
   heightJump: 0.6
   numAttacks: 1
@@ -448,6 +449,7 @@ MonoBehaviour:
   timeInMove: 0
   lastDetectedTarget: {fileID: 0}
   entityVolume: 1
+  isReceivingHit: 0
   allowInput: 1
   isMovingToNextLevel: 0
   parrySound: {fileID: 8300000, guid: 8910b82f5bcb40b4f9a1291a8baa6d1f, type: 3}

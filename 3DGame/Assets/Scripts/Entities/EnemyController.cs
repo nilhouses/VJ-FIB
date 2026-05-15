@@ -60,6 +60,7 @@ public class EnemyController : EntityController
         if (canHurtMe(fromPosition))
         {
             lifesRemaining--;
+            Debug.Log("Enemy hit! Lives remaining: " + lifesRemaining);
             stateMachine.ChangeState(new HurtState(this));            
         }
     }

@@ -16,14 +16,16 @@ public class HurtState : IState
             0.0f,
             Mathf.Round(e.transform.position.z)
         );
+        e.anim.Play("Hurt", 0, 0.0f);
         e.anim.SetBool("isGettingHit", true);
         e.playReceiveHitSound();
+        e.isReceivingHit = true;
     }
 
     public void Update()
     {
         AnimatorStateInfo stateInfo = e.anim.GetCurrentAnimatorStateInfo(0);
-        if (stateInfo.IsName("Hurt") && stateInfo.normalizedTime >= 0.75f)
+        if (stateInfo.IsName("Hurt") && stateInfo.normalizedTime >= 1f)
         {
             if (e.getLivesRemaining() <= 0) 
                 e.stateMachine.ChangeState(new DeadState(e));
