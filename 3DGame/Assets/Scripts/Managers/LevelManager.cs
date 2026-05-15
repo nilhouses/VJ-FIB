@@ -53,6 +53,14 @@ public class LevelManager : MonoBehaviour
     {
         enemiesDefeated++;
         Debug.Log("Enemigo derrotado. Total derrotados: " + enemiesDefeated + "/" + totalEnemies);
+        if (CheckLevelComplete())
+        {
+            CreateLevel levelCreator = FindObjectOfType<CreateLevel>();
+            if (levelCreator != null && levelCreator.currentDoor != null)
+            {
+                levelCreator.currentDoor.Open();
+            }
+        }
     }
 
     // Este método verifica si el jugador ha derrotado a todos los enemigos para completar el nivel

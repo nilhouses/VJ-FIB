@@ -17,7 +17,8 @@ public class CreateLevel : MonoBehaviour
     [Header("Level Palette")]
     public LevelPalette[] levelPalettes;   // Array of level palettes to choose from
     private LevelPalette levelPalette;     // The palette for the current level
-
+    [HideInInspector] public DoorController currentDoor;
+    
     private void ApplyPalette(GameObject obj, Color targetColor)
     {
         if (levelPalette != null)
@@ -100,7 +101,10 @@ public class CreateLevel : MonoBehaviour
             for (int x = 0; x < width; x++) // Top wall
             {
                 GameObject obj;
-                if (x == width/2) obj = Instantiate(door, new Vector3(x, 0.5f, height), transform.rotation);
+                if (x == width/2) {
+                    obj = Instantiate(door, new Vector3(x, 0.5f, height), transform.rotation);
+                    currentDoor = obj.GetComponent<DoorController>();
+                }
                 else obj = Instantiate(wall_1, new Vector3(x, 0.5f, height), transform.rotation);
                 obj.transform.parent = transform;
                 obj.transform.Rotate(0.0f, 180.0f, 0.0f);
