@@ -36,10 +36,19 @@ public class CreateLevel : MonoBehaviour
     {
         int rockCount = UnityEngine.Random.Range(3, 15);
 
-        int minX = -6;
-        int maxX = width + 6;
-        int minY = -6;
-        int maxY = height + 6;
+        int margin = 15;
+        int minX = -margin;
+        int maxX = width + margin;
+        int minY = -margin;
+        int maxY = height + margin;
+
+        Camera mainCam = Camera.main;
+
+        if (mainCam == null)
+        {
+            Debug.LogError("Main Camera not found!");
+            return;
+        }
 
         int attempts = 0;
         int spawnedRocks = 0;
@@ -52,14 +61,23 @@ public class CreateLevel : MonoBehaviour
             int targetX = UnityEngine.Random.Range(minX, maxX);
             int targetY = UnityEngine.Random.Range(minY, maxY);
 
-            // Si cae dentro del mapa descartamos la roca y ya generaremos otra
+            // Eliminar rocas que estén dentro del mapa
             if (targetX >= 0 && targetX < width && targetY >= 0 && targetY < height)
             {
+                Debug.Log("Discarding rock at (" + targetX + ", " + targetY + ") because it's inside the map.");
                 continue; 
             }
 
             // 2 Niveles por debajo del suelo (-0.75f - 2.0f = -2.75f)
             Vector3 rockPosition = new Vector3(targetX, -2.75f, targetY);
+
+            // Eliminar rocas que estén fuera de la cámara
+            Vector3 viewportPos = mainCam.WorldToViewportPoint(rockPosition);
+            if (!(viewportPos.x >= 0f && viewportPos.x <= 1f && viewportPos.y >= 0f && viewportPos.y <= 1f && viewportPos.z > 0f))
+            {
+                Debug.Log("Discarding rock at (" + targetX + ", " + targetY + ") because it's outside the camera view.");
+                continue; 
+            }
 
             // Rotación y escalado random
             float rotX = UnityEngine.Random.Range(0, 4) * 90f; //0.0f alternativamente
@@ -74,9 +92,6 @@ public class CreateLevel : MonoBehaviour
             GameObject floatingRock = Instantiate(rock, rockPosition, gridRotation);
             floatingRock.transform.parent = transform;
             floatingRock.transform.localScale = new Vector3(randomScale, randomScale, randomScale);
-            
-            // Eliminar rocas que estén fuera de la cámara
-            floatingRock.AddComponent<RockVisibilityHandler>();
 
             spawnedRocks++;
         }

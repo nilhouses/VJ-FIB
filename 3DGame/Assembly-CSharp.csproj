@@ -72,7 +72,6 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexColorCycler.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\EnvMapAnimator.cs" />
     <Compile Include="Assets\Scripts\Managers\CreditsManager.cs" />
-    <Compile Include="Assets\Scripts\Entities\Decoration\RockVisibilityHandler.cs" />
     <Compile Include="Assets\Scripts\Entities\Movement\NavigationManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_A.cs" />
     <Compile Include="Assets\Scripts\States\Enemies\EnemyIdleState.cs" />
