@@ -34,7 +34,7 @@ public class CreateLevel : MonoBehaviour
 
     private void GenerateFloatingRocks(int width, int height)
     {
-        int rockNumber = UnityEngine.Random.Range(3, 15);
+        int rockCount = UnityEngine.Random.Range(3, 15);
 
         int minX = -6;
         int maxX = width + 6;
