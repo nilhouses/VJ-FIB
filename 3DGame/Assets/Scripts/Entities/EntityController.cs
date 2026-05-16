@@ -16,7 +16,7 @@ public abstract class EntityController : MonoBehaviour
 
     [HideInInspector] public bool isStuckInPuddle = false;
     [HideInInspector] private SlimePuddle currentPuddle;
-
+    [HideInInspector] private Coroutine smoothRotationCoroutine;
     [HideInInspector] public Animator anim;
     [HideInInspector] public Direction dir;
     [HideInInspector] public Vector3 initialPosMove, vecMove;
@@ -124,17 +124,28 @@ public abstract class EntityController : MonoBehaviour
 
     public void RotateEntity(Direction dirMove, bool smooth = false) 
     {
-        if (dir == dirMove) return;
+        // Angulo en rotacion absoluta para evitar moonwalk
+        float targetAngle = 90f * (int)dirMove;
+        Quaternion targetRot = Quaternion.Euler(0, targetAngle, 0);
+
         if (smooth)
         {
-            float targetAngle = 90f * (int)dirMove;
-            StopCoroutine("SmoothRotationRoutine");
-            StartCoroutine(SmoothRotationRoutine(targetAngle));
+            if (dir == dirMove && Quaternion.Angle(transform.rotation, targetRot) < 0.1f) return;
+            // Sobreescribimos la rotacion anterior
+            if (smoothRotationCoroutine != null) StopCoroutine(smoothRotationCoroutine);
+            smoothRotationCoroutine = StartCoroutine(SmoothRotationRoutine(targetAngle));
             dir = dirMove;
         }
         else
         {
-            transform.Rotate(0f, 90f * ((int)dirMove - (int)dir), 0f);
+            // Rotacion absoluta + eliminamos corrutinas peligrosas
+            if (smoothRotationCoroutine != null)
+            {
+                StopCoroutine(smoothRotationCoroutine);
+                smoothRotationCoroutine = null;
+            }
+            
+            transform.rotation = targetRot;
             dir = dirMove;   
         }
     }
@@ -149,9 +160,10 @@ public abstract class EntityController : MonoBehaviour
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRot, rotationSpeed * Time.deltaTime);
             yield return null;
         }
-        transform.rotation = targetRot;
+        
+        transform.rotation = targetRot; // Evitamos errores
+        smoothRotationCoroutine = null;
     }
-
     /* 
         Devuelve:
             - 0 si no se puede mover
@@ -211,8 +223,6 @@ public abstract class EntityController : MonoBehaviour
 
         bool canMove = ground != null && wall == null && door == null && obstacle == null;
         bool leavingRoom = door != null && LevelManager.instance.CheckLevelComplete();
-
-        RotateEntity(dirMove);
 
         if (this is PlayerController && leavingRoom)
         {

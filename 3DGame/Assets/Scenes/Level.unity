@@ -284,6 +284,10 @@ PrefabInstance:
       propertyPath: godMode
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9144677723894283182, guid: 00a87bf49dd65444da0fcfe84a6a81f6, type: 3}
+      propertyPath: numAttacks
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -684,6 +688,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 75bad32cdb9e9e645a4851506af32dde, type: 2}
   - {fileID: 11400000, guid: cffe2115f93da3048933547455c97f1c, type: 2}
   - {fileID: 11400000, guid: 64530bd0d0d45cb49b90ca2b41debe17, type: 2}
+  currentDoor: {fileID: 0}
 --- !u!4 &965331148
 Transform:
   m_ObjectHideFlags: 0

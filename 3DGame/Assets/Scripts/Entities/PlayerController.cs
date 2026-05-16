@@ -5,7 +5,8 @@ using UnityEngine.SceneManagement;
 public class PlayerController : EntityController
 {
     public bool allowInput = true;
-    
+    private Vector3 parryBasePos;
+    private Coroutine parryCoroutine;
     [HideInInspector] public bool isMovingToNextLevel = false;
     public AudioClip parrySound, levelCompleteSound;
     public bool godMode = false;
@@ -73,8 +74,10 @@ public class PlayerController : EntityController
                 if (this.dir == dirToDamage) // Dirección parry = dirección del ataque
                 {
                     playParrySound();
-                    StartCoroutine(ParryVisualFeedback());
-                    return; // Sortim sense rebre dany
+                    if (parryCoroutine == null) parryBasePos = transform.position;
+                    else StopCoroutine(parryCoroutine);
+                    parryCoroutine = StartCoroutine(ParryVisualFeedback(parryBasePos));
+                    return; 
                 }
             }
 
@@ -85,9 +88,8 @@ public class PlayerController : EntityController
         }
     }
 
-    private System.Collections.IEnumerator ParryVisualFeedback()
+    private System.Collections.IEnumerator ParryVisualFeedback(Vector3 basePos)
     {
-        Vector3 originalPos = transform.position;
         Vector3 backDir = -transform.forward * 0.1f; // Distancia
         float duration = 0.1f; // Tiempo
         float elapsed = 0f;
@@ -95,20 +97,21 @@ public class PlayerController : EntityController
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-            transform.position = originalPos + (backDir * (elapsed / duration));
+            transform.position = basePos + (backDir * (elapsed / duration));
             yield return null;
         }
 
-        // Volver a la posicion inicial
+        // Volver a la posicion inicial exacta
         elapsed = 0f;
         Vector3 currentPos = transform.position;
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-            transform.position = Vector3.Lerp(currentPos, originalPos, elapsed / duration);
+            transform.position = Vector3.Lerp(currentPos, basePos, elapsed / duration);
             yield return null;
         }
-        transform.position = originalPos;
+            
+        transform.position = basePos;
+        parryCoroutine = null;
     }
-
 }
