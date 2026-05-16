@@ -9,7 +9,7 @@ public class CreateLevel : MonoBehaviour
 {
     public GameObject player;                   // Reference to the player object.
                                                 // We need to position it according to the level.
-    public GameObject floor, wall_1, door, bat, spikeTrap, arrowTrap, axeTrap, slime, barrel, zombie, witch, coin;  // References to objects we need to instantiate to
+    public GameObject floor, wall_1, door, bat, spikeTrap, arrowTrap, axeTrap, slime, barrel, zombie, witch, coin, cauldron, rock;  // References to objects we need to instantiate to
                                                 // build the level.
     public static int[,] mapLayout;
     public static int mapWidth, mapHeight;
@@ -29,6 +29,56 @@ public class CreateLevel : MonoBehaviour
             {
                 objRenderer.material.color = targetColor;
             }
+        }
+    }
+
+    private void GenerateFloatingRocks(int width, int height)
+    {
+        int rockNumber = UnityEngine.Random.Range(3, 15);
+
+        int minX = -6;
+        int maxX = width + 6;
+        int minY = -6;
+        int maxY = height + 6;
+
+        int attempts = 0;
+        int spawnedRocks = 0;
+
+        while (spawnedRocks < rockCount && attempts < 50)
+        {
+            attempts++;
+
+            // Coordenada random
+            int targetX = UnityEngine.Random.Range(minX, maxX);
+            int targetY = UnityEngine.Random.Range(minY, maxY);
+
+            // Si cae dentro del mapa descartamos la roca y ya generaremos otra
+            if (targetX >= 0 && targetX < width && targetY >= 0 && targetY < height)
+            {
+                continue; 
+            }
+
+            // 2 Niveles por debajo del suelo (-0.75f - 2.0f = -2.75f)
+            Vector3 rockPosition = new Vector3(targetX, -2.75f, targetY);
+
+            // Rotación y escalado random
+            float rotX = UnityEngine.Random.Range(0, 4) * 90f; //0.0f alternativamente
+            float rotY = UnityEngine.Random.Range(0, 4) * 90f;
+            float rotZ = UnityEngine.Random.Range(0, 4) * 90f; //0.0f alternativamente
+            Quaternion gridRotation = Quaternion.Euler(rotX, rotY, rotZ);
+            
+            // Para que  sean algo distintas
+            float randomScale = UnityEngine.Random.Range(0.5f, 1.4f);
+
+            // Crear la roca que esté fuera el rango
+            GameObject floatingRock = Instantiate(rock, rockPosition, gridRotation);
+            floatingRock.transform.parent = transform;
+            floatingRock.transform.localScale = new Vector3(randomScale, randomScale, randomScale);
+            
+            // Eliminar rocas que estén fuera de la cámara
+            floatingRock.AddComponent<RockVisibilityHandler>();
+
+            spawnedRocks++;
         }
     }
 
@@ -128,6 +178,12 @@ public class CreateLevel : MonoBehaviour
                         // Y ahora comprobamos si hay algo encima del suelo
                         switch (tile)
                         {
+                            case 2: // Cauldron
+                                GameObject cauldronObj = Instantiate(cauldron, new Vector3(x, 0.0f, y), transform.rotation);
+                                cauldronObj.transform.parent = transform;
+                                Vector2Int cauldronPos = new Vector2Int(x, y);
+                                OccupancyManager.Register(cauldronPos, cauldronObj);
+                                break;
                             case 6: // Player
                                 Vector3 startPos = new Vector3(x, 0.0f, y);
                                 PlayerController pc = player.GetComponent<PlayerController>();
@@ -244,6 +300,9 @@ public class CreateLevel : MonoBehaviour
             GameObject doorFloor = Instantiate(floor, new Vector3(width/2, -0.75f, height), transform.rotation);
             doorFloor.transform.parent = transform;
             ApplyPalette(doorFloor, levelPalette != null ? levelPalette.floorColor : Color.white);
+
+            // Add Floating Rocks
+            GenerateFloatingRocks(width, height);
         }
         else
         {

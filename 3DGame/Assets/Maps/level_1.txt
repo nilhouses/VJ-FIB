@@ -12,6 +12,7 @@
 
 % 0 -> No Floor
 % 1 -> Empty
+% 2 -> Cauldron
 % 6 -> Player
 % 7 -> Bat
 % 8 -> Spike
