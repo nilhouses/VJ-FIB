@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     [Header("Estadísticas Globales")]
     public int lives = 3;
     public int maxRoomsSurvived = 0;
+    public int currentRoomsSurvived = 0;
     public int coins = 0;
 
     void Awake()
@@ -32,6 +33,10 @@ public class GameManager : MonoBehaviour
     public void goToLevel()
     {
         SceneManager.LoadScene(1);
+        if (HUDManager.instance != null)
+        {
+            HUDManager.instance.UpdateAllHUD();
+        }
     }
 
     public void goToCredits()
@@ -44,6 +49,10 @@ public class GameManager : MonoBehaviour
     {
         lives--;
         Debug.Log("Player hit! Lives remaining: " + lives);
+        if (HUDManager.instance != null)
+        {
+            HUDManager.instance.UpdateHearts(lives);
+        }
     }
 
     // Método para reiniciar el nivel actual
@@ -56,6 +65,26 @@ public class GameManager : MonoBehaviour
     {
         coins += amount;
         Debug.Log("Coins collected: " + coins);
+        if (HUDManager.instance != null)
+        {
+            HUDManager.instance.UpdateCoins(coins);
+        }
+    }
+    public void RoomSurvived()
+    {
+        currentRoomsSurvived++;
+        
+        if (currentRoomsSurvived > maxRoomsSurvived)
+        {
+            maxRoomsSurvived = currentRoomsSurvived;
+        }
+
+        Debug.Log("Salas superadas esta partida: " + currentRoomsSurvived + " | Récord: " + maxRoomsSurvived);
+
+        if (HUDManager.instance != null)
+        {
+            HUDManager.instance.UpdateRooms(currentRoomsSurvived);
+        }
     }
 
     void Update()

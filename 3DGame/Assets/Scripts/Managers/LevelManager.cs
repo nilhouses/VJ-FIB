@@ -30,6 +30,11 @@ public class LevelManager : MonoBehaviour
 
     public void LoadNextLevel()
     {
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.RoomSurvived();
+        }
+        
         if (currentLevel < maxLevel)
         {
             currentLevel++;
