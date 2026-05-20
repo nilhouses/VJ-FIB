@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ButtonHover : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler
+public class ButtonHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     private Vector3 originalScale;
     public float hoverScaleFactor = 1.1f;
