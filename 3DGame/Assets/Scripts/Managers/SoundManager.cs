@@ -35,47 +35,44 @@ public class SoundManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
-    // Master volume
-    
     public void SetMasterVolume(float volume) { 
         lastMasterVolume = volume;
         if (!isMasterMuted) ApplyVolumeMaster(volume);
     }
 
+    public void SetMusicVolume(float volume) {
+        lastMusicVolume = volume;
+        if (!isMusicMuted) ApplyVolumeMusic(volume);
+    }
+
     public void ToggleMuteMaster() {
         isMasterMuted = !isMasterMuted;
-        
-        if (isMasterMuted) {
-            masterMixer.SetFloat("MasterVol", -80f);
-        } else {
-            ApplyVolumeMaster(lastMasterVolume); 
-        }
+        float db = isMasterMuted ? -80f : Mathf.Log10(lastMasterVolume <= 0.0001f ? 0.0001f : lastMasterVolume) * 20f;
+        masterMixer.SetFloat("MasterVol", db);
+    }
+
+    public void ToggleMuteMusic() {
+        isMusicMuted = !isMusicMuted;
+        float db = isMusicMuted ? -80f : Mathf.Log10(lastMusicVolume <= 0.0001f ? 0.0001f : lastMusicVolume) * 20f;
+        masterMixer.SetFloat("MusicVol", db);
     }
 
     private void ApplyVolumeMaster(float volume) {
         float db = (volume <= 0.0001f) ? -80f : Mathf.Log10(volume) * 20f;
         masterMixer.SetFloat("MasterVol", db);
     }
-
-    // Musica
-    public void SetMusicVolume(float volume) {
-        lastMusicVolume = volume; // Guardem el valor aquí
-        if (!isMusicMuted) {
-            float db = (volume <= 0.0001f) ? -80f : Mathf.Log10(volume) * 20f;
-            masterMixer.SetFloat("MusicVol", db);
-        }
+    private void ApplyVolumeMusic(float volume) {
+        float db = (volume <= 0.0001f) ? -80f : Mathf.Log10(volume) * 20f;
+        masterMixer.SetFloat("MusicVol", db);
     }
 
-    public void ToggleMuteMusic() {
-        isMusicMuted = !isMusicMuted;
-        if (isMusicMuted) {
-            masterMixer.SetFloat("MusicVol", -80f);
-        } else {
-            SetMusicVolume(lastMusicVolume); // Recuperem el darrer valor
-        }
+    public float GetMasterVolume() {
+        return lastMasterVolume;
     }
 
+    public float GetMusicVolume() {
+        return lastMusicVolume;
+    }
     public bool IsMutedMaster() {
         return isMasterMuted;
     }

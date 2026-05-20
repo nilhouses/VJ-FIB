@@ -1743,6 +1743,60 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 724994965}
   m_CullTransparentMesh: 1
+--- !u!1 &801254796
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 801254797}
+  - component: {fileID: 801254798}
+  m_Layer: 0
+  m_Name: SoundSettingsManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &801254797
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 801254796}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &801254798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 801254796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac31476f3f0094947999aaacaf5ec2b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volumeSlider: {fileID: 443228199}
+  musicSlider: {fileID: 415967302}
+  speakerButton: {fileID: 1768798706}
+  speakerImage: {fileID: 1768798708}
+  speakerOn: {fileID: 21300000, guid: 4959923c6439fa44992866423df29bf7, type: 3}
+  speakerOff: {fileID: 21300000, guid: 4da5e487141aaf84c9943d159fe7b007, type: 3}
+  musicButton: {fileID: 1612379170}
+  musicImage: {fileID: 1612379172}
+  musicOn: {fileID: 21300000, guid: 81250bbcd880c9643bb8094ee3ea3da7, type: 3}
+  musicOff: {fileID: 21300000, guid: 07c666d10b7035a4e9f6a3a56a1f860b, type: 3}
 --- !u!1 &895073819
 GameObject:
   m_ObjectHideFlags: 0
@@ -4227,16 +4281,6 @@ MonoBehaviour:
   resumeButton: {fileID: 1717143718}
   lobbyButton: {fileID: 912884048}
   creditsButton: {fileID: 2013267050}
-  volumeSlider: {fileID: 443228199}
-  musicSlider: {fileID: 415967302}
-  speakerButton: {fileID: 1768798706}
-  speakerImage: {fileID: 1768798708}
-  speakerOnSprite: {fileID: 21300000, guid: 4959923c6439fa44992866423df29bf7, type: 3}
-  speakerOffSprite: {fileID: 21300000, guid: 4da5e487141aaf84c9943d159fe7b007, type: 3}
-  musicButton: {fileID: 1612379170}
-  musicImage: {fileID: 1612379172}
-  musicOnSprite: {fileID: 21300000, guid: 81250bbcd880c9643bb8094ee3ea3da7, type: 3}
-  musicOffSprite: {fileID: 21300000, guid: 07c666d10b7035a4e9f6a3a56a1f860b, type: 3}
 --- !u!1 &1946767884
 GameObject:
   m_ObjectHideFlags: 0
@@ -4616,3 +4660,4 @@ SceneRoots:
   - {fileID: 13467001}
   - {fileID: 1660537290}
   - {fileID: 1002706470}
+  - {fileID: 801254797}
