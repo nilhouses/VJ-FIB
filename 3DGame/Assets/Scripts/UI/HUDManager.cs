@@ -30,6 +30,17 @@ public class HUDManager : MonoBehaviour
     public Button resumeButton;         //  [>]
     public Button lobbyButton;          // Vuelta al lobby
     public Button creditsButton;        // Ir a créditos
+    // Opciones de sonido
+    public Slider volumeSlider;
+    public Slider musicSlider;
+    public Button speakerButton;
+    public Image speakerImage;
+    public Sprite speakerOnSprite;
+    public Sprite speakerOffSprite;
+    public Button musicButton;
+    public Image musicImage;
+    public Sprite musicOnSprite;
+    public Sprite musicOffSprite;
 
     private bool isPaused = false;
 
@@ -55,6 +66,29 @@ public class HUDManager : MonoBehaviour
         if (lobbyButton != null) lobbyButton.onClick.AddListener(GoToLobbyFromPause);
         if (creditsButton != null) creditsButton.onClick.AddListener(GoToCreditsFromPause);
         
+        // Opciones de sonido
+        if (volumeSlider != null) 
+        {
+            volumeSlider.onValueChanged.AddListener(OnVolumeSliderChanged);
+            volumeSlider.value = 1f; // Volumen por defecto al máximo
+        }
+
+        if (musicSlider != null) 
+        {
+            musicSlider.onValueChanged.AddListener(OnMusicSliderChanged);
+            musicSlider.value = 1f;
+        }
+
+        if (speakerButton != null) 
+        {
+            speakerButton.onClick.AddListener(ToggleMuteIcon);
+        }
+        
+        if (musicButton != null) 
+        {
+            musicButton.onClick.AddListener(ToggleMusicIcon);
+        }
+
         UpdateAllHUD(); 
     }
 
@@ -83,8 +117,8 @@ public class HUDManager : MonoBehaviour
 
         for (int i = 0; i < heartImages.Length; i++)
         {
-            if (i < currentLives)   heartImages[i].sprite = fullHeartSprite;
-            else                    heartImages[i].sprite = emptyHeartSprite;
+            if (i < currentLives)  heartImages[i].sprite = fullHeartSprite;
+            else                   heartImages[i].sprite = emptyHeartSprite;
         }
     }
     public void TogglePause()
@@ -95,13 +129,13 @@ public class HUDManager : MonoBehaviour
         {
             Time.timeScale = 0f; // Congelar tiempo
             if (pauseMenuPanel != null) pauseMenuPanel.SetActive(true); // Menú translúcido
-            Debug.Log("Joc Pausat");
+            Debug.Log("Juego pausado");
         }
         else
         {
             Time.timeScale = 1f; // Reanudar tiempo
             if (pauseMenuPanel != null) pauseMenuPanel.SetActive(false); // Esconder el menú
-            Debug.Log("Joc Reprès");
+            Debug.Log("Juego reanudado");
         }
     }
 
@@ -120,6 +154,56 @@ public class HUDManager : MonoBehaviour
         if (GameManager.instance != null)
         {
             GameManager.instance.goToCredits();
+        }
+    }
+
+    public void OnVolumeSliderChanged(float value) {
+        if (SoundManager.instance != null) {
+            SoundManager.instance.SetMasterVolume(value);
+            
+            // Desactivar el icono de muteo si el slider se mueve mientras estaba silenciado
+            if (SoundManager.instance.IsMutedMaster() && value > 0.05f) 
+            {
+                ToggleMuteIcon();
+            }
+        }
+    }
+
+    public void OnMusicSliderChanged(float value) {
+        if (SoundManager.instance != null) {
+            SoundManager.instance.SetMusicVolume(value);
+            
+            // Desactivar el icono de muteo si el slider se mueve mientras estaba silenciado
+            if (SoundManager.instance.IsMutedMusic() && value > 0.05f) 
+            {
+                ToggleMusicIcon();
+            }
+        }
+    }
+
+    private void ToggleMuteIcon()
+    {
+        if (SoundManager.instance != null)
+        {
+            SoundManager.instance.ToggleMuteMaster();
+            
+            // Cambiar el sprite según si está silenciado o no
+            if (speakerImage != null)
+            {
+                speakerImage.sprite = SoundManager.instance.IsMutedMaster() ? speakerOffSprite : speakerOnSprite;
+            }
+        }
+    }
+
+    public void ToggleMusicIcon() {
+        if (SoundManager.instance != null) {
+            SoundManager.instance.ToggleMuteMusic();
+            
+            // Cambiar el sprite según si está silenciado o no
+            if (musicImage != null)
+            {
+                musicImage.sprite = SoundManager.instance.IsMutedMusic() ? musicOffSprite : musicOnSprite;
+            }
         }
     }
 }

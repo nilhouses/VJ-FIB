@@ -3,11 +3,15 @@
   "WorkspaceRootPath": "C:\\Users\\Nil Casas Duatis\\Documents\\Q8\\VJ-FIB\\3DGame\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{FA9178D6-5EB8-034D-FBFF-A344821AB08F}|Assembly-CSharp.csproj|c:\\users\\nil casas duatis\\documents\\q8\\vj-fib\\3dgame\\assets\\scripts\\managers\\hudmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FA9178D6-5EB8-034D-FBFF-A344821AB08F}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\managers\\hudmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{FA9178D6-5EB8-034D-FBFF-A344821AB08F}|Assembly-CSharp.csproj|c:\\users\\nil casas duatis\\documents\\q8\\vj-fib\\3dgame\\assets\\scripts\\managers\\createlevel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FA9178D6-5EB8-034D-FBFF-A344821AB08F}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\managers\\createlevel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FA9178D6-5EB8-034D-FBFF-A344821AB08F}|Assembly-CSharp.csproj|c:\\users\\nil casas duatis\\documents\\q8\\vj-fib\\3dgame\\assets\\scripts\\entities\\traps\\axetrap.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FA9178D6-5EB8-034D-FBFF-A344821AB08F}|Assembly-CSharp.csproj|C:\\Users\\Nil Casas Duatis\\Documents\\Q8\\VJ-FIB\\3DGame\\assets\\scripts\\entities\\traps\\axetrap.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FA9178D6-5EB8-034D-FBFF-A344821AB08F}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\entities\\traps\\axetrap.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -31,6 +35,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "HUDManager.cs",
+              "DocumentMoniker": "C:\\Users\\Nil Casas Duatis\\Documents\\Q8\\VJ-FIB\\3DGame\\Assets\\Scripts\\Managers\\HUDManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Managers\\HUDManager.cs",
+              "ToolTip": "C:\\Users\\Nil Casas Duatis\\Documents\\Q8\\VJ-FIB\\3DGame\\Assets\\Scripts\\Managers\\HUDManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Managers\\HUDManager.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-16T13:45:02.543Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "CreateLevel.cs",
               "DocumentMoniker": "C:\\Users\\Nil Casas Duatis\\Documents\\Q8\\VJ-FIB\\3DGame\\Assets\\Scripts\\Managers\\CreateLevel.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Managers\\CreateLevel.cs",
@@ -43,7 +60,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "AxeTrap.cs",
               "DocumentMoniker": "C:\\Users\\Nil Casas Duatis\\Documents\\Q8\\VJ-FIB\\3DGame\\Assets\\Scripts\\Entities\\Traps\\AxeTrap.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Entities\\Traps\\AxeTrap.cs",
@@ -51,12 +68,11 @@
               "RelativeToolTip": "Assets\\Scripts\\Entities\\Traps\\AxeTrap.cs",
               "ViewState": "AgIAADwAAAAAAAAAAAAawEkAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-13T17:41:25.759Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-13T17:41:25.759Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "EnemyController.cs",
               "DocumentMoniker": "C:\\Users\\Nil Casas Duatis\\Documents\\Q8\\VJ-FIB\\3DGame\\Assets\\Scripts\\Entities\\EnemyController.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Entities\\EnemyController.cs",
@@ -68,7 +84,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "LevelManager.cs",
               "DocumentMoniker": "C:\\Users\\Nil Casas Duatis\\Documents\\Q8\\VJ-FIB\\3DGame\\Assets\\Scripts\\Managers\\LevelManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Managers\\LevelManager.cs",

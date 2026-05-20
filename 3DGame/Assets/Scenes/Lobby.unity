@@ -758,7 +758,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22dab6fde8c089942b9419ce198bf122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  masterMixer: {fileID: 0}
+  masterMixer: {fileID: 24100000, guid: b2b22300213032b49b6932898de15abb, type: 2}
   playerGroup: {fileID: -8521386640123912349, guid: b2b22300213032b49b6932898de15abb, type: 2}
   enemyGroup: {fileID: 5919248197028431258, guid: b2b22300213032b49b6932898de15abb, type: 2}
   objectsGroup: {fileID: -4343596991978964499, guid: b2b22300213032b49b6932898de15abb, type: 2}
