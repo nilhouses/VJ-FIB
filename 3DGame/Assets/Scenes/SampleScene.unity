@@ -339,6 +339,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lives: 3
   maxRoomsSurvived: 0
+  currentRoomsSurvived: 0
   coins: 0
 --- !u!1 &935043490
 GameObject:
@@ -625,6 +626,17 @@ MonoBehaviour:
   door: {fileID: 174958979223755381, guid: c93a8122a68be9241bdbb352f91b2a62, type: 3}
   bat: {fileID: 4061012142582937487, guid: ed525d46651a7394cad440d12d1e5cec, type: 3}
   spikeTrap: {fileID: 3634867882328196730, guid: bde77dc802176564887faee43a40c9ac, type: 3}
+  arrowTrap: {fileID: 0}
+  axeTrap: {fileID: 0}
+  slime: {fileID: 0}
+  barrel: {fileID: 0}
+  zombie: {fileID: 0}
+  witch: {fileID: 0}
+  coin: {fileID: 0}
+  cauldron: {fileID: 0}
+  rock: {fileID: 0}
+  levelPalettes: []
+  currentDoor: {fileID: 0}
 --- !u!1 &2020426277 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4554262947529524927, guid: 00a87bf49dd65444da0fcfe84a6a81f6, type: 3}
