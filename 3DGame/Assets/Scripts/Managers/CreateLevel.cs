@@ -9,7 +9,7 @@ public class CreateLevel : MonoBehaviour
 {
     public GameObject player;                   // Reference to the player object.
                                                 // We need to position it according to the level.
-    public GameObject floor, wall_1, door, bat, spikeTrap, arrowTrap, axeTrap, slime, barrel, zombie, witch, coin, cauldron, rock;  // References to objects we need to instantiate to
+    public GameObject floor, wall_1, door, bat, spikeTrap, arrowTrap, axeTrap, slime, barrel, zombie, witch, coin, cauldron, rock, candle, shelf, weaponRack;  // References to objects we need to instantiate to
                                                 // build the level.
     public static int[,] mapLayout;
     public static int mapWidth, mapHeight;
@@ -206,6 +206,24 @@ public class CreateLevel : MonoBehaviour
                                 Vector2Int cauldronPos = new Vector2Int(x, y);
                                 OccupancyManager.Register(cauldronPos, cauldronObj);
                                 break;
+                            case 3: // Candle
+                                GameObject candleObj = Instantiate(candle, new Vector3(x, 0.0f, y), transform.rotation);
+                                candleObj.transform.parent = rowParents[y].transform;
+                                Vector2Int candlePos = new Vector2Int(x, y);
+                                OccupancyManager.Register(candlePos, candleObj);
+                                break;
+                            case 4: // Shelf Right
+                                GameObject shelfRightObj = Instantiate(shelf, new Vector3(x, 0.0f, y), Quaternion.Euler(0f, 90f, 0f));
+                                shelfRightObj.transform.parent = rowParents[y].transform;
+                                Vector2Int shelfRightPos = new Vector2Int(x, y);
+                                OccupancyManager.Register(shelfRightPos, shelfRightObj);
+                                break;
+                            case 5: // Shelf Down
+                                GameObject shelfDownObj = Instantiate(shelf, new Vector3(x, 0.0f, y), Quaternion.Euler(0f, 180f, 0f));
+                                shelfDownObj.transform.parent = rowParents[y].transform;
+                                Vector2Int shelfDownPos = new Vector2Int(x, y);
+                                OccupancyManager.Register(shelfDownPos, shelfDownObj);
+                                break;
                             case 6: // Player
                                 Vector3 startPos = new Vector3(x, 0.0f, y);
                                 PlayerController pc = player.GetComponent<PlayerController>();
@@ -288,6 +306,18 @@ public class CreateLevel : MonoBehaviour
                             case 21: // Coins
                                 GameObject coinsObj = Instantiate(coin, new Vector3(x, 0.0f, y), transform.rotation);
                                 coinsObj.transform.parent = rowParents[y].transform;
+                                break;
+                            case 22: // Weapon Rack
+                                GameObject weaponRackObj = Instantiate(weaponRack, new Vector3(x, 0.0f, y), transform.rotation);
+                                weaponRackObj.transform.parent = rowParents[y].transform;
+                                Vector2Int weaponRackPos = new Vector2Int(x, y);
+                                OccupancyManager.Register(weaponRackPos, weaponRackObj);
+                                break;
+                            case 23: // Weapon Rack Inverted
+                                GameObject weaponRackInvObj = Instantiate(weaponRack, new Vector3(x, 0.0f, y), Quaternion.Euler(0f, 90f, 0f));
+                                weaponRackInvObj.transform.parent = rowParents[y].transform;
+                                Vector2Int weaponRackInvPos = new Vector2Int(x, y);
+                                OccupancyManager.Register(weaponRackInvPos, weaponRackInvObj);
                                 break;
                         }
                     }
