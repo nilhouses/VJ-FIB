@@ -5,23 +5,10 @@ public class SlimeController : EnemyController
 {
     [Header("Slime Specific")]
     public GameObject puddle;
-    private Transform levelCreatorTransform;
 
     protected override void Start()
     {
         base.Start();
-        if (levelCreatorTransform == null)
-        {
-            GameObject levelCreatorObj = GameObject.Find("LevelCreator");
-            if (levelCreatorObj != null)
-            {
-                levelCreatorTransform = levelCreatorObj.transform;
-            }
-            else
-            {
-                Debug.LogError("LevelCreator object not found in the scene.");
-            }
-        }
         SpawnPuddle();
     }
 
@@ -33,20 +20,25 @@ public class SlimeController : EnemyController
 
     private void SpawnPuddle()
     {
-        if (puddle == null) return;
+        if (puddle == null || isFallingIntoAbyss) return;
 
         // Comprobamos si ya hay pringue en esta posición
-        GameObject existingPuddle = GetObjectInDirection("Puddle", transform.position + Vector3.up, Vector3.down, 0f, 2f);
+        GameObject existingPuddle = GetObjectInDirection("Puddle", transform.position + Vector3.up, Vector3.down, 0f, 4f);
         
         if (existingPuddle == null)
         {
             Vector3 puddlePos = new Vector3(transform.position.x, -0.05f, transform.position.z);
             GameObject puddleObj = Instantiate(puddle, puddlePos, transform.rotation);
 
-            // Lo hacemos hijo de LevelCreator si lo encontramos
-            if (levelCreatorTransform != null)
+            // Lo hacemos hijo de la fila si lo encontramos
+            GameObject rowObj = GameObject.Find("Row_" + Mathf.FloorToInt(transform.position.z));
+            if (rowObj != null)
             {
-                puddleObj.transform.SetParent(levelCreatorTransform);
+                puddleObj.transform.SetParent(rowObj.transform);
+            }
+            else
+            {
+                Debug.LogError("Row object not found in the scene. Fila: " + Mathf.FloorToInt(transform.position.z));
             }
         }
     }

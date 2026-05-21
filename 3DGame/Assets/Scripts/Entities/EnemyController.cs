@@ -21,6 +21,7 @@ public class EnemyController : EntityController
     protected override void Start()
     {
         base.Start();
+        fallSpeed = 4f;
         stateMachine.ChangeState(GetIdleState(false));
         enemyTag = "Player";
 
@@ -37,6 +38,10 @@ public class EnemyController : EntityController
 
     void Update()
     {
+        HandleFalling();
+
+        if (isFallingIntoAbyss) return;
+
         // El update se delega a la maquina de estados
         if (stateMachine != null)
             stateMachine.Update();

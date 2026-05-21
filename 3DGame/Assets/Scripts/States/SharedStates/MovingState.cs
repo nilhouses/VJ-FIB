@@ -20,7 +20,7 @@ public class MovingState : IState
         e.UpdateMovement();
 
         float duration = 1.0f / e.speed;
-        if (e.timeInMove >= duration)
+        if (e.timeInMove >= duration + 0.1f)
         {
             if (e is PlayerController player && player.isMovingToNextLevel)
             {

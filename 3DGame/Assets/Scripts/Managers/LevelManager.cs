@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class LevelManager : MonoBehaviour
 {
@@ -7,10 +8,19 @@ public class LevelManager : MonoBehaviour
     public int enemiesDefeated; // Número de enemigos derrotados por el jugado
     private int currentLevel = 1; // Nivel actual del jugador
     private int maxLevel = 3; // Número máximo de niveles disponibles
+    private CreateLevel levelCreator; // Referencia al script que genera el nivel
+
+    [Header("Falling Floor Settings")]
+    public float timeBeforeFirstFall = 8f; // Tiempo antes de que el suelo comience a caer
+    public float timeBetweenFalls = 5f; // Tiempo entre cada caída de suelo
+    public int currentFallenRow = -1; // Fila actual que ha caído
+    private float fallTimer = 0f; // Temporizador para controlar la caída del suelo
+    private bool isFallingActive = false; // Indica si la caída del suelo está activa
 
     void Awake()
     {
         instance = this; // Asignar la instancia del singleton
+        levelCreator = FindObjectOfType<CreateLevel>();
 
         // Lo primero que hacemos al iniciar el juego es cargar el primer nivel para que el jugador pueda setearse en su posición inicial correctamente
         LoadCurrentLevel();
@@ -20,7 +30,18 @@ public class LevelManager : MonoBehaviour
     {
         totalEnemies = 0;
         enemiesDefeated = 0;
-        FindObjectOfType<CreateLevel>().GenerateLevel(currentLevel); // Generar el nivel actual
+        currentFallenRow = -1;
+        levelCreator.GenerateLevel(currentLevel); // Generar el nivel actual
+
+        if (currentLevel >= 3)
+        {
+            isFallingActive = true;             // Activar la caída del suelo a partir del nivel 3
+            fallTimer = timeBeforeFirstFall;    // Reiniciar el temporizador para la caída del suelo
+        } 
+        else 
+        {
+            isFallingActive = false;            // Desactivar la caída del suelo para niveles anteriores al 3
+        }
     }
 
     public void Start()
@@ -60,7 +81,6 @@ public class LevelManager : MonoBehaviour
         Debug.Log("Enemigo derrotado. Total derrotados: " + enemiesDefeated + "/" + totalEnemies);
         if (CheckLevelComplete())
         {
-            CreateLevel levelCreator = FindObjectOfType<CreateLevel>();
             if (levelCreator != null && levelCreator.currentDoor != null)
             {
                 levelCreator.currentDoor.Open();
@@ -81,5 +101,71 @@ public class LevelManager : MonoBehaviour
         {
             GameManager.instance.goToLobby();
         }
+
+        // Gestionar la caída del suelo
+        if (isFallingActive && currentFallenRow < CreateLevel.mapHeight)
+        {
+            fallTimer -= Time.deltaTime;
+            if (fallTimer <= 0f)
+            {
+                DropNextRow();
+                fallTimer = timeBetweenFalls; // Reiniciar el temporizador para la siguiente caída
+            }
+        }
     }
-}
+
+    // Gestionar la caída de la siguiente fila
+    private void DropNextRow()
+    {
+        currentFallenRow++;
+        
+        // Guardamos el índice actual en una variable local para pasársela a la corrutina
+        int rowToDrop = currentFallenRow; 
+
+        // Ponemos a 0 todas las posiciones caídas dentro del mapa. 
+        for (int x = 0; x < CreateLevel.mapWidth; x++)
+        {
+            if (rowToDrop < CreateLevel.mapHeight)
+            {
+                CreateLevel.mapLayout[x, rowToDrop] = 0;
+            }
+        }
+
+        GameObject rowParent = GameObject.Find("Row_" + rowToDrop);
+
+        if (rowParent != null)
+        {
+            StartCoroutine(FallRow(rowParent, 2f, rowToDrop)); 
+        }
+    }
+
+    // Coroutine para hacer que una fila caiga suavemente
+    private IEnumerator FallRow(GameObject row, float duration, int rowIndex)
+    {
+        float elapsed = 0f;
+        float fallSpeed = 4f;
+
+        // Quitamos las colisiones para evitar cálculos
+        Collider[] colliders = row.GetComponentsInChildren<Collider>();
+        foreach (Collider col in colliders)        
+        {
+            col.enabled = false;
+        }
+
+        // Animación de caída
+        while (elapsed < duration)
+        {
+            if (row == null) yield break;
+
+            row.transform.Translate(Vector3.down * fallSpeed * Time.deltaTime, Space.World);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // Destrucción segura
+        if (row != null)
+        {
+            Destroy(row);
+        }
+    }
+} 

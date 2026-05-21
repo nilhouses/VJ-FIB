@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
 
     public void goToLevel()
     {
+        currentRoomsSurvived = 0; // Reiniciar el conteo de salas superadas al iniciar un nuevo nivel
         SceneManager.LoadScene(1);
         if (HUDManager.instance != null)
         {

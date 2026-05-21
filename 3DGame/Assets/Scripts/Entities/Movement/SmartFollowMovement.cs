@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "Smart", menuName = "EnemyAI/Smart")]
 public class SmartFollowMovement : EnemyMovementStrategy
@@ -12,7 +13,7 @@ public class SmartFollowMovement : EnemyMovementStrategy
         Vector3Int currentPlayerCell = Vector3Int.FloorToInt(playerTransform.position);
 
         // Sincronización del mapa de navegación
-        if (lastPlayerCell != currentPlayerCell)
+        if (NavigationManager.distanceMap == null || lastPlayerCell != currentPlayerCell)
         {
             lastPlayerCell = currentPlayerCell;
             NavigationManager.UpdateDistanceMap(playerTransform.position);
@@ -27,12 +28,27 @@ public class SmartFollowMovement : EnemyMovementStrategy
         int currentDistToPlayer = NavigationManager.distanceMap[currentPos.x, currentPos.y];
         if (currentDistToPlayer > distanceThreshold)
         {
-            Direction randomDir;
-            do
+            List<Direction> validDirs = new List<Direction>();
+            Direction[] allDirs = { Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT };
+            
+            // Evaluamos todas las direcciones posibles de forma segura
+            foreach (Direction dir in allDirs)
             {
-                randomDir = (Direction)Random.Range(0, 4);
-            } while (enemyController.CheckAction(randomDir) == 0); // Aseguramos que el movimiento es posible
-            return randomDir;
+                if (enemyController.CheckAction(dir) != 0)
+                {
+                    validDirs.Add(dir);
+                }
+            }
+
+            // Si hay alguna dirección válida, elegimos una al azar. Si no, nos quedamos quietos.
+            if (validDirs.Count > 0)
+            {
+                return validDirs[Random.Range(0, validDirs.Count)];
+            }
+            else
+            {
+                return Direction.NONE;
+            }
         }
 
         // Búsqueda del camino más corto
@@ -74,7 +90,7 @@ public class SmartFollowMovement : EnemyMovementStrategy
         }
 
         // Si no encuentra camino, mejor que se quede quieto o use el base
-        return foundPath ? bestDir : Direction.UP; 
+        return foundPath ? bestDir : Direction.NONE; 
     }
 
     private Vector2Int DirToVector(Direction d)
@@ -84,7 +100,13 @@ public class SmartFollowMovement : EnemyMovementStrategy
             case Direction.DOWN: return Vector2Int.down;
             case Direction.LEFT: return Vector2Int.left;
             case Direction.RIGHT: return Vector2Int.right;
+            case Direction.NONE: return Vector2Int.zero;
             default: return Vector2Int.zero;
         }
+    }
+
+    private void OnEnable()
+    {
+        lastPlayerCell = new Vector3Int(-999, -999, -999);
     }
 }

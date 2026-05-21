@@ -64,7 +64,6 @@ public class CreateLevel : MonoBehaviour
             // Eliminar rocas que estén dentro del mapa
             if (targetX >= 0 && targetX < width && targetY >= 0 && targetY < height)
             {
-                Debug.Log("Discarding rock at (" + targetX + ", " + targetY + ") because it's inside the map.");
                 continue; 
             }
 
@@ -75,7 +74,6 @@ public class CreateLevel : MonoBehaviour
             Vector3 viewportPos = mainCam.WorldToViewportPoint(rockPosition);
             if (!(viewportPos.x >= 0f && viewportPos.x <= 1f && viewportPos.y >= 0f && viewportPos.y <= 1f && viewportPos.z > 0f))
             {
-                Debug.Log("Discarding rock at (" + targetX + ", " + targetY + ") because it's outside the camera view.");
                 continue; 
             }
 
@@ -155,6 +153,15 @@ public class CreateLevel : MonoBehaviour
             }
             
             float rotationMultiplier; // Variable auxiliar para calcular la rotación de las trampas de flechas y hachas
+
+            // Creamos los padres para las filas
+            GameObject[] rowParents = new GameObject[height];
+            for (int y = 0; y < height; y++)
+            {
+                rowParents[y] = new GameObject("Row_" + y);
+                rowParents[y].transform.parent = transform;
+            }
+
             for (int y = height - 1; y >= 0; y--)
             {
                 line = reader.ReadLine();
@@ -168,11 +175,11 @@ public class CreateLevel : MonoBehaviour
 
                     Vector3 floorPosition = new Vector3(x, -0.75f, y); // La posición del nivel del suelo
 
-                    // Si el suelo está en un borde añadimos más suelos abajo para hacer un soporte
+                    // Suelos inferiores
                     for (int i = 1; i <= 3; i++)
                     {
                         GameObject supportFloor = Instantiate(floor, new Vector3(x, -0.75f - i, y), transform.rotation);
-                        supportFloor.transform.parent = transform;
+                        supportFloor.transform.parent = rowParents[y].transform;
                         ApplyPalette(supportFloor, levelPalette != null ? levelPalette.floorColor : Color.white);
                     }
 
@@ -180,14 +187,14 @@ public class CreateLevel : MonoBehaviour
                     if (tile == 8) 
                     {
                         GameObject obj = Instantiate(spikeTrap, floorPosition, transform.rotation);
-                        obj.transform.parent = transform;
+                        obj.transform.parent = rowParents[y].transform;
                         ApplyPalette(obj, levelPalette != null ? levelPalette.floorColor : Color.white);
                     }
                     else    // Si el tile no es un spike trap, colocamos el suelo normal y luego comprobamos si hay algo encima 
                     {
                         // Ponemos el suelo normal primero
                         GameObject floorObj = Instantiate(floor, floorPosition, transform.rotation);
-                        floorObj.transform.parent = transform;
+                        floorObj.transform.parent = rowParents[y].transform;
                         ApplyPalette(floorObj, levelPalette != null ? levelPalette.floorColor : Color.white);
 
                         // Y ahora comprobamos si hay algo encima del suelo
@@ -195,7 +202,7 @@ public class CreateLevel : MonoBehaviour
                         {
                             case 2: // Cauldron
                                 GameObject cauldronObj = Instantiate(cauldron, new Vector3(x, 0.0f, y), transform.rotation);
-                                cauldronObj.transform.parent = transform;
+                                cauldronObj.transform.parent = rowParents[y].transform;
                                 Vector2Int cauldronPos = new Vector2Int(x, y);
                                 OccupancyManager.Register(cauldronPos, cauldronObj);
                                 break;
@@ -228,7 +235,7 @@ public class CreateLevel : MonoBehaviour
                                 break;
                             case 10: // Barrel
                                 GameObject barrelObj = Instantiate(barrel, new Vector3(x, 0.0f, y), transform.rotation);
-                                barrelObj.transform.parent = transform;
+                                barrelObj.transform.parent = rowParents[y].transform;
                                 Vector2Int barrelPos = new Vector2Int(x, y);
                                 OccupancyManager.Register(barrelPos, barrelObj);
                                 break;
@@ -255,7 +262,7 @@ public class CreateLevel : MonoBehaviour
                             case 15: // Arrow Trap Shoot Down
                             case 16: // Arrow Trap Shoot Left
                                 GameObject arrowTrapObj = Instantiate(arrowTrap, new Vector3(x, 0.0f, y), transform.rotation);
-                                arrowTrapObj.transform.parent = transform;
+                                arrowTrapObj.transform.parent = rowParents[y].transform;
                                 // Rotacion
                                 rotationMultiplier = (float)(tile - 13);
                                 arrowTrapObj.transform.Rotate(0f, 90f * rotationMultiplier, 0f);
@@ -269,7 +276,7 @@ public class CreateLevel : MonoBehaviour
                             case 19: // Axe Trap Hit Down
                             case 20: // Axe Trap Hit Left
                                 GameObject axeObj = Instantiate(axeTrap, new Vector3(x, 0.0f, y), transform.rotation);
-                                axeObj.transform.parent = transform;
+                                axeObj.transform.parent = rowParents[y].transform;
                                 // Rotacion
                                 rotationMultiplier = (float)(tile - 17);
                                 axeObj.transform.Rotate(0f, 90f * rotationMultiplier, 0f);
@@ -280,7 +287,7 @@ public class CreateLevel : MonoBehaviour
                                 break;
                             case 21: // Coins
                                 GameObject coinsObj = Instantiate(coin, new Vector3(x, 0.0f, y), transform.rotation);
-                                coinsObj.transform.parent = transform;
+                                coinsObj.transform.parent = rowParents[y].transform;
                                 break;
                         }
                     }
@@ -292,7 +299,7 @@ public class CreateLevel : MonoBehaviour
             {
                 if (mapLayout[0, y] == 0) continue;
                 GameObject obj = Instantiate(wall_1, new Vector3(-1f, 0.5f, y), transform.rotation);
-                obj.transform.parent = transform;
+                obj.transform.parent = rowParents[y].transform;
                 obj.transform.Rotate(0.0f, 90.0f, 0.0f);
                 ApplyPalette(obj, levelPalette != null ? levelPalette.wallColor : Color.white);
             }
@@ -306,14 +313,14 @@ public class CreateLevel : MonoBehaviour
                     currentDoor = obj.GetComponent<DoorController>();
                 }
                 else obj = Instantiate(wall_1, new Vector3(x, 0.5f, height), transform.rotation);
-                obj.transform.parent = transform;
+                obj.transform.parent = rowParents[height - 1].transform;
                 obj.transform.Rotate(0.0f, 180.0f, 0.0f);
                 ApplyPalette(obj, levelPalette != null ? levelPalette.wallColor : Color.white);
             }
 
             // Door floor
             GameObject doorFloor = Instantiate(floor, new Vector3(width/2, -0.75f, height), transform.rotation);
-            doorFloor.transform.parent = transform;
+            doorFloor.transform.parent = rowParents[height - 1].transform;
             ApplyPalette(doorFloor, levelPalette != null ? levelPalette.floorColor : Color.white);
 
             // Add Floating Rocks

@@ -24,6 +24,7 @@ public class PlayerController : EntityController
     protected override void Start()
     {
         base.Start();
+        fallSpeed = 14f;
         stateMachine.ChangeState(GetIdleState(true));
         base.numAttacks = 2;
         enemyTag = "Enemy";
@@ -31,6 +32,10 @@ public class PlayerController : EntityController
 
     void Update()
     {
+        HandleFalling();
+
+        if (isFallingIntoAbyss) return;
+        
         if (Input.GetKeyDown(KeyCode.Space))
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 

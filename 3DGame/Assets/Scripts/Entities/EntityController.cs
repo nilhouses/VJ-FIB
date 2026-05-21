@@ -1,6 +1,7 @@
 using UnityEngine;
+using System.Collections;
 
-public enum Direction { UP = 0, RIGHT, DOWN, LEFT }
+public enum Direction { UP = 0, RIGHT, DOWN, LEFT, NONE }
 
 public abstract class EntityController : MonoBehaviour
 {
@@ -23,6 +24,7 @@ public abstract class EntityController : MonoBehaviour
     [HideInInspector] public float timeInMove;
     [HideInInspector] public StateMachine stateMachine;
     [HideInInspector] public EntityController lastDetectedTarget;
+    [HideInInspector] protected bool isFallingIntoAbyss = false;
 
     [Header("Ajustes de audio")]
     protected AudioSource audioSource;
@@ -32,6 +34,9 @@ public abstract class EntityController : MonoBehaviour
     [HideInInspector] protected Vector2Int currentGridPos;
     [HideInInspector] protected Vector2Int targetGridPos;
     [HideInInspector] public bool isReceivingHit = false; // Para evitar recibir múltiples golpes a la vez
+    [Header("Ajustes de caída al abismo")]
+    protected float fallDuration = 4f;      // Tiempo que estará cayendo antes de destruirse
+    protected float fallSpeed = 4f;         // Velocidad a la que baja
 
 
     public abstract IState GetIdleState(bool longIdle = false);
@@ -146,7 +151,7 @@ public abstract class EntityController : MonoBehaviour
             }
             
             transform.rotation = targetRot;
-            dir = dirMove;   
+            dir = dirMove;
         }
     }
 
@@ -181,6 +186,8 @@ public abstract class EntityController : MonoBehaviour
     }
     public int CheckAction(Direction dirMove)
     {
+        if (dirMove == Direction.NONE || isFallingIntoAbyss) return 0;
+
         RotateEntity(dirMove);
         
         if (isStuckInPuddle) {
@@ -252,14 +259,13 @@ public abstract class EntityController : MonoBehaviour
         return 0; // NO SE PUEDE MOVER (Hay un muro o no hay suelo)
     }
 
-
     public void UpdateMovement()
     {
         timeInMove += Time.deltaTime;
         float duration = 1f / speed;
         if (timeInMove >= duration)
         {
-            transform.position = initialPosMove + vecMove;
+            transform.position = new Vector3(Mathf.RoundToInt(targetGridPos.x), 0f, Mathf.RoundToInt(targetGridPos.y));
             OnMovementComplete();
         }
         else
@@ -343,5 +349,70 @@ public abstract class EntityController : MonoBehaviour
     {
         OccupancyManager.Release(currentGridPos, gameObject);
         OccupancyManager.Release(targetGridPos, gameObject);
+    }
+
+    protected void HandleFalling()
+    {
+        // Si ya está cayendo, ignoramos el resto del código
+        if (isFallingIntoAbyss) return;
+
+        // Si estamos en un nivel donde el suelo se cae
+        if (LevelManager.instance.currentFallenRow >= 0)
+        {
+            if (transform.position.z <= LevelManager.instance.currentFallenRow)
+            {
+                // Marcamos que ya está cayendo para no volver a entrar aquí
+                isFallingIntoAbyss = true;
+                
+                // Iniciamos la animación
+                StartCoroutine(EntityFallRoutine());
+            }
+        }
+    }
+
+    // Corrutina que gestiona toda la secuencia visual y lógica de la caída
+    private IEnumerator EntityFallRoutine()
+    {
+        if (gameObject.CompareTag("Player"))
+        {
+            playDieSound();
+        }
+
+        // Liberamos la celda en el mánager
+        OccupancyManager.Release(currentGridPos, gameObject);
+
+        // Desactivamos colisiones para evitar que se quede atascado en el suelo o paredes al caer
+        Collider[] colliders = GetComponentsInChildren<Collider>();
+        foreach (Collider col in colliders)
+        {
+            col.enabled = false;
+        }
+
+        // Animación de caída
+        float elapsed = 0f;
+
+        while (elapsed < fallDuration)
+        {
+            if (this == null || gameObject == null) yield break; 
+
+            transform.Translate(Vector3.down * fallSpeed * Time.deltaTime, Space.World);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        isFallingIntoAbyss = false;
+
+        if (gameObject != null)
+        {
+            if (gameObject.CompareTag("Enemy")) 
+            {
+                LevelManager.instance.EnemyDefeated();
+                Destroy(gameObject);
+            }
+            else
+            {
+                GameManager.instance.goToLobby(); // Volvemos al lobby si el jugador cae al abismo
+            }
+        }
     }
 }
