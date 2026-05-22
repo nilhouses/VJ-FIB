@@ -112,6 +112,18 @@ public class LevelManager : MonoBehaviour
                 fallTimer = timeBetweenFalls; // Reiniciar el temporizador para la siguiente caída
             }
         }
+
+        // Cargar niveles con atajos 0-9
+        if (Input.GetKeyDown(KeyCode.Alpha1)) { currentLevel = 1; LoadCurrentLevel(); }
+        if (Input.GetKeyDown(KeyCode.Alpha2)) { currentLevel = 2; LoadCurrentLevel(); }
+        if (Input.GetKeyDown(KeyCode.Alpha3)) { currentLevel = 3; LoadCurrentLevel(); }
+        if (Input.GetKeyDown(KeyCode.Alpha4)) { currentLevel = 4; LoadCurrentLevel(); }
+        if (Input.GetKeyDown(KeyCode.Alpha5)) { currentLevel = 5; LoadCurrentLevel(); }
+        if (Input.GetKeyDown(KeyCode.Alpha6)) { currentLevel = 6; LoadCurrentLevel(); }
+        if (Input.GetKeyDown(KeyCode.Alpha7)) { currentLevel = 7; LoadCurrentLevel(); }
+        if (Input.GetKeyDown(KeyCode.Alpha8)) { currentLevel = 8; LoadCurrentLevel(); }
+        if (Input.GetKeyDown(KeyCode.Alpha9)) { currentLevel = 9; LoadCurrentLevel(); }
+        if (Input.GetKeyDown(KeyCode.Alpha0)) { currentLevel = 10; LoadCurrentLevel(); }
     }
 
     // Gestionar la caída de la siguiente fila
