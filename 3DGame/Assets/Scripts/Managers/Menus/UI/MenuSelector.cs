@@ -83,6 +83,24 @@ public class MenuSelector : MonoBehaviour
         }
 
         // Update del selector
+        if (target != null)
+        {
+            // Si no teníamos un target anterior, habilitamos la imagen ahora
+            if (lastTarget == null && arrowImage != null)
+            {
+                arrowImage.enabled = true;
+            }
+
+            // Aplicar cambios si el target cambió
+            if (target != lastTarget)
+            {
+                SetTarget(target, true);
+            }
+
+            // Actualizar posición SIEMPRE que tengamos un target
+            UpdateArrowPosition(target);
+        }
+
         if (lastTarget != null)
         {
             UpdateArrowPosition(lastTarget);
@@ -103,12 +121,25 @@ public class MenuSelector : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(newTarget);
     }
 
-    private void UpdateArrowPosition(GameObject target)
-    {
-        RectTransform btnRT = target.GetComponent<RectTransform>();
-        float buttonWidth = btnRT.rect.width * btnRT.lossyScale.x;
-        float targetX = btnRT.position.x + (buttonWidth / 2f) + xOffset;
-        float hoverEffect = Mathf.Sin(Time.time * frequency) * amplitude;
-        transform.position = new Vector3(targetX + hoverEffect, btnRT.position.y, btnRT.position.z);
-    }
+private void UpdateArrowPosition(GameObject target)
+{
+    RectTransform btnRT = target.GetComponent<RectTransform>();
+    
+    // Contenedor (padre de los botones) 
+    RectTransform parentRT = btnRT.parent as RectTransform;
+
+    // Posición real dentro del layout
+    Vector2 targetPos = btnRT.anchoredPosition;
+
+    // Ancho basándonos en la escala local del botón (o la escala del padre)
+    float buttonWidth = btnRT.rect.width * btnRT.localScale.x;
+    
+    // X final con offset y efecto de hover
+    float targetX = targetPos.x + (buttonWidth / 2f) + xOffset;
+    float hoverEffect = Mathf.Sin(Time.time * frequency) * amplitude;
+
+    // Aplicar la posición
+    RectTransform arrowRT = GetComponent<RectTransform>();
+    arrowRT.anchoredPosition = new Vector2(targetX + hoverEffect, targetPos.y);
+}
 }
