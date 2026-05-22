@@ -7,7 +7,7 @@ public class LevelManager : MonoBehaviour
     public int totalEnemies;    // Número total de enemigos en el nivel
     public int enemiesDefeated; // Número de enemigos derrotados por el jugado
     private int currentLevel = 1; // Nivel actual del jugador
-    private int maxLevel = 3; // Número máximo de niveles disponibles
+    private int maxLevel = 12; // Número máximo de niveles disponibles
     private CreateLevel levelCreator; // Referencia al script que genera el nivel
 
     [Header("Falling Floor Settings")]
