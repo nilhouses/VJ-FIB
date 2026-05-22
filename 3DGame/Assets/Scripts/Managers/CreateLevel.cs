@@ -8,7 +8,7 @@ using UnityEngine.Tilemaps;
 public class CreateLevel : MonoBehaviour
 {
     public GameObject player;
-    public GameObject floor, wall_1, door, bat, spikeTrap, arrowTrap, axeTrap, slime, barrel, zombie, coin, cauldron, rock, candle, shelf, weaponRack, witch;
+    public GameObject floor_1, floor_2, wall_1, wall_2, door, bat, spikeTrap, arrowTrap, axeTrap, slime, barrel, zombie, coin, cauldron, rock, candle, shelf, weaponRack, witch;
 
     public static int[,] mapLayout;
     public static int mapWidth, mapHeight;
@@ -130,7 +130,7 @@ public class CreateLevel : MonoBehaviour
     private void SpawnSupportFloors(int x, int y, Transform parent)
     {
         for (int i = 1; i <= 3; i++)
-            SpawnWithPalette(floor, new Vector3(x, -0.75f - i, y), transform.rotation, parent, FloorColor);
+            SpawnWithPalette(floor_2, new Vector3(x, -1f - i, y), transform.rotation, parent, FloorColor);
     }
 
     // Spawn de objetos, entidades...
@@ -185,15 +185,24 @@ public class CreateLevel : MonoBehaviour
         // Pared izquierda
         for (int y = 0; y < height; y++)
         {
-            if (mapLayout[0, y] == 0) continue;
             GameObject obj = SpawnWithPalette(wall_1, new Vector3(-1f, 0.5f, y), transform.rotation, rowParents[y].transform, WallColor);
             obj.transform.Rotate(0f, 90f, 0f);
+        }
+
+        // Pared izquierda soporte
+        for (int y = 0; y < height; y++)
+        {
+            // Añadimos 2 paredes inferiores
+            for (int i = 1; i <= 2; i++)
+            {
+                GameObject obj = SpawnWithPalette(wall_2, new Vector3(-1f, -i*2, y), transform.rotation, rowParents[y].transform, WallColor);
+                obj.transform.Rotate(0f, 90f, 0f);
+            }
         }
 
         // Pared superior + puerta
         for (int x = 0; x < width; x++)
         {
-            if (mapLayout[x, height - 1] == 0) continue;
             GameObject obj;
             if (x == width / 2)
             {
@@ -207,8 +216,19 @@ public class CreateLevel : MonoBehaviour
             obj.transform.Rotate(0f, 180f, 0f);
         }
 
+        // Pared superior soporte
+        for (int x = 0; x < width; x++)
+        {
+            if ( x == width / 2) continue; // No añadimos soporte debajo de la puerta
+            for (int i = 1; i <= 2; i++)
+            {
+                GameObject obj = SpawnWithPalette(wall_2, new Vector3(x, -i*2, height), transform.rotation, rowParents[height - 1].transform, WallColor);
+                obj.transform.Rotate(0f, 180f, 0f);
+            }
+        }
+
         // Suelo de la puerta
-        SpawnWithPalette(floor, new Vector3(width / 2, -0.75f, height), transform.rotation, rowParents[height - 1].transform, FloorColor);
+        SpawnWithPalette(floor_1, new Vector3(width / 2, -0.75f, height), transform.rotation, rowParents[height - 1].transform, FloorColor);
 
         // Cerrar puerta si hay enemigos
         if (LevelManager.instance != null && LevelManager.instance.totalEnemies > 0 && currentDoor != null)
@@ -268,7 +288,7 @@ public class CreateLevel : MonoBehaviour
                 }
                 else
                 {
-                    SpawnWithPalette(floor, new Vector3(x, -0.75f, y), transform.rotation, rowParents[y].transform, FloorColor);
+                    SpawnWithPalette(floor_1, new Vector3(x, -0.75f, y), transform.rotation, rowParents[y].transform, FloorColor);
                     SpawnTileObject(tile, x, y, rowParents[y].transform);
                 }
             }

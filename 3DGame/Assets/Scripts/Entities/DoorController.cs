@@ -26,7 +26,8 @@ public class DoorController : MonoBehaviour
         if (isOpen)
         {
             animator.SetTrigger("Close");
-            SoundManager.instance.PlaySpatialSound(audioSource, DoorClose, volume);
+            if (SoundManager.instance != null)
+                SoundManager.instance.PlaySpatialSound(audioSource, DoorClose, volume);
             isOpen = false;
         }
     }
@@ -36,7 +37,8 @@ public class DoorController : MonoBehaviour
         if (!isOpen)
         {
             animator.SetTrigger("Open");
-            SoundManager.instance.PlaySpatialSound(audioSource, DoorOpen, volume);
+            if (SoundManager.instance != null)
+                SoundManager.instance.PlaySpatialSound(audioSource, DoorOpen, volume);
             isOpen = true;
         }
     }
