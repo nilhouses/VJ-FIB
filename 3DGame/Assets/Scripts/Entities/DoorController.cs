@@ -3,7 +3,7 @@ using UnityEngine;
 public class DoorController : MonoBehaviour
 {
     private Animator animator;
-    private bool isOpen = false;
+    private bool isOpen = true;
     private AudioSource audioSource;
     public AudioClip DoorClose, DoorOpen;
     [Range(0f, 1f)] public float volume = 1f;
@@ -20,10 +20,17 @@ public class DoorController : MonoBehaviour
         audioSource.playOnAwake = false;
         audioSource.spatialBlend = 0.5f;
     }
-    void Start()
+
+    public void Close()
     {
-        SoundManager.instance.PlaySpatialSound(audioSource, DoorClose, volume);
+        if (isOpen)
+        {
+            animator.SetTrigger("Close");
+            SoundManager.instance.PlaySpatialSound(audioSource, DoorClose, volume);
+            isOpen = false;
+        }
     }
+
     public void Open()
     {
         if (!isOpen)
