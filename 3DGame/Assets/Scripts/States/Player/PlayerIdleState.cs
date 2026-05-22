@@ -34,7 +34,7 @@ public class PlayerIdleState : IdleState
         base.Update();
 
         // Solo las acciones únicas del player van en esta sección, el resto de acciones comunes a enemigos y player van en IdleState
-        if (Input.GetKey(KeyCode.Q))
+        if (Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.Space))
         {
             p.stateMachine.ChangeState(new BlockState(p));
             return;

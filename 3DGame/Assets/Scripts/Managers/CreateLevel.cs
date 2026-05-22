@@ -18,7 +18,6 @@ public class CreateLevel : MonoBehaviour
     private LevelPalette levelPalette;
     [HideInInspector] public DoorController currentDoor;
 
-
     // Spawn simple
     private GameObject Spawn(GameObject prefab, Vector3 pos, Quaternion rot, Transform parent)
     {
@@ -129,7 +128,7 @@ public class CreateLevel : MonoBehaviour
     // Spawn de suelos inferiores
     private void SpawnSupportFloors(int x, int y, Transform parent)
     {
-        for (int i = 1; i <= 3; i++)
+        for (int i = 1; i <= 7; i++)
             SpawnWithPalette(floor_2, new Vector3(x, -1f - i, y), transform.rotation, parent, FloorColor);
     }
 
@@ -183,17 +182,16 @@ public class CreateLevel : MonoBehaviour
     private void SpawnDecorativeWalls(int width, int height, GameObject[] rowParents)
     {
         // Pared izquierda
-        for (int y = 0; y < height; y++)
+        for (int y = 1; y < height; y++)
         {
             GameObject obj = SpawnWithPalette(wall_1, new Vector3(-1f, 0.5f, y), transform.rotation, rowParents[y].transform, WallColor);
             obj.transform.Rotate(0f, 90f, 0f);
         }
 
         // Pared izquierda soporte
-        for (int y = 0; y < height; y++)
+        for (int y = 1; y < height; y++)
         {
-            // Añadimos 2 paredes inferiores
-            for (int i = 1; i <= 2; i++)
+            for (int i = 1; i <= 4; i++)
             {
                 GameObject obj = SpawnWithPalette(wall_2, new Vector3(-1f, -i*2, y), transform.rotation, rowParents[y].transform, WallColor);
                 obj.transform.Rotate(0f, 90f, 0f);
@@ -220,7 +218,7 @@ public class CreateLevel : MonoBehaviour
         for (int x = 0; x < width; x++)
         {
             if ( x == width / 2) continue; // No añadimos soporte debajo de la puerta
-            for (int i = 1; i <= 2; i++)
+            for (int i = 1; i <= 4; i++)
             {
                 GameObject obj = SpawnWithPalette(wall_2, new Vector3(x, -i*2, height), transform.rotation, rowParents[height - 1].transform, WallColor);
                 obj.transform.Rotate(0f, 180f, 0f);

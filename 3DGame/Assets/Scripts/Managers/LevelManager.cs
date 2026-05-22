@@ -6,7 +6,7 @@ public class LevelManager : MonoBehaviour
     public static LevelManager instance; // Singleton instance
     public int totalEnemies;    // Número total de enemigos en el nivel
     public int enemiesDefeated; // Número de enemigos derrotados por el jugado
-    private int currentLevel = 1; // Nivel actual del jugador
+    private int currentLevel = 0; // Nivel actual del jugador
     private int maxLevel = 10; // Número máximo de niveles disponibles
     private CreateLevel levelCreator; // Referencia al script que genera el nivel
 

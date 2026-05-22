@@ -20,7 +20,7 @@ public class BlockState : IState
             e.anim.speed = 0;
     
         // Cambio de estado
-        if (Input.GetKeyUp(KeyCode.Q))
+        if (Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.Space))
         {
             e.anim.speed = 1; 
             e.ReturnToIdle();
