@@ -49,11 +49,7 @@ public class GameManager : MonoBehaviour
     public void loseLife()
     {
         lives--;
-        Debug.Log("Player hit! Lives remaining: " + lives);
-        if (HUDManager.instance != null)
-        {
-            HUDManager.instance.UpdateHearts(lives);
-        }
+        HUDManager.instance.UpdateHearts(lives);
     }
 
     // Método para reiniciar el nivel actual
@@ -65,11 +61,7 @@ public class GameManager : MonoBehaviour
     public void AddCoins(int amount)
     {
         coins += amount;
-        Debug.Log("Coins collected: " + coins);
-        if (HUDManager.instance != null)
-        {
-            HUDManager.instance.UpdateCoins(coins);
-        }
+        HUDManager.instance.UpdateCoins(coins);
     }
     public void RoomSurvived()
     {
@@ -78,14 +70,9 @@ public class GameManager : MonoBehaviour
         if (currentRoomsSurvived > maxRoomsSurvived)
         {
             maxRoomsSurvived = currentRoomsSurvived;
+            HUDManager.instance.UpdateRecord(maxRoomsSurvived);
         }
-
-        Debug.Log("Salas superadas esta partida: " + currentRoomsSurvived + " | Récord: " + maxRoomsSurvived);
-
-        if (HUDManager.instance != null)
-        {
-            HUDManager.instance.UpdateRooms(currentRoomsSurvived);
-        }
+        HUDManager.instance.UpdateRooms(currentRoomsSurvived);
     }
 
     void Update()

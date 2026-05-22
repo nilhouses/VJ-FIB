@@ -13,6 +13,7 @@ public class MenuSelector : MonoBehaviour
 
     private GameObject lastTarget;
     private Image arrowImage;
+    private Vector3 lastMousePosition;
 
     void Awake()
     {
@@ -47,45 +48,29 @@ public class MenuSelector : MonoBehaviour
         }
     }
 
-    void LateUpdate()
+void LateUpdate()
     {
-        // Raton o teclado
+        // Comprobar si el ratón se ha movido o si el mando/teclado ha enviado input
         GameObject target = null;
+        bool mouseMoved = Input.mousePosition != lastMousePosition;
+        lastMousePosition = Input.mousePosition;
 
-        // El ratón es el prioritario, así que hacemos un raycast manual para ver si está sobre algún botón
-        PointerEventData pointerData = new PointerEventData(EventSystem.current) { position = Input.mousePosition };
-        var results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(pointerData, results);
-
-        foreach (var result in results)
+        // Si el ratón se ha movido recientemente, priorizamos su raycast
+        if (mouseMoved)
         {
-            foreach (var btn in buttons)
-            {
-                if (btn != null && (result.gameObject == btn.gameObject || result.gameObject.transform.IsChildOf(btn)))
-                {
-                    target = btn.gameObject;
-                    break;
-                }
-            }
-            if (target != null) break;
+            target = GetTargetUnderMouse();
         }
 
-        // El teclado es la segunda opción
+        // Si el ratón no se ha movido o no apunta a nada, el teclado manda
         if (target == null)
         {
             target = EventSystem.current.currentSelectedGameObject;
         }
 
-        // Aplicar cambios
-        if (target != null && target != lastTarget)
-        {
-            SetTarget(target, true);
-        }
-
-        // Update del selector
+        // Seguimiento del selector
         if (target != null)
         {
-            // Si no teníamos un target anterior, habilitamos la imagen ahora
+            // Usamos imagen cuando pasamos a tener un target
             if (lastTarget == null && arrowImage != null)
             {
                 arrowImage.enabled = true;
@@ -97,14 +82,42 @@ public class MenuSelector : MonoBehaviour
                 SetTarget(target, true);
             }
 
-            // Actualizar posición SIEMPRE que tengamos un target
+            // Actualizar posición
             UpdateArrowPosition(target);
         }
-
-        if (lastTarget != null)
+        else if (lastTarget != null)
         {
             UpdateArrowPosition(lastTarget);
         }
+    }
+
+    private GameObject GetTargetUnderMouse()
+    {
+        PointerEventData pointerData = new PointerEventData(EventSystem.current) { position = Input.mousePosition };
+        var results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerData, results);
+
+        foreach (var result in results)
+        {
+            foreach (var btn in buttons)
+            {
+                if (btn != null && (result.gameObject == btn.gameObject || result.gameObject.transform.IsChildOf(btn)))
+                {
+                    return btn.gameObject;
+                }
+            }
+        }
+        return null;
+    }
+
+    private bool IsManagedButton(GameObject target)
+    {
+        foreach (var btn in buttons)
+        {
+            if (btn != null && (target == btn.gameObject || target.transform.IsChildOf(btn)))
+                return true;
+        }
+        return false;
     }
 
     private void SetTarget(GameObject newTarget, bool playSound)
@@ -121,25 +134,25 @@ public class MenuSelector : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(newTarget);
     }
 
-private void UpdateArrowPosition(GameObject target)
-{
-    RectTransform btnRT = target.GetComponent<RectTransform>();
-    
-    // Contenedor (padre de los botones) 
-    RectTransform parentRT = btnRT.parent as RectTransform;
+    private void UpdateArrowPosition(GameObject target)
+    {
+        RectTransform btnRT = target.GetComponent<RectTransform>();
+        
+        // Contenedor (padre de los botones) 
+        RectTransform parentRT = btnRT.parent as RectTransform;
 
-    // Posición real dentro del layout
-    Vector2 targetPos = btnRT.anchoredPosition;
+        // Posición real dentro del layout
+        Vector2 targetPos = btnRT.anchoredPosition;
 
-    // Ancho basándonos en la escala local del botón (o la escala del padre)
-    float buttonWidth = btnRT.rect.width * btnRT.localScale.x;
-    
-    // X final con offset y efecto de hover
-    float targetX = targetPos.x + (buttonWidth / 2f) + xOffset;
-    float hoverEffect = Mathf.Sin(Time.time * frequency) * amplitude;
+        // Ancho basándonos en la escala local del botón (o la escala del padre)
+        float buttonWidth = btnRT.rect.width * btnRT.localScale.x;
+        
+        // X final con offset y efecto de hover
+        float targetX = targetPos.x + (buttonWidth / 2f) + xOffset;
+        float hoverEffect = Mathf.Sin(Time.time * frequency) * amplitude;
 
-    // Aplicar la posición
-    RectTransform arrowRT = GetComponent<RectTransform>();
-    arrowRT.anchoredPosition = new Vector2(targetX + hoverEffect, targetPos.y);
-}
+        // Aplicar la posición
+        RectTransform arrowRT = GetComponent<RectTransform>();
+        arrowRT.anchoredPosition = new Vector2(targetX + hoverEffect, targetPos.y);
+    }
 }

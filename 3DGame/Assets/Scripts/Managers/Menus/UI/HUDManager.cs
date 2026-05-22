@@ -22,6 +22,11 @@ public class HUDManager : MonoBehaviour
     public Sprite emptyHeartSprite;
     private Image[] heartImages;
 
+    [Header("Récord de Salas Superadas")]
+    public Image recordImage; 
+    public Sprite recordSprite;
+    public TextMeshProUGUI recordText;
+
     [Header("Sistema de Pausa")]
     public Button pauseButton;          // [||]
     public GameObject pauseMenuPanel;  // Menú de pausa
@@ -29,7 +34,6 @@ public class HUDManager : MonoBehaviour
     [Header("Botones del Menú de Pausa")]
     public Button resumeButton;         // [>]
     public Button lobbyButton;          // Vuelta al lobby
-    public Button creditsButton;        // Ir a créditos
 
     private bool isPaused = false;
 
@@ -45,6 +49,7 @@ public class HUDManager : MonoBehaviour
         // Imágenes estáticas
         if (coinImage != null && coinSprite != null) coinImage.sprite = coinSprite;
         if (roomImage != null && roomSprite != null) roomImage.sprite = roomSprite;
+        if (recordImage != null && recordSprite != null) recordImage.sprite = recordSprite;
 
         // Menú de pausa oculto por defecto
         if (pauseMenuPanel != null) pauseMenuPanel.SetActive(false);
@@ -53,8 +58,7 @@ public class HUDManager : MonoBehaviour
         if (pauseButton != null) pauseButton.onClick.AddListener(TogglePause);
         if (resumeButton != null) resumeButton.onClick.AddListener(TogglePause);
         if (lobbyButton != null) lobbyButton.onClick.AddListener(GoToLobbyFromPause);
-        if (creditsButton != null) creditsButton.onClick.AddListener(GoToCreditsFromPause);
-        
+
         UpdateAllHUD(); 
     }
 
@@ -64,16 +68,21 @@ public class HUDManager : MonoBehaviour
         UpdateCoins(GameManager.instance.coins);
         UpdateRooms(GameManager.instance.currentRoomsSurvived);
         UpdateHearts(GameManager.instance.lives);
+        UpdateRecord(GameManager.instance.maxRoomsSurvived);
     }
 
     public void UpdateCoins(int amount)
     {
-        if (coinsText != null) coinsText.text = "x" + amount.ToString();
+        if (coinsText != null) coinsText.text = amount.ToString();
     }
 
     public void UpdateRooms(int rooms)
     {
-        if (roomsText != null) roomsText.text = "x" + rooms.ToString();
+        if (roomsText != null) roomsText.text = rooms.ToString();
+    }
+    public void UpdateRecord(int record)
+    {
+        if (recordText != null) recordText.text = record.ToString();
     }
 
     public void UpdateHearts(int currentLives)
