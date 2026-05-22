@@ -17,11 +17,16 @@ public class SoundManager : MonoBehaviour
     private bool isMusicMuted = false;
     private float lastMasterVolume = 1f;
     private float lastMusicVolume = 1f;
+    
+    // Para que el HUD y el settings sepan cuando existe
+    public delegate void OnSoundReady();
+    public static event OnSoundReady OnSoundReadyEvent;
 
     void Awake() {
         if (instance == null) {
             instance = this;
             DontDestroyOnLoad(gameObject); // Para que no se destruya entre niveles
+            if (OnSoundReadyEvent != null) OnSoundReadyEvent();
             
             // Config para sonidos 2D
             local2DAudioSource = GetComponent<AudioSource>();

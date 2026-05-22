@@ -4,52 +4,46 @@ using UnityEngine.EventSystems;
 
 public class LobbyManager : MonoBehaviour
 {
-    public Button playButton;
-    public Button howToPlayButton;
-    public Button creditsButton;
-    public Button settingsButton;
+    public static LobbyManager instance; // Singleton instance
+    public GameObject lobbyPanel, settingsPanel, creditsPanel, howToPlayPanel;
 
-    void Start()
+    void Awake()
     {
-        if (playButton != null) playButton.onClick.AddListener(OnPlayClicked);
-        if (howToPlayButton != null) howToPlayButton.onClick.AddListener(OnHowToPlayClicked);
-        if (creditsButton != null) creditsButton.onClick.AddListener(OnCreditsClicked);
-        if (settingsButton != null) settingsButton.onClick.AddListener(OnSettingsClicked);
+        instance = this; // Asignar la instancia del singleton
+        ShowPanel(lobbyPanel); // Mostrar el panel del lobby al iniciar
+    }
+    public void ShowPanel(GameObject panelToShow)
+    {
+        lobbyPanel.SetActive(panelToShow == lobbyPanel);
+        settingsPanel.SetActive(panelToShow == settingsPanel);
+        creditsPanel.SetActive(panelToShow == creditsPanel);
+        howToPlayPanel.SetActive(panelToShow == howToPlayPanel);
+        
+        Time.timeScale = 1f;
     }
 
-    private void OnPlayClicked()
+    public void ClickPlay()
     {
         GameManager.instance.goToLevel();
     }
 
-    private void OnHowToPlayClicked()
-    {
-        GameManager.instance.goToHowToPlay();
+    public void ClickCredits() 
+    { 
+        ShowPanel(creditsPanel); 
     }
 
-    private void OnCreditsClicked()
-    {
-        GameManager.instance.goToCredits();
+    public void backToLobby()    
+    { 
+        ShowPanel(lobbyPanel); 
     }
 
-    private void OnSettingsClicked()
-    {
-        GameManager.instance.goToSettings();
+    public void ClickSettings() 
+    { 
+        ShowPanel(settingsPanel); 
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
-        {
-            GameObject selected = EventSystem.current.currentSelectedGameObject;
-            if (selected != null)
-            {
-                Button btn = selected.GetComponent<Button>();
-                if (btn != null)
-                {
-                    btn.onClick.Invoke();
-                }
-            }
-        }
+    public void ClickHowToPlay() 
+    { 
+        ShowPanel(howToPlayPanel); 
     }
 }

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SoundSettingsController : MonoBehaviour
+public class SoundSettingsManager : MonoBehaviour
 {
     public Slider volumeSlider;
     public Slider musicSlider;
@@ -14,7 +14,16 @@ public class SoundSettingsController : MonoBehaviour
 
     void OnEnable()
     { // Cuando se active la escena del nivel o el menú de settings
-        if (volumeSlider != null) {
+        SoundManager.OnSoundReadyEvent += RefreshSettings;
+        if (SoundManager.instance != null) RefreshSettings();
+    }
+
+    void OnDisable() {
+        SoundManager.OnSoundReadyEvent -= RefreshSettings;
+    }
+    public void RefreshSettings() {
+
+        if (SoundManager.instance == null) return;    if (volumeSlider != null) {
             volumeSlider.value = SoundManager.instance.GetMasterVolume();
             volumeSlider.onValueChanged.RemoveAllListeners();
             volumeSlider.onValueChanged.AddListener((v) => SoundManager.instance.SetMasterVolume(v));

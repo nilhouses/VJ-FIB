@@ -42,20 +42,10 @@ public class GameManager : MonoBehaviour
     public void goToCredits()
     {
         lives = 3; // Reiniciar vidas al volver a los créditos
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(0);
+        // Pon el panel de créditos
+        LobbyManager.instance.ClickCredits();
     }
-
-    public void goToHowToPlay()
-    {
-        SceneManager.LoadScene("HowToPlay"); 
-    }
-
-
-    public void goToSettings()
-    {
-        SceneManager.LoadScene("Settings");
-    }
-
     public void loseLife()
     {
         lives--;
