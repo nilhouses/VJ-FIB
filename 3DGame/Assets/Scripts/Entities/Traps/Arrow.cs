@@ -1,5 +1,5 @@
-    using UnityEngine;
-    using System.Collections;
+using UnityEngine;
+using System.Collections;
 
 public class ArrowProjectile : MonoBehaviour
 {
@@ -101,6 +101,7 @@ public class ArrowProjectile : MonoBehaviour
             }
         }
     }
+
     private void HitSomething(Transform parentToAttach)
     {
         hasHitTarget = true;

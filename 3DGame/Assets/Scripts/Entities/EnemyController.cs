@@ -8,7 +8,7 @@ public class EnemyController : EntityController
 
     [Header("Movement")]
     public EnemyMovementStrategy movementStrategy;
-    private Transform playerTransform;
+    public Transform playerTransform;
 
     public override IState GetIdleState(bool longIdle = false) { return new EnemyIdleState(this); }
     public override void ReturnToIdle() { stateMachine.ChangeState(new EnemyIdleState(this)); }
@@ -62,6 +62,8 @@ public class EnemyController : EntityController
 
     public override void receiveHit(Vector3 fromPosition)
     {
+        if (getLivesRemaining() <= 0) return;
+
         if (canHurtMe(fromPosition))
         {
             lifesRemaining--;

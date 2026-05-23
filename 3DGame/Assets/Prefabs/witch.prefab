@@ -158,6 +158,37 @@ Transform:
   - {fileID: 5611229007878743370}
   m_Father: {fileID: 3000648018244402488}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1720423631920522209
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2915699024366221666}
+  m_Layer: 0
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2915699024366221666
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1720423631920522209}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.102, y: 0.095, z: 0.039}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8940496800920505386}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1769188804800749541
 GameObject:
   m_ObjectHideFlags: 0
@@ -468,9 +499,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4484000773631059013}
-  - component: {fileID: 4040932785877154631}
   - component: {fileID: 6403443326695169566}
   - component: {fileID: -9108638444242230101}
+  - component: {fileID: 3999741668744665145}
   m_Layer: 6
   m_Name: witch
   m_TagString: Enemy
@@ -494,40 +525,6 @@ Transform:
   - {fileID: 5509630473951165281}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4040932785877154631
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4061012142582937487}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2da0781d5a0b054a88ba6ddf359ce5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSound: {fileID: 8300000, guid: b25f49c17f08a9f4a9878b2a92647378, type: 3}
-  attackSound: {fileID: 8300000, guid: c1aab2da3a829944980bf0f3a714fa1b, type: 3}
-  receiveHitSound: {fileID: 8300000, guid: 01a4827ffc8e99c4d9885c878ffda31b, type: 3}
-  dieSound: {fileID: 8300000, guid: bcd4b87579bf00f41bc820767947c6cc, type: 3}
-  enemyTag: Enemy
-  speed: 3
-  entityName: Witch
-  attackSpeed: 2
-  heightJump: 0
-  numAttacks: 1
-  isStuckInPuddle: 0
-  anim: {fileID: 0}
-  dir: 0
-  initialPosMove: {x: 0, y: 0, z: 0}
-  vecMove: {x: 0, y: 0, z: 0}
-  timeInMove: 0
-  lastDetectedTarget: {fileID: 0}
-  entityVolume: 1
-  isReceivingHit: 0
-  timeBetweenMoves: 2
-  lifesRemaining: 3
-  movementStrategy: {fileID: 11400000, guid: 948278396d8fd68499a1c8f9bcd23c37, type: 2}
 --- !u!65 &6403443326695169566
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -645,6 +642,46 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3999741668744665145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4061012142582937487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 338cf6aafc7a0e0418fc4a44bb29590a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSound: {fileID: 8300000, guid: b25f49c17f08a9f4a9878b2a92647378, type: 3}
+  attackSound: {fileID: 8300000, guid: c1aab2da3a829944980bf0f3a714fa1b, type: 3}
+  receiveHitSound: {fileID: 8300000, guid: 01a4827ffc8e99c4d9885c878ffda31b, type: 3}
+  dieSound: {fileID: 8300000, guid: bcd4b87579bf00f41bc820767947c6cc, type: 3}
+  enemyTag: Enemy
+  speed: 3
+  entityName: Witch
+  attackSpeed: 2
+  heightJump: 0
+  numAttacks: 1
+  isStuckInPuddle: 0
+  anim: {fileID: 0}
+  dir: 0
+  initialPosMove: {x: 0, y: 0, z: 0}
+  vecMove: {x: 0, y: 0, z: 0}
+  timeInMove: 0
+  lastDetectedTarget: {fileID: 0}
+  entityVolume: 1
+  isReceivingHit: 0
+  timeBetweenMoves: 2
+  lifesRemaining: 3
+  movementStrategy: {fileID: 11400000, guid: 6e5896f571d753543bb7fe64664d09a1, type: 2}
+  playerTransform: {fileID: 0}
+  spellPrefab: {fileID: 7304728152103151111, guid: a87d89a8c99c68b4aae9b370263c100b, type: 3}
+  spawnPoint: {fileID: 2915699024366221666}
+  attackRange: 7
+  spellCastSound: {fileID: 8300000, guid: 4a98cd263a1fb27479b86c9dbeb42717, type: 3}
+  isAttackTurn: 0
 --- !u!1 &4614232432520978147
 GameObject:
   m_ObjectHideFlags: 0
@@ -673,7 +710,8 @@ Transform:
   m_LocalPosition: {x: -8.881784e-18, y: 0.09044219, z: -3.5527136e-17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2915699024366221666}
   m_Father: {fileID: 5059218430350689866}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4773327336812835311

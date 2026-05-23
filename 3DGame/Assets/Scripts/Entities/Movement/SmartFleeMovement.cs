@@ -1,8 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-[CreateAssetMenu(fileName = "Smart", menuName = "EnemyAI/Smart")]
-public class SmartFollowMovement : EnemyMovementStrategy
+[CreateAssetMenu(fileName = "Flee", menuName = "EnemyAI/Flee")]
+public class SmartFleeMovement : EnemyMovementStrategy
 {
     public int distanceThreshold = 10; // Umbral de distancia
     // Inicializamos con un valor que el jugador nunca tendrá al empezar
@@ -53,7 +53,7 @@ public class SmartFollowMovement : EnemyMovementStrategy
 
         // Búsqueda del camino más corto
         Direction bestDir = Direction.NONE;
-        int minDistance = 999;
+        int maxDistance = -1;
         int tiedCount = 0;
         bool foundPath = false;
 
@@ -72,13 +72,13 @@ public class SmartFollowMovement : EnemyMovementStrategy
             // Si es mejor camino y la entidad puede moverse ahí
             if (enemyController.CheckAction(dir) != 0)
             {
-                if (dist < minDistance)
+                if (dist > maxDistance)
                 {
-                    minDistance = dist;
+                    maxDistance = dist;
                     bestDir = dir;
                     foundPath = true;
                     tiedCount = 1; // Reiniciamos el contador de empates
-                } else if (dist == minDistance) // Si hay empate, elige aleatoriamente
+                } else if (dist == maxDistance) // Si hay empate, elige aleatoriamente
                 {
                     tiedCount++; // Incrementamos el contador de empates
                     if (Random.Range(0, tiedCount) == 0) // Probabilidad de 1/tiedCount de elegir este camino

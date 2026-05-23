@@ -67,9 +67,11 @@ public class PlayerController : EntityController
 
     public override void receiveHit(Vector3 damageSourcePos)
     {
+        if (getLivesRemaining() <= 0) return;
+
         if (!godMode && canHurtMe(damageSourcePos))
         {
-            bool isFromAbove = (damageSourcePos.y > transform.position.y + 0.2f);
+            bool isFromAbove = (damageSourcePos.y > transform.position.y + 0.5f);
             if (stateMachine.currentState is BlockState && !isFromAbove) // Estado parry
             {
                 Direction dirToDamage = GetDirectionTo(damageSourcePos);   
