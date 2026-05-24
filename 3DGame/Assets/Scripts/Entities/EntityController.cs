@@ -252,7 +252,7 @@ public abstract class EntityController : MonoBehaviour
         
         if (door != null && this is PlayerController && !LevelManager.instance.CheckLevelComplete())
         {
-            playInvalidActionSound();
+            ((PlayerController)this).goToInvalidActionState(); 
         }
         
         bool leavingRoom = door != null && LevelManager.instance.CheckLevelComplete();

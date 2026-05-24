@@ -1,0 +1,266 @@
+diff --git a/3DGame/Assembly-CSharp.csproj b/3DGame/Assembly-CSharp.csproj
+index d991369..294b3d4 100644
+--- a/3DGame/Assembly-CSharp.csproj
++++ b/3DGame/Assembly-CSharp.csproj
+@@ -131,6 +131,7 @@
+     <Compile Include="Assets\Scripts\Managers\SoundManager.cs" />
+     <Compile Include="Assets\Scripts\Camera\EnableDepthTexture.cs" />
+     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
++    <Compile Include="Assets\Scripts\States\Player\InvalidActionState.cs" />
+     <Compile Include="Assets\Scripts\Entities\Movement\FollowPlayerMovement.cs" />
+     <Compile Include="Assets\Scripts\Managers\LevelManager.cs" />
+     <Compile Include="Assets\Scripts\Entities\EnemyController.cs" />
+diff --git a/3DGame/Assets/Animations/knight/knight.controller b/3DGame/Assets/Animations/knight/knight.controller
+index ce1a715..9a5914a 100644
+--- a/3DGame/Assets/Animations/knight/knight.controller
++++ b/3DGame/Assets/Animations/knight/knight.controller
+@@ -45,6 +45,7 @@ AnimatorState:
+   - {fileID: -3389448050637868402}
+   - {fileID: -1401260596655171968}
+   - {fileID: 6192541518965863739}
++  - {fileID: 1199614394064810997}
+   m_StateMachineBehaviours: []
+   m_Position: {x: 50, y: 50, z: 0}
+   m_IKOnFeet: 0
+@@ -85,6 +86,31 @@ AnimatorStateTransition:
+   m_InterruptionSource: 0
+   m_OrderedInterruption: 1
+   m_CanTransitionToSelf: 1
++--- !u!1101 &-7639132377579920228
++AnimatorStateTransition:
++  m_ObjectHideFlags: 1
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_Name: 
++  m_Conditions:
++  - m_ConditionMode: 2
++    m_ConditionEvent: isNodding
++    m_EventTreshold: 0
++  m_DstStateMachine: {fileID: 0}
++  m_DstState: {fileID: -8256380214518052661}
++  m_Solo: 0
++  m_Mute: 0
++  m_IsExit: 0
++  serializedVersion: 3
++  m_TransitionDuration: 0.25
++  m_TransitionOffset: 0
++  m_ExitTime: 0.8469388
++  m_HasExitTime: 0
++  m_HasFixedDuration: 1
++  m_InterruptionSource: 0
++  m_OrderedInterruption: 1
++  m_CanTransitionToSelf: 1
+ --- !u!1101 &-7040062410386861868
+ AnimatorStateTransition:
+   m_ObjectHideFlags: 1
+@@ -273,7 +299,7 @@ AnimatorStateMachine:
+   m_ChildStates:
+   - serializedVersion: 1
+     m_State: {fileID: 2406107605904042613}
+-    m_Position: {x: 320, y: 240, z: 0}
++    m_Position: {x: 500, y: 280, z: 0}
+   - serializedVersion: 1
+     m_State: {fileID: 3182170954180386221}
+     m_Position: {x: 880, y: 80, z: 0}
+@@ -300,7 +326,10 @@ AnimatorStateMachine:
+     m_Position: {x: 490, y: -90, z: 0}
+   - serializedVersion: 1
+     m_State: {fileID: 7053243672249274089}
+-    m_Position: {x: 560, y: 240, z: 0}
++    m_Position: {x: 740, y: 290, z: 0}
++  - serializedVersion: 1
++    m_State: {fileID: -1130141914818248450}
++    m_Position: {x: 250, y: 270, z: 0}
+   m_ChildStateMachines: []
+   m_AnyStateTransitions: []
+   m_EntryTransitions: []
+@@ -311,6 +340,31 @@ AnimatorStateMachine:
+   m_ExitPosition: {x: 190, y: -200, z: 0}
+   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
+   m_DefaultState: {fileID: -3271075457450874092}
++--- !u!1101 &-2477738264431982704
++AnimatorStateTransition:
++  m_ObjectHideFlags: 1
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_Name: 
++  m_Conditions:
++  - m_ConditionMode: 1
++    m_ConditionEvent: isAttacking2
++    m_EventTreshold: 0
++  m_DstStateMachine: {fileID: 0}
++  m_DstState: {fileID: -1130141914818248450}
++  m_Solo: 0
++  m_Mute: 0
++  m_IsExit: 0
++  serializedVersion: 3
++  m_TransitionDuration: 0.25
++  m_TransitionOffset: 0
++  m_ExitTime: 0.9013158
++  m_HasExitTime: 0
++  m_HasFixedDuration: 1
++  m_InterruptionSource: 0
++  m_OrderedInterruption: 1
++  m_CanTransitionToSelf: 1
+ --- !u!1102 &-2313524684128781211
+ AnimatorState:
+   serializedVersion: 6
+@@ -363,6 +417,33 @@ AnimatorStateTransition:
+   m_InterruptionSource: 0
+   m_OrderedInterruption: 1
+   m_CanTransitionToSelf: 1
++--- !u!1102 &-1130141914818248450
++AnimatorState:
++  serializedVersion: 6
++  m_ObjectHideFlags: 1
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_Name: InvalidAction
++  m_Speed: 2
++  m_CycleOffset: 0
++  m_Transitions:
++  - {fileID: -7639132377579920228}
++  m_StateMachineBehaviours: []
++  m_Position: {x: 50, y: 50, z: 0}
++  m_IKOnFeet: 0
++  m_WriteDefaultValues: 1
++  m_Mirror: 0
++  m_SpeedParameterActive: 0
++  m_MirrorParameterActive: 0
++  m_CycleOffsetParameterActive: 0
++  m_TimeParameterActive: 0
++  m_Motion: {fileID: -203655887218126122, guid: e52bead8ab43f2f49878efe8584a3660, type: 3}
++  m_Tag: 
++  m_SpeedParameter: 
++  m_MirrorParameter: 
++  m_CycleOffsetParameter: 
++  m_TimeParameter: 
+ --- !u!91 &9100000
+ AnimatorController:
+   m_ObjectHideFlags: 0
+@@ -426,6 +507,12 @@ AnimatorController:
+     m_DefaultInt: 0
+     m_DefaultBool: 0
+     m_Controller: {fileID: 9100000}
++  - m_Name: isNodding
++    m_Type: 4
++    m_DefaultFloat: 0
++    m_DefaultInt: 0
++    m_DefaultBool: 0
++    m_Controller: {fileID: 9100000}
+   m_AnimatorLayers:
+   - serializedVersion: 5
+     m_Name: Base Layer
+@@ -464,6 +551,31 @@ AnimatorStateTransition:
+   m_InterruptionSource: 0
+   m_OrderedInterruption: 1
+   m_CanTransitionToSelf: 1
++--- !u!1101 &1199614394064810997
++AnimatorStateTransition:
++  m_ObjectHideFlags: 1
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_Name: 
++  m_Conditions:
++  - m_ConditionMode: 1
++    m_ConditionEvent: isNodding
++    m_EventTreshold: 0
++  m_DstStateMachine: {fileID: 0}
++  m_DstState: {fileID: -1130141914818248450}
++  m_Solo: 0
++  m_Mute: 0
++  m_IsExit: 0
++  serializedVersion: 3
++  m_TransitionDuration: 0.25
++  m_TransitionOffset: 0
++  m_ExitTime: 0.9013158
++  m_HasExitTime: 0
++  m_HasFixedDuration: 1
++  m_InterruptionSource: 0
++  m_OrderedInterruption: 1
++  m_CanTransitionToSelf: 1
+ --- !u!1102 &1325082720764733698
+ AnimatorState:
+   serializedVersion: 6
+diff --git a/3DGame/Assets/Scripts/Entities/EntityController.cs b/3DGame/Assets/Scripts/Entities/EntityController.cs
+index f828d6f..e07bf08 100644
+--- a/3DGame/Assets/Scripts/Entities/EntityController.cs
++++ b/3DGame/Assets/Scripts/Entities/EntityController.cs
+@@ -253,6 +253,7 @@ public abstract class EntityController : MonoBehaviour
+         if (door != null && this is PlayerController && !LevelManager.instance.CheckLevelComplete())
+         {
+             playInvalidActionSound();
++            ((PlayerController)this).goToInvalidActionState(); 
+         }
+         
+         bool leavingRoom = door != null && LevelManager.instance.CheckLevelComplete();
+diff --git a/3DGame/Assets/Scripts/Entities/PlayerController.cs b/3DGame/Assets/Scripts/Entities/PlayerController.cs
+index ddc174e..89d137e 100644
+--- a/3DGame/Assets/Scripts/Entities/PlayerController.cs
++++ b/3DGame/Assets/Scripts/Entities/PlayerController.cs
+@@ -10,14 +10,25 @@ public class PlayerController : EntityController
+     public AudioClip parrySound, levelCompleteSound, invalidActionSound;
+     public bool godMode = false;
+     private Coroutine parryCoroutine;
+-    
++
+     public virtual void playParrySound() => SoundManager.instance.PlaySpatialSound(audioSource, parrySound, entityVolume);
+     public virtual void playLevelCompleteSound() => SoundManager.instance.PlaySound(levelCompleteSound, SoundManager.instance.playerGroup, entityVolume);
+     public override void playInvalidActionSound() => SoundManager.instance.PlaySound(invalidActionSound, SoundManager.instance.playerGroup, entityVolume);
+     public override IState GetIdleState(bool longIdle = false) { return new PlayerIdleState(this, longIdle); }
++
+     public override void ReturnToIdle() { 
++            allowInput = true;
++            timeInMove = 0f;
++            stateMachine.ChangeState(GetIdleState(false)); 
++    }
++    public void goToInvalidActionState()
++    {
++        allowInput = false;
++        stateMachine.ChangeState(new InvalidActionState(this)); 
++    }
++    public void returnFromInvalidActionState()
++    {
+         allowInput = true;
+-        timeInMove = 0f;
+         stateMachine.ChangeState(GetIdleState(false)); 
+     }
+ 
+@@ -65,7 +76,7 @@ public class PlayerController : EntityController
+     {
+         return GameManager.instance.lives;
+     }
+-
++    
+     public override void receiveHit(Vector3 damageSourcePos)
+     {
+         if (invincibilityTime > 0f) return;
+diff --git a/3DGame/Assets/Scripts/Managers/SoundManager.cs b/3DGame/Assets/Scripts/Managers/SoundManager.cs
+index 0d6b751..d968474 100644
+--- a/3DGame/Assets/Scripts/Managers/SoundManager.cs
++++ b/3DGame/Assets/Scripts/Managers/SoundManager.cs
+@@ -21,7 +21,6 @@ public class SoundManager : MonoBehaviour
+     public AudioClip backgroundMusic;
+ 
+     // Para que el HUD y el settings sepan cuando existe
+-
+     public delegate void OnSoundReady();
+     public static event OnSoundReady OnSoundReadyEvent;
+ 
+diff --git a/3DGame/Assets/Scripts/States/SharedStates/AttackState.cs b/3DGame/Assets/Scripts/States/SharedStates/AttackState.cs
+index 7e8af5d..d8cd4c4 100644
+--- a/3DGame/Assets/Scripts/States/SharedStates/AttackState.cs
++++ b/3DGame/Assets/Scripts/States/SharedStates/AttackState.cs
+@@ -7,8 +7,6 @@ public class AttackState : IState
+     private bool hitRegistered = false;
+     private float attackTimer;
+     private float randomAttack;
+-
+-
+     private Vector3 damageSourcePos;
+     public AttackState(EntityController attacker) 
+     { 

@@ -83,8 +83,11 @@ public class GameManager : MonoBehaviour
         }
         HUDManager.instance.UpdateRooms(currentRoomsSurvived);
     }
-    void Update()
+    public void showInformationText()
     {
-        
+        if (HUDManager.instance != null)
+        {
+            HUDManager.instance.ShowInformationText(0.6f);
+        }
     }
 }

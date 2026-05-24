@@ -457,6 +457,7 @@ MonoBehaviour:
   isMovingToNextLevel: 0
   parrySound: {fileID: 8300000, guid: 8910b82f5bcb40b4f9a1291a8baa6d1f, type: 3}
   levelCompleteSound: {fileID: 8300000, guid: 028419c512d8715429afb0c2021ecab4, type: 3}
+  invalidActionSound: {fileID: 8300000, guid: 28a6ddfa06c85594b85ec4d861efe706, type: 3}
   godMode: 0
 --- !u!65 &5935052568490316822
 BoxCollider:

@@ -131,6 +131,7 @@
     <Compile Include="Assets\Scripts\Managers\SoundManager.cs" />
     <Compile Include="Assets\Scripts\Camera\EnableDepthTexture.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
+    <Compile Include="Assets\Scripts\States\Player\InvalidActionState.cs" />
     <Compile Include="Assets\Scripts\Entities\Movement\FollowPlayerMovement.cs" />
     <Compile Include="Assets\Scripts\Managers\LevelManager.cs" />
     <Compile Include="Assets\Scripts\Entities\EnemyController.cs" />

@@ -21,7 +21,6 @@ public class SoundManager : MonoBehaviour
     public AudioClip backgroundMusic;
 
     // Para que el HUD y el settings sepan cuando existe
-
     public delegate void OnSoundReady();
     public static event OnSoundReady OnSoundReadyEvent;
 

@@ -7,8 +7,6 @@ public class AttackState : IState
     private bool hitRegistered = false;
     private float attackTimer;
     private float randomAttack;
-
-
     private Vector3 damageSourcePos;
     public AttackState(EntityController attacker) 
     { 

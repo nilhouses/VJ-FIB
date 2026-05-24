@@ -35,6 +35,8 @@ public class HUDManager : MonoBehaviour
     public Button resumeButton;         // [>]
     public Button lobbyButton;          // Vuelta al lobby
 
+    [Header("Texto de Información")]
+    public GameObject informationTextObject;
     private bool isPaused = false;
 
     void Awake()
@@ -59,6 +61,11 @@ public class HUDManager : MonoBehaviour
         if (resumeButton != null) resumeButton.onClick.AddListener(TogglePause);
         if (lobbyButton != null) lobbyButton.onClick.AddListener(GoToLobbyFromPause);
 
+        // Información oculta por defecto
+        if (informationTextObject != null)
+        {
+            informationTextObject.SetActive(false);
+        }
         UpdateAllHUD(); 
     }
 
@@ -116,5 +123,22 @@ public class HUDManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         if (GameManager.instance != null) GameManager.instance.goToCredits();
+    }
+
+    public void ShowInformationText(float duration)
+    {
+        if (informationTextObject != null)
+        {
+            StopAllCoroutines();    
+            StartCoroutine(HideTextAfterTime(duration));
+        }
+    }
+
+    private System.Collections.IEnumerator HideTextAfterTime(float duration)
+    {
+
+        informationTextObject.SetActive(true);
+        yield return new WaitForSeconds(duration);
+        informationTextObject.SetActive(false);
     }
 }

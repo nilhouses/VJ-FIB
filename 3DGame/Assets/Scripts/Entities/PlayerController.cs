@@ -10,14 +10,25 @@ public class PlayerController : EntityController
     public AudioClip parrySound, levelCompleteSound, invalidActionSound;
     public bool godMode = false;
     private Coroutine parryCoroutine;
-    
+
     public virtual void playParrySound() => SoundManager.instance.PlaySpatialSound(audioSource, parrySound, entityVolume);
     public virtual void playLevelCompleteSound() => SoundManager.instance.PlaySound(levelCompleteSound, SoundManager.instance.playerGroup, entityVolume);
     public override void playInvalidActionSound() => SoundManager.instance.PlaySound(invalidActionSound, SoundManager.instance.playerGroup, entityVolume);
     public override IState GetIdleState(bool longIdle = false) { return new PlayerIdleState(this, longIdle); }
+
     public override void ReturnToIdle() { 
+            allowInput = true;
+            timeInMove = 0f;
+            stateMachine.ChangeState(GetIdleState(false)); 
+    }
+    public void goToInvalidActionState()
+    {
+        allowInput = false;
+        stateMachine.ChangeState(new InvalidActionState(this)); 
+    }
+    public void returnFromInvalidActionState()
+    {
         allowInput = true;
-        timeInMove = 0f;
         stateMachine.ChangeState(GetIdleState(false)); 
     }
 
@@ -65,7 +76,7 @@ public class PlayerController : EntityController
     {
         return GameManager.instance.lives;
     }
-
+    
     public override void receiveHit(Vector3 damageSourcePos)
     {
         if (invincibilityTime > 0f) return;
