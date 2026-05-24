@@ -17,7 +17,9 @@ public class SoundManager : MonoBehaviour
     private bool isMusicMuted = false;
     private float lastMasterVolume = 1f;
     private float lastMusicVolume = 1f;
-    
+    private AudioSource musicAudioSource;
+    public AudioClip backgroundMusic;
+
     // Para que el HUD y el settings sepan cuando existe
     public delegate void OnSoundReady();
     public static event OnSoundReady OnSoundReadyEvent;
@@ -35,6 +37,11 @@ public class SoundManager : MonoBehaviour
             }
             local2DAudioSource.spatialBlend = 0f; 
             local2DAudioSource.playOnAwake = false;
+
+            // Soundtrack de fondo
+            musicAudioSource = gameObject.AddComponent<AudioSource>();
+            musicAudioSource.loop = true;
+            musicAudioSource.outputAudioMixerGroup = musicGroup;
         }
         else {
             Destroy(gameObject);
@@ -83,6 +90,12 @@ public class SoundManager : MonoBehaviour
     }
     public bool IsMutedMusic() {
         return isMusicMuted;
+    }
+
+    public void PlayMusic() {
+        if (musicAudioSource.clip == backgroundMusic) return;
+        musicAudioSource.clip = backgroundMusic;
+        musicAudioSource.Play();
     }
 
     // Efecto de distancia en el sonido: cuanto más lejos, más bajo el volumen

@@ -42,7 +42,7 @@ public class Coin : MonoBehaviour
         // Comprobamos si lo que nos ha tocado es el Jugador
         if (other.CompareTag("Player"))
         {
-            GameManager.instance.AddCoins(100);
+            GameManager.instance.AddCoins(50);
             Vector3 camPos = Camera.main.transform.position;
             SoundManager.instance.PlaySound(collectSound, SoundManager.instance.objectsGroup, 1.0f);
             Destroy(gameObject);
