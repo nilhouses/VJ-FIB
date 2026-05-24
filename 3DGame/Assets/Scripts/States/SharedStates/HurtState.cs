@@ -39,5 +39,6 @@ public class HurtState : IState
         e.anim.SetBool("isGettingHit", false);
         e.wasJustHit = true;    // Marca que el enemigo acaba de recibir un golpe para evitar recibir múltiples golpes seguidos
         e.isReceivingHit = false;
+        e.invincibilityTime = 0.6f; // Reinicia el tiempo de invencibilidad para el próximo golpe   
     }
 }

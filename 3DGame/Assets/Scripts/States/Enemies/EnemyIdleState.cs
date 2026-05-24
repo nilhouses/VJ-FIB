@@ -20,6 +20,7 @@ public class EnemyIdleState : IdleState
         {
             if (enemy.wasJustHit)
             {
+                enemy.wasJustHit = false; // Reseteamos el flag para que no se quede atascado en este estado
                 timer = 0f; // Si el enemigo acaba de recibir un golpe, actúa inmediatamente en su próximo turno
             }
             else

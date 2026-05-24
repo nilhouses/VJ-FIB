@@ -14,6 +14,7 @@ public class WitchIdleState : IState
     {
         if (witch.wasJustHit)
         {
+            witch.wasJustHit = false; // Reseteamos el flag para que no se quede atascado en este estado
             timer = 0f; // Si la bruja acaba de recibir un golpe, actúa inmediatamente en su próximo turno
         }
         else

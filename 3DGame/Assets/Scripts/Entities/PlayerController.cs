@@ -33,7 +33,7 @@ public class PlayerController : EntityController
     void Update()
     {
         HandleFalling();
-        handleInvencibilityFeedback();
+        HandleInvencibilityFeedback();
 
         if (isFallingIntoAbyss) return;
 
@@ -68,7 +68,7 @@ public class PlayerController : EntityController
 
     public override void receiveHit(Vector3 damageSourcePos)
     {
-        if (wasJustHit) return;
+        if (invincibilityTime > 0f) return;
         if (getLivesRemaining() <= 0) return;
 
         if (!godMode && canHurtMe(damageSourcePos))

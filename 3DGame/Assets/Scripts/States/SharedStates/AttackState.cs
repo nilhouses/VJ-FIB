@@ -22,7 +22,6 @@ public class AttackState : IState
         attacker.anim.SetBool("isAttacking" + randomAttack, true); 
         attackTimer = 1.0f;
         damageSourcePos = attacker.transform.position;
-        attacker.playAttackSound();
         victim.isReceivingHit = true;   // Marcamos al objetivo como recibiendo un golpe para evitar que reciba múltiples golpes a la vez
     }
 
@@ -31,11 +30,12 @@ public class AttackState : IState
         attackTimer -= Time.deltaTime;
         if (attackTimer <= 0.9f && victim != null && !hitRegistered) 
         {
+            attacker.playAttackSound();
             hitRegistered = true;
             victim.receiveHit(damageSourcePos);
             victim = null;
         }
-        if (attackTimer <= 0) attacker.ReturnToIdle();
+        else if (attackTimer <= 0) attacker.ReturnToIdle();
     }
 
     public void Exit()

@@ -42,7 +42,7 @@ public class EnemyController : EntityController
     void Update()
     {
         HandleFalling();
-        handleInvencibilityFeedback();
+        HandleInvencibilityFeedback();
 
         if (isFallingIntoAbyss) return;
 
@@ -66,7 +66,7 @@ public class EnemyController : EntityController
 
     public override void receiveHit(Vector3 fromPosition)
     {
-        if (wasJustHit) return;
+        if (invincibilityTime > 0f) return;
         if (getLivesRemaining() <= 0) return;
 
         if (canHurtMe(fromPosition))

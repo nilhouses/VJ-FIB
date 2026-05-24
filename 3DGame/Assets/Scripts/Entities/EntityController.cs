@@ -11,7 +11,7 @@ public abstract class EntityController : MonoBehaviour
     public string entityName = "Entity";
 
     public float attackSpeed = 1.0f;
-    public float heightJump = 0.5f;
+    public float heightJump = 0.6f;
     public int numAttacks = 1;
     public bool wasJustHit = false;
     public float invincibilityTime = 0.5f; // Tiempo durante el cual no se pueden recibir más golpes después de ser golpeado
@@ -214,8 +214,22 @@ public abstract class EntityController : MonoBehaviour
         // Chequeo de ataque, si hay alguien y tiene el tag enemigo
         if (targetEntity != null && targetEntity.CompareTag(enemyTag))
         {
-            lastDetectedTarget = targetEntity.GetComponent<EntityController>();
-            return 2; // ATAQUE
+            EntityController targetController = targetEntity.GetComponent<EntityController>();
+            
+            if (targetController != null)
+            {
+                if (targetController.stateMachine.currentState.GetType().Name.Contains("Idle") ||
+                    targetController.stateMachine.currentState.GetType().Name.Contains("Block"))
+                {
+                    lastDetectedTarget = targetController;
+                    return 2; // ATAQUE PERMITIDO
+                }
+                else
+                {
+                    // El objetivo está ocupado esperamos nuestro turno
+                    return 0; // ESPERAR
+                }
+            }
         }
 
         // Si no podemos atacar, comprobamos si la celda nos bloquea el movimiento físico
@@ -416,14 +430,31 @@ public abstract class EntityController : MonoBehaviour
         }
     }
 
-    protected void handleInvencibilityFeedback()
+    protected void HandleInvencibilityFeedback()
     {
-        if (wasJustHit)
+        if (invincibilityTime > 0f)
         {
             invincibilityTime -= Time.deltaTime;
-            if (invincibilityTime <= 0f)            {
-                wasJustHit = false;
-                invincibilityTime = 0.5f; // Reinicia el tiempo de invencibilidad para el próximo golpe
+            // Parpadeo rápido para indicar invencibilidad
+            float alpha = Mathf.PingPong(Time.time * 10f, 1f);
+            SetEntityAlpha(alpha);
+        }
+        else
+        {
+            SetEntityAlpha(1f); // Volvemos a la opacidad normal
+        }
+    }
+
+    private void SetEntityAlpha(float alpha)
+    {
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        foreach (Renderer rend in renderers)
+        {
+            foreach (Material mat in rend.materials)
+            {
+                Color c = mat.color;
+                c.a = alpha;
+                mat.color = c;
             }
         }
     }
