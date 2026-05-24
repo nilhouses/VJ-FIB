@@ -104,7 +104,6 @@ public class HUDManager : MonoBehaviour
         {
             pauseMenuPanel.SetActive(isPaused);
         }
-        Debug.Log(isPaused ? "Juego pausado" : "Juego reanudado");
     }
 
     private void GoToLobbyFromPause()

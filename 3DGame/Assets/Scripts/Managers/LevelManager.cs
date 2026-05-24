@@ -10,6 +10,8 @@ public class LevelManager : MonoBehaviour
     private int maxLevel = 10; // Número máximo de niveles disponibles
     private CreateLevel levelCreator; // Referencia al script que genera el nivel
 
+    public bool isLobby = false; // Necesario para decirle al manager si hay que cargar una escena nueva al pulsar las teclas (0-9)
+
     [Header("Falling Floor Settings")]
     public float timeBeforeFirstFall = 8f; // Tiempo antes de que el suelo comience a caer
     public float timeBetweenFalls = 5f; // Tiempo entre cada caída de suelo
@@ -21,7 +23,12 @@ public class LevelManager : MonoBehaviour
     {
         instance = this; // Asignar la instancia del singleton
         levelCreator = FindObjectOfType<CreateLevel>();
-
+        if (!isLobby && GameManager.instance != null && GameManager.instance.shortcutLevelRequested != -1)
+        {
+            currentLevel = GameManager.instance.shortcutLevelRequested;
+            GameManager.instance.shortcutLevelRequested = -1;
+        }
+        
         // Lo primero que hacemos al iniciar el juego es cargar el primer nivel para que el jugador pueda setearse en su posición inicial correctamente
         LoadCurrentLevel();
     }
@@ -65,7 +72,6 @@ public class LevelManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("¡Has completado todos los niveles!");
             GameManager.instance.goToCredits();
         }
     }
@@ -116,16 +122,33 @@ public class LevelManager : MonoBehaviour
         }
 
         // Cargar niveles con atajos 0-9
-        if (Input.GetKeyDown(KeyCode.Alpha1)) { currentLevel = 1; LoadCurrentLevel(); }
-        if (Input.GetKeyDown(KeyCode.Alpha2)) { currentLevel = 2; LoadCurrentLevel(); }
-        if (Input.GetKeyDown(KeyCode.Alpha3)) { currentLevel = 3; LoadCurrentLevel(); }
-        if (Input.GetKeyDown(KeyCode.Alpha4)) { currentLevel = 4; LoadCurrentLevel(); }
-        if (Input.GetKeyDown(KeyCode.Alpha5)) { currentLevel = 5; LoadCurrentLevel(); }
-        if (Input.GetKeyDown(KeyCode.Alpha6)) { currentLevel = 6; LoadCurrentLevel(); }
-        if (Input.GetKeyDown(KeyCode.Alpha7)) { currentLevel = 7; LoadCurrentLevel(); }
-        if (Input.GetKeyDown(KeyCode.Alpha8)) { currentLevel = 8; LoadCurrentLevel(); }
-        if (Input.GetKeyDown(KeyCode.Alpha9)) { currentLevel = 9; LoadCurrentLevel(); }
-        if (Input.GetKeyDown(KeyCode.Alpha0)) { currentLevel = 10; LoadCurrentLevel(); }
+        if (Input.GetKeyDown(KeyCode.Alpha1)) { LoadLevel(1); }
+        if (Input.GetKeyDown(KeyCode.Alpha2)) { LoadLevel(2); }
+        if (Input.GetKeyDown(KeyCode.Alpha3)) { LoadLevel(3); }
+        if (Input.GetKeyDown(KeyCode.Alpha4)) { LoadLevel(4); }
+        if (Input.GetKeyDown(KeyCode.Alpha5)) { LoadLevel(5); }
+        if (Input.GetKeyDown(KeyCode.Alpha6)) { LoadLevel(6); }
+        if (Input.GetKeyDown(KeyCode.Alpha7)) { LoadLevel(7); }
+        if (Input.GetKeyDown(KeyCode.Alpha8)) { LoadLevel(8); }
+        if (Input.GetKeyDown(KeyCode.Alpha9)) { LoadLevel(9); }
+        if (Input.GetKeyDown(KeyCode.Alpha0)) { LoadLevel(10); }
+    }
+    private void LoadLevel(int targetLevel)
+    {
+        if (isLobby)
+        {
+            if (GameManager.instance != null)
+            {
+                GameManager.instance.shortcutLevelRequested = targetLevel;
+                GameManager.instance.goToLevel();
+                this.enabled = false;
+            }
+        }
+        else
+        {
+            currentLevel = targetLevel;
+            LoadCurrentLevel();
+        }
     }
 
     // Gestionar la caída de la siguiente fila

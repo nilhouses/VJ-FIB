@@ -113,6 +113,7 @@ public abstract class EntityController : MonoBehaviour
     public virtual void playDieSound() => SoundManager.instance.PlaySpatialSound(audioSource, dieSound, entityVolume);
     protected virtual void OnMovementComplete() {} // Lo usa el puddle, pero puede ser útil en otras entidades
 
+    public virtual void playInvalidActionSound() {}
     // Puddle interaction
     public void SetStuck(SlimePuddle puddle) // Te lo dice el puddle
     {
@@ -248,6 +249,12 @@ public abstract class EntityController : MonoBehaviour
         GameObject obstacle = GetObjectInDirection("Obstacle", initialPosMove, vecMove, 0f, 1f);
 
         bool canMove = ground != null && wall == null && door == null && obstacle == null;
+        
+        if (door != null && this is PlayerController && !LevelManager.instance.CheckLevelComplete())
+        {
+            playInvalidActionSound();
+        }
+        
         bool leavingRoom = door != null && LevelManager.instance.CheckLevelComplete();
 
         if (this is PlayerController && leavingRoom)
@@ -274,7 +281,6 @@ public abstract class EntityController : MonoBehaviour
             timeInMove = 0f;
             return 1;
         }
-
         return 0; // NO SE PUEDE MOVER (Hay un muro o no hay suelo)
     }
 

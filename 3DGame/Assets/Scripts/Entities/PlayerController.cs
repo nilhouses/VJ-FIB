@@ -6,14 +6,14 @@ public class PlayerController : EntityController
 {
     public bool allowInput = true;
     private Vector3 parryBasePos;
-    private Coroutine parryCoroutine;
     [HideInInspector] public bool isMovingToNextLevel = false;
-    public AudioClip parrySound, levelCompleteSound;
+    public AudioClip parrySound, levelCompleteSound, invalidActionSound;
     public bool godMode = false;
-
+    private Coroutine parryCoroutine;
+    
     public virtual void playParrySound() => SoundManager.instance.PlaySpatialSound(audioSource, parrySound, entityVolume);
     public virtual void playLevelCompleteSound() => SoundManager.instance.PlaySound(levelCompleteSound, SoundManager.instance.playerGroup, entityVolume);
-
+    public override void playInvalidActionSound() => SoundManager.instance.PlaySound(invalidActionSound, SoundManager.instance.playerGroup, entityVolume);
     public override IState GetIdleState(bool longIdle = false) { return new PlayerIdleState(this, longIdle); }
     public override void ReturnToIdle() { 
         allowInput = true;
