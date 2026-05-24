@@ -25,7 +25,7 @@ public class SpellProjectile : MonoBehaviour
         }
 
         audioSource.playOnAwake = false;
-        audioSource.spatialBlend = 0.95f;
+        audioSource.spatialBlend = 0.8f;
         
         if (anim == null) anim = GetComponent<Animator>();
 
@@ -86,12 +86,12 @@ public class SpellProjectile : MonoBehaviour
         Vector3 camPos = Camera.main.transform.position;
 
         if (col.CompareTag("Shield"))   // Sonido de escudo
-        {
-            SoundManager.instance.PlaySound(woodenHitSound, SoundManager.instance.objectsGroup, 0.7f);
+        {   
+            SoundManager.instance.PlaySpatialSound(audioSource, woodenHitSound, 0.7f);
         }
         else    // Impacto directo
         {
-            SoundManager.instance.PlaySound(hitSound, SoundManager.instance.objectsGroup, 0.7f);
+            SoundManager.instance.PlaySpatialSound(audioSource, hitSound, 0.7f);
         }
 
         // Paramos el movimiento y activamos la animación de impacto
@@ -102,7 +102,7 @@ public class SpellProjectile : MonoBehaviour
     {
         hasHitTarget = true;
         Vector3 camPos = Camera.main.transform.position;
-        SoundManager.instance.PlaySound(objectHitSound, SoundManager.instance.objectsGroup, 0.7f);
+        SoundManager.instance.PlaySpatialSound(audioSource, objectHitSound, 0.7f);
         TriggerImpact();
     }
 
