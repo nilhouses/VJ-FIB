@@ -11,13 +11,27 @@ public class EnemyIdleState : IdleState
 
     public override void Enter()
     {
-        timer = enemy.timeBetweenMoves; // Reinicia el timer al entrar en el estado
+        if (enemy.isFirstIdle)
+        {
+            enemy.isFirstIdle = false;
+            timer = (enemy.turnGroup == 2) ? (enemy.timeBetweenMoves / 2) : enemy.timeBetweenMoves; // Si el enemigo es del grupo 2, empieza a actuar a mitad del tiempo de espera
+        }
+        else
+        {
+            if (enemy.wasJustHit)
+            {
+                timer = 0f; // Si el enemigo acaba de recibir un golpe, actúa inmediatamente en su próximo turno
+            }
+            else
+            {
+                timer = enemy.timeBetweenMoves; // Reinicia el timer para el siguiente turno a actuar del enemigo
+            }
+        }
     }
 
     public override void Update()
     {
         timer -= Time.deltaTime;
-        if (timer < (enemy.timeBetweenMoves - 0.5f) && enemy.isReceivingHit) enemy.isReceivingHit = false;
         if (timer > 0) return;
 
         // Acciones comunes en entidades
@@ -27,6 +41,6 @@ public class EnemyIdleState : IdleState
 
     public override void Exit()
     {
-
+        
     }
 }

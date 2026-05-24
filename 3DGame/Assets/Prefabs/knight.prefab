@@ -441,6 +441,8 @@ MonoBehaviour:
   attackSpeed: 1
   heightJump: 0.6
   numAttacks: 1
+  wasJustHit: 0
+  invincibilityTime: 0.5
   isStuckInPuddle: 0
   anim: {fileID: 0}
   dir: 0
@@ -932,8 +934,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.36, y: 0.3, z: 0.03}
-  m_Center: {x: 0, y: 0.15, z: -0.04}
+  m_Size: {x: 0.7396363, y: 0.6872481, z: 0.029999997}
+  m_Center: {x: -0.0024282697, y: 0.16142146, z: -0.040001594}
 --- !u!1 &5189725489976558609
 GameObject:
   m_ObjectHideFlags: 0

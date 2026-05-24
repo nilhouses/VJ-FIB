@@ -445,8 +445,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   totalEnemies: 0
   enemiesDefeated: 0
-  timeBeforeFirstFall: 8
-  timeBetweenFalls: 5
+  timeBeforeFirstFall: 7
+  timeBetweenFalls: 4
   currentFallenRow: -1
 --- !u!4 &207010961
 Transform:
@@ -4604,8 +4604,8 @@ SceneRoots:
   - {fileID: 705507995}
   - {fileID: 207010961}
   - {fileID: 965331148}
-  - {fileID: 37064195}
   - {fileID: 13467001}
   - {fileID: 1660537290}
   - {fileID: 1002706470}
   - {fileID: 801254797}
+  - {fileID: 37064195}

@@ -33,6 +33,7 @@ public class PlayerController : EntityController
     void Update()
     {
         HandleFalling();
+        handleInvencibilityFeedback();
 
         if (isFallingIntoAbyss) return;
 
@@ -42,7 +43,7 @@ public class PlayerController : EntityController
 
     public override int getAction()
     {
-        Direction dirMove = Direction.UP;
+        Direction dirMove = Direction.NONE;
         bool moved = false;
 
         if      (Input.GetKey(KeyCode.UpArrow)    || Input.GetKey(KeyCode.W)) { moved = true; dirMove = Direction.UP;    }
@@ -67,6 +68,7 @@ public class PlayerController : EntityController
 
     public override void receiveHit(Vector3 damageSourcePos)
     {
+        if (wasJustHit) return;
         if (getLivesRemaining() <= 0) return;
 
         if (!godMode && canHurtMe(damageSourcePos))
@@ -77,6 +79,7 @@ public class PlayerController : EntityController
                 Direction dirToDamage = GetDirectionTo(damageSourcePos);   
                 if (this.dir == dirToDamage) // Dirección parry = dirección del ataque
                 {
+                    isReceivingHit = false;
                     playParrySound();
                     if (parryCoroutine == null) parryBasePos = transform.position;
                     else StopCoroutine(parryCoroutine);
@@ -89,6 +92,10 @@ public class PlayerController : EntityController
             allowInput = false;
             GameManager.instance.loseLife();
             stateMachine.ChangeState(new HurtState(this));
+        }
+        else
+        {
+            isReceivingHit = false;
         }
     }
 

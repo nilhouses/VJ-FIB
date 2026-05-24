@@ -18,14 +18,15 @@ public class PlayerIdleState : IdleState
             firstTime = false;
         }
         timerToNextAction = 0.1f;
+        p.wasJustHit = false;
     }
 
     public override void Update()
     {
         timerToNextAction -= Time.deltaTime;
         if (timerToNextAction > 0) return;
-
         if (!p.allowInput) return;
+
         timer += Time.deltaTime; // Actualitza el timer base
         if (timer > 3.5f && p.isReceivingHit) p.isReceivingHit = false;
         p.anim.SetFloat("idleTime", timer);

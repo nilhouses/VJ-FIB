@@ -6,7 +6,7 @@
 14 1 1 1 1 
 14 1 1 1 1
 7 1 21 1 1
-1 1 10 8 8
+1 1 10 24 24
 8 8 22 1 1
 1 21 1 1 1
 1 21 1 1 1
@@ -36,3 +36,4 @@
 % 21 -> Coin
 % 22 -> Weapon Rack
 % 23 -> Weapon Rack Inverted
+% 24 -> Delayed Spike

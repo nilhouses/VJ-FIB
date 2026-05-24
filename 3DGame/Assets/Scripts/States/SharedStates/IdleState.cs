@@ -29,6 +29,7 @@ public abstract class IdleState : IState
                 break;
             case 2:
                 if (e.lastDetectedTarget != null && !e.lastDetectedTarget.isReceivingHit) {
+                    if (e is PlayerController) Debug.Log("Attacking");
                     e.stateMachine.ChangeState(new AttackState(e));
                 }
                 break;

@@ -7,6 +7,8 @@ public class EnemyController : EntityController
     public int lifesRemaining = 1;
 
     [Header("Movement")]
+    [HideInInspector] public int turnGroup = 1; // Grupo de turno al que pertenece el enemigo (1 o 2)
+    [HideInInspector] public bool isFirstIdle = true; // Para controlar el primer idle del enemigo
     public EnemyMovementStrategy movementStrategy;
     public Transform playerTransform;
 
@@ -22,6 +24,7 @@ public class EnemyController : EntityController
     {
         base.Start();
         fallSpeed = 4f;
+        turnGroup = Random.Range(1, 3); // Asigna aleatoriamente el grupo de turno (1 o 2)
         stateMachine.ChangeState(GetIdleState(false));
         enemyTag = "Player";
 
@@ -39,6 +42,7 @@ public class EnemyController : EntityController
     void Update()
     {
         HandleFalling();
+        handleInvencibilityFeedback();
 
         if (isFallingIntoAbyss) return;
 
@@ -62,6 +66,7 @@ public class EnemyController : EntityController
 
     public override void receiveHit(Vector3 fromPosition)
     {
+        if (wasJustHit) return;
         if (getLivesRemaining() <= 0) return;
 
         if (canHurtMe(fromPosition))
@@ -69,6 +74,10 @@ public class EnemyController : EntityController
             lifesRemaining--;
             Debug.Log("Enemy hit! Lives remaining: " + lifesRemaining);
             stateMachine.ChangeState(new HurtState(this));            
+        }
+        else
+        {
+            isReceivingHit = false;
         }
     }
 }

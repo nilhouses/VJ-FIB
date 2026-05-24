@@ -280,9 +280,25 @@ public class CreateLevel : MonoBehaviour
 
                 SpawnSupportFloors(x, y, rowParents[y].transform);
 
-                if (tile == 8)
+                if (tile == 8)          // Spikes normales
                 {
-                    SpawnWithPalette(spikeTrap, new Vector3(x, -0.75f, y), transform.rotation, rowParents[y].transform, FloorColor);
+                    GameObject spike = SpawnWithPalette(spikeTrap, new Vector3(x, -0.75f, y), transform.rotation, rowParents[y].transform, FloorColor);
+                    SpikeTrap script = spike.GetComponentInChildren<SpikeTrap>();
+                    if (script != null) 
+                    {
+                        script.initialDelay = 0f;
+                        script.InitializeTrap();
+                    }
+                }
+                else if (tile == 24)    // Spikes con desfase
+                {
+                    GameObject spike = SpawnWithPalette(spikeTrap, new Vector3(x, -0.75f, y), transform.rotation, rowParents[y].transform, FloorColor);
+                    SpikeTrap script = spike.GetComponentInChildren<SpikeTrap>();
+                    if (script != null) 
+                    {
+                        script.initialDelay = script.waitTime + script.heightUp / script.speed;
+                        script.InitializeTrap();
+                    }
                 }
                 else
                 {

@@ -13,6 +13,8 @@ public abstract class EntityController : MonoBehaviour
     public float attackSpeed = 1.0f;
     public float heightJump = 0.5f;
     public int numAttacks = 1;
+    public bool wasJustHit = false;
+    public float invincibilityTime = 0.5f; // Tiempo durante el cual no se pueden recibir más golpes después de ser golpeado
     public abstract void ReturnToIdle();
 
     [HideInInspector] public bool isStuckInPuddle = false;
@@ -321,12 +323,10 @@ public abstract class EntityController : MonoBehaviour
 
     protected bool canHurtMe(Vector3 fromPosition)
     {
-        // Distancia de Manhattan (ataque melee), (No uso el OccupancyManager porque podría tener varios atacantes)
-        // [Para la bruja, que pega a distancia podemos mirar que tenga la misma x o z, que tira hechizos en línea recta]
         Vector2Int attackGridPos = Vector2Int.RoundToInt(new Vector2(fromPosition.x, fromPosition.z));
         int dx = Mathf.Abs(currentGridPos.x - attackGridPos.x);
         int dy = Mathf.Abs(currentGridPos.y - attackGridPos.y);
-        return (dx + dy <= 1) && !(stateMachine.currentState is DeadState); // Si el atacante está en una celda adyacente o en la misma celda (por ejemplo, un ataque de área)
+        return (dx + dy <= 1) && !(stateMachine.currentState is DeadState) && !wasJustHit;
     }
 
     public Direction GetDirectionTo(Vector3 targetPos)
@@ -412,6 +412,18 @@ public abstract class EntityController : MonoBehaviour
             else
             {
                 GameManager.instance.goToLobby(); // Volvemos al lobby si el jugador cae al abismo
+            }
+        }
+    }
+
+    protected void handleInvencibilityFeedback()
+    {
+        if (wasJustHit)
+        {
+            invincibilityTime -= Time.deltaTime;
+            if (invincibilityTime <= 0f)            {
+                wasJustHit = false;
+                invincibilityTime = 0.5f; // Reinicia el tiempo de invencibilidad para el próximo golpe
             }
         }
     }

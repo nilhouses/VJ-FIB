@@ -12,7 +12,14 @@ public class WitchIdleState : IState
 
     public void Enter()
     {
-        timer = witch.timeBetweenMoves; // O 0, dependiendo de cómo inicialices tus enemigos
+        if (witch.wasJustHit)
+        {
+            timer = 0f; // Si la bruja acaba de recibir un golpe, actúa inmediatamente en su próximo turno
+        }
+        else
+        {
+            timer = witch.timeBetweenMoves;
+        }
     }
 
     public void Update()

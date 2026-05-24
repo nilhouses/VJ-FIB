@@ -659,7 +659,7 @@ MonoBehaviour:
   receiveHitSound: {fileID: 8300000, guid: 01a4827ffc8e99c4d9885c878ffda31b, type: 3}
   dieSound: {fileID: 8300000, guid: bcd4b87579bf00f41bc820767947c6cc, type: 3}
   enemyTag: Enemy
-  speed: 3
+  speed: 5
   entityName: Witch
   attackSpeed: 2
   heightJump: 0
@@ -673,8 +673,10 @@ MonoBehaviour:
   lastDetectedTarget: {fileID: 0}
   entityVolume: 1
   isReceivingHit: 0
-  timeBetweenMoves: 2
+  timeBetweenMoves: 1
   lifesRemaining: 3
+  turnGroup: 1
+  isFirstIdle: 1
   movementStrategy: {fileID: 11400000, guid: 6e5896f571d753543bb7fe64664d09a1, type: 2}
   playerTransform: {fileID: 0}
   spellPrefab: {fileID: 7304728152103151111, guid: a87d89a8c99c68b4aae9b370263c100b, type: 3}

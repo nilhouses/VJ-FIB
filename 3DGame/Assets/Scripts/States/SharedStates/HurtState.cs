@@ -37,5 +37,7 @@ public class HurtState : IState
     public void Exit()
     {
         e.anim.SetBool("isGettingHit", false);
+        e.wasJustHit = true;    // Marca que el enemigo acaba de recibir un golpe para evitar recibir múltiples golpes seguidos
+        e.isReceivingHit = false;
     }
 }

@@ -9,6 +9,8 @@ public class SpikeTrap : MonoBehaviour
     public float speed = 5f;            // Velocidad a la que se moverán los pinchos
     public float waitTime = 2f;         // Tiempo que los pinchos permanecerán elevados antes de bajar
     private bool hasHitTarget = false;  // Para evitar múltiples colisiones con el mismo jugador
+    public float initialDelay = 0f;     // Tiempo de espera antes de que los pinchos comiencen a moverse
+    private bool isInitialized = false; // Para asegurarnos de que InitializeTrap se llame antes de Update
 
 
     [Header("Ajustes de Audio")]
@@ -41,13 +43,21 @@ public class SpikeTrap : MonoBehaviour
     }
     void Start()
     {
+
+    }
+
+    public void InitializeTrap()
+    {
         positionDown = transform.localPosition;
-        positionUp = positionDown + new Vector3(0, heightUp, 0);
-        timer = waitTime; // Iniciar el temporizador con el tiempo de espera
+        positionUp = new Vector3(positionDown.x, positionDown.y + heightUp, positionDown.z);
+        timer = waitTime + initialDelay; // Empezamos con el tiempo de espera inicial
+        isInitialized = true;
     }
 
     void Update()
     {
+        if (!isInitialized) return; // Aseguramos que InitializeTrap se haya llamado
+
         timer -= Time.deltaTime;
 
         if (timer <= 0f)
@@ -72,6 +82,8 @@ public class SpikeTrap : MonoBehaviour
 
     void FixedUpdate() 
     {
+        if (!isInitialized) return; // Aseguramos que InitializeTrap se haya llamado
+
         // Calculamos si los pinchos han subido lo suficiente para activar la detección
         bool spikesOut = transform.localPosition.y > (positionDown.y + heightUp * 0.3f);
 

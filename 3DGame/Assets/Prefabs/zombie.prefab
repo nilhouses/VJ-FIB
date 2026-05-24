@@ -689,7 +689,8 @@ MonoBehaviour:
   receiveHitSound: {fileID: 8300000, guid: 15f1ff371d993c8459f8cdcb28dc71c8, type: 3}
   dieSound: {fileID: 8300000, guid: 6f83f98857aae9c41aabc890489806e2, type: 3}
   enemyTag: Enemy
-  speed: 3
+  speed: 4
+  entityName: Entity
   attackSpeed: 2
   heightJump: 0
   numAttacks: 1
@@ -701,9 +702,13 @@ MonoBehaviour:
   timeInMove: 0
   lastDetectedTarget: {fileID: 0}
   entityVolume: 1
+  isReceivingHit: 0
   timeBetweenMoves: 2
   lifesRemaining: 2
+  turnGroup: 1
+  isFirstIdle: 1
   movementStrategy: {fileID: 11400000, guid: 948278396d8fd68499a1c8f9bcd23c37, type: 2}
+  playerTransform: {fileID: 0}
 --- !u!65 &6403443326695169566
 BoxCollider:
   m_ObjectHideFlags: 0
