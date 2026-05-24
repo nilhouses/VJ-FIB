@@ -12,6 +12,19 @@ public class LobbyManager : MonoBehaviour
         instance = this; // Asignar la instancia del singleton
         ShowPanel(lobbyPanel); // Mostrar el panel del lobby al iniciar
     }
+
+    void Start()
+    {
+        if (SoundManager.instance != null)
+        {
+            SoundManager.instance.PlayMusic();
+        }
+        if (GameManager.instance != null && GameManager.instance.requestShowCredits)
+        {
+            ShowPanel(creditsPanel);
+            GameManager.instance.requestShowCredits = false;
+        }
+    }
     public void ShowPanel(GameObject panelToShow)
     {
         lobbyPanel.SetActive(panelToShow == lobbyPanel);

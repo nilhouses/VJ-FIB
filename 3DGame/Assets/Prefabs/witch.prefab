@@ -664,6 +664,8 @@ MonoBehaviour:
   attackSpeed: 2
   heightJump: 0
   numAttacks: 1
+  wasJustHit: 0
+  invincibilityTime: 0.5
   isStuckInPuddle: 0
   anim: {fileID: 0}
   dir: 0
@@ -671,7 +673,7 @@ MonoBehaviour:
   vecMove: {x: 0, y: 0, z: 0}
   timeInMove: 0
   lastDetectedTarget: {fileID: 0}
-  entityVolume: 1
+  entityVolume: 0.609
   isReceivingHit: 0
   timeBetweenMoves: 1
   lifesRemaining: 3

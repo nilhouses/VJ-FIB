@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public int maxRoomsSurvived = 0;
     public int currentRoomsSurvived = 0;
     public int coins = 0;
+    public bool requestShowCredits = false;
 
     void Awake()
     {
@@ -42,10 +43,10 @@ public class GameManager : MonoBehaviour
     public void goToCredits()
     {
         lives = 3; // Reiniciar vidas al volver a los créditos
+        requestShowCredits = true;
         SceneManager.LoadScene(0);
-        // Pon el panel de créditos
-        LobbyManager.instance.ClickCredits();
     }
+    
     public void loseLife()
     {
         lives--;
@@ -60,8 +61,13 @@ public class GameManager : MonoBehaviour
 
     public void AddCoins(int amount)
     {
-        coins += amount;
-        HUDManager.instance.UpdateCoins(coins);
+        int previousCoins = coins;
+        coins = Mathf.Min(coins + amount, 999);
+
+        if (previousCoins != coins)
+        {
+            HUDManager.instance.UpdateCoins(coins);
+        }
     }
     public void RoomSurvived()
     {

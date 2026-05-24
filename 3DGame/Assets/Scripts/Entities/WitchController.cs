@@ -42,6 +42,6 @@ public class WitchController : EnemyController
     public void playSpellCastSound()
     {
         Vector3 camPos = Camera.main.transform.position;
-        SoundManager.instance.PlaySound(spellCastSound, SoundManager.instance.objectsGroup, 0.7f);
+        SoundManager.instance.PlaySound(spellCastSound, SoundManager.instance.objectsGroup, 0.5f);
     }
 }

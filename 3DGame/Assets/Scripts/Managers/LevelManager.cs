@@ -26,6 +26,13 @@ public class LevelManager : MonoBehaviour
         LoadCurrentLevel();
     }
 
+    void Start()
+    {
+        if (SoundManager.instance != null)
+        {
+            SoundManager.instance.PlayMusic();
+        }   
+    }
     private void LoadCurrentLevel()
     {
         totalEnemies = 0;
@@ -42,11 +49,6 @@ public class LevelManager : MonoBehaviour
         {
             isFallingActive = false;            // Desactivar la caída del suelo para niveles anteriores al 3
         }
-    }
-
-    public void Start()
-    {
-
     }
 
     public void LoadNextLevel()
