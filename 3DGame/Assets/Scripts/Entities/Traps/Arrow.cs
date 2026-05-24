@@ -56,9 +56,10 @@ public class ArrowProjectile : MonoBehaviour
 
     private void CheckCollisions()
     {
-        int entityLayer = LayerMask.GetMask("Player", "Enemy", "FlyingEnemy");
-        Collider[] victims = Physics.OverlapSphere(transform.position, 0.15f, entityLayer);
+        int entityLayer = LayerMask.GetMask("Player", "Enemy", "FlyingEnemy", "Shield");
+        Collider[] victims = Physics.OverlapSphere(transform.position, 0.2f, entityLayer);
 
+        Debug.Log(victims.Length);
         if (victims.Length > 0)
         {
             ProcessEntityHit(victims[0]);
@@ -86,12 +87,11 @@ public class ArrowProjectile : MonoBehaviour
 
         if (entity != null)
         {
-            if (col.CompareTag("Shield"))
+            if (col.CompareTag("Shield") && entity is PlayerController player && player.stateMachine.currentState is BlockState)
             {
-                Vector3 hitPoint = transform.position;
-                Vector3 shieldCenter = col.transform.position;
-                Vector3 intermediatePoint = Vector3.Lerp(hitPoint, shieldCenter, 0.5f); // Sino le pega en el brazo pk la anim de block es pocha
-                transform.position = intermediatePoint;
+                // Punto más cercano en la superficie real del collider del escudo
+                Vector3 stickPoint = col.ClosestPoint(transform.position);
+                transform.position = stickPoint + transform.forward * 0.1f;
                 SoundManager.instance.PlaySpatialSound(audioSource, woodenHitSound, hitVolume);
             }
             else 
