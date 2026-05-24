@@ -40,6 +40,9 @@ public abstract class EntityController : MonoBehaviour
     protected float fallDuration = 4f;      // Tiempo que estará cayendo antes de destruirse
     protected float fallSpeed = 4f;         // Velocidad a la que baja
 
+    [Header("VFX")]
+    public GameObject bloodParticlesPrefab = null;
+
 
     public abstract IState GetIdleState(bool longIdle = false);
     protected virtual void Awake()

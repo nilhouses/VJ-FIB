@@ -694,6 +694,8 @@ MonoBehaviour:
   attackSpeed: 2
   heightJump: 0
   numAttacks: 1
+  wasJustHit: 0
+  invincibilityTime: 0.5
   isStuckInPuddle: 0
   anim: {fileID: 0}
   dir: 0
@@ -703,6 +705,7 @@ MonoBehaviour:
   lastDetectedTarget: {fileID: 0}
   entityVolume: 1
   isReceivingHit: 0
+  bloodParticlesPrefab: {fileID: 1743637094903878, guid: 021a2f7a2c5bc4449b4c64a66a050e8c, type: 3}
   timeBetweenMoves: 2
   lifesRemaining: 2
   turnGroup: 1

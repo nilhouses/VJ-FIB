@@ -256,7 +256,8 @@ public class CreateLevel : MonoBehaviour
         mapHeight = height;
 
         // Paleta
-        levelPalette = levelPalettes[UnityEngine.Random.Range(0, levelPalettes.Length)];
+        if (levelNumber == 0) levelPalette = levelPalettes[3];
+        else levelPalette = levelPalettes[UnityEngine.Random.Range(0, levelPalettes.Length)];
         if (levelPalette != null) ApplyLevelPalette();
 
         // Padres de fila
