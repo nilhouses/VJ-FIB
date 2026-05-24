@@ -221,8 +221,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.8449333, y: 0.53960013, z: 0.80306864}
-  m_Center: {x: 0.002956748, y: 0.42815167, z: 0.0045691133}
+  m_Size: {x: 0.8449333, y: 1.0216537, z: 0.80306864}
+  m_Center: {x: 0.002956748, y: 0.6691785, z: 0.0045691133}
 --- !u!114 &8235746833780484080
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -238,6 +238,7 @@ MonoBehaviour:
   heightUp: 0.285
   speed: 0.5
   waitTime: 2
+  initialDelay: 0
   spikeVolume: 1
   spikeSound: {fileID: 8300000, guid: 0283271988833bb46925d6585cac8719, type: 3}
 --- !u!4 &721730381572437980 stripped

@@ -11,6 +11,7 @@ public class SpikeTrap : MonoBehaviour
     private bool hasHitTarget = false;  // Para evitar múltiples colisiones con el mismo jugador
     public float initialDelay = 0f;     // Tiempo de espera antes de que los pinchos comiencen a moverse
     private bool isInitialized = false; // Para asegurarnos de que InitializeTrap se llame antes de Update
+    private Vector2Int trapGrid;        // Posición en grid del trap para comparación con entidades
 
 
     [Header("Ajustes de Audio")]
@@ -43,7 +44,10 @@ public class SpikeTrap : MonoBehaviour
     }
     void Start()
     {
-
+        trapGrid = new Vector2Int(
+            Mathf.RoundToInt(transform.position.x),
+            Mathf.RoundToInt(transform.position.z)
+        );
     }
 
     public void InitializeTrap()
@@ -73,7 +77,7 @@ public class SpikeTrap : MonoBehaviour
             }
 
             // Reseteamos la detección cuando los pinchos estén completamente abajo
-            if (!isMovingUp && Vector3.Distance(transform.localPosition, positionDown) < 0.05f)
+            if (!isMovingUp && Vector3.Distance(transform.localPosition, positionDown) <= 0.02f)
             {
                 hasHitTarget = false; 
             }
@@ -83,10 +87,15 @@ public class SpikeTrap : MonoBehaviour
     void FixedUpdate() 
     {
         if (!isInitialized) return; // Aseguramos que InitializeTrap se haya llamado
+        
+        // Si la celda está vacía reseteamos hasHitTarget
+        if (OccupancyManager.GetEntityAt(trapGrid) == null)
+        {
+            hasHitTarget = false;
+        }
 
         // Calculamos si los pinchos han subido lo suficiente para activar la detección
-        bool spikesOut = transform.localPosition.y > (positionDown.y + heightUp * 0.3f);
-
+        bool spikesOut = transform.localPosition.y > (positionDown.y + heightUp * 0.1f);
         if (spikesOut && !hasHitTarget)
         {
             CheckForEntityRaycast();
@@ -97,11 +106,8 @@ public class SpikeTrap : MonoBehaviour
     {
         int layerMask = LayerMask.GetMask("Player", "Enemy");
 
-        // Dibujamos la línea para confirmar visualmente el centro
-        // Debug.DrawLine(transform.position, transform.position + Vector3.up * 1.5f, Color.yellow);
-        
-        // Detección por volumen
-        Collider[] victims = Physics.OverlapSphere(transform.position, 0.5f, layerMask);
+        // Radio ampliado para detectar antes
+        Collider[] victims = Physics.OverlapSphere(transform.position, 0.7f, layerMask);
 
         if (victims.Length > 0 && !hasHitTarget)
         {
@@ -109,24 +115,30 @@ public class SpikeTrap : MonoBehaviour
 
             if (entity != null)
             {
-                float distance = Vector2.Distance(
-                    new Vector2(entity.transform.position.x, entity.transform.position.z),
-                    new Vector2(transform.position.x, transform.position.z)
+                // Comparamos posición en grid redondeando al entero más cercano
+                Vector2Int entityGrid = new Vector2Int(
+                    Mathf.RoundToInt(entity.transform.position.x),
+                    Mathf.RoundToInt(entity.transform.position.z)
+                );
+                Vector2Int trapGrid = new Vector2Int(
+                    Mathf.RoundToInt(transform.position.x),
+                    Mathf.RoundToInt(transform.position.z)
                 );
 
-                // Umbral de detección (un poco más de la mitad del bloque)
-                if (distance < 0.55f) 
+                if (entityGrid == trapGrid)
                 {
-                    // Forzamos a la entidad afectada al centro exacto detectado
-                    entity.transform.position = new Vector3(transform.position.x, entity.transform.position.y, transform.position.z);
-                    
+                    entity.transform.position = new Vector3(
+                        transform.position.x,
+                        entity.transform.position.y,
+                        transform.position.z
+                    );
+
                     hasHitTarget = true;
                     StartCoroutine(killCo(entity));
                 }
             }
         }
     }
-
 
     IEnumerator killCo(EntityController entity) // Para player y enemigos tenemos el mismo código
     {

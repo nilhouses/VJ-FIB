@@ -439,7 +439,7 @@ MonoBehaviour:
   speed: 3
   entityName: Player
   attackSpeed: 1
-  heightJump: 0.6
+  heightJump: 0.4
   numAttacks: 1
   wasJustHit: 0
   invincibilityTime: 0.5

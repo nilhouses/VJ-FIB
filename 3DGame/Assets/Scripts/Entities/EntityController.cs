@@ -435,27 +435,6 @@ public abstract class EntityController : MonoBehaviour
         if (invincibilityTime > 0f)
         {
             invincibilityTime -= Time.deltaTime;
-            // Parpadeo rápido para indicar invencibilidad
-            float alpha = Mathf.PingPong(Time.time * 10f, 1f);
-            SetEntityAlpha(alpha);
-        }
-        else
-        {
-            SetEntityAlpha(1f); // Volvemos a la opacidad normal
-        }
-    }
-
-    private void SetEntityAlpha(float alpha)
-    {
-        Renderer[] renderers = GetComponentsInChildren<Renderer>();
-        foreach (Renderer rend in renderers)
-        {
-            foreach (Material mat in rend.materials)
-            {
-                Color c = mat.color;
-                c.a = alpha;
-                mat.color = c;
-            }
         }
     }
 }
