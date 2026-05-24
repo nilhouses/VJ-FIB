@@ -1261,6 +1261,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   totalEnemies: 0
   enemiesDefeated: 0
+  isLobby: 1
   timeBeforeFirstFall: 8
   timeBetweenFalls: 5
   currentFallenRow: -1

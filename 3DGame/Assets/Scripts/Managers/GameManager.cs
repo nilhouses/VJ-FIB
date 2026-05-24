@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public int currentRoomsSurvived = 0;
     public int coins = 0;
     public bool requestShowCredits = false;
+    [HideInInspector] public int shortcutLevelRequested = -1;
 
     void Awake()
     {
@@ -40,6 +41,7 @@ public class GameManager : MonoBehaviour
             HUDManager.instance.UpdateAllHUD();
         }
     }
+
     public void goToCredits()
     {
         lives = 3; // Reiniciar vidas al volver a los créditos
@@ -69,6 +71,7 @@ public class GameManager : MonoBehaviour
             HUDManager.instance.UpdateCoins(coins);
         }
     }
+
     public void RoomSurvived()
     {
         currentRoomsSurvived++;
@@ -80,7 +83,6 @@ public class GameManager : MonoBehaviour
         }
         HUDManager.instance.UpdateRooms(currentRoomsSurvived);
     }
-
     void Update()
     {
         
