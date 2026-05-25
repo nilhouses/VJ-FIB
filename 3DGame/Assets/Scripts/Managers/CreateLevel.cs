@@ -238,7 +238,7 @@ public class CreateLevel : MonoBehaviour
         ClearLevel();
         OccupancyManager.ClearAll();
 
-        string filename = Application.dataPath + "/Maps/level_" + levelNumber + ".txt";
+        string filename = Application.streamingAssetsPath + "/Maps/level_" + levelNumber + ".txt";
 
         if (!File.Exists(filename))
         {
