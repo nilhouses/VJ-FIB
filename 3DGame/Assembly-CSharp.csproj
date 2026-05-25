@@ -91,6 +91,7 @@
     <Compile Include="Assets\Scripts\Entities\Traps\ArrowTrap.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexJitter.cs" />
     <Compile Include="Assets\Scripts\Entities\SlimeController.cs" />
+    <Compile Include="Assets\Scripts\Entities\ObstacleController.cs" />
     <Compile Include="Assets\Scripts\Entities\DoorController.cs" />
     <Compile Include="Assets\Scripts\States\SharedStates\ExitPuddleState.cs" />
     <Compile Include="Assets\Scripts\Entities\Droppable\SlimePuddle.cs" />
@@ -144,6 +145,7 @@
     <Compile Include="Assets\Scripts\Entities\Droppable\Spell.cs" />
     <Compile Include="Assets\Scripts\States\Player\BlockState.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextInfoDebugTool.cs" />
+    <Compile Include="Assets\Scripts\States\Player\InteractWithObstacleState.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Maps\level_4.txt" />
