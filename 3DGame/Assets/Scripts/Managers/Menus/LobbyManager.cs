@@ -1,11 +1,15 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-
+using TMPro;
 public class LobbyManager : MonoBehaviour
 {
     public static LobbyManager instance; // Singleton instance
     public GameObject lobbyPanel, settingsPanel, creditsPanel, howToPlayPanel;
+
+    [Header("Variables globales del juego")]
+    public TextMeshProUGUI menuCoinsText; 
+    public TextMeshProUGUI menuRecordText;
 
     void Awake()
     {
@@ -19,6 +23,13 @@ public class LobbyManager : MonoBehaviour
         {
             SoundManager.instance.PlayMusic();
         }
+        
+        if (GameManager.instance != null)
+        {
+            if (menuCoinsText != null) menuCoinsText.text = GameManager.instance.coins.ToString();
+            if (menuRecordText != null) menuRecordText.text = GameManager.instance.maxRoomsSurvived.ToString();
+        }
+
         if (GameManager.instance != null && GameManager.instance.requestShowCredits)
         {
             ShowPanel(creditsPanel);
