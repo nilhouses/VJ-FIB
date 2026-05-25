@@ -47,7 +47,7 @@ public class LevelManager : MonoBehaviour
         currentFallenRow = -1;
         levelCreator.GenerateLevel(currentLevel); // Generar el nivel actual
 
-        if (currentLevel >= 3)
+        if (currentLevel >= 3 && currentLevel < maxLevel)
         {
             isFallingActive = true;             // Activar la caída del suelo a partir del nivel 3
             fallTimer = timeBeforeFirstFall;    // Reiniciar el temporizador para la caída del suelo

@@ -215,6 +215,16 @@ public abstract class EntityController : MonoBehaviour
         // Obtenemos qué entidad hay en la celda destino a través del Manager
         GameObject targetEntity = OccupancyManager.GetEntityAt(nextGridPos);
 
+        // Antes de nada gestionamos si hay objeto para interactual con él
+        if (targetEntity != null)
+        {
+            ObstacleController obstacle = targetEntity.GetComponent<ObstacleController>();
+            if (obstacle != null && this is PlayerController)
+            {
+                ((PlayerController)this).goToInteractWithObstacleState(obstacle);
+            }
+        }
+
         // Chequeo de ataque, si hay alguien y tiene el tag enemigo
         if (targetEntity != null && targetEntity.CompareTag(enemyTag))
         {
@@ -223,7 +233,8 @@ public abstract class EntityController : MonoBehaviour
             if (targetController != null)
             {
                 if (targetController.stateMachine.currentState.GetType().Name.Contains("Idle") ||
-                    targetController.stateMachine.currentState.GetType().Name.Contains("Block"))
+                    targetController.stateMachine.currentState.GetType().Name.Contains("Block") ||
+                    targetController.stateMachine.currentState.GetType().Name.Contains("InvalidAction"))
                 {
                     lastDetectedTarget = targetController;
                     return 2; // ATAQUE PERMITIDO
@@ -246,15 +257,15 @@ public abstract class EntityController : MonoBehaviour
         GameObject ground = GetObjectInDirection("Floor", initialPosMove + vecMove + Vector3.up, Vector3.down, 0f, 2f);
         GameObject wall   = GetObjectInDirection("Wall",  initialPosMove, vecMove, 0f, 1f);
         GameObject door   = GetObjectInDirection("Goal",  initialPosMove, vecMove, 0f, 1f);
-        GameObject obstacle = GetObjectInDirection("Obstacle", initialPosMove, vecMove, 0f, 1f);
+        GameObject obs = GetObjectInDirection("Obstacle", initialPosMove, vecMove, 0f, 1f);
 
-        bool canMove = ground != null && wall == null && door == null && obstacle == null;
+        bool canMove = ground != null && wall == null && door == null && obs == null;
         
         if (door != null && this is PlayerController && !LevelManager.instance.CheckLevelComplete())
         {
-            ((PlayerController)this).goToInvalidActionState(); 
+            ((PlayerController)this).goToInvalidActionState();
         }
-        
+
         bool leavingRoom = door != null && LevelManager.instance.CheckLevelComplete();
 
         if (this is PlayerController && leavingRoom)

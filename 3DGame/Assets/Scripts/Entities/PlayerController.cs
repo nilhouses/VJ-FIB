@@ -26,6 +26,13 @@ public class PlayerController : EntityController
         allowInput = false;
         stateMachine.ChangeState(new InvalidActionState(this)); 
     }
+
+    public void goToInteractWithObstacleState(ObstacleController obstacle)
+    {
+        allowInput = false;
+        stateMachine.ChangeState(new InteractWithObstacleState(this, obstacle)); 
+    }
+
     public void returnFromInvalidActionState()
     {
         allowInput = true;
