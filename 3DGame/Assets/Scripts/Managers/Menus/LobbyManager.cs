@@ -59,4 +59,9 @@ public class LobbyManager : MonoBehaviour
     { 
         ShowPanel(howToPlayPanel); 
     }
+
+    public void ClickExit()
+    {
+        Application.Quit();
+    }
 }
