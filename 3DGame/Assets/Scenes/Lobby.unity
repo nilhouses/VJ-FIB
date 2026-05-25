@@ -5154,7 +5154,7 @@ MonoBehaviour:
   enemyGroup: {fileID: 5919248197028431258, guid: b2b22300213032b49b6932898de15abb, type: 2}
   objectsGroup: {fileID: -4343596991978964499, guid: b2b22300213032b49b6932898de15abb, type: 2}
   musicGroup: {fileID: -2379436491094329244, guid: b2b22300213032b49b6932898de15abb, type: 2}
-  backgroundMusic: {fileID: 8300000, guid: c1ee847b68d207e4c9a5053d46085271, type: 3}
+  backgroundMusic: {fileID: 8300000, guid: facf7d8a202cd1c44b93987ddf493be4, type: 3}
 --- !u!1 &1218182901
 GameObject:
   m_ObjectHideFlags: 0
