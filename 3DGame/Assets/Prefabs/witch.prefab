@@ -566,7 +566,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
+  MinDistance: 5
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
@@ -686,6 +686,7 @@ MonoBehaviour:
   spawnPoint: {fileID: 2915699024366221666}
   attackRange: 7
   spellCastSound: {fileID: 8300000, guid: 4a98cd263a1fb27479b86c9dbeb42717, type: 3}
+  spawnSound: {fileID: 8300000, guid: 019e5b2e76c580741a305e7dd0bd03dd, type: 3}
   isAttackTurn: 0
 --- !u!1 &4614232432520978147
 GameObject:

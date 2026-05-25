@@ -6,7 +6,29 @@ public class WitchController : EnemyController
     public Transform spawnPoint;     // Un GameObject vacío en la mano para lanzar el hechizo
     public float attackRange = 7f;   // Distancia máxima para atacar
     public AudioClip spellCastSound; // Sonido de lanzamiento de hechizo
+    public AudioClip spawnSound; // Sonido de aparición
     [HideInInspector] public bool isAttackTurn = false; // Alternamos entre ataque y movimiento
+
+
+    protected override void Awake()
+    {
+        base.Awake(); // entidad
+        
+        // Para que se escuche bien la señora, que sino se pierde entre el ruido de fondo
+        if (audioSource != null) 
+        {
+            audioSource.spatialBlend = 0.5f; 
+        }
+    }
+    protected override void Start()
+    {
+        base.Start(); 
+
+        if (spawnSound != null && audioSource != null)
+        {
+            SoundManager.instance.PlaySpatialSound(audioSource, spawnSound, entityVolume);
+        }
+    }
 
     // La bruja tiene su propio idle para gestionar a qué estado debe ir
     public override IState GetIdleState(bool longIdle = false) 
