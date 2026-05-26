@@ -23,7 +23,7 @@ public class LevelManager : MonoBehaviour
     [Header("Transition Settings")]
     public Image fadeImage;
     public float fadeDuration = 0.5f;       // Duración de la transición
-    private bool isTransitioning = false;
+    public bool isTransitioning = false;
 
     void Awake()
     {
@@ -88,8 +88,6 @@ public class LevelManager : MonoBehaviour
 
     public void LoadNextLevel()
     {
-        if (isTransitioning) return; // Evitar cargar un nuevo nivel si ya estamos en transición
-
         if (GameManager.instance != null)
         {
             GameManager.instance.RoomSurvived();

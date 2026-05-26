@@ -175,13 +175,6 @@ public abstract class EntityController : MonoBehaviour
         transform.rotation = targetRot; // Evitamos errores
         smoothRotationCoroutine = null;
     }
-    /* 
-        Devuelve:
-            - 0 si no se puede mover
-            - 1 si se puede mover
-            - 2 si se puede mover y hay una entidad a la que atacar
-            - 3 si se puede mover, hay una puerta y se han derrotado a todos los enemigos (solo para el jugador)
-    */
 
     public void handleRotationInPlace() 
     {
@@ -190,12 +183,15 @@ public abstract class EntityController : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.DownArrow)  || Input.GetKeyDown(KeyCode.S)) RotateEntity(Direction.DOWN, smooth: true);
         else if (Input.GetKeyDown(KeyCode.LeftArrow)  || Input.GetKeyDown(KeyCode.A)) RotateEntity(Direction.LEFT, smooth: true);
     }
+
     public int CheckAction(Direction dirMove)
     {
+        if (LevelManager.instance != null && LevelManager.instance.isTransitioning) return 0;
+
         if (dirMove == Direction.NONE || isFallingIntoAbyss) return 0;
 
         RotateEntity(dirMove);
-        
+
         if (isStuckInPuddle) {
             initialPosMove = transform.position;
             vecMove = Vector3.zero; // Sin desplazamiento de celda
@@ -255,8 +251,8 @@ public abstract class EntityController : MonoBehaviour
 
         // Si la celda está libre de entidades u objetos, comprobamos muros/físicas
         GameObject ground = GetObjectInDirection("Floor", initialPosMove + vecMove + Vector3.up, Vector3.down, 0f, 2f);
-        GameObject wall   = GetObjectInDirection("Wall",  initialPosMove, vecMove, 0f, 1f);
-        GameObject door   = GetObjectInDirection("Goal",  initialPosMove, vecMove, 0f, 1f);
+        GameObject wall = GetObjectInDirection("Wall",  initialPosMove, vecMove, 0f, 1f);
+        GameObject door = GetObjectInDirection("Goal",  initialPosMove, vecMove, 0f, 1f);
         GameObject obs = GetObjectInDirection("Obstacle", initialPosMove, vecMove, 0f, 1f);
 
         bool canMove = ground != null && wall == null && door == null && obs == null;
@@ -272,11 +268,18 @@ public abstract class EntityController : MonoBehaviour
         {
             OccupancyManager.Release(currentGridPos, gameObject);
             OccupancyManager.Release(targetGridPos, gameObject);
+            targetGridPos = nextGridPos;
             timeInMove = 0f;
-            if (this is PlayerController)
+            
+            PlayerController player = (PlayerController)this;
+            player.isMovingToNextLevel = true;
+            player.playLevelCompleteSound();
+
+            if (LevelManager.instance != null)
             {
-                ((PlayerController)this).playLevelCompleteSound();  // Lo hago con el player para que se escuche en la puerta, pero se cambia si quieres 
+                LevelManager.instance.isTransitioning = true;
             }
+
             return 3; // SALIDA
         }
 
