@@ -1,23 +1,29 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour
 {
     public static LevelManager instance; // Singleton instance
-    public int totalEnemies;    // Número total de enemigos en el nivel
-    public int enemiesDefeated; // Número de enemigos derrotados por el jugado
-    private int currentLevel = 0; // Nivel actual del jugador
-    private int maxLevel = 10; // Número máximo de niveles disponibles
-    private CreateLevel levelCreator; // Referencia al script que genera el nivel
+    public int totalEnemies;            // Número total de enemigos en el nivel
+    public int enemiesDefeated;         // Número de enemigos derrotados por el jugado
+    private int currentLevel = 0;       // Nivel actual del jugador
+    private int maxLevel = 10;          // Número máximo de niveles disponibles
+    private CreateLevel levelCreator;   // Referencia al script que genera el nivel
 
-    public bool isLobby = false; // Necesario para decirle al manager si hay que cargar una escena nueva al pulsar las teclas (0-9)
+    public bool isLobby = false;
 
     [Header("Falling Floor Settings")]
-    public float timeBeforeFirstFall = 8f; // Tiempo antes de que el suelo comience a caer
-    public float timeBetweenFalls = 5f; // Tiempo entre cada caída de suelo
-    public int currentFallenRow = -1; // Fila actual que ha caído
-    private float fallTimer = 0f; // Temporizador para controlar la caída del suelo
-    private bool isFallingActive = false; // Indica si la caída del suelo está activa
+    public float timeBeforeFirstFall = 8f;  // Tiempo antes de que el suelo comience a caer
+    public float timeBetweenFalls = 5f;     // Tiempo entre cada caída de suelo
+    public int currentFallenRow = -1;       // Fila actual que ha caído
+    private float fallTimer = 0f;           // Temporizador para controlar la caída del suelo
+    private bool isFallingActive = false;   // Indica si la caída del suelo está activa
+
+    [Header("Transition Settings")]
+    public Image fadeImage;
+    public float fadeDuration = 0.5f;       // Duración de la transición
+    private bool isTransitioning = false;
 
     void Awake()
     {
@@ -29,8 +35,28 @@ public class LevelManager : MonoBehaviour
             GameManager.instance.shortcutLevelRequested = -1;
         }
         
-        // Lo primero que hacemos al iniciar el juego es cargar el primer nivel para que el jugador pueda setearse en su posición inicial correctamente
-        LoadCurrentLevel();
+        if (currentLevel == 0)
+        {
+            if (fadeImage != null)
+            {
+                Color c = fadeImage.color;
+                c.a = 0f;
+                fadeImage.color = c;
+            }
+            
+            LoadCurrentLevel();
+        }
+        else
+        {
+            if (fadeImage != null)
+            {
+                Color c = fadeImage.color;
+                c.a = 1f;
+                fadeImage.color = c;
+            }
+
+            StartCoroutine(TransitionToLevel(currentLevel, true));
+        }
     }
 
     void Start()
@@ -40,26 +66,30 @@ public class LevelManager : MonoBehaviour
             SoundManager.instance.PlayMusic();
         }   
     }
-    private void LoadCurrentLevel()
-    {
-        totalEnemies = 0;
-        enemiesDefeated = 0;
-        currentFallenRow = -1;
-        levelCreator.GenerateLevel(currentLevel); // Generar el nivel actual
 
-        if (currentLevel >= 3 && currentLevel < maxLevel)
-        {
-            isFallingActive = true;             // Activar la caída del suelo a partir del nivel 3
-            fallTimer = timeBeforeFirstFall;    // Reiniciar el temporizador para la caída del suelo
-        } 
-        else 
-        {
-            isFallingActive = false;            // Desactivar la caída del suelo para niveles anteriores al 3
-        }
+    private void LoadCurrentLevel()
+{
+    totalEnemies = 0;
+    enemiesDefeated = 0;
+    currentFallenRow = -1;
+    
+    levelCreator.GenerateLevel(currentLevel);
+
+    if (currentLevel >= 3 && currentLevel < maxLevel)
+    {
+        isFallingActive = true;             
+        fallTimer = timeBeforeFirstFall;    
+    } 
+    else 
+    {
+        isFallingActive = false;            
     }
+}
 
     public void LoadNextLevel()
     {
+        if (isTransitioning) return; // Evitar cargar un nuevo nivel si ya estamos en transición
+
         if (GameManager.instance != null)
         {
             GameManager.instance.RoomSurvived();
@@ -68,12 +98,65 @@ public class LevelManager : MonoBehaviour
         if (currentLevel < maxLevel)
         {
             currentLevel++;
-            LoadCurrentLevel(); // Cargar el siguiente nivel
+            StartCoroutine(TransitionToLevel(currentLevel, false));
         }
         else
         {
             GameManager.instance.goToCredits();
         }
+    }
+
+    // Corrutina para manejar la transición entre niveles con fade in/out
+    private IEnumerator TransitionToLevel(int targetLevel, bool isInitialLoad)
+    {
+        isTransitioning = true;
+
+        // Fade out
+        if (!isInitialLoad && fadeImage != null)
+        {
+            float timer = 0f;
+            while (timer < fadeDuration)
+            {
+                timer += Time.deltaTime;
+                float alpha = Mathf.Clamp01(timer / fadeDuration);
+                fadeImage.color = new Color(0f, 0f, 0f, alpha);
+                yield return null;
+            }
+        }
+
+        // Cargar nivel durante el fade out
+        totalEnemies = 0;
+        enemiesDefeated = 0;
+        currentFallenRow = -1;
+        levelCreator.GenerateLevel(targetLevel); 
+
+        if (targetLevel >= 3 && targetLevel < maxLevel)
+        {
+            isFallingActive = true;             
+            fallTimer = timeBeforeFirstFall;    
+        } 
+        else 
+        {
+            isFallingActive = false;            
+        }
+
+        // Esperar un frame para asegurarnos de que el nivel se ha cargado antes de comenzar el fade in
+        yield return new WaitForEndOfFrame(); 
+
+        // Fade in
+        if (fadeImage != null)
+        {
+            float timer = 0f;
+            while (timer < fadeDuration)
+            {
+                timer += Time.deltaTime;
+                float alpha = 1f - Mathf.Clamp01(timer / fadeDuration);
+                fadeImage.color = new Color(0f, 0f, 0f, alpha);
+                yield return null;
+            }
+        }
+
+        isTransitioning = false;
     }
 
     // Este método se llamará cada vez que un enemigo sea creado en el nivel para registrar su existencia
@@ -104,12 +187,6 @@ public class LevelManager : MonoBehaviour
 
     void Update()
     {
-        // Si el jugador presiona la tecla B, volvemos al lobby
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            GameManager.instance.goToLobby();
-        }
-
         // Gestionar la caída del suelo
         if (isFallingActive && currentFallenRow < CreateLevel.mapHeight)
         {
@@ -121,17 +198,20 @@ public class LevelManager : MonoBehaviour
             }
         }
 
-        // Cargar niveles con atajos 0-9
-        if (Input.GetKeyDown(KeyCode.Alpha1)) { LoadLevel(1); }
-        if (Input.GetKeyDown(KeyCode.Alpha2)) { LoadLevel(2); }
-        if (Input.GetKeyDown(KeyCode.Alpha3)) { LoadLevel(3); }
-        if (Input.GetKeyDown(KeyCode.Alpha4)) { LoadLevel(4); }
-        if (Input.GetKeyDown(KeyCode.Alpha5)) { LoadLevel(5); }
-        if (Input.GetKeyDown(KeyCode.Alpha6)) { LoadLevel(6); }
-        if (Input.GetKeyDown(KeyCode.Alpha7)) { LoadLevel(7); }
-        if (Input.GetKeyDown(KeyCode.Alpha8)) { LoadLevel(8); }
-        if (Input.GetKeyDown(KeyCode.Alpha9)) { LoadLevel(9); }
-        if (Input.GetKeyDown(KeyCode.Alpha0)) { LoadLevel(10); }
+        if (!isTransitioning)
+        {            
+            // Cargar niveles con atajos 0-9
+            if (Input.GetKeyDown(KeyCode.Alpha1)) { LoadLevel(1); }
+            if (Input.GetKeyDown(KeyCode.Alpha2)) { LoadLevel(2); }
+            if (Input.GetKeyDown(KeyCode.Alpha3)) { LoadLevel(3); }
+            if (Input.GetKeyDown(KeyCode.Alpha4)) { LoadLevel(4); }
+            if (Input.GetKeyDown(KeyCode.Alpha5)) { LoadLevel(5); }
+            if (Input.GetKeyDown(KeyCode.Alpha6)) { LoadLevel(6); }
+            if (Input.GetKeyDown(KeyCode.Alpha7)) { LoadLevel(7); }
+            if (Input.GetKeyDown(KeyCode.Alpha8)) { LoadLevel(8); }
+            if (Input.GetKeyDown(KeyCode.Alpha9)) { LoadLevel(9); }
+            if (Input.GetKeyDown(KeyCode.Alpha0)) { LoadLevel(10); }
+        }
     }
     private void LoadLevel(int targetLevel)
     {
@@ -147,7 +227,7 @@ public class LevelManager : MonoBehaviour
         else
         {
             currentLevel = targetLevel;
-            LoadCurrentLevel();
+            StartCoroutine(TransitionToLevel(targetLevel, false));
         }
     }
 
