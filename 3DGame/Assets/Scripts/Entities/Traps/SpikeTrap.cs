@@ -143,7 +143,7 @@ public class SpikeTrap : MonoBehaviour
     IEnumerator killCo(EntityController entity) // Para player y enemigos tenemos el mismo código
     {
         yield return new WaitForSeconds(0.05f);
-        entity.receiveHit(this.transform.position);
+        entity.receiveHit(this.transform.position, true);
 
         if (spikeSound != null && audioSource != null)
         {

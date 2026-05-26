@@ -84,9 +84,9 @@ public class PlayerController : EntityController
         return GameManager.instance.lives;
     }
     
-    public override void receiveHit(Vector3 damageSourcePos)
+    public override void receiveHit(Vector3 damageSourcePos, bool isFromSpike = false)
     {
-        if (invincibilityTime > 0f) return;
+        if (invincibilityTime > 0f && !isFromSpike) return;
         if (getLivesRemaining() <= 0) return;
 
         if (!godMode && canHurtMe(damageSourcePos))

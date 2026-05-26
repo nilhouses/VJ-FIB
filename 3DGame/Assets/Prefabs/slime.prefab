@@ -96,9 +96,12 @@ MonoBehaviour:
   dieSound: {fileID: 8300000, guid: 0b1c4615c0e25ac428d0312a93a133b6, type: 3}
   enemyTag: Enemy
   speed: 2
+  entityName: Entity
   attackSpeed: 1
   heightJump: 0
   numAttacks: 1
+  wasJustHit: 0
+  invincibilityTime: 0.5
   isStuckInPuddle: 0
   anim: {fileID: 0}
   dir: 0
@@ -107,9 +110,14 @@ MonoBehaviour:
   timeInMove: 0
   lastDetectedTarget: {fileID: 0}
   entityVolume: 0.5
+  isReceivingHit: 0
+  bloodParticlesPrefab: {fileID: 0}
   timeBetweenMoves: 2
   lifesRemaining: 1
+  turnGroup: 1
+  isFirstIdle: 1
   movementStrategy: {fileID: 11400000, guid: b1d97bf906cb3e844bf3ec12bc6ebd3f, type: 2}
+  playerTransform: {fileID: 0}
   puddle: {fileID: 4061012142582937487, guid: 027d2a0ace80e9d41a41d7304220faa9, type: 3}
 --- !u!82 &-5146702829973536074
 AudioSource:

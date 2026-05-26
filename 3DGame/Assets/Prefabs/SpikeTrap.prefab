@@ -236,8 +236,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   heightUp: 0.285
-  speed: 0.5
-  waitTime: 2
+  speed: 1
+  waitTime: 1
   initialDelay: 0
   spikeVolume: 1
   spikeSound: {fileID: 8300000, guid: 0283271988833bb46925d6585cac8719, type: 3}

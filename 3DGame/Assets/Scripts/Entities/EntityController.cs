@@ -356,7 +356,7 @@ public abstract class EntityController : MonoBehaviour
     }
 
     public abstract int getLivesRemaining();
-    public abstract void receiveHit(Vector3 fromPostition);
+    public abstract void receiveHit(Vector3 fromPostition, bool isFromSpike = false);
 
     protected bool canHurtMe(Vector3 fromPosition)
     {

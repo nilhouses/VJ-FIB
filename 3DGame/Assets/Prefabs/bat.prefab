@@ -57,6 +57,8 @@ MonoBehaviour:
   attackSpeed: 1
   heightJump: 0.3
   numAttacks: 1
+  wasJustHit: 0
+  invincibilityTime: 0.5
   isStuckInPuddle: 0
   anim: {fileID: 0}
   dir: 0
@@ -66,9 +68,13 @@ MonoBehaviour:
   lastDetectedTarget: {fileID: 0}
   entityVolume: 1
   isReceivingHit: 0
-  timeBetweenMoves: 2
+  bloodParticlesPrefab: {fileID: 0}
+  timeBetweenMoves: 1
   lifesRemaining: 1
+  turnGroup: 1
+  isFirstIdle: 1
   movementStrategy: {fileID: 11400000, guid: 948278396d8fd68499a1c8f9bcd23c37, type: 2}
+  playerTransform: {fileID: 0}
 --- !u!95 &4954518689305593792
 Animator:
   serializedVersion: 5

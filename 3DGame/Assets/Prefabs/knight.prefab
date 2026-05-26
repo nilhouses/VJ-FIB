@@ -436,7 +436,7 @@ MonoBehaviour:
   receiveHitSound: {fileID: 8300000, guid: 899ac6342e0669b4da9c5d77bdada2fc, type: 3}
   dieSound: {fileID: 8300000, guid: 21c370ffb7ef3604aa4bd8a59135e038, type: 3}
   enemyTag: Enemy
-  speed: 3
+  speed: 3.5
   entityName: Player
   attackSpeed: 1
   heightJump: 0.4

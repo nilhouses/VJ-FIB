@@ -14,8 +14,8 @@ public class LevelManager : MonoBehaviour
     public bool isLobby = false;
 
     [Header("Falling Floor Settings")]
-    public float timeBeforeFirstFall = 8f;  // Tiempo antes de que el suelo comience a caer
-    public float timeBetweenFalls = 5f;     // Tiempo entre cada caída de suelo
+    public float timeBeforeFirstFall = 6f;  // Tiempo antes de que el suelo comience a caer
+    public float timeBetweenFalls = 3.5f;     // Tiempo entre cada caída de suelo
     public int currentFallenRow = -1;       // Fila actual que ha caído
     private float fallTimer = 0f;           // Temporizador para controlar la caída del suelo
     private bool isFallingActive = false;   // Indica si la caída del suelo está activa

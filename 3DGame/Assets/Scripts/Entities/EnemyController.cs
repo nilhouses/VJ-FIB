@@ -64,9 +64,9 @@ public class EnemyController : EntityController
         return lifesRemaining;
     }
 
-    public override void receiveHit(Vector3 fromPosition)
+    public override void receiveHit(Vector3 fromPosition, bool isFromSpike = false)
     {
-        if (invincibilityTime > 0f) return;
+        if (invincibilityTime > 0f && !isFromSpike) return;
         if (getLivesRemaining() <= 0) return;
 
         if (canHurtMe(fromPosition))

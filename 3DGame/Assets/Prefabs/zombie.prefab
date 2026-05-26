@@ -689,7 +689,7 @@ MonoBehaviour:
   receiveHitSound: {fileID: 8300000, guid: 15f1ff371d993c8459f8cdcb28dc71c8, type: 3}
   dieSound: {fileID: 8300000, guid: 6f83f98857aae9c41aabc890489806e2, type: 3}
   enemyTag: Enemy
-  speed: 4
+  speed: 2
   entityName: Entity
   attackSpeed: 2
   heightJump: 0
@@ -706,7 +706,7 @@ MonoBehaviour:
   entityVolume: 1
   isReceivingHit: 0
   bloodParticlesPrefab: {fileID: 1743637094903878, guid: 021a2f7a2c5bc4449b4c64a66a050e8c, type: 3}
-  timeBetweenMoves: 2
+  timeBetweenMoves: 1.5
   lifesRemaining: 2
   turnGroup: 1
   isFirstIdle: 1
