@@ -22,7 +22,7 @@ This repository contains the source code for our projects developed during the 2
 
 ---
 
-## 🧊 3D Game: [Insert Name Here]
+## 🧊 3D Game: Dungeon Depths
 
 ### Tools & Software Used
 
