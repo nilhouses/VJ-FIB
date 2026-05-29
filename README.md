@@ -9,26 +9,23 @@ This repository contains the source code for our projects developed during the 2
 
 ---
 
-## 🕹️ 2D Game: Stranded in Alien Territory
+## 🕹️ 2D Game: [Stranded in Alien Territory](https://nilhouses.github.io/VJ-FIB/)
 
 ### Tools & Software Used
 
-#### Level Design
 * [Tiled](https://www.mapeditor.org/) - Map editor for tile-based levels.
-
-#### Audio & Music
 * [Studio One](https://www.presonus.com/en/products/studio-one) - Music production and composition.
 * [Audacity](https://www.audacityteam.org/) - Audio editing and sound effects.
 
 ---
 
-## 🧊 3D Game: Dungeon Depths
+## 🧊 3D Game: [Dungeon Depths]()
 
 ### Tools & Software Used
 
-#### Development
 * [Unity](https://unity.com/) - Primary game engine and scripting.
-
-#### 3D Modeling
-* [Blender](https://www.blender.org/) - General 3D modeling and UV mapping.
 * [MagicaVoxel](https://ephtracy.github.io/) - Voxel art and asset creation.
+* [Mixamo](https://www.mixamo.com/) - Humanoid model animations
+* [Unity](https://unity.com/) - Non-humanoid model animations
+* [Studio One](https://www.presonus.com/en/products/studio-one) - Music production and composition.
+* [Audacity](https://www.audacityteam.org/) - Audio editing and sound effects.
