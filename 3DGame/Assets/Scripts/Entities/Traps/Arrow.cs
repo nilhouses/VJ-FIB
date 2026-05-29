@@ -14,7 +14,7 @@ public class ArrowProjectile : MonoBehaviour
     
     [Range(0f, 1f)] public float hitVolume = 1f;
     
-    private float penetrationDepth = 0.25f;
+    private float penetrationDepth = 0.37f;
 
     void Awake()
     {
@@ -83,12 +83,11 @@ public class ArrowProjectile : MonoBehaviour
         hasHitTarget = true;
         EntityController entity = col.GetComponentInParent<EntityController>();
 
-        HitSomething(col.transform); 
-
         if (entity != null)
         {
             if (col.CompareTag("Shield") && entity is PlayerController player && player.stateMachine.currentState is BlockState)
             {
+                HitSomething(col.transform, true);
                 // Punto más cercano en la superficie real del collider del escudo
                 Vector3 stickPoint = col.ClosestPoint(transform.position);
                 transform.position = stickPoint + transform.forward * 0.1f;
@@ -98,14 +97,19 @@ public class ArrowProjectile : MonoBehaviour
             {   
                 entity.receiveHit(this.transform.position);
                 SoundManager.instance.PlaySpatialSound(audioSource, hitSound, hitVolume);
+                Destroy(gameObject);
             }
         }
     }
 
-    private void HitSomething(Transform parentToAttach)
+    private void HitSomething(Transform parentToAttach, bool isShield = false)
     {
         hasHitTarget = true;
         transform.position += transform.forward * penetrationDepth;
+        if (isShield)
+        {
+            transform.position += transform.forward * 0.1f;
+        }
         transform.SetParent(parentToAttach);
         speed = 0;
         Destroy(gameObject, 1.5f);

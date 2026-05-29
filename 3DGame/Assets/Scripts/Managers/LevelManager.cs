@@ -10,7 +10,6 @@ public class LevelManager : MonoBehaviour
     private int currentLevel = 0;       // Nivel actual del jugador
     private int maxLevel = 10;          // Número máximo de niveles disponibles
     private CreateLevel levelCreator;   // Referencia al script que genera el nivel
-
     public bool isLobby = false;
 
     [Header("Falling Floor Settings")]
