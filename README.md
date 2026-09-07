@@ -11,6 +11,8 @@ This repository contains the source code for our projects developed during the 2
 
 ## 🕹️ 2D Game: [Stranded in Alien Territory](https://nilhouses.github.io/VJ-FIB/)
 
+Platform game based on [Bugs Bunny Crazy Castle 3](https://www.juegotk.com/juego/bugs+bunny+-+crazy+castle+3/online.html)'s mechanics and inspired by the [Dune](https://www.filmaffinity.com/es/film847055.html) scenes.
+
 ### Tools & Software Used
 
 * [Tiled](https://www.mapeditor.org/) - Map editor for tile-based levels.
@@ -19,7 +21,11 @@ This repository contains the source code for our projects developed during the 2
 
 ---
 
-## 🧊 3D Game: [Dungeon Depths]()
+## 🧊 3D Game: Dungeon Depths
+
+Dungeon crawler inspired by [Looty Dungeon](https://looty-dungeon.uptodown.com/android).
+
+This game isn't available online yet, but it can be played by forking this repository and opening its [solution](https://github.com/nilhouses/VJ-FIB/blob/main/3DGame/3DGame.sln) via the [Unity Hub](https://docs.unity.com/en-us/hub).
 
 ### Tools & Software Used
 
